@@ -1,0 +1,17 @@
+name: WbsEnchants
+version: 0.0.1
+api-version: 1.20
+main: wbs.enchants.WbsEnchants
+description: Yet another custom enchants plugin
+depend:
+  - WbsUtils
+  - UberEnchant
+commands:
+  customenchants:
+    aliases:
+      - cench
+      - cenchant
+      - cenchants
+      - cenchantment
+      - customenchant
+    description: Interact with and get information about custom enchantments

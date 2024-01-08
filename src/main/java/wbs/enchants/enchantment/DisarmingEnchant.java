@@ -1,0 +1,135 @@
+package wbs.enchants.enchantment;
+
+import me.sciguymjm.uberenchant.api.utils.Rarity;
+import org.bukkit.Material;
+import org.bukkit.enchantments.Enchantment;
+import org.bukkit.enchantments.EnchantmentTarget;
+import org.bukkit.entity.Entity;
+import org.bukkit.entity.LivingEntity;
+import org.bukkit.entity.Player;
+import org.bukkit.entity.Projectile;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.entity.EntityDamageByEntityEvent;
+import org.bukkit.inventory.*;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+import wbs.enchants.WbsEnchants;
+import wbs.enchants.util.EntityUtils;
+import wbs.utils.util.WbsMath;
+
+import java.util.Random;
+
+public class DisarmingEnchant extends AbstractDamageEnchant {
+    private static final Random RANDOM = new Random(System.currentTimeMillis());
+
+    public DisarmingEnchant() {
+        super("disarming");
+    }
+
+    @EventHandler
+    public void catchEvent(EntityDamageByEntityEvent event) {
+        onDamage(event);
+    }
+
+    @Override
+    protected void handleAttack(@NotNull EntityDamageByEntityEvent event, @NotNull LivingEntity attacker, @NotNull Entity victim, @Nullable Projectile projectile) {
+        if (!(attacker instanceof Player playerAttacker) || !(victim instanceof LivingEntity livingVictim)) {
+            return;
+        }
+
+        if (!EntityUtils.willCrit(playerAttacker)) {
+            return;
+        }
+
+        EntityEquipment equipment = attacker.getEquipment();
+        if (equipment == null) {
+            return;
+        }
+
+        ItemStack item = equipment.getItemInMainHand();
+        if (containsEnchantment(item)) {
+            if (!WbsMath.chance(getLevel(item) * 10)) {
+                return;
+            }
+
+            if (livingVictim instanceof Player playerVictim) {
+                // Swap current held item with another random slot in hotbar, and then change their selected slot to a different slot at random
+                PlayerInventory victimInv = playerVictim.getInventory();
+
+                int heldItemSlot = victimInv.getHeldItemSlot();
+                ItemStack held = victimInv.getItemInMainHand();
+
+                int randomSlot;
+                do {
+                    randomSlot = RANDOM.nextInt(9);
+                }
+                while (randomSlot == heldItemSlot);
+
+                ItemStack other = victimInv.getItem(randomSlot);
+
+                victimInv.setItemInMainHand(other);
+                victimInv.setItem(randomSlot, held);
+
+                WbsEnchants.getInstance().sendActionBar("&wDisarmed!", playerVictim);
+                WbsEnchants.getInstance().sendActionBar("Disarmed " + livingVictim.getName() + "!", playerAttacker);
+            } else {
+                EntityEquipment victimEquipment = livingVictim.getEquipment();
+                if (victimEquipment != null) {
+                    ItemStack held = victimEquipment.getItemInMainHand();
+
+                    if (held.getType().isAir()) {
+                        return;
+                    }
+
+                    livingVictim.getWorld().dropItemNaturally(livingVictim.getEyeLocation(), held);
+                    victimEquipment.setItemInMainHand(new ItemStack(Material.AIR));
+
+                    WbsEnchants.getInstance().sendActionBar("Disarmed " + livingVictim.getName() + "!", playerAttacker);
+                }
+            }
+        }
+    }
+
+    @Override
+    public String getDisplayName() {
+        return "&7Disarming";
+    }
+
+    @Override
+    public Rarity getRarity() {
+        return Rarity.UNCOMMON;
+    }
+
+    @Override
+    public int getMaxLevel() {
+        return 3;
+    }
+
+    @NotNull
+    @Override
+    public EnchantmentTarget getItemTarget() {
+        return EnchantmentTarget.WEAPON;
+    }
+
+    @Override
+    public boolean isTreasure() {
+        return false;
+    }
+
+    @Override
+    public boolean isCursed() {
+        return false;
+    }
+
+    @Override
+    public boolean conflictsWith(@NotNull Enchantment enchantment) {
+        return enchantment == Enchantment.KNOCKBACK;
+    }
+
+    @Override
+    public @NotNull String getDescription() {
+        return "When you critically hit a mob, you have a 10% chance of disarming it (per level). " +
+                "Disarming a non-player will force it to drop the item it's holding, and disarming a player " +
+                "will slightly rearrange their hotbar to force them to reselect their weapon.";
+    }
+}
