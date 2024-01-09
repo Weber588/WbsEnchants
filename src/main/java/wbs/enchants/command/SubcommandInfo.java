@@ -39,7 +39,21 @@ public class SubcommandInfo extends WbsSubcommand {
                 .orElse(null);
 
         if (enchant == null) {
-            return true;
+            enchant = enchants.stream()
+                    .filter(check -> check.looselyMatches(enchantmentString))
+                    .findFirst()
+                    .orElse(null);
+
+            if (enchant == null) {
+                sendMessage("Enchantment not found: \"" + enchantmentString + "\". " +
+                        "Please choose from the following:", sender);
+
+                sendMessage("Options: &h" + enchants.stream()
+                        .map(WbsEnchantment::getKey)
+                        .map(NamespacedKey::getKey)
+                        .collect(Collectors.joining(", ")), sender);
+                return true;
+            }
         }
 
         int maxLevel = enchant.getMaxLevel();
