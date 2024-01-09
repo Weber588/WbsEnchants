@@ -123,7 +123,7 @@ public class DisarmingEnchant extends AbstractDamageEnchant {
 
     @Override
     public boolean conflictsWith(@NotNull Enchantment enchantment) {
-        return enchantment == Enchantment.KNOCKBACK;
+        return enchantment == KNOCKBACK;
     }
 
     @Override

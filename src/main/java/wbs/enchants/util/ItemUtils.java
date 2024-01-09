@@ -2,6 +2,9 @@ package wbs.enchants.util;
 
 import org.bukkit.Bukkit;
 import org.bukkit.EntityEffect;
+import org.bukkit.Material;
+import org.bukkit.Tag;
+import org.bukkit.block.Block;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
 import org.bukkit.event.player.PlayerItemDamageEvent;
@@ -78,5 +81,25 @@ public class ItemUtils {
 
         player.playEffect(effect);
         equipment.setItem(slot, null);
+    }
+
+    public static boolean isProperTool(Block block, ItemStack stack) {
+        Material material = block.getType();
+        Material itemType = stack.getType();
+
+        if (Tag.MINEABLE_PICKAXE.isTagged(material)) {
+            return Tag.ITEMS_PICKAXES.isTagged(itemType);
+        }
+        if (Tag.MINEABLE_SHOVEL.isTagged(material)) {
+            return Tag.ITEMS_SHOVELS.isTagged(itemType);
+        }
+        if (Tag.MINEABLE_AXE.isTagged(material)) {
+            return Tag.ITEMS_AXES.isTagged(itemType);
+        }
+        if (Tag.MINEABLE_HOE.isTagged(material)) {
+            return Tag.ITEMS_HOES.isTagged(itemType);
+        }
+
+        return block.isPreferredTool(stack);
     }
 }

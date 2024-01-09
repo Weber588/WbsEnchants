@@ -61,20 +61,8 @@ public abstract class WbsEnchantment extends UberEnchantment {
     }
 
     @NotNull
-    public Map<NamespacedKey, Double> getLootKeyChances() {
+    protected Map<NamespacedKey, Double> getLootKeyChances() {
         return new HashMap<>();
-    }
-
-    public boolean canAddTo(LootTable table) {
-        Map<NamespacedKey, Double> tableChances = getLootKeyChances();
-
-        for (NamespacedKey key : tableChances.keySet()) {
-            if (key.equals(table.getKey())) {
-                return true;
-            }
-        }
-
-        return false;
     }
 
     @Nullable
@@ -88,5 +76,15 @@ public abstract class WbsEnchantment extends UberEnchantment {
         }
 
         return getAliases().stream().anyMatch(alias -> alias.equalsIgnoreCase(asString));
+    }
+
+    public boolean looselyMatches(String asString) {
+        asString = asString.toLowerCase();
+        if (stringKey.startsWith(asString)) {
+            return true;
+        }
+
+        String finalAsString = asString;
+        return getAliases().stream().anyMatch(alias -> alias.startsWith(finalAsString));
     }
 }
