@@ -44,6 +44,11 @@ public class EnchantsSettings extends WbsSettings {
 
     @Override
     public void reload() {
+        loadDefaultConfig("config.yml");
+        loadEnchants();
+    }
+
+    private void loadEnchants() {
         // Create new file instance of our custom config
         File file = new File(plugin.getDataFolder(), "enchantments.yml");
 
