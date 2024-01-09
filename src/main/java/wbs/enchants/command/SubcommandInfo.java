@@ -22,7 +22,7 @@ public class SubcommandInfo extends WbsSubcommand {
     protected boolean onCommand(@NotNull CommandSender sender, @NotNull String label, @NotNull String[] args, int start) {
         List<WbsEnchantment> enchants = EnchantsSettings.getRegistered();
 
-        if (args.length < start) {
+        if (args.length <= start) {
             sendUsage("<enchantment>", sender, label, args);
             sendMessage("Options: &h" + enchants.stream()
                     .map(WbsEnchantment::getKey)
@@ -47,14 +47,18 @@ public class SubcommandInfo extends WbsSubcommand {
             maxLevel = 1;
         }
 
-        sendMessage("Name: &h" + enchant.getDisplayName(), sender);
-        sendMessage("Maximum level: &h" + RomanNumerals.toRoman(maxLevel) + "(" + maxLevel + ")", sender);
-        sendMessage("Target: &h" + enchant.getTargetDescription(), sender);
+        String line = "=====================================";
+        sendMessage(line, sender);
+
+        sendMessageNoPrefix("Name: &h" + enchant.getDisplayName(), sender);
+        sendMessageNoPrefix("Maximum level: &h" + RomanNumerals.toRoman(maxLevel) + " (" + maxLevel + ")", sender);
+        sendMessageNoPrefix("Target: &h" + enchant.getTargetDescription(), sender);
         if (enchant.getPermission() != null) {
-            sendMessage("Permission: &h" + enchant.getPermission(), sender);
+            sendMessageNoPrefix("Permission: &h" + enchant.getPermission(), sender);
         }
 
-        sendMessage("Description: &h" + enchant.getDescription(), sender);
+        sendMessageNoPrefix("Description: &h" + enchant.getDescription(), sender);
+        sendMessage(line, sender);
 
         return true;
     }
@@ -62,7 +66,10 @@ public class SubcommandInfo extends WbsSubcommand {
     @Override
     protected List<String> getTabCompletions(@NotNull CommandSender sender, @NotNull String label, @NotNull String[] args, int start) {
         if (args.length == start) {
-            return EnchantsSettings.getRegistered().stream().map(WbsEnchantment::getDescription).collect(Collectors.toList());
+            return EnchantsSettings.getRegistered().stream()
+                    .map(WbsEnchantment::getKey)
+                    .map(NamespacedKey::getKey)
+                    .collect(Collectors.toList());
         }
 
         return new LinkedList<>();
