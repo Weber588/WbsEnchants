@@ -102,13 +102,13 @@ public class VampiricEnchant extends AbstractDamageEnchant {
         }
         PersistentDataContainer dataContainer = player.getPersistentDataContainer();
 
-        Long vampiricTimestamp = dataContainer.get(getKey(), PersistentDataType.LONG);
+        Long vampiricTimestamp = dataContainer.get(EXPIRE_TIME_KEY, PersistentDataType.LONG);
 
         if (vampiricTimestamp == null) {
             return;
         }
 
-        if (vampiricTimestamp <= System.currentTimeMillis()) {
+        if (vampiricTimestamp > System.currentTimeMillis()) {
             event.setCancelled(true);
         } else {
             dataContainer.remove(EXPIRE_TIME_KEY);
