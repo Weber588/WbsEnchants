@@ -59,7 +59,7 @@ public class FrenziedEnchant extends AbstractDamageEnchant {
                     amplifier += AMPLIFIER_INCREMENT;
                 }
 
-                playerAttacker.addPotionEffect(new PotionEffect(PotionEffectType.FAST_DIGGING, amplifier, duration));
+                playerAttacker.addPotionEffect(new PotionEffect(PotionEffectType.FAST_DIGGING, duration, amplifier));
             }
         }
     }
