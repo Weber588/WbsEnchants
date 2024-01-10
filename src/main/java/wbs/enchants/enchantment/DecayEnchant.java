@@ -1,9 +1,7 @@
 package wbs.enchants.enchantment;
 
 import me.sciguymjm.uberenchant.api.utils.Rarity;
-import org.bukkit.Bukkit;
 import org.bukkit.Material;
-import org.bukkit.NamespacedKey;
 import org.bukkit.Tag;
 import org.bukkit.block.Block;
 import org.bukkit.enchantments.Enchantment;
@@ -12,20 +10,15 @@ import org.bukkit.entity.*;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
-import org.bukkit.event.player.PlayerItemBreakEvent;
 import org.bukkit.inventory.EntityEquipment;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.loot.LootTable;
-import org.bukkit.loot.LootTables;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import wbs.enchants.WbsEnchantment;
-import wbs.enchants.WbsEnchants;
+import wbs.enchants.util.EnchantUtils;
 import wbs.enchants.util.MaterialUtils;
 import wbs.utils.util.WbsMath;
 
 import java.util.Collection;
-import java.util.List;
 
 public class DecayEnchant extends AbstractDamageEnchant {
     public DecayEnchant() {
@@ -137,9 +130,7 @@ public class DecayEnchant extends AbstractDamageEnchant {
     @Override
     public boolean conflictsWith(@NotNull Enchantment enchantment) {
         return enchantment == SILK_TOUCH ||
-                // Conflict with Sharpness, and everything it conflicts with
-                enchantment == DAMAGE_ALL ||
-                DAMAGE_ALL.conflictsWith(enchantment);
+                EnchantUtils.willConflict(DAMAGE_ALL, enchantment);
     }
 
     @Override
