@@ -29,6 +29,7 @@ public class EnchantsSettings extends WbsSettings {
     public static final HellborneEnchant HELLBORNE = new HellborneEnchant();
     public static final DecayEnchant DECAY = new DecayEnchant();
     public static final ScorchingEnchant SCORCHING = new ScorchingEnchant();
+    public static final FrostburnEnchant FROSTBURN = new FrostburnEnchant();
 
     public static void register(WbsEnchantment enchantment) {
         REGISTERED_ENCHANTMENTS.add(enchantment);
