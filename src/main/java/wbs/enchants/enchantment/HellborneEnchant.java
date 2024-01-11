@@ -71,7 +71,7 @@ public class HellborneEnchant extends WbsEnchantment {
 
     @Override
     public boolean isTreasure() {
-        return false;
+        return true;
     }
 
     @Override

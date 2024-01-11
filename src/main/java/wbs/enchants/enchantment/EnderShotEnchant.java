@@ -107,7 +107,7 @@ public class EnderShotEnchant extends WbsEnchantment {
 
     @Override
     public boolean isTreasure() {
-        return false;
+        return true;
     }
 
     @Override

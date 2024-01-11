@@ -138,7 +138,7 @@ public class VampiricEnchant extends AbstractDamageEnchant {
 
     @Override
     public boolean isTreasure() {
-        return false;
+        return true;
     }
 
     @Override

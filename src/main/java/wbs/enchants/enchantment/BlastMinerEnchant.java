@@ -111,7 +111,7 @@ public class BlastMinerEnchant extends AbstractMultiBreakEnchant {
 
     @Override
     public boolean isTreasure() {
-        return false;
+        return true;
     }
 
     @Override

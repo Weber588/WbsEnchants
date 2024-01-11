@@ -1,19 +1,25 @@
 package wbs.enchants;
 
 import me.sciguymjm.uberenchant.api.UberEnchantment;
+import me.sciguymjm.uberenchant.api.utils.UberUtils;
+import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
+import org.bukkit.enchantments.Enchantment;
+import org.bukkit.event.world.LootGenerateEvent;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.EnchantmentStorageMeta;
+import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.loot.LootTable;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import wbs.utils.util.WbsEnums;
+import wbs.utils.util.WbsMath;
 
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public abstract class WbsEnchantment extends UberEnchantment {
+    private static final Random RANDOM = new Random();
+
     private final String stringKey;
 
     public WbsEnchantment(String key) {
@@ -70,6 +76,24 @@ public abstract class WbsEnchantment extends UberEnchantment {
         return getLootKeyChances().get(table.getKey());
     }
 
+    public void onLootGenerate(LootGenerateEvent event) {
+        Double chance = getAddToChance(event.getLootTable());
+
+        if (chance == null) {
+            return;
+        }
+
+        if (!WbsMath.chance(chance)) {
+            return;
+        }
+
+        for (ItemStack stack : event.getLoot()) {
+            if (tryAdd(stack)) {
+                return;
+            }
+        }
+    }
+
     public boolean matches(String asString) {
         if (stringKey.equalsIgnoreCase(asString)) {
             return true;
@@ -86,5 +110,44 @@ public abstract class WbsEnchantment extends UberEnchantment {
 
         String finalAsString = asString;
         return getAliases().stream().anyMatch(alias -> alias.startsWith(finalAsString));
+    }
+
+
+    private boolean tryAdd(ItemStack stack) {
+        if (stack.getType() != Material.ENCHANTED_BOOK && !canEnchantItem(stack)) {
+            return false;
+        }
+
+        Set<Enchantment> existing = new HashSet<>();
+        if (stack.getItemMeta() instanceof EnchantmentStorageMeta meta) {
+            existing = meta.getStoredEnchants().keySet();
+        } else {
+            ItemMeta meta = stack.getItemMeta();
+            if (meta != null) {
+                existing = meta.getEnchants().keySet();
+            }
+        }
+
+        for (Enchantment other : existing) {
+            if (conflictsWith(other)) {
+                return false;
+            }
+        }
+
+        int level;
+        int maxLevel = getMaxLevel();
+        if (maxLevel < 1) {
+            level = 0;
+        } else {
+            level = RANDOM.nextInt(maxLevel) + 1;
+        }
+
+        if (stack.getType() == Material.ENCHANTED_BOOK) {
+            UberUtils.addStoredEnchantment(this, stack, level);
+        } else {
+            UberUtils.addEnchantment(this, stack, level);
+        }
+
+        return true;
     }
 }
