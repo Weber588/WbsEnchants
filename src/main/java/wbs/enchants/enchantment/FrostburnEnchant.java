@@ -1,8 +1,10 @@
 package wbs.enchants.enchantment;
 
 import me.sciguymjm.uberenchant.api.utils.Rarity;
+import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.Particle;
+import org.bukkit.World;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.enchantments.EnchantmentTarget;
 import org.bukkit.entity.Entity;
@@ -10,6 +12,7 @@ import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Projectile;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
+import org.bukkit.event.world.LootGenerateEvent;
 import org.bukkit.inventory.EntityEquipment;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.potion.PotionEffect;
@@ -128,5 +131,24 @@ public class FrostburnEnchant extends AbstractDamageEnchant {
         return enchantment == FIRE_ASPECT ||
                 enchantment == ARROW_FIRE ||
                 EnchantUtils.willConflict(DAMAGE_ALL, enchantment);
+    }
+
+    @Override
+    public void onLootGenerate(LootGenerateEvent event) {
+        if (WbsMath.chance(10)) {
+            Location location = event.getLootContext().getLocation();
+            World world = location.getWorld();
+            if (world == null) {
+                return;
+            }
+
+            if (location.getBlock().getTemperature() < -0.5) {
+                for (ItemStack stack : event.getLoot()) {
+                    if (tryAdd(stack, 1)) {
+                        return;
+                    }
+                }
+            }
+        }
     }
 }

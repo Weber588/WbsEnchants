@@ -88,7 +88,14 @@ public abstract class WbsEnchantment extends UberEnchantment {
         }
 
         for (ItemStack stack : event.getLoot()) {
-            if (tryAdd(stack)) {
+            int level;
+            int maxLevel = getMaxLevel();
+            if (maxLevel < 1) {
+                level = 0;
+            } else {
+                level = RANDOM.nextInt(maxLevel) + 1;
+            }
+            if (tryAdd(stack, level)) {
                 return;
             }
         }
@@ -112,8 +119,7 @@ public abstract class WbsEnchantment extends UberEnchantment {
         return getAliases().stream().anyMatch(alias -> alias.startsWith(finalAsString));
     }
 
-
-    private boolean tryAdd(ItemStack stack) {
+    protected boolean tryAdd(ItemStack stack, int level) {
         if (stack.getType() != Material.ENCHANTED_BOOK && !canEnchantItem(stack)) {
             return false;
         }
@@ -132,14 +138,6 @@ public abstract class WbsEnchantment extends UberEnchantment {
             if (conflictsWith(other)) {
                 return false;
             }
-        }
-
-        int level;
-        int maxLevel = getMaxLevel();
-        if (maxLevel < 1) {
-            level = 0;
-        } else {
-            level = RANDOM.nextInt(maxLevel) + 1;
         }
 
         if (stack.getType() == Material.ENCHANTED_BOOK) {

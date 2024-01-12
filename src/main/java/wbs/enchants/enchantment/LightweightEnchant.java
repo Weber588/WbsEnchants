@@ -4,6 +4,7 @@ import me.sciguymjm.uberenchant.api.utils.Rarity;
 import org.bukkit.EntityEffect;
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.World;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.enchantments.EnchantmentTarget;
 import org.bukkit.entity.Entity;
@@ -11,8 +12,10 @@ import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Projectile;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.enchantment.EnchantItemEvent;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
+import org.bukkit.event.world.LootGenerateEvent;
 import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
@@ -22,6 +25,8 @@ import org.jetbrains.annotations.Nullable;
 import wbs.enchants.util.DamageUtils;
 import wbs.enchants.util.ItemUtils;
 import wbs.utils.util.WbsMath;
+
+import java.util.Random;
 
 public class LightweightEnchant extends AbstractDamageEnchant {
     public static final int MAX_LEVEL = 3;
@@ -155,5 +160,23 @@ public class LightweightEnchant extends AbstractDamageEnchant {
     @Override
     public boolean canEnchantItem(@NotNull ItemStack itemStack) {
         return itemStack.getType() == Material.SHIELD;
+    }
+
+    @Override
+    public void onLootGenerate(LootGenerateEvent event) {
+        if (WbsMath.chance(20)) {
+            Location location = event.getLootContext().getLocation();
+            World world = location.getWorld();
+            if (world == null) {
+                return;
+            }
+            if (world.getEnvironment() == World.Environment.NORMAL && location.getBlock().getY() > world.getSeaLevel()) {
+                for (ItemStack stack : event.getLoot()) {
+                    if (tryAdd(stack, new Random().nextInt(2) + 1)) {
+                        return;
+                    }
+                }
+            }
+        }
     }
 }

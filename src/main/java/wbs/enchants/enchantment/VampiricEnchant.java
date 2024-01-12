@@ -154,9 +154,9 @@ public class VampiricEnchant extends AbstractDamageEnchant {
     @Override
     public @NotNull String getDescription() {
         return "When you damage a mob, you have a " + CHANCE_PER_LEVEL + "% chance per level to gain " + HEAL_PERCENT +
-                "% of the damage dealt, that expires after " + DURATION_PER_LEVEL + " seconds (per level). " +
+                "% of the damage dealt, that expires after " + DURATION_PER_LEVEL / 20 + " seconds (per level). " +
                 "At the maximum level of " + getMaxLevel() + ", you have a " + (getMaxLevel() * CHANCE_PER_LEVEL) +
-                "% chance to gain " + HEAL_PERCENT + "% of damage dealt for " + (DURATION_PER_LEVEL * getMaxLevel()) +
+                "% chance to gain " + HEAL_PERCENT + "% of damage dealt for " + (DURATION_PER_LEVEL / 20 * getMaxLevel()) +
                 " seconds.";
     }
 }

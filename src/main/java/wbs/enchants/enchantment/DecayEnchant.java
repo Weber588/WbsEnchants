@@ -1,8 +1,10 @@
 package wbs.enchants.enchantment;
 
 import me.sciguymjm.uberenchant.api.utils.Rarity;
+import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.Tag;
+import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.enchantments.EnchantmentTarget;
@@ -10,6 +12,7 @@ import org.bukkit.entity.*;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
+import org.bukkit.event.world.LootGenerateEvent;
 import org.bukkit.inventory.EntityEquipment;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
@@ -141,5 +144,24 @@ public class DecayEnchant extends AbstractDamageEnchant {
     @Override
     public @NotNull String getTargetDescription() {
         return "Hoe";
+    }
+
+    @Override
+    public void onLootGenerate(LootGenerateEvent event) {
+        if (WbsMath.chance(15)) {
+            Location location = event.getLootContext().getLocation();
+            World world = location.getWorld();
+            if (world == null) {
+                return;
+            }
+            String lootKey = event.getLootTable().getKey().getKey();
+            if (lootKey.contains("village") || lootKey.contains("end_city")) {
+                for (ItemStack stack : event.getLoot()) {
+                    if (tryAdd(stack, 1)) {
+                        return;
+                    }
+                }
+            }
+        }
     }
 }

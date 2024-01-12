@@ -5,6 +5,8 @@ import com.google.common.collect.Multimap;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.Damageable;
+import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.jetbrains.annotations.NotNull;
 import wbs.enchants.WbsEnchants;
@@ -91,6 +93,15 @@ public class BlockChanger {
 
                     if (!currentItem.equals(originalItem)) {
                         return false;
+                    }
+
+                    ItemMeta meta = currentItem.getItemMeta();
+                    if (meta != null) {
+                        if (meta instanceof Damageable damageable) {
+                            if (damageable.getDamage() >= currentItem.getType().getMaxDurability() - 1) {
+                                return false;
+                            }
+                        }
                     }
 
                     Block toUpdate;

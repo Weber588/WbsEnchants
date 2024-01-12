@@ -1,6 +1,8 @@
 package wbs.enchants.enchantment;
 
 import me.sciguymjm.uberenchant.api.utils.Rarity;
+import org.bukkit.Location;
+import org.bukkit.World;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.enchantments.EnchantmentTarget;
 import org.bukkit.entity.Entity;
@@ -9,12 +11,16 @@ import org.bukkit.entity.Player;
 import org.bukkit.entity.Projectile;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
+import org.bukkit.event.world.LootGenerateEvent;
 import org.bukkit.inventory.EntityEquipment;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import wbs.utils.util.WbsMath;
+
+import java.util.Random;
 
 public class FrenziedEnchant extends AbstractDamageEnchant {
     private static final int BASE_DURATION = 5 * 20;
@@ -106,5 +112,23 @@ public class FrenziedEnchant extends AbstractDamageEnchant {
         return "When you kill an enemy, you gain increased attack speed for " + defaultDuration + " seconds. If your " +
                 "speed buff is already present, the speed will keep increasing every kill until the time left goes " +
                 "below " + defaultDuration + " seconds.";
+    }
+
+    @Override
+    public void onLootGenerate(LootGenerateEvent event) {
+        if (WbsMath.chance(20)) {
+            Location location = event.getLootContext().getLocation();
+            World world = location.getWorld();
+            if (world == null) {
+                return;
+            }
+            if (world.getEnvironment() == World.Environment.NORMAL) {
+                for (ItemStack stack : event.getLoot()) {
+                    if (tryAdd(stack, new Random().nextInt(2) + 1)) {
+                        return;
+                    }
+                }
+            }
+        }
     }
 }

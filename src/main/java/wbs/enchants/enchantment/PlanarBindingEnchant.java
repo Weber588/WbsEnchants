@@ -1,9 +1,7 @@
 package wbs.enchants.enchantment;
 
 import me.sciguymjm.uberenchant.api.utils.Rarity;
-import org.bukkit.NamespacedKey;
-import org.bukkit.Particle;
-import org.bukkit.Sound;
+import org.bukkit.*;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.enchantments.EnchantmentTarget;
 import org.bukkit.entity.Entity;
@@ -14,6 +12,7 @@ import org.bukkit.event.EventPriority;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityTeleportEvent;
 import org.bukkit.event.player.PlayerTeleportEvent;
+import org.bukkit.event.world.LootGenerateEvent;
 import org.bukkit.inventory.EntityEquipment;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.persistence.PersistentDataContainer;
@@ -21,6 +20,7 @@ import org.bukkit.persistence.PersistentDataType;
 import org.jetbrains.annotations.NotNull;
 import wbs.enchants.WbsEnchantment;
 import wbs.enchants.WbsEnchants;
+import wbs.utils.util.WbsMath;
 import wbs.utils.util.WbsSound;
 import wbs.utils.util.WbsSoundGroup;
 import wbs.utils.util.particles.NormalParticleEffect;
@@ -157,5 +157,24 @@ public class PlanarBindingEnchant extends WbsEnchantment {
     @Override
     public @NotNull String getDescription() {
         return "After hitting a mob, it is unable to teleport for " + TIME_PER_LEVEL + " seconds (per level).";
+    }
+
+    @Override
+    public void onLootGenerate(LootGenerateEvent event) {
+        if (WbsMath.chance(10)) {
+            Location location = event.getLootContext().getLocation();
+            World world = location.getWorld();
+            if (world == null) {
+                return;
+            }
+            String lootKey = event.getLootTable().getKey().getKey();
+            if (lootKey.contains("stronghold") || lootKey.contains("end_city")) {
+                for (ItemStack stack : event.getLoot()) {
+                    if (tryAdd(stack, 1)) {
+                        return;
+                    }
+                }
+            }
+        }
     }
 }

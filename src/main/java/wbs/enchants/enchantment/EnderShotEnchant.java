@@ -12,6 +12,7 @@ import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.entity.EntityShootBowEvent;
+import org.bukkit.event.world.LootGenerateEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.util.RayTraceResult;
 import org.bukkit.util.Vector;
@@ -24,7 +25,7 @@ import wbs.utils.util.particles.WbsParticleGroup;
 
 public class EnderShotEnchant extends WbsEnchantment {
     private static final WbsParticleGroup EFFECT = new WbsParticleGroup().addEffect(
-            new LineParticleEffect().setScaleAmount(true).setSpeed(0.05).setAmount(4), Particle.REVERSE_PORTAL
+            new LineParticleEffect().setScaleAmount(true).setRadius(0.05).setSpeed(0.01).setAmount(4), Particle.REVERSE_PORTAL
     );
 
     private static final WbsParticleGroup WIFF_EFFECT = new WbsParticleGroup().addEffect(
@@ -118,5 +119,23 @@ public class EnderShotEnchant extends WbsEnchantment {
     @Override
     public boolean conflictsWith(@NotNull Enchantment enchantment) {
         return false;
+    }
+
+    @Override
+    public void onLootGenerate(LootGenerateEvent event) {
+        if (WbsMath.chance(10)) {
+            Location location = event.getLootContext().getLocation();
+            World world = location.getWorld();
+            if (world == null) {
+                return;
+            }
+            if (world.getEnvironment() == World.Environment.THE_END) {
+                for (ItemStack stack : event.getLoot()) {
+                    if (tryAdd(stack, 0)) {
+                        return;
+                    }
+                }
+            }
+        }
     }
 }

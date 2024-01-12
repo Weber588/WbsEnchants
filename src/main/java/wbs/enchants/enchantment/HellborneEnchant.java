@@ -1,21 +1,21 @@
 package wbs.enchants.enchantment;
 
 import me.sciguymjm.uberenchant.api.utils.Rarity;
-import org.bukkit.NamespacedKey;
+import org.bukkit.Location;
+import org.bukkit.World;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.enchantments.EnchantmentTarget;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.event.EventHandler;
-import org.bukkit.event.entity.EntityCombustEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
+import org.bukkit.event.world.LootGenerateEvent;
 import org.bukkit.inventory.EntityEquipment;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.loot.LootTable;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 import wbs.enchants.WbsEnchantment;
+import wbs.utils.util.WbsMath;
 
 public class HellborneEnchant extends WbsEnchantment {
     public HellborneEnchant() {
@@ -87,7 +87,7 @@ public class HellborneEnchant extends WbsEnchantment {
     @Override
     public @NotNull String getDescription() {
         return "You have strength and immunity to fire tick damage, with strength level relating to the " +
-                "level of the enchantment.";
+                "level of the enchantment while you're on fire.";
     }
 
     @Override
@@ -96,15 +96,20 @@ public class HellborneEnchant extends WbsEnchantment {
     }
 
     @Override
-    public @Nullable Double getAddToChance(LootTable table) {
-        NamespacedKey key = table.getKey();
-        if (!key.getNamespace().equalsIgnoreCase("incendium")) {
-            return null;
+    public void onLootGenerate(LootGenerateEvent event) {
+        if (WbsMath.chance(10)) {
+            Location location = event.getLootContext().getLocation();
+            World world = location.getWorld();
+            if (world == null) {
+                return;
+            }
+            if (world.getEnvironment() == World.Environment.NETHER) {
+                for (ItemStack stack : event.getLoot()) {
+                    if (tryAdd(stack, 1)) {
+                        return;
+                    }
+                }
+            }
         }
-
-        if (key.getKey().contains("armor") || key.getKey().contains("chestplate")) {
-            return 15.0;
-        }
-        return null;
     }
 }
