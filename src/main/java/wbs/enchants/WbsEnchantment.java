@@ -1,9 +1,12 @@
 package wbs.enchants;
 
 import me.sciguymjm.uberenchant.api.UberEnchantment;
+import me.sciguymjm.uberenchant.api.utils.UberConfiguration;
 import me.sciguymjm.uberenchant.api.utils.UberUtils;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
+import org.bukkit.configuration.ConfigurationSection;
+import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.event.world.LootGenerateEvent;
 import org.bukkit.inventory.ItemStack;
@@ -12,15 +15,26 @@ import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.loot.LootTable;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import wbs.enchants.util.UberRegistrable;
 import wbs.utils.util.WbsEnums;
 import wbs.utils.util.WbsMath;
 
 import java.util.*;
 
-public abstract class WbsEnchantment extends UberEnchantment {
+public abstract class WbsEnchantment extends UberEnchantment implements UberRegistrable {
     private static final Random RANDOM = new Random();
 
     private final String stringKey;
+
+    protected double cost = EnchantsSettings.DEFAULT_COST;
+    protected double costMultiplier = EnchantsSettings.DEFAULT_COST_MODIFIER;
+    @NotNull
+    protected Map<Integer, Double> costForLevel = new HashMap<>();
+    protected double removalCost = EnchantsSettings.DEFAULT_REMOVAL_COST;
+    protected double extractionCost = EnchantsSettings.DEFAULT_EXTRACT_COST;
+    protected boolean canUseOnAnything = EnchantsSettings.DEFAULT_USABLE_ANYWHERE;
+    @NotNull
+    protected List<String> aliases = new LinkedList<>();
 
     public WbsEnchantment(String key) {
         super(new NamespacedKey(WbsEnchants.getInstance(), key));
@@ -51,8 +65,9 @@ public abstract class WbsEnchantment extends UberEnchantment {
         return 0;
     }
 
+    @NotNull
     public List<String> getAliases() {
-        return new LinkedList<>();
+        return aliases;
     }
 
     @Override
@@ -147,5 +162,102 @@ public abstract class WbsEnchantment extends UberEnchantment {
         }
 
         return true;
+    }
+
+    public double getCost() {
+        return EnchantsSettings.DEFAULT_COST;
+    }
+
+    public double getCostMultiplier() {
+        return EnchantsSettings.DEFAULT_COST_MODIFIER;
+    }
+
+    @NotNull
+    public Map<Integer, Double> getCostForLevel() {
+        return new HashMap<>();
+    }
+
+    public double getRemovalCost() {
+        return EnchantsSettings.DEFAULT_REMOVAL_COST;
+    }
+
+    public double getExtractionCost() {
+        return EnchantsSettings.DEFAULT_EXTRACT_COST;
+    }
+
+    public boolean canUseOnAnything() {
+        return EnchantsSettings.DEFAULT_USABLE_ANYWHERE;
+    }
+
+    public void registerUberRecord() {
+        UberConfiguration.registerUberRecord(
+                this,
+                this.getCost(),
+                this.getCostMultiplier(),
+                this.getRemovalCost(),
+                this.getExtractionCost(),
+                this.canUseOnAnything(),
+                this.getAliases(),
+                this.getCostForLevel()
+        );
+    }
+
+    public ConfigurationSection buildConfigurationSection(YamlConfiguration baseFile) {
+        ConfigurationSection section = baseFile.createSection(getName());
+
+        section.set("min_level", getStartLevel());
+        section.set("max_level", getMaxLevel());
+        section.set("cost", getCost());
+        section.set("cost_multiplier", getCostMultiplier());
+        section.createSection("cost_for_level", getCostForLevel());
+        section.set("removal_cost", getRemovalCost());
+        section.set("extraction_cost", getExtractionCost());
+        section.set("use_on_anything", canUseOnAnything());
+        section.set("aliases", getAliases() );
+
+        return section;
+    }
+
+    @Override
+    public void configure(ConfigurationSection section, String directory) {
+        cost = section.getDouble("cost", getCost());
+        costMultiplier = section.getDouble("cost_multiplier", getCostMultiplier());
+        removalCost = section.getDouble("removal_cost", getRemovalCost());
+        extractionCost = section.getDouble("extraction_cost", getExtractionCost());
+        canUseOnAnything = section.getBoolean("use_on_anything", canUseOnAnything());
+
+        aliases = section.getStringList("aliases");
+
+        ConfigurationSection costLevelSection = section.getConfigurationSection("cost_for_level");
+
+        if (costLevelSection != null) {
+            for (String key : costLevelSection.getKeys(false)) {
+                if (!key.matches("[0-9]")) {
+                    WbsEnchants.getInstance().settings.logError("Invalid level: \"" + key + "\"", directory + "/cost_for_level");
+                    continue;
+                }
+
+                int level;
+                try {
+                    level = Integer.parseInt(key);
+                } catch (NumberFormatException e) {
+                    // Should be impossible unless they put a number larger than int limit
+                    WbsEnchants.getInstance().settings.logError("An unknown error occurred while parsing level: \""
+                            + key + "\". Error: " + e.getLocalizedMessage(), directory + "/cost_for_level");
+                    continue;
+                }
+
+                if (costLevelSection.isDouble(key) || costLevelSection.isInt(key)) {
+                    costForLevel.put(level, costLevelSection.getDouble(key));
+                }
+            }
+        }
+    }
+
+    /**
+     * @return Whether or not this enchantment is under development, and should override user configuration.
+     */
+    public boolean developerMode() {
+        return WbsEnchants.getInstance().settings.isDeveloperMode();
     }
 }

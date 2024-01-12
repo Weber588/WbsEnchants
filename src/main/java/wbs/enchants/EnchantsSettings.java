@@ -1,17 +1,22 @@
 package wbs.enchants;
 
-import me.sciguymjm.uberenchant.api.utils.UberConfiguration;
+import org.bukkit.configuration.ConfigurationSection;
+import org.bukkit.configuration.file.YamlConfiguration;
 import wbs.enchants.enchantment.*;
 import wbs.utils.util.plugin.WbsSettings;
 
-import java.io.File;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 
 @SuppressWarnings("unused")
 public class EnchantsSettings extends WbsSettings {
+
+    public static final double DEFAULT_COST = 1000;
+    public static final double DEFAULT_COST_MODIFIER = 1000;
+    public static final double DEFAULT_REMOVAL_COST = 100;
+    public static final double DEFAULT_EXTRACT_COST = 2000;
+    public static final boolean DEFAULT_USABLE_ANYWHERE = false;
 
     private static final List<WbsEnchantment> REGISTERED_ENCHANTMENTS = new LinkedList<>();
 
@@ -36,46 +41,62 @@ public class EnchantsSettings extends WbsSettings {
         REGISTERED_ENCHANTMENTS.add(enchantment);
     }
 
-    private final WbsEnchants plugin;
-    protected EnchantsSettings(WbsEnchants plugin) {
-        super(plugin);
-        this.plugin = plugin;
-    }
-
     public static List<WbsEnchantment> getRegistered() {
         return Collections.unmodifiableList(REGISTERED_ENCHANTMENTS);
     }
 
+    private YamlConfiguration enchantsFile;
+
+    private boolean developerMode = false;
+
+    protected EnchantsSettings(WbsEnchants plugin) {
+        super(plugin);
+    }
+
     @Override
     public void reload() {
-        loadDefaultConfig("config.yml");
+        loadConfig();
         loadEnchants();
     }
 
+    private void loadConfig() {
+        YamlConfiguration config = loadDefaultConfig("config.yml");
+
+        developerMode = config.getBoolean("developer-mode", developerMode);
+    }
+
+    public boolean isDeveloperMode() {
+        return developerMode;
+    }
+
     private void loadEnchants() {
-        // Create new file instance of our custom config
-        File file = new File(plugin.getDataFolder(), "enchantments.yml");
+        enchantsFile = loadConfigSafely(genConfig("enchantments.yml"));
 
         REGISTERED_ENCHANTMENTS.forEach(enchant -> {
-            // Register Lightning Strike with UberEnchant and add to UberRecords
-            UberConfiguration.registerUberRecord(
-                    enchant,			// Create new instance of Lightning Strike
-                    1000.0,				// Set cost to use via UberEnchant
-                    0.4,				// Set cost multiplier
-                    100.0,				// Set removal cost
-                    2000.0,				// Set extraction cost
-                    false,				// Set if can use on anything
-                    enchant.getAliases(),		// Set alaises (Can be empty)
-                    new HashMap<>());		// Set Cost at level (Can be empty)
+            ConfigurationSection enchantSection = enchantsFile.getConfigurationSection(enchant.getName());
+
+            if (enchantSection == null) {
+                enchant.buildConfigurationSection(enchantsFile);
+            } else {
+                enchant.configure(enchantSection, enchantsFile.getName() + "/" + enchant.getName());
+            }
+
+            enchant.registerUberRecord();
         });
+    }
 
-        // Save to our config
-        UberConfiguration.saveToFile(plugin, file);
+    private void saveEnchants() {
+        enchantsFile = saveYamlData(enchantsFile, "enchantments.yml", "enchantment", safeYaml ->
+                REGISTERED_ENCHANTMENTS.forEach(enchant -> {
+                    ConfigurationSection enchantSection = safeYaml.getConfigurationSection(enchant.getName());
 
-        // Check if our file exists
-        if (file.exists()) {
-            // Load our config
-            UberConfiguration.loadFromFile(file);
-        }
+                    // Only write to config if the file doesn't already contain a definition for enchants -- don't want
+                    // to override user configuration. (Or write if the enchant is marked as "in development" and should
+                    // override every time.
+                    if (enchant.developerMode() || enchantSection == null) {
+                        enchant.buildConfigurationSection(safeYaml);
+                    }
+                })
+            );
     }
 }
