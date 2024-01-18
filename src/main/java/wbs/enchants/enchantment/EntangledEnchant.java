@@ -25,10 +25,10 @@ import org.bukkit.scheduler.BukkitRunnable;
 import org.jetbrains.annotations.NotNull;
 import wbs.enchants.WbsEnchantment;
 import wbs.enchants.WbsEnchants;
-import wbs.enchants.util.PersistentLocationType;
 import wbs.utils.util.WbsEnums;
 import wbs.utils.util.particles.NormalParticleEffect;
 import wbs.utils.util.particles.WbsParticleGroup;
+import wbs.utils.util.persistent.WbsPersistentDataType;
 
 import java.util.*;
 
@@ -106,8 +106,8 @@ public class EntangledEnchant extends WbsEnchantment {
 
             PersistentDataContainer dataContainer = meta.getPersistentDataContainer();
 
-            if (dataContainer.get(getKey(), PersistentLocationType.INSTANCE) == null) {
-                dataContainer.set(getKey(), PersistentLocationType.INSTANCE, clicked.getLocation());
+            if (dataContainer.get(getKey(), WbsPersistentDataType.LOCATION) == null) {
+                dataContainer.set(getKey(), WbsPersistentDataType.LOCATION, clicked.getLocation());
 
                 WbsEnchants.getInstance().sendActionBar("Tool entangled!", player);
             } else {
@@ -145,7 +145,7 @@ public class EntangledEnchant extends WbsEnchantment {
 
             PersistentDataContainer dataContainer = meta.getPersistentDataContainer();
 
-            Location entangledLocation = dataContainer.get(getKey(), PersistentLocationType.INSTANCE);
+            Location entangledLocation = dataContainer.get(getKey(), WbsPersistentDataType.LOCATION);
 
             if (entangledLocation == null) {
                 WbsEnchants.getInstance().sendActionBar("&wSneak punch a chest to entangle your tool!", player);
@@ -219,7 +219,7 @@ public class EntangledEnchant extends WbsEnchantment {
 
     @Override
     public int getMaxLevel() {
-        return 0;
+        return 1;
     }
 
     @NotNull
