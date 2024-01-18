@@ -3,7 +3,6 @@ package wbs.enchants.enchantment;
 import me.sciguymjm.uberenchant.api.utils.Rarity;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
-import org.bukkit.Material;
 import org.bukkit.Particle;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockState;
@@ -16,15 +15,16 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockDropItemEvent;
-import org.bukkit.inventory.*;
+import org.bukkit.inventory.FurnaceRecipe;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.Recipe;
+import org.bukkit.inventory.RecipeChoice;
 import org.bukkit.inventory.meta.ItemMeta;
-import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.jetbrains.annotations.NotNull;
 import wbs.enchants.WbsEnchantment;
 import wbs.enchants.WbsEnchants;
-import wbs.enchants.util.ItemUtils;
-import wbs.enchants.util.PersistentLocationType;
+import wbs.utils.util.WbsItems;
 import wbs.utils.util.particles.NormalParticleEffect;
 import wbs.utils.util.particles.WbsParticleGroup;
 
@@ -92,7 +92,7 @@ public class ScorchingEnchant extends WbsEnchantment {
 
         ItemStack item = player.getInventory().getItemInMainHand();
 
-        if (!ItemUtils.isProperTool(broken, item)) {
+        if (!WbsItems.isProperTool(broken, item)) {
             return;
         }
 
@@ -159,7 +159,7 @@ public class ScorchingEnchant extends WbsEnchantment {
 
     @Override
     public int getMaxLevel() {
-        return 0;
+        return 1;
     }
 
     @NotNull

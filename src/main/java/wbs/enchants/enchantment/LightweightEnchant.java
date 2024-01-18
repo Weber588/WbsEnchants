@@ -23,7 +23,7 @@ import org.bukkit.util.Vector;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import wbs.enchants.util.DamageUtils;
-import wbs.enchants.util.ItemUtils;
+import wbs.utils.util.WbsItems;
 import wbs.utils.util.WbsMath;
 
 import java.util.Random;
@@ -105,7 +105,7 @@ public class LightweightEnchant extends AbstractDamageEnchant {
                 playerVictim.setCooldown(offhandItem.getType(), Math.max(noDamageTicks, 0));
 
                 int eventDamage = (int) Math.max(Math.ceil(event.getDamage()), 1);
-                ItemUtils.damageItem(playerVictim, offhandItem, eventDamage, EquipmentSlot.OFF_HAND);
+                WbsItems.damageItem(playerVictim, offhandItem, eventDamage, EquipmentSlot.OFF_HAND);
             }
         }
     }

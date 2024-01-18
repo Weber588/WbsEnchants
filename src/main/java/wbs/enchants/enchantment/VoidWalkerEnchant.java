@@ -16,7 +16,7 @@ import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 import wbs.enchants.WbsEnchantment;
-import wbs.enchants.util.ItemUtils;
+import wbs.utils.util.WbsItems;
 import wbs.utils.util.particles.NormalParticleEffect;
 import wbs.utils.util.particles.WbsParticleGroup;
 
@@ -63,7 +63,7 @@ public class VoidWalkerEnchant extends WbsEnchantment {
             if (living instanceof Player player) {
                 int eventDamage = (int) Math.max(Math.ceil(event.getDamage()), 1);
 
-                ItemUtils.damageItem(player, boots, eventDamage, EquipmentSlot.FEET);
+                WbsItems.damageItem(player, boots, eventDamage, EquipmentSlot.FEET);
             }
         }
     }
@@ -80,7 +80,7 @@ public class VoidWalkerEnchant extends WbsEnchantment {
 
     @Override
     public int getMaxLevel() {
-        return 0;
+        return 1;
     }
 
     @NotNull
