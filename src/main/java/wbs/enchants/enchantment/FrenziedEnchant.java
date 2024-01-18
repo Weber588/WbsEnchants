@@ -82,7 +82,7 @@ public class FrenziedEnchant extends AbstractDamageEnchant {
 
     @Override
     public int getMaxLevel() {
-        return 0;
+        return 1;
     }
 
     @NotNull

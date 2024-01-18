@@ -73,6 +73,7 @@ public class EnderShotEnchant extends WbsEnchantment {
 
                 projectile.teleport(teleportLocation);
 
+                projectile.setVelocity(velocity);
                 Location lineStartLocation = startLocation.clone()
                         .add(WbsMath.scaleVector(startToFinish, 1));
                 EFFECT.play(lineStartLocation, teleportLocation);
@@ -97,7 +98,7 @@ public class EnderShotEnchant extends WbsEnchantment {
 
     @Override
     public int getMaxLevel() {
-        return 0;
+        return 1;
     }
 
     @NotNull
