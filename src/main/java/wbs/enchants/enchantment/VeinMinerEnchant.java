@@ -17,6 +17,7 @@ import wbs.enchants.EnchantsSettings;
 import wbs.enchants.WbsEnchantment;
 import wbs.enchants.util.BlockChanger;
 import wbs.enchants.util.BlockQueryUtils;
+import wbs.enchants.util.MaterialUtils;
 import wbs.utils.util.WbsMath;
 
 import java.util.List;
@@ -39,7 +40,7 @@ public class VeinMinerEnchant extends AbstractMultiBreakEnchant {
 
     @Override
     protected boolean canBreak(Block block) {
-        return Tag.MINEABLE_PICKAXE.isTagged(block.getType());
+        return MaterialUtils.isOre(block);
     }
 
     @Override
