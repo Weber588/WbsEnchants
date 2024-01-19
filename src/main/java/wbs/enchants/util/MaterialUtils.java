@@ -3,11 +3,50 @@ package wbs.enchants.util;
 import org.bukkit.Material;
 import org.bukkit.Tag;
 import org.bukkit.block.Block;
+import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
+import java.util.Arrays;
+import java.util.LinkedList;
 import java.util.List;
 
+@SuppressWarnings("unused")
 public class MaterialUtils {
+    private static final List<MaterialAgeSequence> COPPER_SEQUENCES = new LinkedList<>();
+
+    private static final MaterialAgeSequence COPPER_BLOCKS = new MaterialAgeSequence(
+            Material.COPPER_BLOCK, Material.EXPOSED_COPPER, Material.WEATHERED_COPPER, Material.OXIDIZED_COPPER
+    );
+    private static final MaterialAgeSequence CUT_COPPER = new MaterialAgeSequence(
+            Material.CUT_COPPER, Material.EXPOSED_CUT_COPPER, Material.WEATHERED_CUT_COPPER,
+            Material.OXIDIZED_CUT_COPPER
+    );
+    private static final MaterialAgeSequence CUT_COPPER_SLAB = new MaterialAgeSequence(
+            Material.CUT_COPPER_SLAB, Material.EXPOSED_CUT_COPPER_SLAB,
+            Material.WEATHERED_CUT_COPPER_SLAB, Material.OXIDIZED_CUT_COPPER_SLAB
+    );
+    private static final MaterialAgeSequence CUT_COPPER_STAIRS = new MaterialAgeSequence(
+            Material.CUT_COPPER_STAIRS, Material.EXPOSED_CUT_COPPER_STAIRS,
+            Material.WEATHERED_CUT_COPPER_STAIRS, Material.OXIDIZED_CUT_COPPER_STAIRS
+    );
+
+    private static final MaterialAgeSequence WAXED_COPPER_BLOCKS = new MaterialAgeSequence(
+            Material.WAXED_COPPER_BLOCK, Material.WAXED_EXPOSED_COPPER, Material.WAXED_WEATHERED_COPPER, Material.WAXED_OXIDIZED_COPPER
+    );
+    private static final MaterialAgeSequence WAXED_CUT_COPPER = new MaterialAgeSequence(
+            Material.WAXED_CUT_COPPER, Material.WAXED_EXPOSED_CUT_COPPER, Material.WAXED_WEATHERED_CUT_COPPER,
+            Material.WAXED_OXIDIZED_CUT_COPPER
+    );
+    private static final MaterialAgeSequence WAXED_CUT_COPPER_SLAB = new MaterialAgeSequence(
+            Material.WAXED_CUT_COPPER_SLAB, Material.WAXED_EXPOSED_CUT_COPPER_SLAB,
+            Material.WAXED_WEATHERED_CUT_COPPER_SLAB, Material.WAXED_OXIDIZED_CUT_COPPER_SLAB
+    );
+    private static final MaterialAgeSequence WAXED_CUT_COPPER_STAIRS = new MaterialAgeSequence(
+            Material.WAXED_CUT_COPPER_STAIRS, Material.WAXED_EXPOSED_CUT_COPPER_STAIRS,
+            Material.WAXED_WEATHERED_CUT_COPPER_STAIRS, Material.WAXED_OXIDIZED_CUT_COPPER_STAIRS
+    );
+
     public static double getCompostChance(Material material) {
         double chance = switch (material) {
             case BEETROOT_SEEDS, BEETROOTS, KELP, KELP_PLANT, DRIED_KELP,
@@ -78,5 +117,70 @@ public class MaterialUtils {
 
         // No mutual tag for Quartz ore
         return material == Material.NETHER_QUARTZ_ORE;
+    }
+
+    public static boolean isAgedCopper(Material type) {
+        return getCopperProgression(type) != null;
+    }
+
+    @Nullable
+    public static MaterialAgeSequence getCopperProgression(Material type) {
+        if (type == null) {
+            return null;
+        }
+        return COPPER_SEQUENCES.stream()
+                .filter(seq -> seq.contains(type))
+                .findAny()
+                .orElse(null);
+    }
+
+    private static class MaterialAgeSequence {
+        private final List<Material> materials = new LinkedList<>();
+        public MaterialAgeSequence(Material ... materials) {
+            this.materials.addAll(Arrays.asList(materials));
+
+            COPPER_SEQUENCES.add(this);
+        }
+
+        public boolean contains(Material material) {
+            return materials.contains(material);
+        }
+
+        public Material get(int i) {
+            return materials.get(i);
+        }
+
+        @Contract("!null -> !null; null -> null")
+        public Material next(Material material) {
+            return next(material, 1);
+        }
+
+        @Contract("!null, _ -> !null; null, _ -> null")
+        public Material next(Material material, int amount) {
+            int index = materials.indexOf(material);
+            if (index == -1) {
+                return material;
+            }
+
+            index += amount;
+
+            if (index >= materials.size()) {
+                return materials.get(materials.size() - 1);
+            } else if (index < 0) {
+                return materials.get(0);
+            }
+
+            return materials.get(index);
+        }
+
+        @Contract("!null -> !null; null-> null")
+        public Material prev(Material material) {
+            return prev(material, 1);
+        }
+
+        @Contract("!null, _ -> !null; null, _ -> null")
+        public Material prev(Material material, int amount) {
+            return next(material, -amount);
+        }
     }
 }

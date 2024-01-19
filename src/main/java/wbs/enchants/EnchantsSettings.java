@@ -36,6 +36,7 @@ public class EnchantsSettings extends WbsSettings {
     public static final ScorchingEnchant SCORCHING = new ScorchingEnchant();
     public static final FrostburnEnchant FROSTBURN = new FrostburnEnchant();
     public static final EnderShotEnchant ENDER_SHOT = new EnderShotEnchant();
+    public static final ImmortalEnchant IMMORTAL = new ImmortalEnchant();
 
     public static void register(WbsEnchantment enchantment) {
         REGISTERED_ENCHANTMENTS.add(enchantment);
