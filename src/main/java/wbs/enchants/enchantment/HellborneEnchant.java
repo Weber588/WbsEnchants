@@ -15,6 +15,7 @@ import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.jetbrains.annotations.NotNull;
 import wbs.enchants.WbsEnchantment;
+import wbs.enchants.util.DamageUtils;
 import wbs.utils.util.WbsMath;
 
 public class HellborneEnchant extends WbsEnchantment {
@@ -24,6 +25,10 @@ public class HellborneEnchant extends WbsEnchantment {
 
     @EventHandler
     public void onCombust(EntityDamageEvent event) {
+        if (!DamageUtils.isHeat(event.getCause())) {
+            return;
+        }
+
         if (!(event.getEntity() instanceof LivingEntity living)) {
             return;
         }
