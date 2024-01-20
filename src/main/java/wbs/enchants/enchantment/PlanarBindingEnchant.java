@@ -23,7 +23,10 @@ import wbs.enchants.WbsEnchants;
 import wbs.utils.util.WbsMath;
 import wbs.utils.util.WbsSound;
 import wbs.utils.util.WbsSoundGroup;
+import wbs.utils.util.entities.WbsEntityUtil;
 import wbs.utils.util.particles.NormalParticleEffect;
+import wbs.utils.util.particles.RingParticleEffect;
+import wbs.utils.util.particles.WbsParticleEffect;
 import wbs.utils.util.particles.WbsParticleGroup;
 
 public class PlanarBindingEnchant extends WbsEnchantment {
@@ -34,11 +37,13 @@ public class PlanarBindingEnchant extends WbsEnchantment {
 
     public static final String STRING_KEY = "planar_binding";
 
-    public static final NamespacedKey TIME_KEY = new NamespacedKey(WbsEnchants.getInstance(),  STRING_KEY + "/time_bound");
+    public static final NamespacedKey TIME_KEY = new NamespacedKey(WbsEnchants.getInstance(),  STRING_KEY + "/expire_time");
     public static final NamespacedKey LEVEL_KEY = new NamespacedKey(WbsEnchants.getInstance(), STRING_KEY + "/binding_level");
 
+    private static final WbsParticleEffect RING_EFFECT = new RingParticleEffect().setRadius(0.75).setAmount(20);
     private static final WbsParticleGroup EFFECT = new WbsParticleGroup()
-            .addEffect(new NormalParticleEffect().setAmount(1), Particle.EXPLOSION_LARGE);
+            .addEffect(RING_EFFECT, Particle.SPELL_WITCH)
+            .addEffect(RING_EFFECT, Particle.REVERSE_PORTAL);
 
     private static final WbsSoundGroup SOUND = new WbsSoundGroup();
 
@@ -65,8 +70,10 @@ public class PlanarBindingEnchant extends WbsEnchantment {
         if (containsEnchantment(item)) {
             PersistentDataContainer dataContainer = event.getEntity().getPersistentDataContainer();
 
-            dataContainer.set(TIME_KEY, PersistentDataType.LONG, System.currentTimeMillis());
-            dataContainer.set(LEVEL_KEY, PersistentDataType.INTEGER, getLevel(item));
+            int level = getLevel(item);
+            dataContainer.set(TIME_KEY, PersistentDataType.LONG, System.currentTimeMillis()
+                    + (long) level * TIME_PER_LEVEL * 1000);
+            dataContainer.set(LEVEL_KEY, PersistentDataType.INTEGER, level);
 
             if (event.getEntity() instanceof Player player) {
                 WbsEnchants.getInstance().sendActionBar("&5" + event.getEntity().getName() + " bound!", player);
@@ -107,8 +114,8 @@ public class PlanarBindingEnchant extends WbsEnchantment {
         Integer level = dataContainer.get(LEVEL_KEY, PersistentDataType.INTEGER);
 
         if (timestamp != null && level != null) {
-            if (timestamp > System.currentTimeMillis() * (long) level * TIME_PER_LEVEL * 1000) {
-                EFFECT.play(entity.getLocation());
+            if (timestamp > System.currentTimeMillis()) {
+                EFFECT.play(WbsEntityUtil.getMiddleLocation(entity));
                 return true;
             } else {
                 dataContainer.remove(TIME_KEY);
