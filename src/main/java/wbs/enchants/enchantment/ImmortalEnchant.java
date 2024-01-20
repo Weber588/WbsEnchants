@@ -45,6 +45,7 @@ public class ImmortalEnchant extends WbsEnchantment {
     private static final NamespacedKey TRUE_AGE_KEY = new NamespacedKey(WbsEnchants.getInstance(), "true_age");
 
     private static final int ITEM_DESPAWN_AGE = 60 * 60 * 20;
+    private static final int PICKUP_DELAY = 5 * 20;
 
     public ImmortalEnchant() {
         super("immortal");
@@ -108,7 +109,7 @@ public class ImmortalEnchant extends WbsEnchantment {
 
         // Was on a tool and it took damage from something other than an event we monitor - force drop it so they can't
         // keep using a broken Immortal tool
-        player.getWorld().dropItemNaturally(player.getLocation(), item);
+        player.getWorld().dropItemNaturally(player.getLocation(), item, dropped -> dropped.setPickupDelay(PICKUP_DELAY));
         item.setAmount(0);
     }
 
