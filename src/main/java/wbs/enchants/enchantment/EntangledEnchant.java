@@ -105,8 +105,7 @@ public class EntangledEnchant extends WbsEnchantment {
             }
 
             PersistentDataContainer dataContainer = meta.getPersistentDataContainer();
-
-            if (dataContainer.get(getKey(), WbsPersistentDataType.LOCATION) == null) {
+            if (!dataContainer.has(getKey())) {
                 dataContainer.set(getKey(), WbsPersistentDataType.LOCATION, clicked.getLocation());
 
                 WbsEnchants.getInstance().sendActionBar("Tool entangled!", player);
@@ -145,7 +144,13 @@ public class EntangledEnchant extends WbsEnchantment {
 
             PersistentDataContainer dataContainer = meta.getPersistentDataContainer();
 
-            Location entangledLocation = dataContainer.get(getKey(), WbsPersistentDataType.LOCATION);
+            Location entangledLocation = null;
+            try {
+                entangledLocation = dataContainer.get(getKey(), WbsPersistentDataType.LOCATION);
+            } catch (IllegalArgumentException ex) {
+                // Type is invalid (due to a data storage change) -- clear binding.
+                dataContainer.remove(getKey());
+            }
 
             if (entangledLocation == null) {
                 WbsEnchants.getInstance().sendActionBar("&wSneak punch a chest to entangle your tool!", player);

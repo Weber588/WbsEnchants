@@ -1,7 +1,6 @@
 package wbs.enchants.enchantment;
 
 import me.sciguymjm.uberenchant.api.utils.Rarity;
-import org.apache.commons.lang.Validate;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import org.bukkit.Tag;
@@ -40,6 +39,7 @@ import wbs.utils.util.string.WbsStringify;
 
 import java.time.Duration;
 import java.util.HashMap;
+import java.util.Objects;
 
 public class ImmortalEnchant extends WbsEnchantment {
     private static final NamespacedKey TRUE_AGE_KEY = new NamespacedKey(WbsEnchants.getInstance(), "true_age");
@@ -95,7 +95,7 @@ public class ImmortalEnchant extends WbsEnchantment {
         EquipmentSlot slot = item.getType().getEquipmentSlot();
 
         EntityEquipment equipment = player.getEquipment();
-        Validate.notNull(equipment);
+        Objects.requireNonNull(equipment);
 
         switch (slot) {
             case FEET, LEGS, CHEST, HEAD -> {
@@ -169,7 +169,7 @@ public class ImmortalEnchant extends WbsEnchantment {
         }
 
         EntityEquipment equipment = player.getEquipment();
-        Validate.notNull(equipment);
+        Objects.requireNonNull(equipment);
 
         int durabilityToTake = (int) Math.max(1, Math.floor(event.getDamage() / 4));
 
@@ -289,7 +289,7 @@ public class ImmortalEnchant extends WbsEnchantment {
 
             if (containsEnchantment(stack)) {
                 ItemMeta meta = stack.getItemMeta();
-                Validate.notNull(meta);
+                Objects.requireNonNull(meta);
                 if (meta.hasEnchant(THORNS)) {
                     event.setCancelled(true);
                     if (damager instanceof Player player) {

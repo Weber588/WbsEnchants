@@ -73,17 +73,23 @@ public class EnchantsSettings extends WbsSettings {
     private void loadEnchants() {
         enchantsFile = loadConfigSafely(genConfig("enchantments.yml"));
 
-        REGISTERED_ENCHANTMENTS.forEach(enchant -> {
+        boolean newEnchantAdded = false;
+        for (WbsEnchantment enchant : REGISTERED_ENCHANTMENTS) {
             ConfigurationSection enchantSection = enchantsFile.getConfigurationSection(enchant.getName());
 
             if (enchantSection == null) {
+                newEnchantAdded = true;
                 enchant.buildConfigurationSection(enchantsFile);
             } else {
                 enchant.configure(enchantSection, enchantsFile.getName() + "/" + enchant.getName());
             }
 
             enchant.registerUberRecord();
-        });
+        }
+
+        if (newEnchantAdded) {
+            saveEnchants();
+        }
     }
 
     private void saveEnchants() {
