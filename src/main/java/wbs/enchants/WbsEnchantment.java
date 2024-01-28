@@ -134,7 +134,7 @@ public abstract class WbsEnchantment extends UberEnchantment implements UberRegi
         return getAliases().stream().anyMatch(alias -> alias.startsWith(finalAsString));
     }
 
-    protected boolean tryAdd(ItemStack stack, int level) {
+    public boolean tryAdd(ItemStack stack, int level) {
         if (stack.getType() != Material.ENCHANTED_BOOK && !canEnchantItem(stack)) {
             return false;
         }

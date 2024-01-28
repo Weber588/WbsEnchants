@@ -1,13 +1,24 @@
 package wbs.enchants.command;
 
+import me.sciguymjm.uberenchant.api.UberEnchantment;
+import me.sciguymjm.uberenchant.api.utils.UberUtils;
+import net.md_5.bungee.api.chat.TextComponent;
+import net.md_5.bungee.api.chat.TranslatableComponent;
 import org.bukkit.NamespacedKey;
 import org.bukkit.command.CommandSender;
+import org.bukkit.enchantments.Enchantment;
 import org.jetbrains.annotations.NotNull;
 import wbs.enchants.EnchantsSettings;
 import wbs.enchants.WbsEnchantment;
+import wbs.enchants.util.EnchantUtils;
+import wbs.utils.util.WbsEnums;
+import wbs.utils.util.WbsKeyed;
 import wbs.utils.util.commands.WbsSubcommand;
+import wbs.utils.util.plugin.WbsMessageBuilder;
 import wbs.utils.util.plugin.WbsPlugin;
 import wbs.utils.util.string.RomanNumerals;
+import wbs.utils.util.string.WbsStringify;
+import wbs.utils.util.string.WbsStrings;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -72,6 +83,26 @@ public class SubcommandInfo extends WbsSubcommand {
         }
 
         sendMessageNoPrefix("Description: &h" + enchant.getDescription(), sender);
+
+        List<Enchantment> conflicts = EnchantUtils.getConflictsWith(enchant);
+        if (!conflicts.isEmpty()) {
+            WbsMessageBuilder builder = plugin.buildMessage("Conflicts with:");
+
+            for (Enchantment conflict : conflicts) {
+                builder.append("\n\t&h- ");
+                if (conflict instanceof UberEnchantment uEnchant) {
+                    builder.append(uEnchant.getDisplayName());
+                } else {
+                    // TODO: Migrate WbsPlugin#append to accept BaseComponent instead of TextComponent to allow
+                    // a TranslatableComponent to be used here.
+                    String vanillaName = WbsStrings.capitalizeAll(
+                            conflict.getKey().getKey().replaceAll("_", " ")
+                    );
+                    builder.append("&7" + vanillaName);
+                }
+            }
+        }
+
         sendMessage(line, sender);
 
         return true;
