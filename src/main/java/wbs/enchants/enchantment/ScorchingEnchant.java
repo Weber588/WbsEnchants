@@ -180,7 +180,7 @@ public class ScorchingEnchant extends WbsEnchantment {
 
     @Override
     public boolean conflictsWith(@NotNull Enchantment enchantment) {
-        return enchantment == SILK_TOUCH;
+        return matches(enchantment, SILK_TOUCH);
     }
 
     private record ScorchedBlock(UUID playerUUID, Block scorchedBlock, Long createdTimestamp) {}

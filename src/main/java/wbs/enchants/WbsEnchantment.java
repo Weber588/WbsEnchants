@@ -3,19 +3,25 @@ package wbs.enchants;
 import me.sciguymjm.uberenchant.api.UberEnchantment;
 import me.sciguymjm.uberenchant.api.utils.UberConfiguration;
 import me.sciguymjm.uberenchant.api.utils.UberUtils;
+import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.enchantments.Enchantment;
+import org.bukkit.event.HandlerList;
 import org.bukkit.event.world.LootGenerateEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.EnchantmentStorageMeta;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.loot.LootTable;
+import org.bukkit.plugin.PluginManager;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import wbs.enchants.generation.ContextManager;
+import wbs.enchants.generation.GenerationContext;
 import wbs.enchants.util.UberRegistrable;
+import wbs.utils.exceptions.InvalidConfigurationException;
 import wbs.utils.util.WbsEnums;
 import wbs.utils.util.WbsMath;
 
@@ -23,6 +29,10 @@ import java.util.*;
 
 public abstract class WbsEnchantment extends UberEnchantment implements UberRegistrable {
     private static final Random RANDOM = new Random();
+
+    public static boolean matches(@NotNull Enchantment a, @NotNull Enchantment b) {
+        return Objects.equals(a, b) || a.getKey().equals(b.getKey());
+    }
 
     private final String stringKey;
 
@@ -35,6 +45,8 @@ public abstract class WbsEnchantment extends UberEnchantment implements UberRegi
     protected boolean canUseOnAnything = EnchantsSettings.DEFAULT_USABLE_ANYWHERE;
     @NotNull
     protected List<String> aliases = new LinkedList<>();
+
+    protected final List<GenerationContext> generationContexts = new LinkedList<>();
 
     public WbsEnchantment(String key) {
         super(new NamespacedKey(WbsEnchants.getInstance(), key));
@@ -213,7 +225,9 @@ public abstract class WbsEnchantment extends UberEnchantment implements UberRegi
         section.set("removal_cost", getRemovalCost());
         section.set("extraction_cost", getExtractionCost());
         section.set("use_on_anything", canUseOnAnything());
-        section.set("aliases", getAliases() );
+        section.set("aliases", getAliases());
+
+        generationContexts.forEach(context -> context.createSection(section, "generation"));
 
         return section;
     }
@@ -228,12 +242,42 @@ public abstract class WbsEnchantment extends UberEnchantment implements UberRegi
 
         aliases = section.getStringList("aliases");
 
+        ConfigurationSection generationSection = section.getConfigurationSection("generation");
+        if (generationSection != null) {
+            for (String key : generationSection.getKeys(false)) {
+                ConfigurationSection contextSection = generationSection.getConfigurationSection(key);
+
+                String contextDir = directory + "/generation/" + key;
+                if (contextSection != null) {
+                    try {
+                        GenerationContext context = ContextManager.getContext(key,
+                                this,
+                                contextSection,
+                                contextDir);
+
+                        generationContexts.add(context);
+                    } catch (InvalidConfigurationException ex) {
+                        String errorDir = ex.getDirectory();
+                        if (errorDir == null) {
+                            errorDir = contextDir;
+                        }
+
+                        WbsEnchants.getInstance().settings.logError(ex.getMessage(), errorDir);
+                    }
+                } else {
+                    WbsEnchants.getInstance().settings.logError("Generation type must be a section: " + key,
+                            contextDir);
+                }
+            }
+        }
+
         ConfigurationSection costLevelSection = section.getConfigurationSection("cost_for_level");
 
         if (costLevelSection != null) {
             for (String key : costLevelSection.getKeys(false)) {
                 if (!key.matches("[0-9]")) {
-                    WbsEnchants.getInstance().settings.logError("Invalid level: \"" + key + "\"", directory + "/cost_for_level");
+                    WbsEnchants.getInstance().settings.logError("Invalid level: \"" + key + "\"",
+                            directory + "/cost_for_level");
                     continue;
                 }
 
@@ -242,7 +286,7 @@ public abstract class WbsEnchantment extends UberEnchantment implements UberRegi
                     level = Integer.parseInt(key);
                 } catch (NumberFormatException e) {
                     // Should be impossible unless they put a number larger than int limit
-                    WbsEnchants.getInstance().settings.logError("An unknown error occurred while parsing level: \""
+                    WbsEnchants.getInstance().settings.logError("An unexpected error occurred while parsing level: \""
                             + key + "\". Error: " + e.getLocalizedMessage(), directory + "/cost_for_level");
                     continue;
                 }
@@ -259,5 +303,14 @@ public abstract class WbsEnchantment extends UberEnchantment implements UberRegi
      */
     public boolean developerMode() {
         return WbsEnchants.getInstance().settings.isDeveloperMode();
+    }
+
+    public void registerGenerationContexts() {
+        PluginManager manager = Bukkit.getPluginManager();
+        WbsEnchants plugin = WbsEnchants.getInstance();
+        for (GenerationContext context : generationContexts) {
+            HandlerList.unregisterAll(context);
+            manager.registerEvents(context, plugin);
+        }
     }
 }

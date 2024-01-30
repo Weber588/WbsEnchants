@@ -88,7 +88,7 @@ public class VeinMinerEnchant extends AbstractMultiBreakEnchant {
 
     @Override
     public boolean conflictsWith(@NotNull Enchantment enchantment) {
-        return enchantment == EnchantsSettings.BLAST_MINER;
+        return matches(enchantment, EnchantsSettings.BLAST_MINER);
     }
 
     @Override

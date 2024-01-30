@@ -13,6 +13,7 @@ import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.inventory.*;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import wbs.enchants.EnchantsSettings;
 import wbs.enchants.WbsEnchants;
 import wbs.enchants.util.EntityUtils;
 import wbs.utils.util.WbsMath;
@@ -123,7 +124,7 @@ public class DisarmingEnchant extends AbstractDamageEnchant {
 
     @Override
     public boolean conflictsWith(@NotNull Enchantment enchantment) {
-        return enchantment == KNOCKBACK;
+        return matches(enchantment, KNOCKBACK);
     }
 
     @Override

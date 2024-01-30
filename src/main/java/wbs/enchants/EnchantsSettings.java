@@ -85,6 +85,7 @@ public class EnchantsSettings extends WbsSettings {
             }
 
             enchant.registerUberRecord();
+            enchant.registerGenerationContexts();
         }
 
         if (newEnchantAdded) {

@@ -1,0 +1,181 @@
+vein_miner:
+  min_level: 0
+  max_level: 4
+  cost: 1000.0
+  cost_multiplier: 0.4
+  cost_for_level: {}
+  removal_cost: 100.0
+  extraction_cost: 2000.0
+  use_on_anything: false
+  aliases: []
+
+excavator:
+  min_level: 0
+  max_level: 2
+  cost: 1000.0
+  cost_multiplier: 0.4
+  cost_for_level: {}
+  removal_cost: 100.0
+  extraction_cost: 2000.0
+  use_on_anything: false
+  aliases: []
+entangled:
+  min_level: 0
+  max_level: 0
+  cost: 1000.0
+  cost_multiplier: 0.4
+  cost_for_level: {}
+  removal_cost: 100.0
+  extraction_cost: 2000.0
+  use_on_anything: false
+  aliases: []
+harvester:
+  min_level: 0
+  max_level: 2
+  cost: 1000.0
+  cost_multiplier: 0.4
+  cost_for_level: {}
+  removal_cost: 100.0
+  extraction_cost: 2000.0
+  use_on_anything: false
+  aliases: []
+vampiric:
+  min_level: 0
+  max_level: 3
+  cost: 1000.0
+  cost_multiplier: 0.4
+  cost_for_level: {}
+  removal_cost: 100.0
+  extraction_cost: 2000.0
+  use_on_anything: false
+  aliases: []
+strip_miner:
+  min_level: 0
+  max_level: 3
+  cost: 1000.0
+  cost_multiplier: 0.4
+  cost_for_level: {}
+  removal_cost: 100.0
+  extraction_cost: 2000.0
+  use_on_anything: false
+  aliases: []
+void_walker:
+  min_level: 0
+  max_level: 0
+  cost: 1000.0
+  cost_multiplier: 0.4
+  cost_for_level: {}
+  removal_cost: 100.0
+  extraction_cost: 2000.0
+  use_on_anything: false
+  aliases: []
+blast_miner:
+  min_level: 0
+  max_level: 5
+  cost: 1000.0
+  cost_multiplier: 0.4
+  cost_for_level: {}
+  removal_cost: 100.0
+  extraction_cost: 2000.0
+  use_on_anything: false
+  aliases: []
+planar_binding:
+  min_level: 0
+  max_level: 3
+  cost: 1000.0
+  cost_multiplier: 0.4
+  cost_for_level: {}
+  removal_cost: 100.0
+  extraction_cost: 2000.0
+  use_on_anything: false
+  aliases: []
+disarming:
+  min_level: 0
+  max_level: 3
+  cost: 1000.0
+  cost_multiplier: 0.4
+  cost_for_level: {}
+  removal_cost: 100.0
+  extraction_cost: 2000.0
+  use_on_anything: false
+  aliases: []
+frenzied:
+  min_level: 0
+  max_level: 0
+  cost: 1000.0
+  cost_multiplier: 0.4
+  cost_for_level: {}
+  removal_cost: 100.0
+  extraction_cost: 2000.0
+  use_on_anything: false
+  aliases: []
+lightweight:
+  min_level: 0
+  max_level: 3
+  cost: 1000.0
+  cost_multiplier: 0.4
+  cost_for_level: {}
+  removal_cost: 100.0
+  extraction_cost: 2000.0
+  use_on_anything: false
+  aliases: []
+hellborne:
+  min_level: 0
+  max_level: 2
+  cost: 1000.0
+  cost_multiplier: 0.4
+  cost_for_level: {}
+  removal_cost: 100.0
+  extraction_cost: 2000.0
+  use_on_anything: false
+  aliases: []
+decay:
+  min_level: 0
+  max_level: 5
+  cost: 1000.0
+  cost_multiplier: 0.4
+  cost_for_level: {}
+  removal_cost: 100.0
+  extraction_cost: 2000.0
+  use_on_anything: false
+  aliases: []
+scorching:
+  min_level: 0
+  max_level: 0
+  cost: 1000.0
+  cost_multiplier: 0.4
+  cost_for_level: {}
+  removal_cost: 100.0
+  extraction_cost: 2000.0
+  use_on_anything: false
+  aliases: []
+frostburn:
+  min_level: 0
+  max_level: 3
+  cost: 1000.0
+  cost_multiplier: 0.4
+  cost_for_level: {}
+  removal_cost: 100.0
+  extraction_cost: 2000.0
+  use_on_anything: false
+  aliases: []
+ender_shot:
+  min_level: 0
+  max_level: 0
+  cost: 1000.0
+  cost_multiplier: 0.4
+  cost_for_level: {}
+  removal_cost: 100.0
+  extraction_cost: 2000.0
+  use_on_anything: false
+  aliases: []
+immortal:
+  min_level: 0
+  max_level: 1
+  cost: 1000.0
+  cost_multiplier: 1000.0
+  cost_for_level: {}
+  removal_cost: 100.0
+  extraction_cost: 2000.0
+  use_on_anything: false
+  aliases: []

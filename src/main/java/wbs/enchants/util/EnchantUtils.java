@@ -1,9 +1,8 @@
 package wbs.enchants.util;
 
-import me.sciguymjm.uberenchant.api.UberEnchantment;
+import me.sciguymjm.uberenchant.api.utils.UberConfiguration;
 import org.bukkit.enchantments.Enchantment;
 
-import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -23,22 +22,13 @@ public class EnchantUtils {
     }
 
     public static boolean directlyConflictsWith(Enchantment a, Enchantment b) {
-        if (a == b) {
-            return true;
-        }
-
-        if (a.conflictsWith(b)) {
-            return true;
-        } else if (b.conflictsWith(a)) {
-            return true;
-        }
-
-        return false;
+        return a == b || a.equals(b) || a.conflictsWith(b) || b.conflictsWith(a);
     }
 
     public static List<Enchantment> getAllEnchants() {
-        List<Enchantment> allEnchants = Arrays.stream(Enchantment.values()).toList();
-        allEnchants.addAll(UberEnchantment.getRegisteredEnchantments());
-        return allEnchants;
+        return UberConfiguration.UberRecord.values()
+                .stream()
+                .map(UberConfiguration.UberRecord::enchantment)
+                .collect(Collectors.toList());
     }
 }

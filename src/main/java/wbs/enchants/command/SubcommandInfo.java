@@ -85,22 +85,25 @@ public class SubcommandInfo extends WbsSubcommand {
         sendMessageNoPrefix("Description: &h" + enchant.getDescription(), sender);
 
         List<Enchantment> conflicts = EnchantUtils.getConflictsWith(enchant);
+        conflicts.removeIf(enchant::equals);
         if (!conflicts.isEmpty()) {
-            WbsMessageBuilder builder = plugin.buildMessage("Conflicts with:");
+            WbsMessageBuilder builder = plugin.buildMessageNoPrefix("Conflicts with:");
 
             for (Enchantment conflict : conflicts) {
-                builder.append("\n\t&h- ");
+                builder.append("\n    &h- ");
                 if (conflict instanceof UberEnchantment uEnchant) {
                     builder.append(uEnchant.getDisplayName());
                 } else {
                     // TODO: Migrate WbsPlugin#append to accept BaseComponent instead of TextComponent to allow
-                    // a TranslatableComponent to be used here.
+                    //  a TranslatableComponent to be used here.
                     String vanillaName = WbsStrings.capitalizeAll(
                             conflict.getKey().getKey().replaceAll("_", " ")
                     );
                     builder.append("&7" + vanillaName);
                 }
             }
+
+            builder.build().send(sender);
         }
 
         sendMessage(line, sender);

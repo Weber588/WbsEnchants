@@ -132,7 +132,7 @@ public class DecayEnchant extends AbstractDamageEnchant {
 
     @Override
     public boolean conflictsWith(@NotNull Enchantment enchantment) {
-        return enchantment == SILK_TOUCH ||
+        return matches(enchantment, SILK_TOUCH) ||
                 EnchantUtils.willConflict(DAMAGE_ALL, enchantment);
     }
 

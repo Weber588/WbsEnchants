@@ -19,6 +19,7 @@ import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import wbs.enchants.EnchantsSettings;
 import wbs.enchants.util.EnchantUtils;
 import wbs.enchants.util.EntityUtils;
 import wbs.utils.util.WbsMath;
@@ -128,8 +129,8 @@ public class FrostburnEnchant extends AbstractDamageEnchant {
 
     @Override
     public boolean conflictsWith(@NotNull Enchantment enchantment) {
-        return enchantment == FIRE_ASPECT ||
-                enchantment == ARROW_FIRE ||
+        return matches(enchantment, FIRE_ASPECT) ||
+                matches(enchantment, ARROW_FIRE) ||
                 EnchantUtils.willConflict(DAMAGE_ALL, enchantment);
     }
 
