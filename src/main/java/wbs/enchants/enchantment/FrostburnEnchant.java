@@ -10,7 +10,6 @@ import org.bukkit.enchantments.EnchantmentTarget;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Projectile;
-import org.bukkit.event.EventHandler;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.world.LootGenerateEvent;
 import org.bukkit.inventory.EntityEquipment;
@@ -19,7 +18,8 @@ import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import wbs.enchants.EnchantsSettings;
+import wbs.enchants.WbsEnchantment;
+import wbs.enchants.enchantment.helper.DamageEnchant;
 import wbs.enchants.util.EnchantUtils;
 import wbs.enchants.util.EntityUtils;
 import wbs.utils.util.WbsMath;
@@ -27,7 +27,7 @@ import wbs.utils.util.entities.WbsEntityUtil;
 import wbs.utils.util.particles.NormalParticleEffect;
 import wbs.utils.util.particles.WbsParticleGroup;
 
-public class FrostburnEnchant extends AbstractDamageEnchant {
+public class FrostburnEnchant extends WbsEnchantment implements DamageEnchant {
     private static final double CHANCE_PER_LEVEL = 5;
     private static final int DURATION_PER_LEVEL = 60;
 
@@ -37,6 +37,7 @@ public class FrostburnEnchant extends AbstractDamageEnchant {
 
     public FrostburnEnchant() {
         super("frostburn");
+        registerDamageEvent();
     }
 
     @Override
@@ -45,14 +46,8 @@ public class FrostburnEnchant extends AbstractDamageEnchant {
                 "damage against heat-vulnerable mobs, like strays. Has a small chance to slow enemies.";
     }
 
-    @EventHandler
     @Override
-    public void catchEvent(EntityDamageByEntityEvent event) {
-        onDamage(event);
-    }
-
-    @Override
-    protected void handleAttack(@NotNull EntityDamageByEntityEvent event, @NotNull LivingEntity attacker, @NotNull Entity victim, @Nullable Projectile projectile) {
+    public void handleAttack(@NotNull EntityDamageByEntityEvent event, @NotNull LivingEntity attacker, @NotNull Entity victim, @Nullable Projectile projectile) {
         if (!(victim instanceof LivingEntity livingVictim)) {
             return;
         }

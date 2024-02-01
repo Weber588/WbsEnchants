@@ -13,18 +13,20 @@ import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.inventory.*;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import wbs.enchants.EnchantsSettings;
+import wbs.enchants.WbsEnchantment;
 import wbs.enchants.WbsEnchants;
+import wbs.enchants.enchantment.helper.DamageEnchant;
 import wbs.enchants.util.EntityUtils;
 import wbs.utils.util.WbsMath;
 
 import java.util.Random;
 
-public class DisarmingEnchant extends AbstractDamageEnchant {
+public class DisarmingEnchant extends WbsEnchantment implements DamageEnchant {
     private static final Random RANDOM = new Random(System.currentTimeMillis());
 
     public DisarmingEnchant() {
         super("disarming");
+        registerDamageEvent();
     }
 
     @EventHandler
@@ -33,7 +35,7 @@ public class DisarmingEnchant extends AbstractDamageEnchant {
     }
 
     @Override
-    protected void handleAttack(@NotNull EntityDamageByEntityEvent event, @NotNull LivingEntity attacker, @NotNull Entity victim, @Nullable Projectile projectile) {
+    public void handleAttack(@NotNull EntityDamageByEntityEvent event, @NotNull LivingEntity attacker, @NotNull Entity victim, @Nullable Projectile projectile) {
         if (!(attacker instanceof Player playerAttacker) || !(victim instanceof LivingEntity livingVictim)) {
             return;
         }

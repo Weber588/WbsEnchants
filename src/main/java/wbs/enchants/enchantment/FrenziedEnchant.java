@@ -9,7 +9,6 @@ import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Projectile;
-import org.bukkit.event.EventHandler;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.world.LootGenerateEvent;
 import org.bukkit.inventory.EntityEquipment;
@@ -18,26 +17,24 @@ import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import wbs.enchants.WbsEnchantment;
+import wbs.enchants.enchantment.helper.DamageEnchant;
 import wbs.utils.util.WbsMath;
 
 import java.util.Random;
 
-public class FrenziedEnchant extends AbstractDamageEnchant {
+public class FrenziedEnchant extends WbsEnchantment implements DamageEnchant {
     private static final int BASE_DURATION = 5 * 20;
     private static final int AMPLIFIER_INCREMENT = 2;
 
     public FrenziedEnchant() {
         super("frenzied");
+        registerDamageEvent();
     }
 
-    @Override
-    @EventHandler
-    public void catchEvent(EntityDamageByEntityEvent event) {
-        onDamage(event);
-    }
 
     @Override
-    protected void handleAttack(@NotNull EntityDamageByEntityEvent event, @NotNull LivingEntity attacker, @NotNull Entity victim, @Nullable Projectile projectile) {
+    public void handleAttack(@NotNull EntityDamageByEntityEvent event, @NotNull LivingEntity attacker, @NotNull Entity victim, @Nullable Projectile projectile) {
         if (!(attacker instanceof Player playerAttacker) || !(victim instanceof LivingEntity livingVictim)) {
             return;
         }

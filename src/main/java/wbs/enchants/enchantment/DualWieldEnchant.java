@@ -12,7 +12,6 @@ import org.bukkit.entity.Damageable;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Projectile;
-import org.bukkit.event.EventHandler;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.inventory.EntityEquipment;
@@ -21,14 +20,16 @@ import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.util.RayTraceResult;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import wbs.enchants.WbsEnchantment;
 import wbs.enchants.WbsEnchants;
+import wbs.enchants.enchantment.helper.DamageEnchant;
 import wbs.utils.util.WbsItems;
 
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
-public class DualWieldEnchant extends AbstractDamageEnchant {
+public class DualWieldEnchant extends WbsEnchantment implements DamageEnchant {
     // TODO: Get this from player entity attack range attribute in 1.20.5
     private static final double ATTACK_RANGE = 3.5;
 
@@ -36,6 +37,7 @@ public class DualWieldEnchant extends AbstractDamageEnchant {
 
     public DualWieldEnchant() {
         super("dual_wield");
+        registerDamageEvent();
     }
 
     @Override
@@ -43,14 +45,8 @@ public class DualWieldEnchant extends AbstractDamageEnchant {
         return "When an item with this enchantment is in your offhand, it swings automatically after attacking!";
     }
 
-    @EventHandler
     @Override
-    public void catchEvent(EntityDamageByEntityEvent event) {
-        super.onDamage(event);
-    }
-
-    @Override
-    protected void handleAttack(@NotNull EntityDamageByEntityEvent event, @NotNull LivingEntity attacker, @NotNull Entity victim, @Nullable Projectile projectile) {
+    public void handleAttack(@NotNull EntityDamageByEntityEvent event, @NotNull LivingEntity attacker, @NotNull Entity victim, @Nullable Projectile projectile) {
         if (event.getCause() == EntityDamageEvent.DamageCause.THORNS) {
             return;
         }

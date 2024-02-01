@@ -14,7 +14,7 @@ import org.bukkit.event.world.LootGenerateEvent;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 import wbs.enchants.EnchantsSettings;
-import wbs.enchants.WbsEnchantment;
+import wbs.enchants.enchantment.helper.AbstractMultiBreakEnchant;
 import wbs.enchants.util.BlockChanger;
 import wbs.enchants.util.BlockQueryUtils;
 import wbs.enchants.util.MaterialUtils;

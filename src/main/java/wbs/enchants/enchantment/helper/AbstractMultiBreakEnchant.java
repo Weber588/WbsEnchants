@@ -1,4 +1,4 @@
-package wbs.enchants.enchantment;
+package wbs.enchants.enchantment.helper;
 
 import org.bukkit.Material;
 import org.bukkit.Tag;

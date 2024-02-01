@@ -1,4 +1,4 @@
-package wbs.enchants.enchantment;
+package wbs.enchants.enchantment.helper;
 
 import org.bukkit.entity.Damageable;
 import org.bukkit.entity.Entity;
@@ -8,15 +8,14 @@ import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.projectiles.ProjectileSource;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import wbs.enchants.WbsEnchantment;
+import wbs.enchants.util.EventUtils;
 
-public abstract class AbstractDamageEnchant extends WbsEnchantment {
-    public AbstractDamageEnchant(String key) {
-        super(key);
+public interface DamageEnchant {
+    default void registerDamageEvent() {
+        EventUtils.register(EntityDamageByEntityEvent.class, this::onDamage);
     }
 
-    @SuppressWarnings("unused")
-    protected final void onDamage(EntityDamageByEntityEvent event) {
+    default void onDamage(EntityDamageByEntityEvent event) {
         Entity damager = event.getDamager();
         Entity entity = event.getEntity();
 
@@ -42,8 +41,7 @@ public abstract class AbstractDamageEnchant extends WbsEnchantment {
         handleAttack(event, attacker, victim, projectile);
     }
 
-    public abstract void catchEvent(EntityDamageByEntityEvent event);
-    protected abstract void handleAttack(@NotNull EntityDamageByEntityEvent event,
+    void handleAttack(@NotNull EntityDamageByEntityEvent event,
                                          @NotNull LivingEntity attacker,
                                          @NotNull Entity victim,
                                          @Nullable Projectile projectile);

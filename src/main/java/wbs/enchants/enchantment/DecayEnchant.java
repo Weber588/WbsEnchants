@@ -17,15 +17,18 @@ import org.bukkit.inventory.EntityEquipment;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import wbs.enchants.WbsEnchantment;
+import wbs.enchants.enchantment.helper.DamageEnchant;
 import wbs.enchants.util.EnchantUtils;
 import wbs.enchants.util.MaterialUtils;
 import wbs.utils.util.WbsMath;
 
 import java.util.Collection;
 
-public class DecayEnchant extends AbstractDamageEnchant {
+public class DecayEnchant extends WbsEnchantment implements DamageEnchant {
     public DecayEnchant() {
         super("decay");
+        registerDamageEvent();
     }
 
     @Override
@@ -63,13 +66,7 @@ public class DecayEnchant extends AbstractDamageEnchant {
     }
 
     @Override
-    @EventHandler
-    public void catchEvent(EntityDamageByEntityEvent event) {
-        onDamage(event);
-    }
-
-    @Override
-    protected void handleAttack(@NotNull EntityDamageByEntityEvent event, @NotNull LivingEntity attacker, @NotNull Entity victim, @Nullable Projectile projectile) {
+    public void handleAttack(@NotNull EntityDamageByEntityEvent event, @NotNull LivingEntity attacker, @NotNull Entity victim, @Nullable Projectile projectile) {
         if (!(victim instanceof LivingEntity livingVictim)) {
             return;
         }

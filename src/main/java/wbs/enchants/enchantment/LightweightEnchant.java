@@ -11,10 +11,7 @@ import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Projectile;
-import org.bukkit.event.EventHandler;
-import org.bukkit.event.enchantment.EnchantItemEvent;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
-import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.world.LootGenerateEvent;
 import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
@@ -22,28 +19,25 @@ import org.bukkit.inventory.PlayerInventory;
 import org.bukkit.util.Vector;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import wbs.enchants.WbsEnchantment;
+import wbs.enchants.enchantment.helper.DamageEnchant;
 import wbs.enchants.util.DamageUtils;
 import wbs.utils.util.WbsItems;
 import wbs.utils.util.WbsMath;
 
 import java.util.Random;
 
-public class LightweightEnchant extends AbstractDamageEnchant {
+public class LightweightEnchant extends WbsEnchantment implements DamageEnchant {
     public static final int MAX_LEVEL = 3;
     public static final double AUTOBLOCK_CHANCE = 30.0 / MAX_LEVEL;
 
     public LightweightEnchant() {
         super("lightweight");
-    }
-
-    @EventHandler
-    @Override
-    public void catchEvent(EntityDamageByEntityEvent event) {
-        onDamage(event);
+        registerDamageEvent();
     }
 
     @Override
-    protected void handleAttack(@NotNull EntityDamageByEntityEvent event, @NotNull LivingEntity attacker, @NotNull Entity victim, @Nullable Projectile projectile) {
+    public void handleAttack(@NotNull EntityDamageByEntityEvent event, @NotNull LivingEntity attacker, @NotNull Entity victim, @Nullable Projectile projectile) {
         if (event.getDamage() < 1) {
             return;
         }

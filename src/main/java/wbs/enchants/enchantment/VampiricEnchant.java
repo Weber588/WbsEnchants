@@ -3,8 +3,6 @@ package wbs.enchants.enchantment;
 import me.sciguymjm.uberenchant.api.utils.Rarity;
 import org.bukkit.NamespacedKey;
 import org.bukkit.Particle;
-import org.bukkit.attribute.Attribute;
-import org.bukkit.attribute.AttributeInstance;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.enchantments.EnchantmentTarget;
 import org.bukkit.entity.Entity;
@@ -22,15 +20,15 @@ import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import wbs.enchants.WbsEnchantment;
 import wbs.enchants.WbsEnchants;
+import wbs.enchants.enchantment.helper.DamageEnchant;
 import wbs.utils.util.WbsMath;
 import wbs.utils.util.entities.WbsEntityUtil;
 import wbs.utils.util.particles.NormalParticleEffect;
 import wbs.utils.util.particles.WbsParticleGroup;
 
-import java.util.Objects;
-
-public class VampiricEnchant extends AbstractDamageEnchant {
+public class VampiricEnchant extends WbsEnchantment implements DamageEnchant {
     public static final int POTION_HEALTH_BOOST_LEVEL_HEARTS = 4;
     public static final double HEAL_PERCENT = 33;
     public static final int DURATION_PER_LEVEL = 10 * 20;
@@ -43,15 +41,11 @@ public class VampiricEnchant extends AbstractDamageEnchant {
 
     public VampiricEnchant() {
         super("vampiric");
-    }
-
-    @EventHandler
-    public void catchEvent(EntityDamageByEntityEvent event) {
-        onDamage(event);
+        registerDamageEvent();
     }
 
     @Override
-    protected void handleAttack(@NotNull EntityDamageByEntityEvent event, @NotNull LivingEntity attacker, @NotNull Entity victim, @Nullable Projectile projectile) {
+    public void handleAttack(@NotNull EntityDamageByEntityEvent event, @NotNull LivingEntity attacker, @NotNull Entity victim, @Nullable Projectile projectile) {
         EntityEquipment equipment = attacker.getEquipment();
         if (equipment == null) {
             return;
