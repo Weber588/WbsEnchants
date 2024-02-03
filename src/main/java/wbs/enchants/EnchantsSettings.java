@@ -38,6 +38,9 @@ public class EnchantsSettings extends WbsSettings {
     public static final EnderShotEnchant ENDER_SHOT = new EnderShotEnchant();
     public static final ImmortalEnchant IMMORTAL = new ImmortalEnchant();
     public static final DualWieldEnchant DUAL_WIELD = new DualWieldEnchant();
+    public static final PinpointEnchant PINPOINT = new PinpointEnchant();
+    // public static final FrictionlessEnchant FRICTIONLESS = new FrictionlessEnchant();
+    public static final UnshakableEnchant UNSHAKABLE = new UnshakableEnchant();
 
     public static void register(WbsEnchantment enchantment) {
         REGISTERED_ENCHANTMENTS.add(enchantment);

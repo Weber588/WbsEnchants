@@ -3,6 +3,7 @@ package wbs.enchants;
 import org.bukkit.event.HandlerList;
 import wbs.enchants.command.CommandCustomEnchant;
 import wbs.enchants.events.GrindstoneEvents;
+import wbs.enchants.events.LeashEvents;
 import wbs.enchants.events.LootGenerateEvents;
 import wbs.utils.util.plugin.WbsPlugin;
 
@@ -23,6 +24,7 @@ public class WbsEnchants extends WbsPlugin {
 
         registerListener(new GrindstoneEvents());
         registerListener(new LootGenerateEvents());
+        registerListener(new LeashEvents());
 
         settings.reload();
     }
