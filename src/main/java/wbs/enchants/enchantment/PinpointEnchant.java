@@ -21,7 +21,6 @@ import wbs.enchants.enchantment.helper.DamageEnchant;
 public class PinpointEnchant extends WbsEnchantment implements DamageEnchant {
     public PinpointEnchant() {
         super("pinpoint");
-        registerDamageEvent();
     }
 
     @Override

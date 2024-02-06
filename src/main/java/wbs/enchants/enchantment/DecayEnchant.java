@@ -28,7 +28,6 @@ import java.util.Collection;
 public class DecayEnchant extends WbsEnchantment implements DamageEnchant {
     public DecayEnchant() {
         super("decay");
-        registerDamageEvent();
     }
 
     @Override

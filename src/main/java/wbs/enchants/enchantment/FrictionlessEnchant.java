@@ -15,7 +15,6 @@ import wbs.enchants.enchantment.helper.VehicleEnchant;
 public class FrictionlessEnchant extends WbsEnchantment implements VehicleEnchant {
     public FrictionlessEnchant() {
         super("frictionless");
-        registerVehicleEvents();
     }
 
     @Override
@@ -61,7 +60,7 @@ public class FrictionlessEnchant extends WbsEnchantment implements VehicleEnchan
     }
 
     @Override
-    public WbsEnchantment getThisEnchantment() {
+    public @NotNull WbsEnchantment getThisEnchantment() {
         return this;
     }
 

@@ -41,6 +41,10 @@ public class EnchantsSettings extends WbsSettings {
     public static final PinpointEnchant PINPOINT = new PinpointEnchant();
     // public static final FrictionlessEnchant FRICTIONLESS = new FrictionlessEnchant();
     public static final UnshakableEnchant UNSHAKABLE = new UnshakableEnchant();
+    public static final TransferenceEnchant TRANSFERENCE = new TransferenceEnchant();
+    public static final UnsinkableEnchant UNSINKABLE = new UnsinkableEnchant();
+    public static final DefusalEnchant DEFUSAL = new DefusalEnchant();
+    public static final PilferingEnchant PILFERING = new PilferingEnchant();
 
     public static void register(WbsEnchantment enchantment) {
         REGISTERED_ENCHANTMENTS.add(enchantment);

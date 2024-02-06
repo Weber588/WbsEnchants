@@ -33,7 +33,6 @@ public class LightweightEnchant extends WbsEnchantment implements DamageEnchant 
 
     public LightweightEnchant() {
         super("lightweight");
-        registerDamageEvent();
     }
 
     @Override

@@ -13,9 +13,12 @@ import org.bukkit.inventory.EntityEquipment;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import wbs.enchants.WbsEnchantment;
 import wbs.enchants.WbsEnchants;
 import wbs.enchants.util.EventUtils;
+import wbs.utils.util.WbsEnums;
 
 public interface VehicleEnchant {
     default void registerVehicleEvents() {
@@ -58,17 +61,73 @@ public interface VehicleEnchant {
         }
     }
 
+    default boolean isEnchanted(Entity entity) {
+        return getLevel(entity) != null;
+    }
+
+    @Nullable
+    default Integer getLevel(Entity entity) {
+        if (!(entity instanceof Vehicle vehicle)) {
+            return null;
+        }
+        PersistentDataContainer entityContainer = vehicle.getPersistentDataContainer();
+        WbsEnchantment enchant = getThisEnchantment();
+        NamespacedKey key = enchant.getKey();
+
+        return entityContainer.get(key, PersistentDataType.INTEGER);
+    }
+
     default void onBreak(VehicleDestroyEvent event) {
         if (event.getAttacker() instanceof Player player && player.getGameMode() == GameMode.CREATIVE) {
             return;
         }
         Vehicle vehicle = event.getVehicle();
-        PersistentDataContainer entityContainer = vehicle.getPersistentDataContainer();
-        WbsEnchantment enchant = getThisEnchantment();
 
         Material material;
         if (vehicle instanceof Boat boat) {
-            material = boat.getBoatType().getMaterial();
+            if (boat instanceof ChestBoat) {
+                material = switch (boat.getBoatType()) {
+                    case OAK -> Material.OAK_CHEST_BOAT;
+                    case SPRUCE -> Material.SPRUCE_CHEST_BOAT;
+                    case BIRCH -> Material.BIRCH_CHEST_BOAT;
+                    case JUNGLE -> Material.JUNGLE_CHEST_BOAT;
+                    case ACACIA -> Material.ACACIA_CHEST_BOAT;
+                    case CHERRY -> Material.CHERRY_CHEST_BOAT;
+                    case DARK_OAK -> Material.DARK_OAK_CHEST_BOAT;
+                    case MANGROVE -> Material.MANGROVE_CHEST_BOAT;
+                    case BAMBOO -> Material.BAMBOO_CHEST_RAFT;
+                };
+            } else {
+                material = switch (boat.getBoatType()) {
+                    case OAK -> Material.OAK_BOAT;
+                    case SPRUCE -> Material.SPRUCE_BOAT;
+                    case BIRCH -> Material.BIRCH_BOAT;
+                    case JUNGLE -> Material.JUNGLE_BOAT;
+                    case ACACIA -> Material.ACACIA_BOAT;
+                    case CHERRY -> Material.CHERRY_BOAT;
+                    case DARK_OAK -> Material.DARK_OAK_BOAT;
+                    case MANGROVE -> Material.MANGROVE_BOAT;
+                    case BAMBOO -> Material.BAMBOO_RAFT;
+                };
+            }
+
+            // Somewhat hacky future-proof in case more boats get added, try getting them by name.
+            // Unsure why Boat.Type#getMaterial() doesn't return the type of boat, but rather the plank/crafting
+            // version, but probably some legacy thing.
+            //noinspection ConstantConditions
+            if (material == null) {
+                String checkString = boat.getBoatType().toString();
+                if (boat instanceof ChestBoat) {
+                    checkString += "_CHEST";
+                }
+                String boatCheck = checkString + "_BOAT";
+                String raftCheck = checkString + "_RAFT";
+
+                material = WbsEnums.getEnumFromString(Material.class, boatCheck);
+                if (material == null) {
+                    material = WbsEnums.getEnumFromString(Material.class, raftCheck);
+                }
+            }
         } else if (vehicle instanceof Minecart minecart) {
             material = switch (minecart.getType()) {
                 case MINECART -> Material.MINECART;
@@ -88,11 +147,15 @@ public interface VehicleEnchant {
 
         ItemStack item = new ItemStack(material);
 
+        WbsEnchantment enchant = getThisEnchantment();
+
         if (!enchant.canEnchantItem(item)) {
             return;
         }
 
         NamespacedKey key = enchant.getKey();
+
+        PersistentDataContainer entityContainer = vehicle.getPersistentDataContainer();
 
         Integer level = entityContainer.get(key, PersistentDataType.INTEGER);
         if (level != null) {
@@ -113,6 +176,7 @@ public interface VehicleEnchant {
 
     }
 
+    @NotNull
     WbsEnchantment getThisEnchantment();
     boolean canEnchant(Entity entity);
 }

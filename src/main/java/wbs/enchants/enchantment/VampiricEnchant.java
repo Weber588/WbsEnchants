@@ -41,7 +41,6 @@ public class VampiricEnchant extends WbsEnchantment implements DamageEnchant {
 
     public VampiricEnchant() {
         super("vampiric");
-        registerDamageEvent();
     }
 
     @Override

@@ -29,7 +29,6 @@ public class FrenziedEnchant extends WbsEnchantment implements DamageEnchant {
 
     public FrenziedEnchant() {
         super("frenzied");
-        registerDamageEvent();
     }
 
 

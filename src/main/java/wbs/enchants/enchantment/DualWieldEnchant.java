@@ -37,7 +37,6 @@ public class DualWieldEnchant extends WbsEnchantment implements DamageEnchant {
 
     public DualWieldEnchant() {
         super("dual_wield");
-        registerDamageEvent();
     }
 
     @Override

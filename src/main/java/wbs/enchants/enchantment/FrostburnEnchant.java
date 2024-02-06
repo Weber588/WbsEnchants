@@ -37,7 +37,6 @@ public class FrostburnEnchant extends WbsEnchantment implements DamageEnchant {
 
     public FrostburnEnchant() {
         super("frostburn");
-        registerDamageEvent();
     }
 
     @Override

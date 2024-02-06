@@ -18,6 +18,8 @@ import org.bukkit.loot.LootTable;
 import org.bukkit.plugin.PluginManager;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import wbs.enchants.enchantment.helper.DamageEnchant;
+import wbs.enchants.enchantment.helper.VehicleEnchant;
 import wbs.enchants.generation.ContextManager;
 import wbs.enchants.generation.GenerationContext;
 import wbs.enchants.util.UberRegistrable;
@@ -52,6 +54,15 @@ public abstract class WbsEnchantment extends UberEnchantment implements UberRegi
         super(new NamespacedKey(WbsEnchants.getInstance(), key));
         stringKey = key;
         EnchantsSettings.register(this);
+
+        // These (and similar) can theoretically be called from the implementer itself, but this makes it harder to
+        // accidentally forget it.
+        if (this instanceof DamageEnchant damageEnchant) {
+            damageEnchant.registerDamageEvent();
+        }
+        if (this instanceof VehicleEnchant vehicleEnchant) {
+            vehicleEnchant.registerVehicleEvents();
+        }
     }
 
     @NotNull

@@ -26,7 +26,6 @@ public class DisarmingEnchant extends WbsEnchantment implements DamageEnchant {
 
     public DisarmingEnchant() {
         super("disarming");
-        registerDamageEvent();
     }
 
     @EventHandler
