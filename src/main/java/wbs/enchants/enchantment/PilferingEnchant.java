@@ -82,7 +82,7 @@ public class PilferingEnchant extends WbsEnchantment implements DamageEnchant {
 
         if (!villager.isAdult()) {
             if (attacker instanceof Player player) {
-                WbsEnchants.getInstance().sendActionBar("&wYou monster...", player);
+                sendActionBar("&wYou monster...", player);
             }
             return;
         }
@@ -111,8 +111,7 @@ public class PilferingEnchant extends WbsEnchantment implements DamageEnchant {
                 timesHit = container.get(TIMES_HIT, PersistentDataType.INTEGER);
                 if (timesHit != null && timesHit >= level) {
                     if (attacker instanceof Player player) {
-                        WbsEnchants.getInstance() 
-                                .sendMessage("&wThis villager seems to be out of things to steal...", player);
+                        sendMessage("&wThis villager seems to be out of things to steal...", player);
                     }
                     return;
                 }

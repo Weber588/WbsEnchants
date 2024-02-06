@@ -133,7 +133,7 @@ public class ImmortalEnchant extends WbsEnchantment {
             displayName = WbsEnums.toPrettyString(item.getType());
         }
 
-        WbsEnchants.getInstance().sendActionBar("Your " + displayName + " was saved by its "
+        sendActionBar("Your " + displayName + " was saved by its "
                 + getDisplayName() + "&r enchantment!", player);
     }
 

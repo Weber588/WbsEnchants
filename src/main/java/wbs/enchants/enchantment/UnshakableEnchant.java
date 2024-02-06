@@ -62,11 +62,11 @@ public class UnshakableEnchant extends WbsEnchantment {
             EntityType type = entity.getType();
             if (UNLEASHABLE_TYPES.contains(type)) {
                 if (type == EntityType.PLAYER) {
-                    WbsEnchants.getInstance().sendActionBar("&wPlayers are too smart to be leashed...", player);
+                    sendActionBar("&wPlayers are too smart to be leashed...", player);
                 } else if (type == EntityType.BAT) {
-                    WbsEnchants.getInstance().sendMessage(BAT_RANT, player);
+                    sendMessage(BAT_RANT, player);
                 } else {
-                    WbsEnchants.getInstance().sendActionBar("&wThat mob is far too strong to be contained...", player);
+                    sendActionBar("&wThat mob is far too strong to be contained...", player);
                 }
                 return;
             }

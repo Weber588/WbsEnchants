@@ -132,7 +132,7 @@ public class TransferenceEnchant extends WbsEnchantment {
                 location = world.getHighestBlockAt(location).getLocation();
                 if (location.getY() <= world.getMinHeight()) {
                     WIFF_EFFECT.play(WbsEntityUtil.getMiddleLocation(player));
-                    WbsEnchants.getInstance().sendActionBar("The map found nowhere to put you...", player);
+                    sendActionBar("The map found nowhere to put you...", player);
                     return;
                 }
             }

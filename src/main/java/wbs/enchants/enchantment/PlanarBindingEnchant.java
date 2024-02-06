@@ -76,7 +76,7 @@ public class PlanarBindingEnchant extends WbsEnchantment {
             dataContainer.set(LEVEL_KEY, PersistentDataType.INTEGER, level);
 
             if (event.getEntity() instanceof Player player) {
-                WbsEnchants.getInstance().sendActionBar("&5" + event.getEntity().getName() + " bound!", player);
+                sendActionBar("&5" + event.getEntity().getName() + " bound!", player);
             }
         }
     }

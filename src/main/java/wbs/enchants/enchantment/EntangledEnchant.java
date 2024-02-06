@@ -108,11 +108,11 @@ public class EntangledEnchant extends WbsEnchantment {
             if (!dataContainer.has(getKey())) {
                 dataContainer.set(getKey(), WbsPersistentDataType.LOCATION, clicked.getLocation());
 
-                WbsEnchants.getInstance().sendActionBar("Tool entangled!", player);
+                sendActionBar("Tool entangled!", player);
             } else {
                 dataContainer.remove(getKey());
 
-                WbsEnchants.getInstance().sendActionBar("&wLink removed!", player);
+                sendActionBar("&wLink removed!", player);
             }
 
             item.setItemMeta(meta);
@@ -153,13 +153,13 @@ public class EntangledEnchant extends WbsEnchantment {
             }
 
             if (entangledLocation == null) {
-                WbsEnchants.getInstance().sendActionBar("&wSneak punch a chest to entangle your tool!", player);
+                sendActionBar("&wSneak punch a chest to entangle your tool!", player);
                 return;
             }
 
             Block entangledBlock = entangledLocation.getBlock();
             if (!(entangledBlock.getState() instanceof Container)) {
-                WbsEnchants.getInstance().sendActionBar("&wEntangled container broken!", player);
+                sendActionBar("&wEntangled container broken!", player);
                 dataContainer.remove(getKey());
                 return;
             }
@@ -179,7 +179,7 @@ public class EntangledEnchant extends WbsEnchantment {
 
         Block entangledBlock = entanglement.entangledBlock;
         if (!(entangledBlock.getState() instanceof Container container)) {
-            WbsEnchants.getInstance().sendActionBar("&wEntangled block missing!", player);
+            sendActionBar("&wEntangled block missing!", player);
             return;
         }
 
@@ -194,7 +194,7 @@ public class EntangledEnchant extends WbsEnchantment {
 
             ItemStack failed = failedToAdd.get(0);
             if (failed != null) {
-                WbsEnchants.getInstance().sendActionBar(containerName + " is full!", player);
+                sendActionBar(containerName + " is full!", player);
 
                 HashMap<Integer, ItemStack> failedToPlayer = player.getInventory().addItem(failed);
 

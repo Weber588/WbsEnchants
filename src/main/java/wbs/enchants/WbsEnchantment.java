@@ -6,9 +6,11 @@ import me.sciguymjm.uberenchant.api.utils.UberUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
+import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.enchantments.Enchantment;
+import org.bukkit.entity.Player;
 import org.bukkit.event.HandlerList;
 import org.bukkit.event.world.LootGenerateEvent;
 import org.bukkit.inventory.ItemStack;
@@ -26,6 +28,7 @@ import wbs.enchants.util.UberRegistrable;
 import wbs.utils.exceptions.InvalidConfigurationException;
 import wbs.utils.util.WbsEnums;
 import wbs.utils.util.WbsMath;
+import wbs.utils.util.plugin.WbsPlugin;
 
 import java.util.*;
 
@@ -49,6 +52,8 @@ public abstract class WbsEnchantment extends UberEnchantment implements UberRegi
     protected List<String> aliases = new LinkedList<>();
 
     protected final List<GenerationContext> generationContexts = new LinkedList<>();
+
+    protected WbsPlugin plugin = WbsEnchants.getInstance();
 
     public WbsEnchantment(String key) {
         super(new NamespacedKey(WbsEnchants.getInstance(), key));
@@ -323,5 +328,17 @@ public abstract class WbsEnchantment extends UberEnchantment implements UberRegi
             HandlerList.unregisterAll(context);
             manager.registerEvents(context, plugin);
         }
+    }
+
+    public void setPlugin(WbsPlugin plugin) {
+        this.plugin = plugin;
+    }
+
+    public void sendMessage(String message, CommandSender sender) {
+        plugin.sendMessage(message, sender);
+    }
+
+    public void sendActionBar(String message, Player player) {
+        plugin.sendActionBar(message, player);
     }
 }

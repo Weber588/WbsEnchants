@@ -72,8 +72,8 @@ public class DisarmingEnchant extends WbsEnchantment implements DamageEnchant {
                 victimInv.setItemInMainHand(other);
                 victimInv.setItem(randomSlot, held);
 
-                WbsEnchants.getInstance().sendActionBar("&wDisarmed!", playerVictim);
-                WbsEnchants.getInstance().sendActionBar("Disarmed " + livingVictim.getName() + "!", playerAttacker);
+                sendActionBar("&wDisarmed!", playerVictim);
+                sendActionBar("Disarmed " + livingVictim.getName() + "!", playerAttacker);
             } else {
                 EntityEquipment victimEquipment = livingVictim.getEquipment();
                 if (victimEquipment != null) {
@@ -86,7 +86,7 @@ public class DisarmingEnchant extends WbsEnchantment implements DamageEnchant {
                     livingVictim.getWorld().dropItemNaturally(livingVictim.getEyeLocation(), held);
                     victimEquipment.setItemInMainHand(new ItemStack(Material.AIR));
 
-                    WbsEnchants.getInstance().sendActionBar("Disarmed " + livingVictim.getName() + "!", playerAttacker);
+                    sendActionBar("Disarmed " + livingVictim.getName() + "!", playerAttacker);
                 }
             }
         }
