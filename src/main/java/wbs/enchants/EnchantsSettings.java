@@ -45,6 +45,7 @@ public class EnchantsSettings extends WbsSettings {
     public static final UnsinkableEnchant UNSINKABLE = new UnsinkableEnchant();
     public static final DefusalEnchant DEFUSAL = new DefusalEnchant();
     public static final PilferingEnchant PILFERING = new PilferingEnchant();
+    public static final ResilienceEnchant RESILIENCE = new ResilienceEnchant();
 
     public static void register(WbsEnchantment enchantment) {
         REGISTERED_ENCHANTMENTS.add(enchantment);
