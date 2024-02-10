@@ -99,9 +99,4 @@ public class PinpointEnchant extends WbsEnchantment implements DamageEnchant {
     public boolean isCursed() {
         return false;
     }
-
-    @Override
-    public boolean conflictsWith(@NotNull Enchantment enchantment) {
-        return false;
-    }
 }

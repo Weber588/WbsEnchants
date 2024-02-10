@@ -27,6 +27,8 @@ import wbs.utils.util.entities.WbsEntityUtil;
 import wbs.utils.util.particles.NormalParticleEffect;
 import wbs.utils.util.particles.WbsParticleGroup;
 
+import java.util.Set;
+
 public class FrostburnEnchant extends WbsEnchantment implements DamageEnchant {
     private static final double CHANCE_PER_LEVEL = 5;
     private static final int DURATION_PER_LEVEL = 60;
@@ -122,10 +124,13 @@ public class FrostburnEnchant extends WbsEnchantment implements DamageEnchant {
     }
 
     @Override
-    public boolean conflictsWith(@NotNull Enchantment enchantment) {
-        return matches(enchantment, FIRE_ASPECT) ||
-                matches(enchantment, ARROW_FIRE) ||
-                EnchantUtils.willConflict(DAMAGE_ALL, enchantment);
+    public Set<Enchantment> getDirectConflicts() {
+        return Set.of(FIRE_ASPECT, ARROW_FIRE);
+    }
+
+    @Override
+    public Set<Enchantment> getIndirectConflicts() {
+        return Set.of(DAMAGE_ALL);
     }
 
     @Override

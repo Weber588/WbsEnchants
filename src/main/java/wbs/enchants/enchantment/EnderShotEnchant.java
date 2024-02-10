@@ -118,11 +118,6 @@ public class EnderShotEnchant extends WbsEnchantment {
     }
 
     @Override
-    public boolean conflictsWith(@NotNull Enchantment enchantment) {
-        return false;
-    }
-
-    @Override
     public void onLootGenerate(LootGenerateEvent event) {
         if (WbsMath.chance(10)) {
             Location location = event.getLootContext().getLocation();

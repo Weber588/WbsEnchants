@@ -166,11 +166,6 @@ public class HarvesterEnchant extends WbsEnchantment {
     }
 
     @Override
-    public boolean conflictsWith(@NotNull Enchantment enchantment) {
-        return false;
-    }
-
-    @Override
     public @NotNull String getDescription() {
         int maxWidth = getMaxLevel() * 2 + 1;
         return "When you break or right click a crop, a 3x3 area is harvested and replanted automatically. Width " +

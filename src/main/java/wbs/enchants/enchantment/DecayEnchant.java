@@ -24,6 +24,7 @@ import wbs.enchants.util.MaterialUtils;
 import wbs.utils.util.WbsMath;
 
 import java.util.Collection;
+import java.util.Set;
 
 public class DecayEnchant extends WbsEnchantment implements DamageEnchant {
     public DecayEnchant() {
@@ -127,9 +128,13 @@ public class DecayEnchant extends WbsEnchantment implements DamageEnchant {
     }
 
     @Override
-    public boolean conflictsWith(@NotNull Enchantment enchantment) {
-        return matches(enchantment, SILK_TOUCH) ||
-                EnchantUtils.willConflict(DAMAGE_ALL, enchantment);
+    public Set<Enchantment> getDirectConflicts() {
+        return Set.of(SILK_TOUCH);
+    }
+
+    @Override
+    public Set<Enchantment> getIndirectConflicts() {
+        return Set.of(DAMAGE_ALL);
     }
 
     @Override

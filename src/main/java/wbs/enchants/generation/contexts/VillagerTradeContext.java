@@ -1,8 +1,10 @@
 package wbs.enchants.generation.contexts;
 
-import me.sciguymjm.uberenchant.api.UberEnchantment;
+import com.google.gson.Gson;
 import me.sciguymjm.uberenchant.api.utils.UberUtils;
+import org.bukkit.NamespacedKey;
 import org.bukkit.configuration.ConfigurationSection;
+import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.AbstractVillager;
 import org.bukkit.entity.Villager;
@@ -12,9 +14,12 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.MerchantRecipe;
 import org.bukkit.inventory.meta.EnchantmentStorageMeta;
 import wbs.enchants.WbsEnchantment;
+import wbs.enchants.WbsEnchants;
 import wbs.enchants.generation.GenerationContext;
 import wbs.enchants.util.EnchantUtils;
 
+import javax.json.Json;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -69,17 +74,29 @@ public class VillagerTradeContext extends GenerationContext {
 
         Enchantment toReplace = storedEnchants.keySet()
                 .stream()
-                .filter(ench -> replaceableEnchants.contains(ench.getKey().toString().toLowerCase()))
+                .filter(ench -> replaceableEnchants.isEmpty() || replaceableEnchants.contains(ench.getKey().toString().toLowerCase()))
                 .findAny()
                 .orElse(null);
 
         if (toReplace != null) {
-            storedEnchants.remove(toReplace);
+            meta.removeStoredEnchant(toReplace);
+            WbsEnchants.getInstance().getLogger().info("toReplace: " + toReplace.getKey());
 
             result.setItemMeta(meta);
             UberUtils.addStoredEnchantment(enchantment, result, generateLevel());
 
-            event.setRecipe(recipe);
+            MerchantRecipe newRecipe = new MerchantRecipe(result,
+                    recipe.getUses(),
+                    recipe.getMaxUses(),
+                    recipe.hasExperienceReward(),
+                    recipe.getVillagerExperience(),
+                    recipe.getPriceMultiplier(),
+                    recipe.getDemand(),
+                    recipe.getSpecialPrice());
+
+            newRecipe.setIngredients(recipe.getIngredients());
+
+            event.setRecipe(newRecipe);
         }
     }
 }

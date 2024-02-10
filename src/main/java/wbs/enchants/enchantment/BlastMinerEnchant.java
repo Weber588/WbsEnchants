@@ -24,6 +24,7 @@ import wbs.utils.util.particles.WbsParticleGroup;
 
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Set;
 import java.util.function.Predicate;
 
 public class BlastMinerEnchant extends AbstractMultiBreakEnchant {
@@ -121,8 +122,8 @@ public class BlastMinerEnchant extends AbstractMultiBreakEnchant {
     }
 
     @Override
-    public boolean conflictsWith(@NotNull Enchantment enchantment) {
-        return matches(enchantment, EnchantsSettings.VEIN_MINER);
+    public Set<Enchantment> getDirectConflicts() {
+        return Set.of(EnchantsSettings.VEIN_MINER);
     }
 
     @Override

@@ -179,8 +179,8 @@ public class ScorchingEnchant extends WbsEnchantment {
     }
 
     @Override
-    public boolean conflictsWith(@NotNull Enchantment enchantment) {
-        return matches(enchantment, SILK_TOUCH);
+    public Set<Enchantment> getDirectConflicts() {
+        return Set.of(SILK_TOUCH);
     }
 
     private record ScorchedBlock(UUID playerUUID, Block scorchedBlock, Long createdTimestamp) {}

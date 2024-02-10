@@ -144,11 +144,6 @@ public class UnsinkableEnchant extends WbsEnchantment implements VehicleEnchant 
     }
 
     @Override
-    public boolean conflictsWith(@NotNull Enchantment enchantment) {
-        return false;
-    }
-
-    @Override
     public @NotNull WbsEnchantment getThisEnchantment() {
         return this;
     }

@@ -15,6 +15,8 @@ import wbs.enchants.WbsEnchantment;
 import wbs.enchants.enchantment.helper.DamageEnchant;
 import wbs.enchants.util.EnchantUtils;
 
+import java.util.Set;
+
 public class ResilienceEnchant extends WbsEnchantment implements DamageEnchant {
     private static final int DEFAULT_INVULN_TICKS = 10;
     private static final int BONUS_TICKS_PER_LEVEL = 3;
@@ -94,7 +96,7 @@ public class ResilienceEnchant extends WbsEnchantment implements DamageEnchant {
     }
 
     @Override
-    public boolean conflictsWith(@NotNull Enchantment enchantment) {
-        return EnchantUtils.willConflict(PROTECTION_ENVIRONMENTAL, enchantment);
+    public Set<Enchantment> getIndirectConflicts() {
+        return Set.of(PROTECTION_ENVIRONMENTAL);
     }
 }

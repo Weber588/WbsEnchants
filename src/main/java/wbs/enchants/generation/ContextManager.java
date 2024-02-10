@@ -14,7 +14,7 @@ public final class ContextManager {
     private static final Map<String, ContextConstructor> registeredContexts = new HashMap<>();
 
     static {
-        registerContext("loot_table", LootTableContext::new);
+        registerContext("loot-table", LootTableContext::new);
         registerContext("trading", VillagerTradeContext::new);
         registerContext("death", MobDeathContext::new);
         registerContext("spawn", MobSpawnContext::new);

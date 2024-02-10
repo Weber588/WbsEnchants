@@ -160,11 +160,6 @@ public class UnshakableEnchant extends WbsEnchantment {
     }
 
     @Override
-    public boolean conflictsWith(@NotNull Enchantment enchantment) {
-        return false;
-    }
-
-    @Override
     public boolean canEnchantItem(@NotNull ItemStack itemStack) {
         return itemStack.getType() == Material.LEAD;
     }

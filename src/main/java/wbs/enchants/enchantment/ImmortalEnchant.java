@@ -381,10 +381,4 @@ public class ImmortalEnchant extends WbsEnchantment {
     public boolean isCursed() {
         return false;
     }
-
-    @Override
-    public boolean conflictsWith(@NotNull Enchantment enchantment) {
-        // TODO: Make this conflict with unbreaking????
-        return false;
-    }
 }

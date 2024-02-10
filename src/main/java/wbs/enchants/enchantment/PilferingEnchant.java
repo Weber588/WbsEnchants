@@ -22,6 +22,7 @@ import wbs.utils.util.WbsMath;
 
 import java.util.List;
 import java.util.Random;
+import java.util.Set;
 
 public class PilferingEnchant extends WbsEnchantment implements DamageEnchant {
     private static final int DROP_CHANCE_PER_LEVEL = 5;
@@ -70,8 +71,8 @@ public class PilferingEnchant extends WbsEnchantment implements DamageEnchant {
     }
 
     @Override
-    public boolean conflictsWith(@NotNull Enchantment enchantment) {
-        return matches(enchantment, LOOT_BONUS_MOBS);
+    public Set<Enchantment> getDirectConflicts() {
+        return Set.of(LOOT_BONUS_MOBS);
     }
 
     @Override

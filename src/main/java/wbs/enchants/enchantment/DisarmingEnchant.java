@@ -20,6 +20,7 @@ import wbs.enchants.util.EntityUtils;
 import wbs.utils.util.WbsMath;
 
 import java.util.Random;
+import java.util.Set;
 
 public class DisarmingEnchant extends WbsEnchantment implements DamageEnchant {
     private static final Random RANDOM = new Random(System.currentTimeMillis());
@@ -124,8 +125,8 @@ public class DisarmingEnchant extends WbsEnchantment implements DamageEnchant {
     }
 
     @Override
-    public boolean conflictsWith(@NotNull Enchantment enchantment) {
-        return matches(enchantment, KNOCKBACK);
+    public Set<Enchantment> getDirectConflicts() {
+        return Set.of(KNOCKBACK);
     }
 
     @Override

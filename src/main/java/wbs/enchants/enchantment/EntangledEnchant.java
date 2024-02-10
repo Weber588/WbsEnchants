@@ -244,11 +244,6 @@ public class EntangledEnchant extends WbsEnchantment {
     }
 
     @Override
-    public boolean conflictsWith(@NotNull Enchantment enchantment) {
-        return false;
-    }
-
-    @Override
     public @NotNull String getDescription() {
         return "Crouch and punch a container (chest, barrel etc) to \"entangle\" your tool to it. Once entangled, " +
                 "drops from blocks broken will go straight to that chest anywhere in the world, so long as it has " +

@@ -2,6 +2,7 @@ package wbs.enchants.util;
 
 import me.sciguymjm.uberenchant.api.utils.UberConfiguration;
 import org.bukkit.enchantments.Enchantment;
+import wbs.enchants.WbsEnchantment;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -12,17 +13,21 @@ public class EnchantUtils {
             return true;
         }
 
-        return getConflictsWith(a).contains(b);
+        return getConflictsWith(b).contains(a);
     }
 
     public static List<Enchantment> getConflictsWith(Enchantment enchant) {
-        return getAllEnchants().stream()
+        return getConflictsWith(enchant, getAllEnchants());
+    }
+
+    public static List<Enchantment> getConflictsWith(Enchantment enchant, List<Enchantment> toCheck) {
+        return toCheck.stream()
                 .filter(check -> directlyConflictsWith(enchant, check))
                 .collect(Collectors.toList());
     }
 
     public static boolean directlyConflictsWith(Enchantment a, Enchantment b) {
-        return a == b || a.equals(b) || a.conflictsWith(b) || b.conflictsWith(a);
+        return a == b || a.equals(b) || WbsEnchantment.matches(a, b) || a.conflictsWith(b) || b.conflictsWith(a);
     }
 
     public static List<Enchantment> getAllEnchants() {

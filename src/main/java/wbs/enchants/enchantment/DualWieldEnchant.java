@@ -161,11 +161,6 @@ public class DualWieldEnchant extends WbsEnchantment implements DamageEnchant {
     }
 
     @Override
-    public boolean conflictsWith(@NotNull Enchantment enchantment) {
-        return false;
-    }
-
-    @Override
     public boolean canEnchantItem(@NotNull ItemStack itemStack) {
         return Tag.ITEMS_SWORDS.isTagged(itemStack.getType());
     }

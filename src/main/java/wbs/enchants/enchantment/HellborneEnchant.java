@@ -85,11 +85,6 @@ public class HellborneEnchant extends WbsEnchantment {
     }
 
     @Override
-    public boolean conflictsWith(@NotNull Enchantment enchantment) {
-        return false;
-    }
-
-    @Override
     public @NotNull String getDescription() {
         return "You have strength and immunity to fire tick damage, with strength level relating to the " +
                 "level of the enchantment while you're on fire.";

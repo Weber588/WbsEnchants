@@ -210,11 +210,6 @@ public class TransferenceEnchant extends WbsEnchantment {
     }
 
     @Override
-    public boolean conflictsWith(@NotNull Enchantment enchantment) {
-        return false;
-    }
-
-    @Override
     public boolean canEnchantItem(@NotNull ItemStack itemStack) {
         return itemStack.getType() == Material.FILLED_MAP;
     }

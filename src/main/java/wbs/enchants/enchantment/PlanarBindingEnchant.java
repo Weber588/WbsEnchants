@@ -157,11 +157,6 @@ public class PlanarBindingEnchant extends WbsEnchantment {
     }
 
     @Override
-    public boolean conflictsWith(@NotNull Enchantment enchantment) {
-        return false;
-    }
-
-    @Override
     public @NotNull String getDescription() {
         return "After hitting a mob, it is unable to teleport for " + TIME_PER_LEVEL + " seconds (per level).";
     }

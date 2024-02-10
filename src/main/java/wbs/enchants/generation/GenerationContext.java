@@ -72,7 +72,7 @@ public abstract class GenerationContext implements Listener {
             int staticLevel = levelSection.getInt("level", 1);
             double scalingFactor = levelSection.getDouble("scaling-factor", 2);
 
-            String modeString = Objects.requireNonNull(section.getString(levelKey));
+            String modeString = levelSection.getString("mode", "");
             LevelMode mode = WbsEnums.getEnumFromString(LevelMode.class, modeString);
             if (mode == null) {
                 throw new InvalidConfigurationException("Invalid mode or static level: " + modeString);
@@ -109,7 +109,8 @@ public abstract class GenerationContext implements Listener {
         if (entity == null) {
             return true;
         }
-        return conditions.stream().anyMatch(condition -> condition.isNegated() ^ condition.test(entity));
+        return conditions.isEmpty() || conditions.stream()
+                .anyMatch(condition -> condition.isNegated() ^ condition.test(entity));
     }
 
     @Contract("null -> true")
@@ -117,7 +118,8 @@ public abstract class GenerationContext implements Listener {
         if (block == null) {
             return true;
         }
-        return conditions.stream().anyMatch(condition -> condition.isNegated() ^ condition.test(block));
+        return conditions.isEmpty() || conditions.stream()
+                .anyMatch(condition -> condition.isNegated() ^ condition.test(block));
     }
 
     @Contract("null -> true")
@@ -125,7 +127,8 @@ public abstract class GenerationContext implements Listener {
         if (location == null) {
             return true;
         }
-        return conditions.stream().anyMatch(condition -> condition.isNegated() ^ condition.test(location));
+        return conditions.isEmpty() || conditions.stream()
+                .anyMatch(condition -> condition.isNegated() ^ condition.test(location));
     }
 
     @Contract("null -> true")
@@ -133,7 +136,8 @@ public abstract class GenerationContext implements Listener {
         if (player == null) {
             return true;
         }
-        return conditions.stream().anyMatch(condition -> condition.isNegated() ^ condition.testTrigger(player));
+        return conditions.isEmpty() || conditions.stream()
+                .anyMatch(condition -> condition.isNegated() ^ condition.testTrigger(player));
     }
 
     protected boolean shouldRun() {

@@ -18,6 +18,8 @@ import wbs.utils.util.entities.selector.RadiusSelector;
 import wbs.utils.util.particles.NormalParticleEffect;
 import wbs.utils.util.particles.WbsParticleGroup;
 
+import java.util.Set;
+
 public class DefusalEnchant extends WbsEnchantment implements DamageEnchant {
     private static final int DEFAULT_CREEPER_FUSE_TICKS = 30;
     private static final int CHANCE_PER_LEVEL = 25;
@@ -67,8 +69,8 @@ public class DefusalEnchant extends WbsEnchantment implements DamageEnchant {
     }
 
     @Override
-    public boolean conflictsWith(@NotNull Enchantment enchantment) {
-        return matches(enchantment, KNOCKBACK);
+    public Set<Enchantment> getDirectConflicts() {
+        return Set.of(KNOCKBACK);
     }
 
     @Override

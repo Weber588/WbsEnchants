@@ -41,6 +41,7 @@ public abstract class WbsEnchantment extends UberEnchantment implements UberRegi
 
     private final String stringKey;
 
+    protected boolean isEnabled = true;
     protected double cost = EnchantsSettings.DEFAULT_COST;
     protected double costMultiplier = EnchantsSettings.DEFAULT_COST_MODIFIER;
     @NotNull
@@ -233,6 +234,7 @@ public abstract class WbsEnchantment extends UberEnchantment implements UberRegi
     public ConfigurationSection buildConfigurationSection(YamlConfiguration baseFile) {
         ConfigurationSection section = baseFile.createSection(getName());
 
+        section.set("enabled", isEnabled);
         section.set("min_level", getStartLevel());
         section.set("max_level", getMaxLevel());
         section.set("cost", getCost());
@@ -250,6 +252,7 @@ public abstract class WbsEnchantment extends UberEnchantment implements UberRegi
 
     @Override
     public void configure(ConfigurationSection section, String directory) {
+        isEnabled = section.getBoolean("enabled", isEnabled);
         cost = section.getDouble("cost", getCost());
         costMultiplier = section.getDouble("cost_multiplier", getCostMultiplier());
         removalCost = section.getDouble("removal_cost", getRemovalCost());
@@ -340,5 +343,34 @@ public abstract class WbsEnchantment extends UberEnchantment implements UberRegi
 
     public void sendActionBar(String message, Player player) {
         plugin.sendActionBar(message, player);
+    }
+
+    public boolean isEnabled() {
+        return isEnabled;
+    }
+
+    @Override
+    public boolean conflictsWith(@NotNull Enchantment enchantment) {
+        Set<Enchantment> knownDirectConflicts = new HashSet<>(getDirectConflicts());
+        knownDirectConflicts.addAll(getIndirectConflicts());
+
+        boolean directlyConflicts = knownDirectConflicts.stream()
+                .anyMatch(check -> WbsEnchantment.matches(check, enchantment));
+
+        if (directlyConflicts) {
+            return true;
+        }
+
+        // Does not directly conflict -- check if any indirect conflicts conflict.
+        return getIndirectConflicts().stream()
+                .anyMatch(check -> check.conflictsWith(enchantment));
+    }
+
+    public Set<Enchantment> getDirectConflicts() {
+        return getIndirectConflicts();
+    }
+
+    public Set<Enchantment> getIndirectConflicts() {
+        return new HashSet<>();
     }
 }

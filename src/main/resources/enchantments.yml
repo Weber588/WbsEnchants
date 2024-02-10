@@ -1,4 +1,5 @@
 vein_miner:
+  enabled: true
   min_level: 0
   max_level: 4
   cost: 1000.0
@@ -8,8 +9,8 @@ vein_miner:
   extraction_cost: 2000.0
   use_on_anything: false
   aliases: []
-
 excavator:
+  enabled: true
   min_level: 0
   max_level: 2
   cost: 1000.0
@@ -20,6 +21,7 @@ excavator:
   use_on_anything: false
   aliases: []
 entangled:
+  enabled: true
   min_level: 0
   max_level: 0
   cost: 1000.0
@@ -30,6 +32,7 @@ entangled:
   use_on_anything: false
   aliases: []
 harvester:
+  enabled: true
   min_level: 0
   max_level: 2
   cost: 1000.0
@@ -40,6 +43,7 @@ harvester:
   use_on_anything: false
   aliases: []
 vampiric:
+  enabled: true
   min_level: 0
   max_level: 3
   cost: 1000.0
@@ -50,6 +54,7 @@ vampiric:
   use_on_anything: false
   aliases: []
 strip_miner:
+  enabled: true
   min_level: 0
   max_level: 3
   cost: 1000.0
@@ -60,6 +65,7 @@ strip_miner:
   use_on_anything: false
   aliases: []
 void_walker:
+  enabled: true
   min_level: 0
   max_level: 0
   cost: 1000.0
@@ -70,6 +76,7 @@ void_walker:
   use_on_anything: false
   aliases: []
 blast_miner:
+  enabled: true
   min_level: 0
   max_level: 5
   cost: 1000.0
@@ -80,6 +87,7 @@ blast_miner:
   use_on_anything: false
   aliases: []
 planar_binding:
+  enabled: true
   min_level: 0
   max_level: 3
   cost: 1000.0
@@ -90,6 +98,7 @@ planar_binding:
   use_on_anything: false
   aliases: []
 disarming:
+  enabled: true
   min_level: 0
   max_level: 3
   cost: 1000.0
@@ -100,6 +109,7 @@ disarming:
   use_on_anything: false
   aliases: []
 frenzied:
+  enabled: true
   min_level: 0
   max_level: 0
   cost: 1000.0
@@ -110,6 +120,7 @@ frenzied:
   use_on_anything: false
   aliases: []
 lightweight:
+  enabled: true
   min_level: 0
   max_level: 3
   cost: 1000.0
@@ -120,6 +131,7 @@ lightweight:
   use_on_anything: false
   aliases: []
 hellborne:
+  enabled: true
   min_level: 0
   max_level: 2
   cost: 1000.0
@@ -130,6 +142,7 @@ hellborne:
   use_on_anything: false
   aliases: []
 decay:
+  enabled: true
   min_level: 0
   max_level: 5
   cost: 1000.0
@@ -140,6 +153,7 @@ decay:
   use_on_anything: false
   aliases: []
 scorching:
+  enabled: true
   min_level: 0
   max_level: 0
   cost: 1000.0
@@ -150,6 +164,7 @@ scorching:
   use_on_anything: false
   aliases: []
 frostburn:
+  enabled: true
   min_level: 0
   max_level: 3
   cost: 1000.0
@@ -160,6 +175,7 @@ frostburn:
   use_on_anything: false
   aliases: []
 ender_shot:
+  enabled: true
   min_level: 0
   max_level: 0
   cost: 1000.0
@@ -170,6 +186,128 @@ ender_shot:
   use_on_anything: false
   aliases: []
 immortal:
+  enabled: true
+  min_level: 0
+  max_level: 1
+  cost: 1000.0
+  cost_multiplier: 1000.0
+  cost_for_level: {}
+  removal_cost: 100.0
+  extraction_cost: 2000.0
+  use_on_anything: false
+  aliases: []
+dual_wield:
+  enabled: true
+  min_level: 0
+  max_level: 0
+  cost: 1000.0
+  cost_multiplier: 1000.0
+  cost_for_level: {}
+  removal_cost: 100.0
+  extraction_cost: 2000.0
+  use_on_anything: false
+  aliases: []
+pinpoint:
+  enabled: true
+  min_level: 0
+  max_level: 0
+  cost: 1000.0
+  cost_multiplier: 1000.0
+  cost_for_level: {}
+  removal_cost: 100.0
+  extraction_cost: 2000.0
+  use_on_anything: false
+  aliases: []
+frictionless:
+  enabled: true
+  min_level: 0
+  max_level: 3
+  cost: 1000.0
+  cost_multiplier: 1000.0
+  cost_for_level: {}
+  removal_cost: 100.0
+  extraction_cost: 2000.0
+  use_on_anything: false
+  aliases: []
+unshakable:
+  enabled: true
+  min_level: 0
+  max_level: 1
+  cost: 1000.0
+  cost_multiplier: 1000.0
+  cost_for_level: {}
+  removal_cost: 100.0
+  extraction_cost: 2000.0
+  use_on_anything: false
+  aliases: []
+transference:
+  enabled: true
+  min_level: 0
+  max_level: 1
+  cost: 1000.0
+  cost_multiplier: 1000.0
+  cost_for_level: {}
+  removal_cost: 100.0
+  extraction_cost: 2000.0
+  use_on_anything: false
+  aliases: []
+unsinkable:
+  enabled: true
+  min_level: 0
+  max_level: 1
+  cost: 1000.0
+  cost_multiplier: 1000.0
+  cost_for_level: {}
+  removal_cost: 100.0
+  extraction_cost: 2000.0
+  use_on_anything: false
+  aliases: []
+defusal:
+  enabled: true
+  min_level: 0
+  max_level: 3
+  cost: 1000.0
+  cost_multiplier: 1000.0
+  cost_for_level: {}
+  removal_cost: 100.0
+  extraction_cost: 2000.0
+  use_on_anything: false
+  aliases: []
+pilfering:
+  enabled: true
+  min_level: 0
+  max_level: 3
+  cost: 1000.0
+  cost_multiplier: 1000.0
+  cost_for_level: {}
+  removal_cost: 100.0
+  extraction_cost: 2000.0
+  use_on_anything: false
+  aliases: []
+resilience:
+  enabled: true
+  min_level: 0
+  max_level: 1
+  cost: 1000.0
+  cost_multiplier: 1000.0
+  cost_for_level: {}
+  removal_cost: 100.0
+  extraction_cost: 2000.0
+  use_on_anything: false
+  aliases: []
+manathirst:
+  enabled: true
+  min_level: 0
+  max_level: 1
+  cost: 1000.0
+  cost_multiplier: 1000.0
+  cost_for_level: {}
+  removal_cost: 100.0
+  extraction_cost: 2000.0
+  use_on_anything: false
+  aliases: []
+shulkenforced:
+  enabled: true
   min_level: 0
   max_level: 1
   cost: 1000.0

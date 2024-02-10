@@ -46,6 +46,8 @@ public class EnchantsSettings extends WbsSettings {
     public static final DefusalEnchant DEFUSAL = new DefusalEnchant();
     public static final PilferingEnchant PILFERING = new PilferingEnchant();
     public static final ResilienceEnchant RESILIENCE = new ResilienceEnchant();
+    public static final ManathirstEnchant MANATHIRST = new ManathirstEnchant();
+    public static final ShulkenforcedEnchant SHULKENFORCED = new ShulkenforcedEnchant();
 
     public static void register(WbsEnchantment enchantment) {
         REGISTERED_ENCHANTMENTS.add(enchantment);
@@ -91,6 +93,10 @@ public class EnchantsSettings extends WbsSettings {
                 enchant.buildConfigurationSection(enchantsFile);
             } else {
                 enchant.configure(enchantSection, enchantsFile.getName() + "/" + enchant.getName());
+            }
+
+            if (!enchant.isEnabled()) {
+                continue;
             }
 
             enchant.registerUberRecord();

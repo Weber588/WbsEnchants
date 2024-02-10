@@ -98,11 +98,6 @@ public class FrenziedEnchant extends WbsEnchantment implements DamageEnchant {
     }
 
     @Override
-    public boolean conflictsWith(@NotNull Enchantment enchantment) {
-        return false;
-    }
-
-    @Override
     public @NotNull String getDescription() {
         double defaultDuration = (double) BASE_DURATION / 20;
         return "When you kill an enemy, you gain increased attack speed for " + defaultDuration + " seconds. If your " +

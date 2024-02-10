@@ -140,11 +140,6 @@ public class VampiricEnchant extends WbsEnchantment implements DamageEnchant {
     }
 
     @Override
-    public boolean conflictsWith(@NotNull Enchantment enchantment) {
-        return false;
-    }
-
-    @Override
     public @NotNull String getDescription() {
         return "When you damage a mob, you have a " + CHANCE_PER_LEVEL + "% chance per level to gain " + HEAL_PERCENT +
                 "% of the damage dealt, that expires after " + DURATION_PER_LEVEL / 20 + " seconds (per level). " +

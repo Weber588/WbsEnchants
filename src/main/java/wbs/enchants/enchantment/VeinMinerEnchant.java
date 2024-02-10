@@ -22,6 +22,7 @@ import wbs.utils.util.WbsMath;
 
 import java.util.List;
 import java.util.Random;
+import java.util.Set;
 import java.util.function.Predicate;
 
 public class VeinMinerEnchant extends AbstractMultiBreakEnchant {
@@ -87,8 +88,8 @@ public class VeinMinerEnchant extends AbstractMultiBreakEnchant {
     }
 
     @Override
-    public boolean conflictsWith(@NotNull Enchantment enchantment) {
-        return matches(enchantment, EnchantsSettings.BLAST_MINER);
+    public Set<Enchantment> getDirectConflicts() {
+        return Set.of(EnchantsSettings.BLAST_MINER);
     }
 
     @Override

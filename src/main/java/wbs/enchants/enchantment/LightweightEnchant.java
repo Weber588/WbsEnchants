@@ -135,11 +135,6 @@ public class LightweightEnchant extends WbsEnchantment implements DamageEnchant 
     }
 
     @Override
-    public boolean conflictsWith(@NotNull Enchantment enchantment) {
-        return false;
-    }
-
-    @Override
     public @NotNull String getDescription() {
         return "While holding a Lightweight shield in your offhand, you have a " + AUTOBLOCK_CHANCE + "% chance per " +
                 "level of automatically blocking an attack, if you could block it with the shield.";

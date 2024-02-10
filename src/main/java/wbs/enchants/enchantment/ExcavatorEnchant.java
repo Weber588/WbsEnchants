@@ -78,11 +78,6 @@ public class ExcavatorEnchant extends AbstractMultiBreakEnchant {
     }
 
     @Override
-    public boolean conflictsWith(@NotNull Enchantment enchantment) {
-        return false;
-    }
-
-    @Override
     public @NotNull String getDescription() {
         int maxWidth = getMaxLevel() * 2 + 1;
         return "Mines a 3x3 square at level 1, increasing the width by 2 per level, up to " + maxWidth +  " at level "

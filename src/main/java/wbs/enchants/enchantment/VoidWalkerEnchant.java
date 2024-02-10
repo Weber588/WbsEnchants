@@ -100,11 +100,6 @@ public class VoidWalkerEnchant extends WbsEnchantment {
     }
 
     @Override
-    public boolean conflictsWith(@NotNull Enchantment enchantment) {
-        return false;
-    }
-
-    @Override
     public @NotNull String getDescription() {
         return "When you fall into the void, you're immediately teleported to the top of the world - get that bucket " +
                 "clutch ready!";
