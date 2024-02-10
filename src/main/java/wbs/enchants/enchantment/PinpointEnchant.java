@@ -12,7 +12,6 @@ import org.bukkit.event.entity.EntityShootBowEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
-import org.bukkit.projectiles.ProjectileSource;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import wbs.enchants.WbsEnchantment;
@@ -55,8 +54,6 @@ public class PinpointEnchant extends WbsEnchantment implements DamageEnchant {
             return;
         }
 
-        ProjectileSource source = projectile.getShooter();
-
         ItemStack item = event.getBow();
         if (item == null) {
             item = event.getConsumable();
@@ -90,7 +87,7 @@ public class PinpointEnchant extends WbsEnchantment implements DamageEnchant {
     @NotNull
     @Override
     public EnchantmentTarget getItemTarget() {
-        return null;
+        return EnchantmentTarget.BOW;
     }
 
     @Override
