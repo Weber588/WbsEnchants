@@ -174,7 +174,7 @@ public class ImmortalEnchant extends WbsEnchantment {
         int durabilityToTake = (int) Math.max(1, Math.floor(event.getDamage() / 4));
 
         for (ItemStack armourItem : equipment.getArmorContents()) {
-            if (containsEnchantment(armourItem)) {
+            if (armourItem != null && containsEnchantment(armourItem)) {
                 if (willBreak(armourItem, durabilityToTake)) {
                     notifyImmortal(player, armourItem);
                     unequip(player, armourItem);
