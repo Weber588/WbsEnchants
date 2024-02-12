@@ -48,6 +48,8 @@ public class EnchantsSettings extends WbsSettings {
     public static final ResilienceEnchant RESILIENCE = new ResilienceEnchant();
     public static final ManathirstEnchant MANATHIRST = new ManathirstEnchant();
     public static final ShulkenforcedEnchant SHULKENFORCED = new ShulkenforcedEnchant();
+    public static final DivineResonanceEnchant DIVINE_RESONANCE = new DivineResonanceEnchant();
+    public static final AridityEnchant ARIDITY = new AridityEnchant();
 
     public static void register(WbsEnchantment enchantment) {
         REGISTERED_ENCHANTMENTS.add(enchantment);

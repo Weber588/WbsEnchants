@@ -20,7 +20,7 @@ import wbs.enchants.WbsEnchants;
 import wbs.enchants.util.EventUtils;
 import wbs.utils.util.WbsEnums;
 
-public interface VehicleEnchant {
+public interface VehicleEnchant extends EnchantInterface {
     default void registerVehicleEvents() {
         EventUtils.register(EntityPlaceEvent.class, this::onPlace);
         EventUtils.register(VehicleDestroyEvent.class, this::onBreak);
@@ -176,7 +176,5 @@ public interface VehicleEnchant {
 
     }
 
-    @NotNull
-    WbsEnchantment getThisEnchantment();
     boolean canEnchant(Entity entity);
 }

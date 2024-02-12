@@ -1,6 +1,5 @@
 package wbs.enchants.generation.contexts;
 
-import me.sciguymjm.uberenchant.api.utils.UberUtils;
 import org.bukkit.Material;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.inventory.ItemStack;
@@ -20,6 +19,7 @@ public abstract class ExistingLootContext extends GenerationContext {
     private int maxEnchantments = 1;
     private double addChance = 0;
     private List<Material> addMaterialOptions = List.of(Material.ENCHANTED_BOOK);
+    private boolean clear;
 
     public ExistingLootContext(String key, WbsEnchantment enchantment, ConfigurationSection section, String directory) {
         super(key, enchantment, section, directory);
@@ -27,6 +27,7 @@ public abstract class ExistingLootContext extends GenerationContext {
         bookToEnchantedBookChance = section.getDouble("convert-to-enchanted-book-chance", bookToEnchantedBookChance);
         maxEnchantments = section.getInt("max-enchantments", maxEnchantments);
         addChance = section.getDouble("add-chance", addChance);
+        clear = section.getBoolean("clear", clear);
 
         if (section.isList("add-materials")) {
             List<String> materialOptions = section.getStringList("add-materials");
@@ -56,7 +57,15 @@ public abstract class ExistingLootContext extends GenerationContext {
 
     protected int tryAddingTo(List<ItemStack> existing) {
         int generated = 0;
+
+        if (addChance > 0 && clear) {
+            existing.clear();
+        }
+
         for (ItemStack stack : existing) {
+            if (stack == null) {
+                continue;
+            }
             Material originalType = stack.getType();
             int originalAmount = stack.getAmount();
             boolean convertedToEBook = false;

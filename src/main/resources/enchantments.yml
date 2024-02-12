@@ -317,3 +317,25 @@ shulkenforced:
   extraction_cost: 2000.0
   use_on_anything: false
   aliases: []
+divine_resonance:
+  enabled: true
+  min_level: 0
+  max_level: 1
+  cost: 1000.0
+  cost_multiplier: 1000.0
+  cost_for_level: {}
+  removal_cost: 100.0
+  extraction_cost: 2000.0
+  use_on_anything: false
+  aliases: []
+aridity:
+  enabled: true
+  min_level: 0
+  max_level: 3
+  cost: 1000.0
+  cost_multiplier: 1000.0
+  cost_for_level: {}
+  removal_cost: 100.0
+  extraction_cost: 2000.0
+  use_on_anything: false
+  aliases: []

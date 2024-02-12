@@ -33,6 +33,7 @@ import org.jetbrains.annotations.Nullable;
 import wbs.enchants.WbsEnchantment;
 import wbs.enchants.WbsEnchants;
 import wbs.enchants.util.DamageUtils;
+import wbs.enchants.util.EntityUtils;
 import wbs.enchants.util.MaterialUtils;
 import wbs.utils.util.WbsEnums;
 import wbs.utils.util.string.WbsStringify;
@@ -84,7 +85,7 @@ public class ImmortalEnchant extends WbsEnchantment {
                     " but please report this error.");
             WbsEnchants.getInstance().getLogger().info("Item: " + item.serialize());
 
-            giveSafely(event.getPlayer(), item);
+            EntityUtils.giveSafely(event.getPlayer(), item);
         }
     }
 
@@ -101,7 +102,7 @@ public class ImmortalEnchant extends WbsEnchantment {
             case FEET, LEGS, CHEST, HEAD -> {
                 if (item.equals(equipment.getItem(slot))) {
                     equipment.setItem(slot, new ItemStack(Material.AIR));
-                    giveSafely(player, item);
+                    EntityUtils.giveSafely(player, item);
                     return;
                 }
             }
@@ -118,13 +119,6 @@ public class ImmortalEnchant extends WbsEnchantment {
             return false;
         }
         return afterDamage + damageable.getDamage() >= item.getType().getMaxDurability();
-    }
-
-    private void giveSafely(Player player, ItemStack item) {
-        HashMap<Integer, ItemStack> failed = player.getInventory().addItem(item);
-        if (!failed.isEmpty()) {
-            player.getWorld().dropItemNaturally(player.getLocation(), item);
-        }
     }
 
     private void notifyImmortal(@NotNull Player player, @Nullable ItemStack item) {

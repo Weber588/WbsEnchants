@@ -10,7 +10,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import wbs.enchants.util.EventUtils;
 
-public interface DamageEnchant {
+public interface DamageEnchant extends EnchantInterface {
     default void registerDamageEvent() {
         EventUtils.register(EntityDamageByEntityEvent.class, this::onDamage);
     }

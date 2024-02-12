@@ -3,8 +3,11 @@ package wbs.enchants.util;
 import org.bukkit.Tag;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
 import org.bukkit.potion.PotionEffectType;
 import wbs.utils.util.entities.WbsEntityUtil;
+
+import java.util.HashMap;
 
 public class EntityUtils {
     public static boolean willCrit(Player player) {
@@ -28,5 +31,12 @@ public class EntityUtils {
             case SNOWMAN, STRAY, POLAR_BEAR -> true;
             default -> false;
         };
+    }
+
+    public static void giveSafely(Player player, ItemStack item) {
+        HashMap<Integer, ItemStack> failed = player.getInventory().addItem(item);
+        if (!failed.isEmpty()) {
+            player.getWorld().dropItemNaturally(player.getLocation(), item);
+        }
     }
 }
