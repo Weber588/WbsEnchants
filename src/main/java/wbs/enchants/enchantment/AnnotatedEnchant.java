@@ -66,4 +66,9 @@ public class AnnotatedEnchant extends WbsEnchantment {
     public boolean canEnchantItem(@NotNull ItemStack itemStack) {
         return itemStack.getType() == Material.FILLED_MAP;
     }
+
+    @Override
+    public @NotNull String getTargetDescription() {
+        return "Map";
+    }
 }

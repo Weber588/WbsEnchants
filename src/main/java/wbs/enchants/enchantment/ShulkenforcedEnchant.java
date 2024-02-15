@@ -84,4 +84,9 @@ public class ShulkenforcedEnchant extends WbsEnchantment implements VehicleEncha
             default -> false;
         };
     }
+
+    @Override
+    public @NotNull String getTargetDescription() {
+        return "Vehicles";
+    }
 }

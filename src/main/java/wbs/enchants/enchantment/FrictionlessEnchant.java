@@ -82,4 +82,9 @@ public class FrictionlessEnchant extends WbsEnchantment implements VehicleEnchan
     public boolean canEnchantItem(@NotNull ItemStack itemStack) {
         return itemStack.getType() == Material.MINECART;
     }
+
+    @Override
+    public @NotNull String getTargetDescription() {
+        return "Minecart";
+    }
 }

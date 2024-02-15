@@ -95,4 +95,9 @@ public class DivineResonanceEnchant extends WbsEnchantment implements BlockEncha
     public boolean canEnchant(TileState state) {
         return state instanceof Bell;
     }
+
+    @Override
+    public @NotNull String getTargetDescription() {
+        return "Bell";
+    }
 }

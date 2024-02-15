@@ -157,4 +157,9 @@ public class UnsinkableEnchant extends WbsEnchantment implements VehicleEnchant 
     public boolean canEnchantItem(@NotNull ItemStack itemStack) {
         return Tag.ITEMS_BOATS.isTagged(itemStack.getType()) || Tag.ITEMS_CHEST_BOATS.isTagged(itemStack.getType());
     }
+
+    @Override
+    public @NotNull String getTargetDescription() {
+        return "Boat";
+    }
 }

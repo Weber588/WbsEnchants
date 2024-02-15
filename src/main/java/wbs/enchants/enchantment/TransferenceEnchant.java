@@ -214,6 +214,11 @@ public class TransferenceEnchant extends WbsEnchantment {
         return itemStack.getType() == Material.FILLED_MAP;
     }
 
+    @Override
+    public @NotNull String getTargetDescription() {
+        return "Map";
+    }
+
     private static class MockCanvas implements MapCanvas {
         private final MapView mapView;
         private final MapMeta meta;

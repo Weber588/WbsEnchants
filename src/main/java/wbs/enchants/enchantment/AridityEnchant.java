@@ -137,4 +137,9 @@ public class AridityEnchant extends WbsEnchantment implements NonPersistentBlock
         return itemStack.getType() == Material.SPONGE ||
                 itemStack.getType() == Material.WET_SPONGE;
     }
+
+    @Override
+    public @NotNull String getTargetDescription() {
+        return "Sponge";
+    }
 }

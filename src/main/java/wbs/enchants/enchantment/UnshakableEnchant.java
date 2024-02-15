@@ -164,6 +164,11 @@ public class UnshakableEnchant extends WbsEnchantment {
         return itemStack.getType() == Material.LEAD;
     }
 
+    @Override
+    public @NotNull String getTargetDescription() {
+        return "Leash";
+    }
+
     private static final String BAT_RANT = "&wBats are, for some ungodly reason, " +
             "completely unleashable. It's one of a small few mobs that you can't force a leash on. " +
             "Why? I have no idea. They just can't be. I don't know why. I truly have no idea. " +
