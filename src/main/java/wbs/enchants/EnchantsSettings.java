@@ -50,6 +50,7 @@ public class EnchantsSettings extends WbsSettings {
     public static final ShulkenforcedEnchant SHULKENFORCED = new ShulkenforcedEnchant();
     public static final DivineResonanceEnchant DIVINE_RESONANCE = new DivineResonanceEnchant();
     public static final AridityEnchant ARIDITY = new AridityEnchant();
+    public static final LavaWalkerEnchant LAVA_WALKER = new LavaWalkerEnchant();
 
     public static void register(WbsEnchantment enchantment) {
         REGISTERED_ENCHANTMENTS.add(enchantment);
