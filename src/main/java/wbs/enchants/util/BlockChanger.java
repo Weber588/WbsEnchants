@@ -26,8 +26,8 @@ public class BlockChanger {
     }
 
     @NotNull
-    public static BlockChanger prepare(@NotNull List<Block> blocksToBreak) {
-        return new BlockChanger(blocksToBreak);
+    public static BlockChanger prepare(@NotNull List<Block> blocksToUpdate) {
+        return new BlockChanger(blocksToUpdate);
     }
 
     private int delayTicks = 0;

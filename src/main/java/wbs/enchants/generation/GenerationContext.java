@@ -163,7 +163,7 @@ public abstract class GenerationContext implements Listener {
 
     protected record LevelGenerator(WbsEnchantment enchantment, int staticLevel, double scalingFactor, LevelMode mode) {
         public LevelGenerator(WbsEnchantment enchantment, LevelMode mode) {
-            this(enchantment, 0, 2, mode);
+            this(enchantment, 1, 2, mode);
         }
 
         public LevelGenerator(WbsEnchantment enchantment, int staticLevel) {
@@ -186,6 +186,8 @@ public abstract class GenerationContext implements Listener {
                     int toReturn = (int) (Math.log(seed) / Math.log(scalingFactor));
                     if (mode() == LevelMode.WEIGHTED_LARGE) {
                         toReturn = maxLevel - toReturn;
+                    } else {
+                        toReturn += 1;
                     }
                     yield toReturn;
                 }
