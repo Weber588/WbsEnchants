@@ -1,13 +1,12 @@
 package wbs.enchants.enchantment;
 
-import me.sciguymjm.uberenchant.api.utils.Rarity;
+import io.papermc.paper.enchantments.EnchantmentRarity;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.Tag;
 import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.block.data.Waterlogged;
-import org.bukkit.enchantments.Enchantment;
 import org.bukkit.enchantments.EnchantmentTarget;
 import org.bukkit.entity.Boat;
 import org.bukkit.entity.Entity;
@@ -117,8 +116,8 @@ public class UnsinkableEnchant extends WbsEnchantment implements VehicleEnchant 
     }
 
     @Override
-    public Rarity getRarity() {
-        return Rarity.UNCOMMON;
+    public @NotNull EnchantmentRarity getRarity() {
+        return EnchantmentRarity.UNCOMMON;
     }
 
     @Override

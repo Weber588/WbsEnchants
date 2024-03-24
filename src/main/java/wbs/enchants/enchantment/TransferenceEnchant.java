@@ -2,9 +2,8 @@ package wbs.enchants.enchantment;
 
 import com.google.common.collect.HashBasedTable;
 import com.google.common.collect.Table;
-import me.sciguymjm.uberenchant.api.utils.Rarity;
+import io.papermc.paper.enchantments.EnchantmentRarity;
 import org.bukkit.*;
-import org.bukkit.enchantments.Enchantment;
 import org.bukkit.enchantments.EnchantmentTarget;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -20,7 +19,6 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import wbs.enchants.WbsEnchantment;
 import wbs.enchants.WbsEnchants;
-import wbs.utils.util.WbsMaterials;
 import wbs.utils.util.WbsMath;
 import wbs.utils.util.entities.WbsEntityUtil;
 import wbs.utils.util.particles.RingParticleEffect;
@@ -28,8 +26,8 @@ import wbs.utils.util.particles.WbsParticleGroup;
 import wbs.utils.util.providers.NumProvider;
 import wbs.utils.util.providers.generator.num.CycleGenerator;
 
-import java.awt.*;
 import java.awt.Color;
+import java.awt.*;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Random;
@@ -183,8 +181,8 @@ public class TransferenceEnchant extends WbsEnchantment {
     }
 
     @Override
-    public Rarity getRarity() {
-        return Rarity.RARE;
+    public @NotNull EnchantmentRarity getRarity() {
+        return EnchantmentRarity.RARE;
     }
 
     @Override
@@ -268,13 +266,11 @@ public class TransferenceEnchant extends WbsEnchantment {
             return new Color(base.getRed(), base.getGreen(), base.getGreen(), base.getAlpha());
         }
 
-        @SuppressWarnings("deprecation")
         @Override
         public void setPixel(int x, int z, byte b) {
             colourTable.put(x, z, MapPalette.getColor(b));
         }
 
-        @SuppressWarnings("deprecation")
         @Override
         public byte getPixel(int x, int z) {
             Color color = colourTable.get(x, z);
@@ -284,7 +280,6 @@ public class TransferenceEnchant extends WbsEnchantment {
             return 0;
         }
 
-        @SuppressWarnings("deprecation")
         @Override
         public byte getBasePixel(int x, int z) {
             return MapPalette.matchColor(getBasePixelColor(x, z));

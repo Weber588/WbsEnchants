@@ -1,15 +1,17 @@
 package wbs.enchants.util;
 
+import com.destroystokyo.paper.MaterialSetTag;
 import org.bukkit.Material;
+import org.bukkit.NamespacedKey;
 import org.bukkit.Tag;
 import org.bukkit.block.Block;
+import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import wbs.enchants.WbsEnchants;
 
-import java.util.Arrays;
-import java.util.LinkedList;
-import java.util.List;
+import java.util.*;
 
 @SuppressWarnings("unused")
 public class MaterialUtils {
@@ -117,6 +119,26 @@ public class MaterialUtils {
 
         // No mutual tag for Quartz ore
         return material == Material.NETHER_QUARTZ_ORE;
+    }
+
+    public static boolean isRepairMaterial(ItemStack stack, Material toCheck) {
+        if (stack.getType() == toCheck) {
+            return true;
+        }
+
+        return getRepairMaterials(stack).contains(toCheck);
+    }
+
+    // TODO: Make this configurable to move away from vanilla if desired?
+    public static Set<Material> getRepairMaterials(ItemStack stack) {
+        Set<Material> repairMaterials = new HashSet<>();
+        repairMaterials.add(stack.getType());
+
+        switch (stack.getType()) {
+            case Tag
+        }
+
+        return repairMaterials;
     }
 
     public static boolean isAgedCopper(Material type) {

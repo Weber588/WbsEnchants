@@ -1,15 +1,16 @@
 package wbs.enchants;
 
-import me.sciguymjm.uberenchant.api.UberEnchantment;
-import me.sciguymjm.uberenchant.api.utils.UberConfiguration;
-import me.sciguymjm.uberenchant.api.utils.UberUtils;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
+import org.bukkit.Registry;
 import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.enchantments.Enchantment;
+import org.bukkit.entity.EntityCategory;
 import org.bukkit.entity.Player;
 import org.bukkit.event.HandlerList;
 import org.bukkit.event.world.LootGenerateEvent;
@@ -24,21 +25,28 @@ import wbs.enchants.enchantment.helper.DamageEnchant;
 import wbs.enchants.enchantment.helper.VehicleEnchant;
 import wbs.enchants.generation.ContextManager;
 import wbs.enchants.generation.GenerationContext;
-import wbs.enchants.util.UberRegistrable;
+import wbs.enchants.generation.contexts.VillagerTradeContext;
+import wbs.enchants.util.EnchantUtils;
+import wbs.enchants.util.EnchantmentManager;
 import wbs.utils.exceptions.InvalidConfigurationException;
 import wbs.utils.util.WbsEnums;
 import wbs.utils.util.WbsMath;
 import wbs.utils.util.plugin.WbsPlugin;
+import wbs.utils.util.string.RomanNumerals;
+import wbs.utils.util.string.WbsStrings;
 
+import java.lang.reflect.Field;
 import java.util.*;
+import java.util.logging.Logger;
 
-public abstract class WbsEnchantment extends UberEnchantment implements UberRegistrable {
+public abstract class WbsEnchantment extends Enchantment {
     private static final Random RANDOM = new Random();
 
     public static boolean matches(@NotNull Enchantment a, @NotNull Enchantment b) {
         return Objects.equals(a, b) || a.getKey().equals(b.getKey());
     }
 
+    private final NamespacedKey key;
     private final String stringKey;
 
     protected boolean isEnabled = true;
@@ -56,10 +64,11 @@ public abstract class WbsEnchantment extends UberEnchantment implements UberRegi
 
     protected WbsPlugin plugin = WbsEnchants.getInstance();
 
-    public WbsEnchantment(String key) {
-        super(new NamespacedKey(WbsEnchants.getInstance(), key));
-        stringKey = key;
-        EnchantsSettings.register(this);
+    public WbsEnchantment(NamespacedKey key) {
+        super();
+        this.key = key;
+        stringKey = key.getKey();
+        EnchantmentManager.register(this);
 
         // These (and similar) can theoretically be called from the implementer itself, but this makes it harder to
         // accidentally forget it.
@@ -71,8 +80,10 @@ public abstract class WbsEnchantment extends UberEnchantment implements UberRegi
         }
     }
 
-    @NotNull
-    public abstract String getDescription();
+    public WbsEnchantment(String key) {
+        this(new NamespacedKey(WbsEnchants.getInstance(), key));
+    }
+
     @NotNull
     public String getTargetDescription() {
         return switch (getItemTarget()) {
@@ -84,7 +95,6 @@ public abstract class WbsEnchantment extends UberEnchantment implements UberRegi
         };
     }
 
-    @Override
     public String getPermission() {
         return "wbsenchants.enchantment." + getName();
     }
@@ -107,7 +117,7 @@ public abstract class WbsEnchantment extends UberEnchantment implements UberRegi
     @NotNull
     @Override
     public NamespacedKey getKey() {
-        return new NamespacedKey(WbsEnchants.getInstance(), stringKey);
+        return key;
     }
 
     @NotNull
@@ -184,11 +194,7 @@ public abstract class WbsEnchantment extends UberEnchantment implements UberRegi
             }
         }
 
-        if (stack.getType() == Material.ENCHANTED_BOOK) {
-            UberUtils.addStoredEnchantment(this, stack, level);
-        } else {
-            UberUtils.addEnchantment(this, stack, level);
-        }
+        EnchantUtils.addEnchantment(this, stack, level);
 
         return true;
     }
@@ -218,19 +224,6 @@ public abstract class WbsEnchantment extends UberEnchantment implements UberRegi
         return EnchantsSettings.DEFAULT_USABLE_ANYWHERE;
     }
 
-    public void registerUberRecord() {
-        UberConfiguration.registerUberRecord(
-                this,
-                this.getCost(),
-                this.getCostMultiplier(),
-                this.getRemovalCost(),
-                this.getExtractionCost(),
-                this.canUseOnAnything(),
-                this.getAliases(),
-                this.getCostForLevel()
-        );
-    }
-
     public ConfigurationSection buildConfigurationSection(YamlConfiguration baseFile) {
         ConfigurationSection section = baseFile.createSection(getName());
 
@@ -250,7 +243,6 @@ public abstract class WbsEnchantment extends UberEnchantment implements UberRegi
         return section;
     }
 
-    @Override
     public void configure(ConfigurationSection section, String directory) {
         isEnabled = section.getBoolean("enabled", isEnabled);
         cost = section.getDouble("cost", getCost());
@@ -372,5 +364,95 @@ public abstract class WbsEnchantment extends UberEnchantment implements UberRegi
 
     public Set<Enchantment> getIndirectConflicts() {
         return new HashSet<>();
+    }
+
+    public final Set<Enchantment> getConflicts() {
+        Set<Enchantment> conflicts = new HashSet<>(getDirectConflicts());
+        conflicts.addAll(getIndirectConflicts());
+
+        return conflicts;
+    }
+
+    @SuppressWarnings("unchecked")
+    public boolean register() {
+        Registry<Enchantment> registry = Registry.ENCHANTMENT;
+
+        Class<?> implementation = registry.getClass();
+
+        try {
+            Field cacheField = implementation.getField("cache");
+            cacheField.setAccessible(true);
+
+            Object cacheObject = cacheField.get(registry);
+            if (cacheObject == null) {
+                return false;
+            }
+
+            Map<NamespacedKey, Enchantment> cache = (Map<NamespacedKey, Enchantment>) cacheObject;
+            cache.put(getKey(), this);
+        } catch (NoSuchFieldException | SecurityException | IllegalArgumentException | IllegalAccessException e) {
+            e.printStackTrace();
+
+            if (e instanceof NoSuchFieldException) {
+                Logger logger = plugin.getLogger();
+                Arrays.stream(implementation.getFields())
+                        .map(Field::toString)
+                        .forEach(logger::info);
+            }
+            return false;
+        }
+
+        return true;
+    }
+
+    public abstract String getDisplayName();
+
+    @NotNull
+    public abstract String getDescription();
+
+    @Override
+    public @NotNull String getName() {
+        return WbsStrings.capitalizeAll(getKey().getKey().replaceAll("[_\\-\\s]", " "));
+    }
+
+    @Override
+    public @NotNull Component displayName(int i) {
+        Component display = LegacyComponentSerializer.legacySection().deserialize(getDisplayName());
+
+        if (i > 1 || getMaxLevel() > 1) {
+            return display.appendSpace().append(Component.text(RomanNumerals.toRoman(i)));
+        }
+
+        return display;
+    }
+
+    @Override
+    public float getDamageIncrease(int i, @NotNull EntityCategory entityCategory) {
+        return 0;
+    }
+
+    @Override
+    public boolean isTradeable() {
+        return generationContexts.stream().anyMatch(context -> context instanceof VillagerTradeContext);
+    }
+
+    @Override
+    public boolean isDiscoverable() {
+        return false;
+    }
+
+    @Override
+    public @NotNull String translationKey() {
+        NamespacedKey key = getKey();
+
+        return key.getNamespace() + ".enchantment." + key.getKey();
+    }
+
+    public int getLevel(ItemStack stack) {
+        return EnchantmentManager.getLevel(this, stack);
+    }
+
+    public boolean containsEnchantment(ItemStack stack) {
+        return EnchantmentManager.containsEnchantment(this, stack);
     }
 }

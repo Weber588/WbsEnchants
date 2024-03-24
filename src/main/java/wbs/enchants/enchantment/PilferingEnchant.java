@@ -1,13 +1,11 @@
 package wbs.enchants.enchantment;
 
-import me.sciguymjm.uberenchant.api.utils.Rarity;
+import io.papermc.paper.enchantments.EnchantmentRarity;
 import org.bukkit.NamespacedKey;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.enchantments.EnchantmentTarget;
 import org.bukkit.entity.*;
-import org.bukkit.event.EventHandler;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
-import org.bukkit.event.entity.EntityDeathEvent;
 import org.bukkit.inventory.EntityEquipment;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.MerchantRecipe;
@@ -45,8 +43,8 @@ public class PilferingEnchant extends WbsEnchantment implements DamageEnchant {
     }
 
     @Override
-    public Rarity getRarity() {
-        return Rarity.UNCOMMON;
+    public @NotNull EnchantmentRarity getRarity() {
+        return EnchantmentRarity.UNCOMMON;
     }
 
     @Override

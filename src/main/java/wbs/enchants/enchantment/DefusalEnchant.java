@@ -1,6 +1,6 @@
 package wbs.enchants.enchantment;
 
-import me.sciguymjm.uberenchant.api.utils.Rarity;
+import io.papermc.paper.enchantments.EnchantmentRarity;
 import org.bukkit.Particle;
 import org.bukkit.Sound;
 import org.bukkit.enchantments.Enchantment;
@@ -43,8 +43,8 @@ public class DefusalEnchant extends WbsEnchantment implements DamageEnchant {
     }
 
     @Override
-    public Rarity getRarity() {
-        return Rarity.RARE;
+    public @NotNull EnchantmentRarity getRarity() {
+        return EnchantmentRarity.RARE;
     }
 
     @Override

@@ -1,6 +1,6 @@
 package wbs.enchants.enchantment;
 
-import me.sciguymjm.uberenchant.api.utils.Rarity;
+import io.papermc.paper.enchantments.EnchantmentRarity;
 import org.bukkit.Tag;
 import org.bukkit.enchantments.EnchantmentTarget;
 import org.bukkit.entity.Entity;
@@ -35,8 +35,8 @@ public class ShulkenforcedEnchant extends WbsEnchantment implements VehicleEncha
     }
 
     @Override
-    public Rarity getRarity() {
-        return Rarity.UNCOMMON;
+    public @NotNull EnchantmentRarity getRarity() {
+        return EnchantmentRarity.UNCOMMON;
     }
 
     @Override

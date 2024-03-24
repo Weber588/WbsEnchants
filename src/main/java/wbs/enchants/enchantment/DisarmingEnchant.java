@@ -1,6 +1,6 @@
 package wbs.enchants.enchantment;
 
-import me.sciguymjm.uberenchant.api.utils.Rarity;
+import io.papermc.paper.enchantments.EnchantmentRarity;
 import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.enchantments.EnchantmentTarget;
@@ -10,11 +10,12 @@ import org.bukkit.entity.Player;
 import org.bukkit.entity.Projectile;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
-import org.bukkit.inventory.*;
+import org.bukkit.inventory.EntityEquipment;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.PlayerInventory;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import wbs.enchants.WbsEnchantment;
-import wbs.enchants.WbsEnchants;
 import wbs.enchants.enchantment.helper.DamageEnchant;
 import wbs.enchants.util.EntityUtils;
 import wbs.utils.util.WbsMath;
@@ -99,8 +100,8 @@ public class DisarmingEnchant extends WbsEnchantment implements DamageEnchant {
     }
 
     @Override
-    public Rarity getRarity() {
-        return Rarity.UNCOMMON;
+    public @NotNull EnchantmentRarity getRarity() {
+        return EnchantmentRarity.UNCOMMON;
     }
 
     @Override

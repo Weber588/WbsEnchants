@@ -1,39 +1,104 @@
 package wbs.enchants.util;
 
-import me.sciguymjm.uberenchant.api.utils.UberConfiguration;
+import net.kyori.adventure.text.Component;
 import org.bukkit.enchantments.Enchantment;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.EnchantmentStorageMeta;
 import wbs.enchants.WbsEnchantment;
 
+import java.util.LinkedList;
 import java.util.List;
-import java.util.stream.Collectors;
+import java.util.Map;
+import java.util.function.Predicate;
 
 public class EnchantUtils {
-    public static boolean willConflict(Enchantment a, Enchantment b) {
-        if (directlyConflictsWith(a, b)) {
-            return true;
+
+    public static Map<Enchantment, Integer> getEnchantments(ItemStack stack) {
+        if (stack.getItemMeta() instanceof EnchantmentStorageMeta meta) {
+            return meta.getStoredEnchants();
+        } else {
+            return stack.getEnchantments();
+        }
+    }
+
+    // TODO: Config option that makes it also handle vanilla enchants, so levels above 10 don't bjork
+    public static boolean addEnchantment(Enchantment enchantment, ItemStack stack, int level) {
+        if (stack.getItemMeta() instanceof EnchantmentStorageMeta) {
+            return addStoredEnchantment(enchantment, stack, level);
         }
 
-        return getConflictsWith(b).contains(a);
+        if (enchantment instanceof WbsEnchantment customEnchant) {
+            return addEnchantment(customEnchant, stack, level);
+        }
+
+        stack.addEnchantment(enchantment, level);
+        return true;
     }
 
-    public static List<Enchantment> getConflictsWith(Enchantment enchant) {
-        return getConflictsWith(enchant, getAllEnchants());
+    public static boolean addStoredEnchantment(Enchantment enchantment, ItemStack stack, int level) {
+        if (!(stack.getItemMeta() instanceof EnchantmentStorageMeta meta)) {
+            return false;
+        }
+
+        if (enchantment instanceof WbsEnchantment customEnchant) {
+            return addStoredEnchantment(customEnchant, stack, level);
+        }
+
+        return meta.addStoredEnchant(enchantment, level, true);
     }
 
-    public static List<Enchantment> getConflictsWith(Enchantment enchant, List<Enchantment> toCheck) {
-        return toCheck.stream()
-                .filter(check -> directlyConflictsWith(enchant, check))
-                .collect(Collectors.toList());
+    public static boolean addEnchantment(WbsEnchantment enchantment, ItemStack stack, int level) {
+        if (stack.getItemMeta() instanceof EnchantmentStorageMeta) {
+            return addStoredEnchantment(enchantment, stack, level);
+        }
+
+        addLore(stack, enchantment, level);
+
+        stack.addUnsafeEnchantment(enchantment, level);
+
+        return true;
     }
 
-    public static boolean directlyConflictsWith(Enchantment a, Enchantment b) {
-        return a == b || a.equals(b) || WbsEnchantment.matches(a, b) || a.conflictsWith(b) || b.conflictsWith(a);
+    public static boolean addStoredEnchantment(WbsEnchantment enchantment, ItemStack stack, int level) {
+        if (!(stack.getItemMeta() instanceof EnchantmentStorageMeta meta)) {
+            return false;
+        }
+
+        addLore(stack, enchantment, level);
+
+        return meta.addStoredEnchant(enchantment, level, true);
     }
 
-    public static List<Enchantment> getAllEnchants() {
-        return UberConfiguration.UberRecord.values()
-                .stream()
-                .map(UberConfiguration.UberRecord::enchantment)
-                .collect(Collectors.toList());
+    private static void addLore(ItemStack stack, Enchantment enchantment, int level) {
+        int currentLevel = stack.getEnchantmentLevel(enchantment);
+
+        List<Component> lore = stack.getItemMeta().lore();
+        int index = -1;
+
+        if (lore == null) {
+            lore = new LinkedList<>();
+        } else {
+            Predicate<Component> predicate = line -> line.equals(enchantment.displayName(currentLevel));
+            for (int i = 0; i < lore.size(); i++) {
+                if (predicate.test(lore.get(i))) {
+                    index = i;
+                    break;
+                }
+            }
+
+            if (index != -1) {
+                lore.removeIf(predicate);
+            }
+        }
+
+        Component newLine = enchantment.displayName(level);
+
+        if (index == -1) {
+            lore.add(0, newLine);
+        } else {
+            lore.add(index, newLine);
+        }
+
+        stack.lore(lore);
     }
 }

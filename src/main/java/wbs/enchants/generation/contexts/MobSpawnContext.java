@@ -21,7 +21,7 @@ public class MobSpawnContext extends ExistingLootContext {
 
     @Override
     protected int getDefaultChance() {
-        int rarityWeight = (int) enchantment.getRarity().getWeight();
+        int rarityWeight = enchantment.getRarity().getWeight();
         return switch (Bukkit.getWorlds().get(0).getDifficulty()) {
             case PEACEFUL -> 0;
             case EASY -> rarityWeight / 3;

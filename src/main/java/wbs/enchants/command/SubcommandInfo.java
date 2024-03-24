@@ -1,7 +1,5 @@
 package wbs.enchants.command;
 
-import me.sciguymjm.uberenchant.api.UberEnchantment;
-import me.sciguymjm.uberenchant.api.utils.UberUtils;
 import net.md_5.bungee.api.chat.TextComponent;
 import net.md_5.bungee.api.chat.TranslatableComponent;
 import org.bukkit.NamespacedKey;
@@ -11,6 +9,7 @@ import org.jetbrains.annotations.NotNull;
 import wbs.enchants.EnchantsSettings;
 import wbs.enchants.WbsEnchantment;
 import wbs.enchants.util.EnchantUtils;
+import wbs.enchants.util.EnchantmentManager;
 import wbs.utils.util.WbsEnums;
 import wbs.utils.util.WbsKeyed;
 import wbs.utils.util.commands.WbsSubcommand;
@@ -22,6 +21,7 @@ import wbs.utils.util.string.WbsStrings;
 
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 public class SubcommandInfo extends WbsSubcommand {
@@ -31,7 +31,7 @@ public class SubcommandInfo extends WbsSubcommand {
 
     @Override
     protected boolean onCommand(@NotNull CommandSender sender, @NotNull String label, @NotNull String[] args, int start) {
-        List<WbsEnchantment> enchants = EnchantsSettings.getRegistered();
+        List<WbsEnchantment> enchants = EnchantmentManager.getRegistered();
 
         if (args.length <= start) {
             sendUsage("<enchantment>", sender, label, args);
@@ -84,15 +84,15 @@ public class SubcommandInfo extends WbsSubcommand {
 
         sendMessageNoPrefix("Description: &h" + enchant.getDescription(), sender);
 
-        List<Enchantment> conflicts = EnchantUtils.getConflictsWith(enchant);
+        Set<Enchantment> conflicts = enchant.getConflicts();
         conflicts.removeIf(enchant::equals);
         if (!conflicts.isEmpty()) {
             WbsMessageBuilder builder = plugin.buildMessageNoPrefix("Conflicts with:");
 
             for (Enchantment conflict : conflicts) {
                 builder.append("\n    &h- ");
-                if (conflict instanceof UberEnchantment uEnchant) {
-                    builder.append(uEnchant.getDisplayName());
+                if (conflict instanceof WbsEnchantment customEnchant) {
+                    builder.append(customEnchant.getDisplayName());
                 } else {
                     // TODO: Migrate WbsPlugin#append to accept BaseComponent instead of TextComponent to allow
                     //  a TranslatableComponent to be used here.
@@ -114,7 +114,7 @@ public class SubcommandInfo extends WbsSubcommand {
     @Override
     protected List<String> getTabCompletions(@NotNull CommandSender sender, @NotNull String label, @NotNull String[] args, int start) {
         if (args.length == start) {
-            return EnchantsSettings.getRegistered().stream()
+            return EnchantmentManager.getRegistered().stream()
                     .map(WbsEnchantment::getKey)
                     .map(NamespacedKey::getKey)
                     .collect(Collectors.toList());

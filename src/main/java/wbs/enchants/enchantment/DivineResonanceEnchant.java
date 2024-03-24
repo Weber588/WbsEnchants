@@ -1,6 +1,6 @@
 package wbs.enchants.enchantment;
 
-import me.sciguymjm.uberenchant.api.utils.Rarity;
+import io.papermc.paper.enchantments.EnchantmentRarity;
 import org.bukkit.Sound;
 import org.bukkit.block.Bell;
 import org.bukkit.block.TileState;
@@ -65,8 +65,8 @@ public class DivineResonanceEnchant extends WbsEnchantment implements BlockEncha
     }
 
     @Override
-    public Rarity getRarity() {
-        return Rarity.VERY_RARE;
+    public @NotNull EnchantmentRarity getRarity() {
+        return EnchantmentRarity.VERY_RARE;
     }
 
     @Override

@@ -1,12 +1,11 @@
 package wbs.enchants.enchantment;
 
-import me.sciguymjm.uberenchant.api.utils.Rarity;
+import io.papermc.paper.enchantments.EnchantmentRarity;
 import org.bukkit.FluidCollisionMode;
 import org.bukkit.Location;
 import org.bukkit.Tag;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.attribute.AttributeInstance;
-import org.bukkit.enchantments.Enchantment;
 import org.bukkit.enchantments.EnchantmentTarget;
 import org.bukkit.entity.Damageable;
 import org.bukkit.entity.Entity;
@@ -135,8 +134,8 @@ public class DualWieldEnchant extends WbsEnchantment implements DamageEnchant {
     }
 
     @Override
-    public Rarity getRarity() {
-        return Rarity.UNCOMMON;
+    public @NotNull EnchantmentRarity getRarity() {
+        return EnchantmentRarity.UNCOMMON;
     }
 
     @Override

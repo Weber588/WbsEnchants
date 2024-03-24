@@ -1,6 +1,6 @@
 package wbs.enchants.enchantment;
 
-import me.sciguymjm.uberenchant.api.utils.Rarity;
+import io.papermc.paper.enchantments.EnchantmentRarity;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.Tag;
@@ -13,10 +13,10 @@ import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.world.LootGenerateEvent;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
-import wbs.enchants.EnchantsSettings;
 import wbs.enchants.enchantment.helper.AbstractMultiBreakEnchant;
 import wbs.enchants.util.BlockChanger;
 import wbs.enchants.util.BlockQueryUtils;
+import wbs.enchants.util.EnchantmentManager;
 import wbs.enchants.util.MaterialUtils;
 import wbs.utils.util.WbsMath;
 
@@ -68,8 +68,8 @@ public class VeinMinerEnchant extends AbstractMultiBreakEnchant {
     }
 
     @Override
-    public Rarity getRarity() {
-        return Rarity.UNCOMMON;
+    public @NotNull EnchantmentRarity getRarity() {
+        return EnchantmentRarity.UNCOMMON;
     }
 
     @Override
@@ -89,7 +89,7 @@ public class VeinMinerEnchant extends AbstractMultiBreakEnchant {
 
     @Override
     public Set<Enchantment> getDirectConflicts() {
-        return Set.of(EnchantsSettings.BLAST_MINER);
+        return Set.of(EnchantmentManager.BLAST_MINER);
     }
 
     @Override

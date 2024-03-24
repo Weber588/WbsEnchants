@@ -2,45 +2,50 @@ package wbs.enchants.enchantment;
 
 import io.papermc.paper.enchantments.EnchantmentRarity;
 import org.bukkit.Material;
-import org.bukkit.enchantments.Enchantment;
+import org.bukkit.block.Beacon;
+import org.bukkit.block.TileState;
 import org.bukkit.enchantments.EnchantmentTarget;
 import org.bukkit.event.EventHandler;
-import org.bukkit.event.server.MapInitializeEvent;
-import org.bukkit.inventory.EquipmentSlot;
+import org.bukkit.event.block.BlockPlaceEvent;
+import org.bukkit.event.world.ChunkLoadEvent;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 import wbs.enchants.WbsEnchantment;
+import wbs.enchants.enchantment.helper.BlockEnchant;
 
-import java.util.Set;
+public class EternalLightEnchant extends WbsEnchantment implements BlockEnchant {
+    public EternalLightEnchant() {
+        super("eternal_light");
+        registerBlockEvents();
+    }
 
-public class AnnotatedEnchant extends WbsEnchantment {
-    public AnnotatedEnchant() {
-        super("annotated");
+    @Override
+    public void afterPlace(BlockPlaceEvent event, ItemStack placedItem) {
+        if (!(event.getBlock().getState() instanceof Beacon beacon)) {
+            return;
+        }
+
+        
     }
 
     @EventHandler
-    public void onMapRender(MapInitializeEvent event) {
+    public void onChunkLoad(ChunkLoadEvent event) {
 
     }
 
     @Override
     public @NotNull String getDescription() {
-        return "Maps with this enchantment will show all structures it can, even if you haven't explored them yet!";
+        return "A beacon enchantment that also allows it to keep a 5x5 chunk area loaded!";
     }
 
     @Override
     public String getDisplayName() {
-        return "&7Annotated";
+        return "&7Eternal Light";
     }
 
     @Override
     public @NotNull EnchantmentRarity getRarity() {
-        return EnchantmentRarity.COMMON;
-    }
-
-    @Override
-    public @NotNull Set<EquipmentSlot> getActiveSlots() {
-        return null;
+        return EnchantmentRarity.VERY_RARE;
     }
 
     @Override
@@ -51,7 +56,7 @@ public class AnnotatedEnchant extends WbsEnchantment {
     @NotNull
     @Override
     public EnchantmentTarget getItemTarget() {
-        // Overriden in canEnchant
+        // Overridden in canEnchantItem
         return EnchantmentTarget.TOOL;
     }
 
@@ -66,27 +71,17 @@ public class AnnotatedEnchant extends WbsEnchantment {
     }
 
     @Override
-    public boolean conflictsWith(@NotNull Enchantment enchantment) {
-        return false;
+    public boolean canEnchant(TileState state) {
+        return state instanceof Beacon;
     }
 
     @Override
     public boolean canEnchantItem(@NotNull ItemStack itemStack) {
-        return itemStack.getType() == Material.FILLED_MAP;
-    }
-
-    @Override
-    public int getMinModifiedCost(int i) {
-        return 0;
-    }
-
-    @Override
-    public int getMaxModifiedCost(int i) {
-        return 0;
+        return itemStack.getType() == Material.BEACON;
     }
 
     @Override
     public @NotNull String getTargetDescription() {
-        return "Map";
+        return "Beacon";
     }
 }

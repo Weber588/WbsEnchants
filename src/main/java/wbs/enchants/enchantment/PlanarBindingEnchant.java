@@ -1,8 +1,7 @@
 package wbs.enchants.enchantment;
 
-import me.sciguymjm.uberenchant.api.utils.Rarity;
+import io.papermc.paper.enchantments.EnchantmentRarity;
 import org.bukkit.*;
-import org.bukkit.enchantments.Enchantment;
 import org.bukkit.enchantments.EnchantmentTarget;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
@@ -24,7 +23,6 @@ import wbs.utils.util.WbsMath;
 import wbs.utils.util.WbsSound;
 import wbs.utils.util.WbsSoundGroup;
 import wbs.utils.util.entities.WbsEntityUtil;
-import wbs.utils.util.particles.NormalParticleEffect;
 import wbs.utils.util.particles.RingParticleEffect;
 import wbs.utils.util.particles.WbsParticleEffect;
 import wbs.utils.util.particles.WbsParticleGroup;
@@ -131,8 +129,8 @@ public class PlanarBindingEnchant extends WbsEnchantment {
     }
 
     @Override
-    public Rarity getRarity() {
-        return Rarity.RARE;
+    public @NotNull EnchantmentRarity getRarity() {
+        return EnchantmentRarity.RARE;
     }
 
     @Override

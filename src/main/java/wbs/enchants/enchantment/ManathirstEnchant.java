@@ -1,11 +1,9 @@
 package wbs.enchants.enchantment;
 
-import me.sciguymjm.uberenchant.api.utils.Rarity;
+import io.papermc.paper.enchantments.EnchantmentRarity;
 import org.bukkit.Bukkit;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.enchantments.EnchantmentTarget;
-import org.bukkit.entity.Entity;
-import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.player.PlayerItemDamageEvent;
@@ -15,10 +13,9 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.Damageable;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.jetbrains.annotations.NotNull;
-import wbs.enchants.EnchantsSettings;
 import wbs.enchants.WbsEnchantment;
 import wbs.enchants.WbsEnchants;
-import wbs.enchants.util.EnchantUtils;
+import wbs.enchants.util.EnchantmentManager;
 
 import java.util.*;
 
@@ -67,7 +64,7 @@ public class ManathirstEnchant extends WbsEnchantment {
             }
 
             for (ItemStack item : player.getInventory().getContents()) {
-                if (item != null && EnchantsSettings.MANATHIRST.containsEnchantment(item)) {
+                if (item != null && EnchantmentManager.MANATHIRST.containsEnchantment(item)) {
                     if (!(item.getItemMeta() instanceof Damageable damageable)) {
                         continue;
                     }
@@ -130,8 +127,8 @@ public class ManathirstEnchant extends WbsEnchantment {
     }
 
     @Override
-    public Rarity getRarity() {
-        return Rarity.RARE;
+    public @NotNull EnchantmentRarity getRarity() {
+        return EnchantmentRarity.RARE;
     }
 
     @Override

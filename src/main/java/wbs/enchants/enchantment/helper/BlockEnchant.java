@@ -1,6 +1,5 @@
 package wbs.enchants.enchantment.helper;
 
-import me.sciguymjm.uberenchant.api.utils.UberUtils;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import org.bukkit.block.Block;
@@ -16,6 +15,7 @@ import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
 import org.jetbrains.annotations.Nullable;
 import wbs.enchants.WbsEnchantment;
+import wbs.enchants.util.EnchantUtils;
 import wbs.enchants.util.EventUtils;
 
 import java.util.List;
@@ -101,7 +101,7 @@ public interface BlockEnchant extends EnchantInterface {
 
         Integer level = entityContainer.get(key, PersistentDataType.INTEGER);
         if (level != null) {
-            UberUtils.addEnchantment(enchant, dropped, level);
+            EnchantUtils.addEnchantment(enchant, dropped, level);
 
             afterDrop(event, dropped);
         }

@@ -1,11 +1,10 @@
 package wbs.enchants.enchantment;
 
-import me.sciguymjm.uberenchant.api.utils.Rarity;
+import io.papermc.paper.enchantments.EnchantmentRarity;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import org.bukkit.Tag;
 import org.bukkit.block.Block;
-import org.bukkit.enchantments.Enchantment;
 import org.bukkit.enchantments.EnchantmentTarget;
 import org.bukkit.entity.Item;
 import org.bukkit.entity.LivingEntity;
@@ -39,7 +38,6 @@ import wbs.utils.util.WbsEnums;
 import wbs.utils.util.string.WbsStringify;
 
 import java.time.Duration;
-import java.util.HashMap;
 import java.util.Objects;
 
 public class ImmortalEnchant extends WbsEnchantment {
@@ -351,8 +349,8 @@ public class ImmortalEnchant extends WbsEnchantment {
     }
 
     @Override
-    public Rarity getRarity() {
-        return Rarity.VERY_RARE;
+    public @NotNull EnchantmentRarity getRarity() {
+        return EnchantmentRarity.VERY_RARE;
     }
 
     @Override

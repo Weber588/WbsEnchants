@@ -1,9 +1,8 @@
 package wbs.enchants.enchantment;
 
-import me.sciguymjm.uberenchant.api.utils.Rarity;
+import io.papermc.paper.enchantments.EnchantmentRarity;
 import org.bukkit.NamespacedKey;
 import org.bukkit.Particle;
-import org.bukkit.enchantments.Enchantment;
 import org.bukkit.enchantments.EnchantmentTarget;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
@@ -114,8 +113,8 @@ public class VampiricEnchant extends WbsEnchantment implements DamageEnchant {
     }
 
     @Override
-    public Rarity getRarity() {
-        return Rarity.RARE;
+    public @NotNull EnchantmentRarity getRarity() {
+        return EnchantmentRarity.RARE;
     }
 
     @Override

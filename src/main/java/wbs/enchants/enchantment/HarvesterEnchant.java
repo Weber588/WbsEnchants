@@ -1,13 +1,12 @@
 package wbs.enchants.enchantment;
 
-import me.sciguymjm.uberenchant.api.utils.Rarity;
+import io.papermc.paper.enchantments.EnchantmentRarity;
 import org.bukkit.Material;
 import org.bukkit.Tag;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.block.data.Ageable;
 import org.bukkit.block.data.type.Fire;
-import org.bukkit.enchantments.Enchantment;
 import org.bukkit.enchantments.EnchantmentTarget;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -140,8 +139,8 @@ public class HarvesterEnchant extends WbsEnchantment {
     }
 
     @Override
-    public Rarity getRarity() {
-        return Rarity.COMMON;
+    public @NotNull EnchantmentRarity getRarity() {
+        return EnchantmentRarity.COMMON;
     }
 
     @Override

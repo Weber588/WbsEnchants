@@ -1,6 +1,6 @@
 package wbs.enchants.enchantment;
 
-import me.sciguymjm.uberenchant.api.utils.Rarity;
+import io.papermc.paper.enchantments.EnchantmentRarity;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.Tag;
@@ -19,7 +19,6 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import wbs.enchants.WbsEnchantment;
 import wbs.enchants.enchantment.helper.DamageEnchant;
-import wbs.enchants.util.EnchantUtils;
 import wbs.enchants.util.MaterialUtils;
 import wbs.utils.util.WbsMath;
 
@@ -102,8 +101,8 @@ public class DecayEnchant extends WbsEnchantment implements DamageEnchant {
     }
 
     @Override
-    public Rarity getRarity() {
-        return Rarity.VERY_RARE;
+    public @NotNull EnchantmentRarity getRarity() {
+        return EnchantmentRarity.VERY_RARE;
     }
 
     @Override

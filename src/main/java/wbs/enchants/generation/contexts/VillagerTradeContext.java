@@ -1,10 +1,6 @@
 package wbs.enchants.generation.contexts;
 
-import com.google.gson.Gson;
-import me.sciguymjm.uberenchant.api.utils.UberUtils;
-import org.bukkit.NamespacedKey;
 import org.bukkit.configuration.ConfigurationSection;
-import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.AbstractVillager;
 import org.bukkit.entity.Villager;
@@ -17,9 +13,8 @@ import wbs.enchants.WbsEnchantment;
 import wbs.enchants.WbsEnchants;
 import wbs.enchants.generation.GenerationContext;
 import wbs.enchants.util.EnchantUtils;
+import wbs.enchants.util.EnchantmentManager;
 
-import javax.json.Json;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -45,7 +40,7 @@ public class VillagerTradeContext extends GenerationContext {
     protected int getDefaultChance() {
         // Amount of enchants (including custom ones in case they're available through trading) minus 2 for
         // Soul Speed and Swift Sneak, which may not be obtained through this method.
-        return (int) (100.0 / (EnchantUtils.getAllEnchants().size() - 2));
+        return (int) (100.0 / (EnchantmentManager.getAllEnchants().size() - 2));
     }
 
     @EventHandler
@@ -83,7 +78,7 @@ public class VillagerTradeContext extends GenerationContext {
             WbsEnchants.getInstance().getLogger().info("toReplace: " + toReplace.getKey());
 
             result.setItemMeta(meta);
-            UberUtils.addStoredEnchantment(enchantment, result, generateLevel());
+            EnchantUtils.addEnchantment(enchantment, result, generateLevel());
 
             MerchantRecipe newRecipe = new MerchantRecipe(result,
                     recipe.getUses(),

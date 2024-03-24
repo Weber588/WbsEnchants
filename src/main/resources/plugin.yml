@@ -5,7 +5,6 @@ main: wbs.enchants.WbsEnchants
 description: Yet another custom enchants plugin
 depend:
   - WbsUtils
-  - UberEnchant
 commands:
   customenchants:
     aliases:

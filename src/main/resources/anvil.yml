@@ -1,0 +1,45 @@
+#
+handle-anvil-mechanics: true
+
+# This section defines which items can be used to repair items, not including the items themselves.
+# If using tags, start the string with "#" and be sure to surround it with apostraphes (') to escape the comment.
+repair-materials:
+  wooden: # This name isn't used, but it needs to be unique
+    items:
+      - '#wbsenchants:tools/wooden'
+    repairable-with:
+      - '#minecraft:planks'
+  stone:
+    items:
+      - '#wbsenchants:tools/stone'
+    repairable-with:
+      - '#minecraft:stone_tool_materials'
+  iron:
+    items:
+      - '#wbsenchants:tools/iron'
+      - '#wbsenchants:armour/iron'
+      - '#wbsenchants:armour/chainmail'
+    repairable-with:
+      - 'iron_ingot'
+  diamond:
+    items:
+      - '#wbsenchants:tools/diamond'
+      - '#wbsenchants:armour/diamond'
+    repairable-with:
+      - 'diamond'
+  netherite:
+    items:
+      - '#wbsenchants:tools/netherite'
+      - '#wbsenchants:armour/netherite'
+    repairable-with:
+      - 'netherite_ingot'
+  turtle:
+    items:
+      - '#wbsenchants:armour/turtle'
+    repairable-with:
+      - 'scute'
+  elytra:
+    items:
+      - 'elytra'
+    repairable-with:
+      - 'phantom_membrane'

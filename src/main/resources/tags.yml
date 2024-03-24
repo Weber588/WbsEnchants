@@ -1,0 +1,79 @@
+tools:
+  wooden:
+    - WOODEN_PICKAXE
+    - WOODEN_SHOVEL
+    - WOODEN_AXE
+    - WOODEN_SWORD
+    - WOODEN_HOE
+  stone:
+    - STONE_PICKAXE
+    - STONE_SHOVEL
+    - STONE_AXE
+    - STONE_SWORD
+    - STONE_HOE
+  iron:
+    - IRON_PICKAXE
+    - IRON_SHOVEL
+    - IRON_AXE
+    - IRON_SWORD
+    - IRON_HOE
+  golden:
+    - GOLDEN_PICKAXE
+    - GOLDEN_SHOVEL
+    - GOLDEN_AXE
+    - GOLDEN_SWORD
+    - GOLDEN_HOE
+  diamond:
+    - DIAMOND_PICKAXE
+    - DIAMOND_SHOVEL
+    - DIAMOND_AXE
+    - DIAMOND_SWORD
+    - DIAMOND_HOE
+  netherite:
+    - NETHERITE_PICKAXE
+    - NETHERITE_SHOVEL
+    - NETHERITE_AXE
+    - NETHERITE_SWORD
+    - NETHERITE_HOE
+armour:
+  leather:
+    - LEATHER_HELMET
+    - LEATHER_CHESTPLATE
+    - LEATHER_LEGGINGS
+    - LEATHER_BOOTS
+  chainmail:
+    - CHAINMAIL_HELMET
+    - CHAINMAIL_CHESTPLATE
+    - CHAINMAIL_LEGGINGS
+    - CHAINMAIL_BOOTS
+  iron:
+    - IRON_HELMET
+    - IRON_CHESTPLATE
+    - IRON_LEGGINGS
+    - IRON_BOOTS
+  golden:
+    - GOLDEN_HELMET
+    - GOLDEN_CHESTPLATE
+    - GOLDEN_LEGGINGS
+    - GOLDEN_BOOTS
+  diamond:
+    - DIAMOND_HELMET
+    - DIAMOND_CHESTPLATE
+    - DIAMOND_LEGGINGS
+    - DIAMOND_BOOTS
+  netherite:
+    - NETHERITE_HELMET
+    - NETHERITE_CHESTPLATE
+    - NETHERITE_LEGGINGS
+    - NETHERITE_BOOTS
+  turtle:
+    - TURTLE_HELMET
+
+all_armour:
+  - '#wbsenchants:armour/leather'
+  - '#wbsenchants:armour/chainmail'
+  - '#wbsenchants:armour/iron'
+  - '#wbsenchants:armour/golden'
+  - '#wbsenchants:armour/diamond'
+  - '#wbsenchants:armour/netherite'
+  - '#wbsenchants:armour/turtle'
