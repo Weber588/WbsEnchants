@@ -5,22 +5,18 @@ import org.bukkit.GameMode;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import org.bukkit.entity.*;
-import org.bukkit.event.entity.EntityDeathEvent;
-import org.bukkit.event.entity.EntityDropItemEvent;
 import org.bukkit.event.entity.EntityPlaceEvent;
 import org.bukkit.event.vehicle.VehicleDestroyEvent;
 import org.bukkit.inventory.EntityEquipment;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import wbs.enchants.WbsEnchantment;
-import wbs.enchants.WbsEnchants;
 import wbs.enchants.util.EventUtils;
 import wbs.utils.util.WbsEnums;
 
-public interface VehicleEnchant extends EnchantInterface {
+public interface VehicleEnchant extends EnchantInterface, AutoRegistrableEnchant {
     default void registerVehicleEvents() {
         EventUtils.register(EntityPlaceEvent.class, this::onPlace);
         EventUtils.register(VehicleDestroyEvent.class, this::onBreak);

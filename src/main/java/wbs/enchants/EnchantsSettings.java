@@ -3,6 +3,7 @@ package wbs.enchants;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.YamlConfiguration;
 import wbs.enchants.enchantment.*;
+import wbs.enchants.enchantment.curse.*;
 import wbs.utils.util.plugin.WbsSettings;
 
 import java.util.Collections;
@@ -51,6 +52,13 @@ public class EnchantsSettings extends WbsSettings {
     public static final DivineResonanceEnchant DIVINE_RESONANCE = new DivineResonanceEnchant();
     public static final AridityEnchant ARIDITY = new AridityEnchant();
     public static final LavaWalkerEnchant LAVA_WALKER = new LavaWalkerEnchant();
+    public static final WickedEnchant WICKED = new WickedEnchant();
+    public static final CrushingEnchant CRUSHING = new CrushingEnchant();
+    public static final HandheldEnchant HANDHELD = new HandheldEnchant();
+
+    public static final CurseRebuking CURSE_REBUKING = new CurseRebuking();
+    public static final CurseVanilla CURSE_VANILLA = new CurseVanilla();
+    public static final CurseExotic CURSE_EXOTIC = new CurseExotic();
 
     public static void register(WbsEnchantment enchantment) {
         REGISTERED_ENCHANTMENTS.add(enchantment);

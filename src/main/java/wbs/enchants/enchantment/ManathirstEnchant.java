@@ -2,10 +2,10 @@ package wbs.enchants.enchantment;
 
 import me.sciguymjm.uberenchant.api.utils.Rarity;
 import org.bukkit.Bukkit;
+import org.bukkit.configuration.ConfigurationSection;
+import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.enchantments.EnchantmentTarget;
-import org.bukkit.entity.Entity;
-import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.player.PlayerItemDamageEvent;
@@ -18,7 +18,6 @@ import org.jetbrains.annotations.NotNull;
 import wbs.enchants.EnchantsSettings;
 import wbs.enchants.WbsEnchantment;
 import wbs.enchants.WbsEnchants;
-import wbs.enchants.util.EnchantUtils;
 
 import java.util.*;
 
@@ -57,7 +56,7 @@ public class ManathirstEnchant extends WbsEnchantment {
                 continue;
             }
 
-            if (!player.isOnline() || player.getTotalExperience() == 0) {
+            if (!player.isOnline() || player.getTotalExperience() < EnchantsSettings.MANATHIRST.xpPerDura) {
                 continue;
             }
 
@@ -92,12 +91,14 @@ public class ManathirstEnchant extends WbsEnchantment {
             if (damageable.getDamage() > 0) {
                 Player player = toRepair.get(item);
                 damageable.setDamage(damageable.getDamage() - 1);
-                player.setTotalExperience(player.getTotalExperience() - 1);
+                player.setTotalExperience(player.getTotalExperience() - EnchantsSettings.MANATHIRST.xpPerDura);
 
                 item.setItemMeta(damageable);
             }
         }
     }
+
+    private int xpPerDura = 3;
 
     public ManathirstEnchant() {
         super("manathirst");
@@ -158,5 +159,19 @@ public class ManathirstEnchant extends WbsEnchantment {
     @Override
     public Set<Enchantment> getIndirectConflicts() {
         return Set.of(MENDING);
+    }
+
+    @Override
+    public void configure(ConfigurationSection section, String directory) {
+        super.configure(section, directory);
+
+        xpPerDura = section.getInt("xp-per-durability", xpPerDura);
+    }
+
+    @Override
+    public ConfigurationSection buildConfigurationSection(YamlConfiguration baseFile) {
+        ConfigurationSection section = super.buildConfigurationSection(baseFile);
+        section.set("xp-per-durability", xpPerDura);
+        return section;
     }
 }

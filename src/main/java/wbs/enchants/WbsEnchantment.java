@@ -20,6 +20,7 @@ import org.bukkit.loot.LootTable;
 import org.bukkit.plugin.PluginManager;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import wbs.enchants.enchantment.helper.BlockEnchant;
 import wbs.enchants.enchantment.helper.DamageEnchant;
 import wbs.enchants.enchantment.helper.VehicleEnchant;
 import wbs.enchants.generation.ContextManager;
@@ -64,10 +65,19 @@ public abstract class WbsEnchantment extends UberEnchantment implements UberRegi
         // These (and similar) can theoretically be called from the implementer itself, but this makes it harder to
         // accidentally forget it.
         if (this instanceof DamageEnchant damageEnchant) {
-            damageEnchant.registerDamageEvent();
+            if (damageEnchant.autoRegister()) {
+                damageEnchant.registerDamageEvent();
+            }
         }
         if (this instanceof VehicleEnchant vehicleEnchant) {
-            vehicleEnchant.registerVehicleEvents();
+            if (vehicleEnchant.autoRegister()) {
+                vehicleEnchant.registerVehicleEvents();
+            }
+        }
+        if (this instanceof BlockEnchant blockEnchant) {
+            if (blockEnchant.autoRegister()) {
+                blockEnchant.registerBlockEvents();
+            }
         }
     }
 
@@ -372,5 +382,11 @@ public abstract class WbsEnchantment extends UberEnchantment implements UberRegi
 
     public Set<Enchantment> getIndirectConflicts() {
         return new HashSet<>();
+    }
+
+    @NotNull
+    @Override
+    public String getTranslationKey() {
+        return getKey().toString();
     }
 }

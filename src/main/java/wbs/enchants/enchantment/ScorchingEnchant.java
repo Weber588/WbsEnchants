@@ -38,8 +38,8 @@ public class ScorchingEnchant extends WbsEnchantment {
             new NormalParticleEffect().setXYZ(0.15).setAmount(10), Particle.SMALL_FLAME
     );
 
-    private static void createEntanglement(Player player, Block entangledBlock, Location location) {
-        ScorchedBlock entanglement = new ScorchedBlock(player.getUniqueId(), entangledBlock, System.currentTimeMillis());
+    private static void createScorch(Player player, Block scorchedBlock, Location location) {
+        ScorchedBlock entanglement = new ScorchedBlock(player.getUniqueId(), scorchedBlock, System.currentTimeMillis());
         SCORCHED.put(location, entanglement);
 
         startDescorchTimer();
@@ -102,7 +102,7 @@ public class ScorchingEnchant extends WbsEnchantment {
                 return;
             }
 
-            createEntanglement(player, broken, broken.getLocation());
+            createScorch(player, broken, broken.getLocation());
         }
     }
 

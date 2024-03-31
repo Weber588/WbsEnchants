@@ -3,7 +3,7 @@ package wbs.enchants.enchantment;
 import me.sciguymjm.uberenchant.api.utils.Rarity;
 import org.bukkit.Sound;
 import org.bukkit.block.Bell;
-import org.bukkit.block.TileState;
+import org.bukkit.block.Block;
 import org.bukkit.enchantments.EnchantmentTarget;
 import org.bukkit.entity.Monster;
 import org.bukkit.event.EventHandler;
@@ -20,13 +20,12 @@ import wbs.utils.util.entities.selector.RadiusSelector;
 public class DivineResonanceEnchant extends WbsEnchantment implements BlockEnchant {
     public DivineResonanceEnchant() {
         super("divine_resonance");
-        registerBlockEvents();
     }
 
     @EventHandler
     public void onRing(BellRingEvent event) {
         if (event.getBlock().getState() instanceof Bell bell) {
-            Integer level = getLevel(bell);
+            Integer level = getLevel(bell.getBlock());
             if (level != null) {
                 new WbsSound(Sound.BLOCK_BELL_RESONATE, 1, 1).play(bell.getLocation());
 
@@ -92,8 +91,8 @@ public class DivineResonanceEnchant extends WbsEnchantment implements BlockEncha
     }
 
     @Override
-    public boolean canEnchant(TileState state) {
-        return state instanceof Bell;
+    public boolean canEnchant(Block block) {
+        return block.getState() instanceof Bell;
     }
 
     @Override
