@@ -362,7 +362,8 @@ public abstract class WbsEnchantment extends UberEnchantment implements UberRegi
     @Override
     public boolean conflictsWith(@NotNull Enchantment enchantment) {
         Set<Enchantment> knownDirectConflicts = new HashSet<>(getDirectConflicts());
-        knownDirectConflicts.addAll(getIndirectConflicts());
+        Set<Enchantment> indirectConflicts = new HashSet<>(getIndirectConflicts());
+        knownDirectConflicts.addAll(indirectConflicts);
 
         boolean directlyConflicts = knownDirectConflicts.stream()
                 .anyMatch(check -> WbsEnchantment.matches(check, enchantment));
@@ -372,7 +373,10 @@ public abstract class WbsEnchantment extends UberEnchantment implements UberRegi
         }
 
         // Does not directly conflict -- check if any indirect conflicts conflict.
-        return getIndirectConflicts().stream()
+        // Make an exception for Curse of Vanilla since indirectly conflicting with a vanilla enchant
+        // shouldn't also cause it to conflict with that curse.
+        indirectConflicts.remove(EnchantsSettings.CURSE_VANILLA);
+        return indirectConflicts.stream()
                 .anyMatch(check -> check.conflictsWith(enchantment));
     }
 
