@@ -372,10 +372,13 @@ public abstract class WbsEnchantment extends UberEnchantment implements UberRegi
             return true;
         }
 
+        if (WbsEnchantment.matches(enchantment, EnchantsSettings.CURSE_VANILLA)) {
+            // Make an exception for Curse of Vanilla since indirectly conflicting with a vanilla enchant
+            // shouldn't also cause it to conflict with that curse.
+            return false;
+        }
+
         // Does not directly conflict -- check if any indirect conflicts conflict.
-        // Make an exception for Curse of Vanilla since indirectly conflicting with a vanilla enchant
-        // shouldn't also cause it to conflict with that curse.
-        indirectConflicts.remove(EnchantsSettings.CURSE_VANILLA);
         return indirectConflicts.stream()
                 .anyMatch(check -> check.conflictsWith(enchantment));
     }
