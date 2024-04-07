@@ -8,12 +8,20 @@ import wbs.enchants.WbsEnchants;
 
 public class EventUtils {
     public static <T extends Event> void register(Class<T> eventClass, EventHandlerMethod<T> handler) {
+        register(eventClass, handler, EventPriority.NORMAL);
+    }
+
+    public static <T extends Event> void register(Class<T> eventClass, EventHandlerMethod<T> handler, EventPriority priority) {
+        register(eventClass, handler, priority, true);
+    }
+
+    public static <T extends Event> void register(Class<T> eventClass, EventHandlerMethod<T> handler, EventPriority priority, boolean ignoreCancelled) {
         Bukkit.getPluginManager().registerEvent(eventClass,
                 handler,
-                EventPriority.NORMAL,
+                priority,
                 (ignored, event) -> execute(eventClass, handler, event),
                 WbsEnchants.getInstance(),
-                true);
+                ignoreCancelled);
     }
 
     private static <T extends Event> void execute(Class<T> eventClass, EventHandlerMethod<T> handler, Event event) {

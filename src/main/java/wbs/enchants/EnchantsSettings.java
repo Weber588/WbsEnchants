@@ -14,7 +14,7 @@ import java.util.List;
 public class EnchantsSettings extends WbsSettings {
 
     public static final double DEFAULT_COST = 1000;
-    public static final double DEFAULT_COST_MODIFIER = 1000;
+    public static final double DEFAULT_COST_MODIFIER = 0.4;
     public static final double DEFAULT_REMOVAL_COST = 100;
     public static final double DEFAULT_EXTRACT_COST = 2000;
     public static final boolean DEFAULT_USABLE_ANYWHERE = false;
@@ -55,10 +55,15 @@ public class EnchantsSettings extends WbsSettings {
     public static final WickedEnchant WICKED = new WickedEnchant();
     public static final CrushingEnchant CRUSHING = new CrushingEnchant();
     public static final HandheldEnchant HANDHELD = new HandheldEnchant();
+    public static final HogsbaneEnchant HOGSBANE = new HogsbaneEnchant();
+    public static final ButcheringEnchant BUTCHERING = new ButcheringEnchant();
 
     public static final CurseRebuking CURSE_REBUKING = new CurseRebuking();
     public static final CurseVanilla CURSE_VANILLA = new CurseVanilla();
     public static final CurseExotic CURSE_EXOTIC = new CurseExotic();
+    public static final CurseStumbling CURSE_STUMBLING = new CurseStumbling();
+    public static final CurseInsomnia CURSE_INSOMNIA = new CurseInsomnia();
+    public static final CurseMidas CURSE_MIDAS = new CurseMidas();
 
     public static void register(WbsEnchantment enchantment) {
         REGISTERED_ENCHANTMENTS.add(enchantment);

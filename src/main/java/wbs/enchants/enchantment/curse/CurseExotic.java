@@ -5,8 +5,9 @@ import org.bukkit.enchantments.Enchantment;
 import org.bukkit.enchantments.EnchantmentTarget;
 import org.jetbrains.annotations.NotNull;
 import wbs.enchants.WbsEnchantment;
+import wbs.enchants.enchantment.helper.ConflictEnchantment;
 
-public class CurseExotic extends WbsEnchantment {
+public class CurseExotic extends WbsEnchantment implements ConflictEnchantment {
     public CurseExotic() {
         super("curse_exotic");
     }
@@ -51,5 +52,10 @@ public class CurseExotic extends WbsEnchantment {
     @Override
     public boolean conflictsWith(@NotNull Enchantment enchantment) {
         return enchantment.getKey().getNamespace().equals("minecraft");
+    }
+
+    @Override
+    public String getConflictsDescription() {
+        return "All vanilla enchantments.";
     }
 }

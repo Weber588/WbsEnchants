@@ -1,35 +1,33 @@
 package wbs.enchants.enchantment;
 
 import me.sciguymjm.uberenchant.api.utils.Rarity;
-import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.Particle;
-import org.bukkit.World;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.enchantments.EnchantmentTarget;
 import org.bukkit.entity.Entity;
+import org.bukkit.entity.EntityType;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Projectile;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
-import org.bukkit.event.world.LootGenerateEvent;
-import org.bukkit.inventory.EntityEquipment;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import wbs.enchants.WbsEnchantment;
-import wbs.enchants.enchantment.helper.DamageEnchant;
-import wbs.enchants.util.EnchantUtils;
+import wbs.enchants.enchantment.helper.TargetedDamageEnchant;
 import wbs.enchants.util.EntityUtils;
 import wbs.utils.util.WbsMath;
 import wbs.utils.util.entities.WbsEntityUtil;
 import wbs.utils.util.particles.NormalParticleEffect;
 import wbs.utils.util.particles.WbsParticleGroup;
 
+import java.util.Arrays;
+import java.util.HashSet;
 import java.util.Set;
+import java.util.stream.Collectors;
 
-public class FrostburnEnchant extends WbsEnchantment implements DamageEnchant {
+public class FrostburnEnchant extends TargetedDamageEnchant {
     private static final double CHANCE_PER_LEVEL = 5;
     private static final int DURATION_PER_LEVEL = 60;
 
@@ -48,46 +46,29 @@ public class FrostburnEnchant extends WbsEnchantment implements DamageEnchant {
     }
 
     @Override
-    public void handleAttack(@NotNull EntityDamageByEntityEvent event, @NotNull LivingEntity attacker, @NotNull Entity victim, @Nullable Projectile projectile) {
-        if (!(victim instanceof LivingEntity livingVictim)) {
-            return;
-        }
+    protected @NotNull Set<EntityType> getDefaultMobs() {
+        return Arrays.stream(EntityType.values())
+                .filter(EntityUtils::isColdVulnerable)
+                .collect(Collectors.toSet());
+    }
 
-        EntityEquipment equipment = attacker.getEquipment();
-        if (equipment == null) {
-            return;
-        }
-        
-        ItemStack item = equipment.getItemInMainHand();
-        if (containsEnchantment(item)) {
-            double initialDamage = event.getDamage();
-            double damage = initialDamage;
+    @Override
+    public void handleAttack(@NotNull EntityDamageByEntityEvent event, @NotNull LivingEntity attacker, @NotNull Entity victim, @Nullable Projectile projectile) {
+        super.handleAttack(event, attacker, victim, projectile);
+
+        ItemStack item = getIfEnchanted(attacker);
+        if (item != null && victim instanceof LivingEntity livingVictim) {
             int level = getLevel(item);
 
-            EFFECT.play(WbsEntityUtil.getMiddleLocation(livingVictim));
-            if (damage > 0) {
-                if (WbsMath.chance(level * CHANCE_PER_LEVEL)) {
-                    livingVictim.addPotionEffect(
-                            new PotionEffect(PotionEffectType.SLOW,
-                                    DURATION_PER_LEVEL * level,
-                                    level
-                            )
-                    );
-                }
-            }
+            if (WbsMath.chance(level * CHANCE_PER_LEVEL)) {
+                EFFECT.play(WbsEntityUtil.getMiddleLocation(victim));
 
-            if (EntityUtils.isColdVulnerable(livingVictim.getType())) {
-                damage += 2.5 * level; // Smite-like calculation
-            } else if (EntityUtils.isHotVulnerable(livingVictim.getType())) {
-                damage -= level;
-            } else {
-                return;
-            }
-
-            if (initialDamage <= 0) {
-                event.setDamage(damage);
-            } else {
-                event.setDamage(Math.max(1, damage));
+                livingVictim.addPotionEffect(
+                        new PotionEffect(PotionEffectType.SLOW,
+                                DURATION_PER_LEVEL * level,
+                                level
+                        )
+                );
             }
         }
     }
@@ -125,30 +106,8 @@ public class FrostburnEnchant extends WbsEnchantment implements DamageEnchant {
 
     @Override
     public Set<Enchantment> getDirectConflicts() {
-        return Set.of(FIRE_ASPECT, ARROW_FIRE);
-    }
-
-    @Override
-    public Set<Enchantment> getIndirectConflicts() {
-        return Set.of(DAMAGE_ALL);
-    }
-
-    @Override
-    public void onLootGenerate(LootGenerateEvent event) {
-        if (WbsMath.chance(10)) {
-            Location location = event.getLootContext().getLocation();
-            World world = location.getWorld();
-            if (world == null) {
-                return;
-            }
-
-            if (location.getBlock().getTemperature() < -0.5) {
-                for (ItemStack stack : event.getLoot()) {
-                    if (tryAdd(stack, 1)) {
-                        return;
-                    }
-                }
-            }
-        }
+        Set<Enchantment> directConflicts = new HashSet<>(super.getDirectConflicts());
+        directConflicts.addAll(Set.of(FIRE_ASPECT, ARROW_FIRE));
+        return directConflicts;
     }
 }

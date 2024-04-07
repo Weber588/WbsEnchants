@@ -2,53 +2,31 @@ package wbs.enchants.enchantment;
 
 import me.sciguymjm.uberenchant.api.utils.Rarity;
 import org.bukkit.Material;
+import org.bukkit.World;
+import org.bukkit.block.Block;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.enchantments.EnchantmentTarget;
-import org.bukkit.event.EventHandler;
+import org.bukkit.entity.Item;
 import org.bukkit.event.EventPriority;
-import org.bukkit.event.block.BlockBreakEvent;
-import org.bukkit.inventory.EquipmentSlot;
+import org.bukkit.event.block.BlockDropItemEvent;
 import org.bukkit.inventory.ItemStack;
+import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
-import wbs.enchants.WbsEnchantment;
 import wbs.enchants.WbsEnchants;
-import wbs.enchants.util.EntityUtils;
+import wbs.enchants.enchantment.helper.BlockDropEnchantment;
 import wbs.utils.util.WbsEnums;
-import wbs.utils.util.WbsItems;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Random;
-import java.util.Set;
+import java.util.*;
 
-public class CrushingEnchant extends WbsEnchantment {
+public class CrushingEnchant extends BlockDropEnchantment {
     private static final String CRUSH_MAP_KEY = "crush-materials";
 
     private final Map<Material, CrushDefinition> crushingMap = new HashMap<>();
 
     public CrushingEnchant() {
-        super("crushing");
-    }
-
-    @EventHandler(priority = EventPriority.LOWEST)
-    public void onBreak(BlockBreakEvent event) {
-        ItemStack item = EntityUtils.getEnchantedFromSlot(event.getPlayer(), this, EquipmentSlot.HAND);
-
-        if (item != null) {
-            Material blockType = event.getBlock().getType();
-
-            if (!WbsItems.isProperTool(event.getBlock(), item)) {
-                return;
-            }
-
-            CrushDefinition def = crushingMap.get(blockType);
-            if (def != null) {
-                event.setDropItems(false);
-                event.getBlock().getWorld().dropItemNaturally(event.getBlock().getLocation(), def.produce());
-            }
-        }
+        super("crushing", EventPriority.HIGHEST);
     }
 
     @Override
@@ -272,6 +250,83 @@ public class CrushingEnchant extends WbsEnchantment {
         return Set.of(SILK_TOUCH, LOOT_BONUS_BLOCKS);
     }
 
+    @Override
+    protected void apply(BlockDropItemEvent event, MarkedLocation marked) {
+        unmark(marked);
+
+        List<Item> items = event.getItems();
+        List<ItemStack> toDrop = new LinkedList<>();
+
+        for (Item item : items) {
+            ItemStack stack = item.getItemStack();
+            CrushDefinition def = crushingMap.get(stack.getType());
+
+            if (def != null) {
+                toDrop.addAll(def.produce(stack));
+            } else {
+                toDrop.add(item.getItemStack());
+            }
+        }
+
+        Block block = event.getBlock();
+        World world = block.getWorld();
+
+        event.setCancelled(true);
+
+        for (ItemStack toSpawn : condenseItems(toDrop)) {
+            world.dropItemNaturally(block.getLocation(), toSpawn);
+        }
+    }
+
+    @Contract(pure = true)
+    private List<ItemStack> condenseItems(List<ItemStack> stacks) {
+        // Don't modify original list
+        stacks = new LinkedList<>(stacks);
+
+        List<ItemStack> condensed = new LinkedList<>();
+
+        while (!stacks.isEmpty()) {
+            ItemStack toMove = stacks.get(0);
+            stacks.remove(0);
+
+            List<ItemStack> toAdd = new LinkedList<>();
+
+            boolean foundMatch = false;
+            for (ItemStack toCompare : condensed) {
+                int stackSize = toCompare.getMaxStackSize();
+                int existingAmount = toCompare.getAmount();
+
+                int remaining = stackSize - existingAmount;
+                if (remaining > 0) {
+                    if (toCompare.isSimilar(toMove)) {
+                        foundMatch = true;
+                        stacks.remove(toMove);
+
+                        int availableAmount = toMove.getAmount();
+                        if (availableAmount <= remaining) {
+                            toCompare.setAmount(existingAmount + availableAmount);
+                        } else {
+                            toCompare.setAmount(stackSize);
+                            availableAmount -= remaining;
+
+                            ItemStack moveClone = toMove.clone();
+                            moveClone.setAmount(availableAmount);
+                            toAdd.add(moveClone);
+                        }
+                    }
+                }
+            }
+
+            if (foundMatch) {
+                condensed.addAll(toAdd);
+            } else {
+                condensed.add(toMove.clone());
+            }
+        }
+
+        return condensed;
+    }
+
     private static class CrushDefinition {
         private final Material to;
         private final int minAmount;
@@ -291,15 +346,27 @@ public class CrushingEnchant extends WbsEnchantment {
             this.maxAmount = maxAmount;
         }
 
-        public ItemStack produce() {
-
-            int amount;
+        public List<ItemStack> produce(ItemStack from) {
+            int amount = 0;
             if (maxAmount == minAmount) {
-                amount = maxAmount;
+                amount = maxAmount * from.getAmount();
             } else {
-                amount = new Random().nextInt(maxAmount - minAmount) + minAmount;
+                for (int i = 0; i < from.getAmount(); i++) {
+                    amount += new Random().nextInt(maxAmount - minAmount) + minAmount;
+                }
             }
-            return new ItemStack(to, amount);
+
+            List<ItemStack> produced = new LinkedList<>();
+
+            while (amount > to.getMaxStackSize()) {
+                produced.add(new ItemStack(to, from.getMaxStackSize()));
+                amount -= from.getMaxStackSize();
+            }
+
+            if (amount > 0) {
+                produced.add(new ItemStack(to, amount));
+            }
+            return produced;
         }
     }
 }

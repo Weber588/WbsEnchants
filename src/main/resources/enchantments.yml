@@ -152,6 +152,11 @@ decay:
   extraction_cost: 2000.0
   use_on_anything: false
   aliases: []
+  affected-mobs:
+    - EVOKER
+    - PILLAGER
+    - VINDICATOR
+    - ILLUSIONER
 scorching:
   enabled: true
   min_level: 0
@@ -174,6 +179,12 @@ frostburn:
   extraction_cost: 2000.0
   use_on_anything: false
   aliases: []
+  affected-mobs:
+    - HUSK
+    - STRIDER
+    - ENDERMAN
+    - MAGMA_CUBE
+    - BLAZE
 ender_shot:
   enabled: true
   min_level: 0
@@ -190,7 +201,7 @@ immortal:
   min_level: 0
   max_level: 1
   cost: 1000.0
-  cost_multiplier: 1000.0
+  cost_multiplier: 0.4
   cost_for_level: {}
   removal_cost: 100.0
   extraction_cost: 2000.0
@@ -201,7 +212,7 @@ dual_wield:
   min_level: 0
   max_level: 0
   cost: 1000.0
-  cost_multiplier: 1000.0
+  cost_multiplier: 0.4
   cost_for_level: {}
   removal_cost: 100.0
   extraction_cost: 2000.0
@@ -212,7 +223,7 @@ pinpoint:
   min_level: 0
   max_level: 0
   cost: 1000.0
-  cost_multiplier: 1000.0
+  cost_multiplier: 0.4
   cost_for_level: {}
   removal_cost: 100.0
   extraction_cost: 2000.0
@@ -223,7 +234,7 @@ frictionless:
   min_level: 0
   max_level: 3
   cost: 1000.0
-  cost_multiplier: 1000.0
+  cost_multiplier: 0.4
   cost_for_level: {}
   removal_cost: 100.0
   extraction_cost: 2000.0
@@ -234,7 +245,7 @@ unshakable:
   min_level: 0
   max_level: 1
   cost: 1000.0
-  cost_multiplier: 1000.0
+  cost_multiplier: 0.4
   cost_for_level: {}
   removal_cost: 100.0
   extraction_cost: 2000.0
@@ -245,7 +256,7 @@ transference:
   min_level: 0
   max_level: 1
   cost: 1000.0
-  cost_multiplier: 1000.0
+  cost_multiplier: 0.4
   cost_for_level: {}
   removal_cost: 100.0
   extraction_cost: 2000.0
@@ -256,7 +267,7 @@ unsinkable:
   min_level: 0
   max_level: 1
   cost: 1000.0
-  cost_multiplier: 1000.0
+  cost_multiplier: 0.4
   cost_for_level: {}
   removal_cost: 100.0
   extraction_cost: 2000.0
@@ -267,7 +278,7 @@ defusal:
   min_level: 0
   max_level: 3
   cost: 1000.0
-  cost_multiplier: 1000.0
+  cost_multiplier: 0.4
   cost_for_level: {}
   removal_cost: 100.0
   extraction_cost: 2000.0
@@ -278,7 +289,7 @@ pilfering:
   min_level: 0
   max_level: 3
   cost: 1000.0
-  cost_multiplier: 1000.0
+  cost_multiplier: 0.4
   cost_for_level: {}
   removal_cost: 100.0
   extraction_cost: 2000.0
@@ -289,7 +300,7 @@ resilience:
   min_level: 0
   max_level: 1
   cost: 1000.0
-  cost_multiplier: 1000.0
+  cost_multiplier: 0.4
   cost_for_level: {}
   removal_cost: 100.0
   extraction_cost: 2000.0
@@ -300,7 +311,7 @@ manathirst:
   min_level: 0
   max_level: 1
   cost: 1000.0
-  cost_multiplier: 1000.0
+  cost_multiplier: 0.4
   cost_for_level: {}
   removal_cost: 100.0
   extraction_cost: 2000.0
@@ -311,7 +322,7 @@ shulkenforced:
   min_level: 0
   max_level: 1
   cost: 1000.0
-  cost_multiplier: 1000.0
+  cost_multiplier: 0.4
   cost_for_level: {}
   removal_cost: 100.0
   extraction_cost: 2000.0
@@ -322,7 +333,7 @@ divine_resonance:
   min_level: 0
   max_level: 1
   cost: 1000.0
-  cost_multiplier: 1000.0
+  cost_multiplier: 0.4
   cost_for_level: {}
   removal_cost: 100.0
   extraction_cost: 2000.0
@@ -333,7 +344,7 @@ aridity:
   min_level: 0
   max_level: 3
   cost: 1000.0
-  cost_multiplier: 1000.0
+  cost_multiplier: 0.4
   cost_for_level: {}
   removal_cost: 100.0
   extraction_cost: 2000.0
@@ -344,7 +355,7 @@ lava_walker:
   min_level: 0
   max_level: 2
   cost: 1000.0
-  cost_multiplier: 1000.0
+  cost_multiplier: 0.4
   cost_for_level: {}
   removal_cost: 100.0
   extraction_cost: 2000.0
@@ -358,7 +369,7 @@ wicked:
   min_level: 0
   max_level: 1
   cost: 1000.0
-  cost_multiplier: 1000.0
+  cost_multiplier: 0.4
   cost_for_level: {}
   removal_cost: 100.0
   extraction_cost: 2000.0
@@ -369,7 +380,7 @@ handheld:
   min_level: 0
   max_level: 1
   cost: 1000.0
-  cost_multiplier: 1000.0
+  cost_multiplier: 0.4
   cost_for_level: {}
   removal_cost: 100.0
   extraction_cost: 2000.0
@@ -380,7 +391,7 @@ curse_rebuking:
   min_level: 0
   max_level: 2
   cost: 1000.0
-  cost_multiplier: 1000.0
+  cost_multiplier: 0.4
   cost_for_level: {}
   removal_cost: 100.0
   extraction_cost: 2000.0
@@ -391,7 +402,7 @@ curse_vanilla:
   min_level: 0
   max_level: 1
   cost: 1000.0
-  cost_multiplier: 1000.0
+  cost_multiplier: 0.4
   cost_for_level: {}
   removal_cost: 100.0
   extraction_cost: 2000.0
@@ -402,7 +413,7 @@ curse_exotic:
   min_level: 0
   max_level: 1
   cost: 1000.0
-  cost_multiplier: 1000.0
+  cost_multiplier: 0.4
   cost_for_level: {}
   removal_cost: 100.0
   extraction_cost: 2000.0
@@ -413,7 +424,7 @@ crushing:
   min_level: 0
   max_level: 1
   cost: 1000.0
-  cost_multiplier: 1000.0
+  cost_multiplier: 0.4
   cost_for_level: {}
   removal_cost: 100.0
   extraction_cost: 2000.0
@@ -540,3 +551,59 @@ crushing:
       minAmount: 9
       maxAmount: 9
     PURPLE_CONCRETE: PURPLE_CONCRETE_POWDER
+hogsbane:
+  enabled: true
+  min_level: 0
+  max_level: 5
+  cost: 1000.0
+  cost_multiplier: 0.4
+  cost_for_level: {}
+  removal_cost: 100.0
+  extraction_cost: 2000.0
+  use_on_anything: false
+  aliases: []
+butchering:
+  enabled: true
+  min_level: 0
+  max_level: 3
+  cost: 1000.0
+  cost_multiplier: 0.4
+  cost_for_level: {}
+  removal_cost: 100.0
+  extraction_cost: 2000.0
+  use_on_anything: false
+  aliases: []
+  food-percent-increase-per-level: 15
+curse_stumbling:
+  enabled: true
+  min_level: 0
+  max_level: 4
+  cost: 1000.0
+  cost_multiplier: 0.4
+  cost_for_level: {}
+  removal_cost: 100.0
+  extraction_cost: 2000.0
+  use_on_anything: false
+  aliases: []
+curse_insomnia:
+  enabled: true
+  min_level: 0
+  max_level: 1
+  cost: 1000.0
+  cost_multiplier: 0.4
+  cost_for_level: {}
+  removal_cost: 100.0
+  extraction_cost: 2000.0
+  use_on_anything: false
+  aliases: []
+curse_midas:
+  enabled: true
+  min_level: 0
+  max_level: 1
+  cost: 1000.0
+  cost_multiplier: 0.4
+  cost_for_level: {}
+  removal_cost: 100.0
+  extraction_cost: 2000.0
+  use_on_anything: false
+  aliases: []

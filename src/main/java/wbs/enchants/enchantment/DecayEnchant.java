@@ -11,22 +11,18 @@ import org.bukkit.enchantments.EnchantmentTarget;
 import org.bukkit.entity.*;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.block.BlockBreakEvent;
-import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.world.LootGenerateEvent;
-import org.bukkit.inventory.EntityEquipment;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
-import wbs.enchants.WbsEnchantment;
-import wbs.enchants.enchantment.helper.DamageEnchant;
-import wbs.enchants.util.EnchantUtils;
+import wbs.enchants.enchantment.helper.TargetedDamageEnchant;
 import wbs.enchants.util.MaterialUtils;
 import wbs.utils.util.WbsMath;
 
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.Set;
 
-public class DecayEnchant extends WbsEnchantment implements DamageEnchant {
+public class DecayEnchant extends TargetedDamageEnchant {
     public DecayEnchant() {
         super("decay");
     }
@@ -66,35 +62,28 @@ public class DecayEnchant extends WbsEnchantment implements DamageEnchant {
     }
 
     @Override
-    public void handleAttack(@NotNull EntityDamageByEntityEvent event, @NotNull LivingEntity attacker, @NotNull Entity victim, @Nullable Projectile projectile) {
-        if (!(victim instanceof LivingEntity livingVictim)) {
-            return;
-        }
-
-        EntityCategory category = livingVictim.getCategory();
-        if (category == EntityCategory.UNDEAD) {
-            return;
-        }
-
-        EntityEquipment equipment = attacker.getEquipment();
-        if (equipment == null) {
-            return;
-        }
-
-        ItemStack item = equipment.getItemInMainHand();
-        if (containsEnchantment(item)) {
-            int level = getLevel(item);
-            double damage = event.getDamage();
-
-            if (category == EntityCategory.ILLAGER) {
-                damage += 2 * level; // (nerfed) Smite-like calculation
-            } else {
-                damage += (0.5 * level) + 0.5; // Sharpness-like calculation
-            }
-
-            event.setDamage(damage);
-        }
+    protected @NotNull Set<EntityType> getDefaultMobs() {
+        return Set.of(EntityType.EVOKER, EntityType.ILLUSIONER, EntityType.PILLAGER, EntityType.VINDICATOR);
     }
+
+    @Override
+    protected boolean shouldAffect(Entity victim) {
+        return super.shouldAffect(victim) || (
+                victim instanceof LivingEntity livingVictim &&
+                        livingVictim.getCategory() != EntityCategory.UNDEAD
+        );
+    }
+
+    @Override
+    protected double getBonusDamage(Entity victim) {
+        if (victim instanceof Illager) {
+            return 2;
+        } else if (victim instanceof LivingEntity livingVictim && livingVictim.getCategory() == EntityCategory.UNDEAD) {
+            return 0;
+        }
+
+        return 0.4;
+    }   
 
     @Override
     public String getDisplayName() {
@@ -103,7 +92,7 @@ public class DecayEnchant extends WbsEnchantment implements DamageEnchant {
 
     @Override
     public Rarity getRarity() {
-        return Rarity.VERY_RARE;
+        return Rarity.RARE;
     }
 
     @Override
@@ -129,12 +118,9 @@ public class DecayEnchant extends WbsEnchantment implements DamageEnchant {
 
     @Override
     public Set<Enchantment> getDirectConflicts() {
-        return Set.of(SILK_TOUCH);
-    }
-
-    @Override
-    public Set<Enchantment> getIndirectConflicts() {
-        return Set.of(DAMAGE_ALL);
+        Set<Enchantment> directConflicts = new HashSet<>(super.getDirectConflicts());
+        directConflicts.addAll(Set.of(SILK_TOUCH));
+        return directConflicts;
     }
 
     @Override

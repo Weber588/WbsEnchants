@@ -10,9 +10,12 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.enchantments.Enchantment;
+import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.HandlerList;
 import org.bukkit.event.world.LootGenerateEvent;
+import org.bukkit.inventory.EntityEquipment;
+import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.EnchantmentStorageMeta;
 import org.bukkit.inventory.meta.ItemMeta;
@@ -380,7 +383,7 @@ public abstract class WbsEnchantment extends UberEnchantment implements UberRegi
 
         // Does not directly conflict -- check if any indirect conflicts conflict.
         return indirectConflicts.stream()
-                .anyMatch(check -> check.conflictsWith(enchantment));
+                .anyMatch(enchantment::conflictsWith);
     }
 
     public Set<Enchantment> getDirectConflicts() {
@@ -395,5 +398,58 @@ public abstract class WbsEnchantment extends UberEnchantment implements UberRegi
     @Override
     public String getTranslationKey() {
         return getKey().toString();
+    }
+
+    /**
+     * Checks if the given entity has an item enchanted with this in the hand slot, returning either
+     * the item containing this enchantment, or null if it did not meet those conditions.
+     * @param entity The entity whose {@link org.bukkit.inventory.EntityEquipment} to check.
+     * @return An item from the given slot of the given entity, enchanted with this enchantment, or null.
+     */
+    @Nullable
+    public ItemStack getIfEnchanted(LivingEntity entity) {
+        return getIfEnchanted(entity, EquipmentSlot.HAND);
+    }
+
+    /**
+     * Checks if the given entity has an item enchanted with this in the hand slot, returning either
+     * the item containing this enchantment, or null if it did not meet those conditions.
+     * @param entity The entity whose {@link org.bukkit.inventory.EntityEquipment} to check.
+     * @param slot The slot to check for the enchanted item.
+     * @return An item from the given slot of the given entity, enchanted with this enchantment, or null.
+     */
+    @Nullable
+    public ItemStack getIfEnchanted(LivingEntity entity, EquipmentSlot slot) {
+        if (slot == null) {
+            return null;
+        }
+
+        EntityEquipment equipment = entity.getEquipment();
+        if (equipment == null) {
+            return null;
+        }
+
+        ItemStack item = equipment.getItem(slot);
+        if (containsEnchantment(item)) {
+            return item;
+        }
+
+        return null;
+    }
+
+    private static final EquipmentSlot[] ARMOUR_SLOTS = {
+            EquipmentSlot.HEAD,
+            EquipmentSlot.CHEST,
+            EquipmentSlot.LEGS,
+            EquipmentSlot.FEET
+    };
+
+    @Nullable
+    public ItemStack getHighestEnchantedArmour(LivingEntity entity) {
+        return Arrays.stream(ARMOUR_SLOTS)
+                .map(slot -> getIfEnchanted(entity, slot))
+                .filter(Objects::nonNull)
+                .max(Comparator.comparingInt(this::getLevel))
+                .orElse(null);
     }
 }

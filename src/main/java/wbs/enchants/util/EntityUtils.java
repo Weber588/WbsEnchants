@@ -4,7 +4,6 @@ import org.bukkit.Tag;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
-import org.bukkit.inventory.EntityEquipment;
 import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.potion.PotionEffectType;
@@ -45,30 +44,12 @@ public class EntityUtils {
         }
     }
 
-    /**
-     * Checks if the given entity has an item enchanted with the given enchantment in the given slot, returning either
-     * the item from that slot containing that enchantment, or null if it did not meet those conditions.
-     * @param entity The entity whose {@link org.bukkit.inventory.EntityEquipment} to check.
-     * @param enchantment The enchantment to verify is on the item before returning it.
-     * @param slot The slot to check for the enchanted item.
-     * @return An item from the given slot of the given entity, enchanted with the given enchantment, or null.
-     */
+    public static ItemStack getEnchantedFromSlot(LivingEntity entity, WbsEnchantment enchantment) {
+        return getEnchantedFromSlot(entity, enchantment, EquipmentSlot.HAND);
+    }
+
     @Nullable
     public static ItemStack getEnchantedFromSlot(LivingEntity entity, WbsEnchantment enchantment, EquipmentSlot slot) {
-        if (slot == null) {
-            return null;
-        }
-
-        EntityEquipment equipment = entity.getEquipment();
-        if (equipment == null) {
-            return null;
-        }
-
-        ItemStack item = equipment.getItem(slot);
-        if (enchantment.containsEnchantment(item)) {
-            return item;
-        }
-
-        return null;
+        return enchantment.getIfEnchanted(entity, slot);
     }
 }

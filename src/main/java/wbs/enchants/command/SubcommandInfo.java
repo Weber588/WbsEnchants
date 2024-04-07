@@ -1,23 +1,18 @@
 package wbs.enchants.command;
 
 import me.sciguymjm.uberenchant.api.UberEnchantment;
-import me.sciguymjm.uberenchant.api.utils.UberUtils;
-import net.md_5.bungee.api.chat.TextComponent;
-import net.md_5.bungee.api.chat.TranslatableComponent;
 import org.bukkit.NamespacedKey;
 import org.bukkit.command.CommandSender;
 import org.bukkit.enchantments.Enchantment;
 import org.jetbrains.annotations.NotNull;
 import wbs.enchants.EnchantsSettings;
 import wbs.enchants.WbsEnchantment;
+import wbs.enchants.enchantment.helper.ConflictEnchantment;
 import wbs.enchants.util.EnchantUtils;
-import wbs.utils.util.WbsEnums;
-import wbs.utils.util.WbsKeyed;
 import wbs.utils.util.commands.WbsSubcommand;
 import wbs.utils.util.plugin.WbsMessageBuilder;
 import wbs.utils.util.plugin.WbsPlugin;
 import wbs.utils.util.string.RomanNumerals;
-import wbs.utils.util.string.WbsStringify;
 import wbs.utils.util.string.WbsStrings;
 
 import java.util.LinkedList;
@@ -79,14 +74,19 @@ public class SubcommandInfo extends WbsSubcommand {
         sendMessageNoPrefix("Maximum level: &h" + RomanNumerals.toRoman(maxLevel) + " (" + maxLevel + ")", sender);
         sendMessageNoPrefix("Target: &h" + enchant.getTargetDescription(), sender);
         if (enchant.getPermission() != null) {
-            sendMessageNoPrefix("Permission: &h" + enchant.getPermission(), sender);
+        //    sendMessageNoPrefix("Permission: &h" + enchant.getPermission(), sender);
         }
 
         sendMessageNoPrefix("Description: &h" + enchant.getDescription(), sender);
 
         List<Enchantment> conflicts = EnchantUtils.getConflictsWith(enchant);
+        // Don't show enchants that only exist to conflict (typically curses)
+        conflicts.removeIf(check -> check instanceof ConflictEnchantment);
         conflicts.removeIf(enchant::equals);
-        if (!conflicts.isEmpty()) {
+
+        if (enchant instanceof ConflictEnchantment conflictEnchant) {
+            sendMessageNoPrefix("Conflicts with: &h" + conflictEnchant.getConflictsDescription(), sender);
+        } else if (!conflicts.isEmpty()) {
             WbsMessageBuilder builder = plugin.buildMessageNoPrefix("Conflicts with:");
 
             for (Enchantment conflict : conflicts) {
