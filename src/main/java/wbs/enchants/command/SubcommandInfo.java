@@ -1,67 +1,26 @@
 package wbs.enchants.command;
 
 import me.sciguymjm.uberenchant.api.UberEnchantment;
-import org.bukkit.NamespacedKey;
 import org.bukkit.command.CommandSender;
 import org.bukkit.enchantments.Enchantment;
 import org.jetbrains.annotations.NotNull;
-import wbs.enchants.EnchantsSettings;
 import wbs.enchants.WbsEnchantment;
 import wbs.enchants.enchantment.helper.ConflictEnchantment;
 import wbs.enchants.util.EnchantUtils;
-import wbs.utils.util.commands.WbsSubcommand;
 import wbs.utils.util.plugin.WbsMessageBuilder;
 import wbs.utils.util.plugin.WbsPlugin;
 import wbs.utils.util.string.RomanNumerals;
 import wbs.utils.util.string.WbsStrings;
 
-import java.util.LinkedList;
 import java.util.List;
-import java.util.stream.Collectors;
 
-public class SubcommandInfo extends WbsSubcommand {
+public class SubcommandInfo extends EnchantmentSubcommand {
     public SubcommandInfo(@NotNull WbsPlugin plugin, @NotNull String label) {
         super(plugin, label);
     }
 
     @Override
-    protected boolean onCommand(@NotNull CommandSender sender, @NotNull String label, @NotNull String[] args, int start) {
-        List<WbsEnchantment> enchants = EnchantsSettings.getRegistered();
-
-        if (args.length <= start) {
-            sendUsage("<enchantment>", sender, label, args);
-            sendMessage("Options: &h" + enchants.stream()
-                    .map(WbsEnchantment::getKey)
-                    .map(NamespacedKey::getKey)
-                    .collect(Collectors.joining(", ")), sender);
-            return true;
-        }
-
-        String enchantmentString = args[start];
-
-        WbsEnchantment enchant = enchants.stream()
-                .filter(check -> check.matches(enchantmentString))
-                .findFirst()
-                .orElse(null);
-
-        if (enchant == null) {
-            enchant = enchants.stream()
-                    .filter(check -> check.looselyMatches(enchantmentString))
-                    .findFirst()
-                    .orElse(null);
-
-            if (enchant == null) {
-                sendMessage("Enchantment not found: \"" + enchantmentString + "\". " +
-                        "Please choose from the following:", sender);
-
-                sendMessage("Options: &h" + enchants.stream()
-                        .map(WbsEnchantment::getKey)
-                        .map(NamespacedKey::getKey)
-                        .collect(Collectors.joining(", ")), sender);
-                return true;
-            }
-        }
-
+    protected void onEnchantCommand(@NotNull CommandSender sender, @NotNull String label, @NotNull String[] args, int start, WbsEnchantment enchant) {
         int maxLevel = enchant.getMaxLevel();
         if (maxLevel == 0) {
             maxLevel = 1;
@@ -107,19 +66,5 @@ public class SubcommandInfo extends WbsSubcommand {
         }
 
         sendMessage(line, sender);
-
-        return true;
-    }
-
-    @Override
-    protected List<String> getTabCompletions(@NotNull CommandSender sender, @NotNull String label, @NotNull String[] args, int start) {
-        if (args.length == start) {
-            return EnchantsSettings.getRegistered().stream()
-                    .map(WbsEnchantment::getKey)
-                    .map(NamespacedKey::getKey)
-                    .collect(Collectors.toList());
-        }
-
-        return new LinkedList<>();
     }
 }
