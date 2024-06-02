@@ -2,7 +2,6 @@ package wbs.enchants;
 
 import me.sciguymjm.uberenchant.api.UberEnchantment;
 import me.sciguymjm.uberenchant.api.utils.UberConfiguration;
-import me.sciguymjm.uberenchant.api.utils.UberUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
@@ -28,6 +27,7 @@ import wbs.enchants.enchantment.helper.DamageEnchant;
 import wbs.enchants.enchantment.helper.VehicleEnchant;
 import wbs.enchants.generation.ContextManager;
 import wbs.enchants.generation.GenerationContext;
+import wbs.enchants.util.EnchantUtils;
 import wbs.enchants.util.UberRegistrable;
 import wbs.utils.exceptions.InvalidConfigurationException;
 import wbs.utils.util.WbsEnums;
@@ -36,7 +36,7 @@ import wbs.utils.util.plugin.WbsPlugin;
 
 import java.util.*;
 
-public abstract class WbsEnchantment extends UberEnchantment implements UberRegistrable {
+public abstract class WbsEnchantment extends UberEnchantment implements UberRegistrable, Comparable<WbsEnchantment> {
     private static final Random RANDOM = new Random();
 
     public static boolean matches(@NotNull Enchantment a, @NotNull Enchantment b) {
@@ -197,11 +197,7 @@ public abstract class WbsEnchantment extends UberEnchantment implements UberRegi
             }
         }
 
-        if (stack.getType() == Material.ENCHANTED_BOOK) {
-            UberUtils.addStoredEnchantment(this, stack, level);
-        } else {
-            UberUtils.addEnchantment(this, stack, level);
-        }
+        EnchantUtils.addEnchantment(this, stack, level);
 
         return true;
     }
@@ -424,6 +420,10 @@ public abstract class WbsEnchantment extends UberEnchantment implements UberRegi
             return null;
         }
 
+        if (entity == null) {
+            return null;
+        }
+
         EntityEquipment equipment = entity.getEquipment();
         if (equipment == null) {
             return null;
@@ -451,5 +451,9 @@ public abstract class WbsEnchantment extends UberEnchantment implements UberRegi
                 .filter(Objects::nonNull)
                 .max(Comparator.comparingInt(this::getLevel))
                 .orElse(null);
+    }
+
+    public int compareTo(WbsEnchantment other) {
+        return getKey().getKey().compareTo(other.getKey().getKey());
     }
 }

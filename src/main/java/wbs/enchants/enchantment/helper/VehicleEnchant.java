@@ -1,6 +1,5 @@
 package wbs.enchants.enchantment.helper;
 
-import me.sciguymjm.uberenchant.api.utils.UberUtils;
 import org.bukkit.GameMode;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
@@ -13,6 +12,7 @@ import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
 import org.jetbrains.annotations.Nullable;
 import wbs.enchants.WbsEnchantment;
+import wbs.enchants.util.EnchantUtils;
 import wbs.enchants.util.EventUtils;
 import wbs.utils.util.WbsEnums;
 
@@ -158,7 +158,7 @@ public interface VehicleEnchant extends EnchantInterface, AutoRegistrableEnchant
             event.setCancelled(true);
 
             vehicle.remove();
-            UberUtils.addEnchantment(enchant, item, level);
+            EnchantUtils.addEnchantment(enchant, item, level);
             vehicle.getWorld().dropItemNaturally(vehicle.getLocation(), item);
             afterDrop(event, item);
         }
