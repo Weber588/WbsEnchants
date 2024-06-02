@@ -79,15 +79,13 @@ public class SubcommandAdd extends EnchantmentSubcommand {
         LinkedList<String> completions = new LinkedList<>();
 
         if (enchant != null) {
-            return switch (args.length - start) {
+            switch (args.length - start) {
                 case 1 -> {
                     for (int i = 0; i < enchant.getMaxLevel(); i++) {
                         completions.add(String.valueOf(i + 1));
                     }
-                    yield completions;
                 }
-                default -> completions;
-            };
+            }
         }
 
         return completions;
