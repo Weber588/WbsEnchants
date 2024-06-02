@@ -22,6 +22,7 @@ public final class ConditionManager {
         registerContext(EntityCategoryCondition.KEY, EntityCategoryCondition::new);
         registerContext(HeightCondition.KEY, HeightCondition::new);
         registerContext(BlockTypeCondition.KEY, BlockTypeCondition::new);
+        registerContext(DimensionTypeCondition.KEY, DimensionTypeCondition::new);
     }
 
     public static void registerContext(String key, ConditionConstructor producer) {
