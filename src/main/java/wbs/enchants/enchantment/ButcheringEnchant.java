@@ -36,6 +36,9 @@ public class ButcheringEnchant extends TargetedDamageEnchant {
         }
 
         Player player = entity.getKiller();
+        if (player == null) {
+            return;
+        }
 
         ItemStack item = EntityUtils.getEnchantedFromSlot(player, this);
 
