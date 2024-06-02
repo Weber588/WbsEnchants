@@ -4,7 +4,7 @@ import org.bukkit.configuration.ConfigurationSection;
 import org.jetbrains.annotations.NotNull;
 
 public abstract class RangeCondition extends GenerationCondition {
-    private int min = 0;
+    private int min = Integer.MIN_VALUE;
     private int max = Integer.MAX_VALUE;
 
     public RangeCondition(@NotNull String key, ConfigurationSection parentSection, String directory) {

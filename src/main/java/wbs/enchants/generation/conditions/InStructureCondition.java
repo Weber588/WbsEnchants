@@ -28,7 +28,7 @@ public class InStructureCondition extends GenerationCondition {
         if (section != null) {
             typeString = section.getString("type");
         } else {
-            typeString = parentSection.getString("type");
+            typeString = parentSection.getString(KEY);
         }
 
         if (typeString == null) {
@@ -54,7 +54,7 @@ public class InStructureCondition extends GenerationCondition {
             if (type != null) {
                 this.type = type;
             } else {
-                throw new InvalidConfigurationException("Invalid villager type \"" + typeString + "\". Valid options: " +
+                throw new InvalidConfigurationException("Invalid structure type \"" + typeString + "\". Valid options: " +
                         Registry.STRUCTURE.stream()
                                 .map(structure -> structure.getKey().toString())
                                 .collect(Collectors.joining(", ")),
