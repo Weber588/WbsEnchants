@@ -1,114 +1,64 @@
 package wbs.enchants.command;
 
-import me.sciguymjm.uberenchant.api.utils.Rarity;
+import com.mojang.brigadier.Command;
+import com.mojang.brigadier.builder.LiteralArgumentBuilder;
+import io.papermc.paper.command.brigadier.CommandSourceStack;
+import io.papermc.paper.command.brigadier.Commands;
 import org.bukkit.command.CommandSender;
 import org.jetbrains.annotations.NotNull;
-import wbs.enchants.EnchantsSettings;
+import wbs.enchants.EnchantManager;
 import wbs.enchants.WbsEnchantment;
 import wbs.enchants.WbsEnchants;
-import wbs.utils.util.WbsEnums;
-import wbs.utils.util.commands.WbsSubcommand;
+import wbs.enchants.util.EnchantUtils;
 import wbs.utils.util.plugin.WbsMessageBuilder;
 import wbs.utils.util.plugin.WbsPlugin;
 import wbs.utils.util.string.RomanNumerals;
 
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 import java.util.stream.Collectors;
 
-public class SubcommandList extends WbsSubcommand {
+@SuppressWarnings("UnstableApiUsage")
+public class SubcommandList extends Subcommand {
     public SubcommandList(@NotNull WbsPlugin plugin, @NotNull String label) {
         super(plugin, label);
     }
 
     @Override
-    protected final boolean onCommand(@NotNull CommandSender sender, @NotNull String label, @NotNull String[] args, int start) {
-        SortBy sortBy = SortBy.NONE;
-        if (args.length > start) {
-            String sortByString = args[start];
+    public LiteralArgumentBuilder<CommandSourceStack> getArgument() {
+        return Commands.literal(label).executes(context -> {
+            CommandSender sender = context.getSource().getSender();
 
-            sortBy = WbsEnums.getEnumFromString(SortBy.class, sortByString);
+            List<WbsEnchantment> enchants = EnchantManager.getRegistered()
+                    .stream()
+                    .sorted()
+                    .collect(Collectors.toList());
 
-            if (sortBy == null) {
-                sendMessage("Invalid sort mode \"&h" + sortByString + "&r\". Please choose from the following: " +
-                        WbsEnums.joiningPrettyStrings(SortBy.class), sender);
-                return true;
+            if (enchants.isEmpty()) {
+                plugin.sendMessage("No enchantments enabled!", sender);
+                return 0;
             }
-        }
 
-        List<WbsEnchantment> enchants = EnchantsSettings.getRegistered()
-                .stream()
-                .sorted()
-                .collect(Collectors.toList());
+            WbsMessageBuilder builder = new WbsMessageBuilder(plugin, "Enchantments: ");
 
-        if (enchants.isEmpty()) {
-            sendMessage("No enchantments enabled!", sender);
-            return true;
-        }
+            WbsEnchantment first = enchants.getFirst();
+            enchants.removeFirst();
+            appendEnchant(builder, first);
 
-        WbsMessageBuilder builder = new WbsMessageBuilder(plugin, "Enchantments: ");
+            enchants.forEach(enchant -> {
+                builder.append("&r, ");
+                appendEnchant(builder, enchant);
+            });
 
-        switch (sortBy) {
-            case NONE -> {
-                WbsEnchantment first = enchants.get(0);
-                enchants.remove(0);
-                appendEnchant(builder, first);
+            builder.build().send(sender);
 
-                enchants.forEach(enchant -> {
-                    builder.append("&r, ");
-                    appendEnchant(builder, enchant);
-                });
-            }
-            case RARITY -> {
-                for (Rarity rarity : Rarity.values()) {
-                    List<WbsEnchantment> inRarity = enchants.stream()
-                            .filter(ench -> ench.getRarity() == rarity)
-                            .collect(Collectors.toList());
-
-                    if (inRarity.isEmpty()) {
-                        continue;
-                    }
-
-                    builder.append("\n");
-
-                    WbsEnchantment first = inRarity.get(0);
-                    inRarity.remove(0);
-                    appendEnchant(builder, first);
-
-                    for (WbsEnchantment enchant : inRarity) {
-                        if (enchant.getRarity() == rarity) {
-                            builder.append("&r, ");
-                            appendEnchant(builder, enchant);
-                        }
-                    }
-                }
-            }
-            case ITEM_TARGET -> {
-                Set<String> uniqueValues = new HashSet<>();
-                for (WbsEnchantment enchantment : enchants) {
-                    String target = enchantment.getTargetDescription();
-                    if (uniqueValues.add(target)) {
-                        for (WbsEnchantment enchant : enchants) {
-                            if (enchant.getTargetDescription().equals(target)) {
-                                builder.append("&r, ");
-                                appendEnchant(builder, enchant);
-                            }
-                        }
-                    }
-                }
-            }
-        }
-
-        builder.build().send(sender);
-
-        return true;
+            return Command.SINGLE_SUCCESS;
+        });
     }
 
     private static String getKeyDisplay(WbsEnchantment enchantment) {
         String keyString = enchantment.getKey().getKey();
 
-        if (enchantment.isCursed()) {
+        if (EnchantUtils.isCurse(enchantment.getEnchantment())) {
             keyString = "&c" + keyString;
         } else {
             keyString = "&7" + keyString;
@@ -118,7 +68,7 @@ public class SubcommandList extends WbsSubcommand {
     }
 
     private static String getHoverText(WbsEnchantment enchant) {
-        String text = "&h&m        &h " + enchant.getDisplayName() + "&h &m        ";
+        String text = "&h&m        &h " + enchant.getDefaultDisplayName() + "&h &m        ";
 
         text += "\n&rMax level: &h" + RomanNumerals.toRoman(enchant.getMaxLevel()) + " (" + enchant.getMaxLevel() + ")";
         text += "\n&rTarget: &h" + enchant.getTargetDescription();
@@ -136,11 +86,5 @@ public class SubcommandList extends WbsSubcommand {
                         WbsEnchants.getInstance().getName().toLowerCase()
                                 + ":customenchants info " + enchant.getKey().getKey()
                 );
-    }
-
-    private enum SortBy {
-        NONE,
-        RARITY,
-        ITEM_TARGET,
     }
 }

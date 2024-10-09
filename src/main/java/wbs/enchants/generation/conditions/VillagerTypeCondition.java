@@ -4,7 +4,7 @@ import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Villager;
 import wbs.utils.exceptions.InvalidConfigurationException;
-import wbs.utils.util.WbsEnums;
+import wbs.utils.util.WbsKeyed;
 
 public class VillagerTypeCondition extends GenerationCondition {
     public static final String KEY = "villager-type";
@@ -24,14 +24,14 @@ public class VillagerTypeCondition extends GenerationCondition {
 
         if (typeString == null) {
             throw new InvalidConfigurationException("Specify a villager type: " +
-                    WbsEnums.joiningPrettyStrings(Villager.Type.class), directory);
+                    WbsKeyed.joiningPrettyStrings(Villager.Type.class), directory);
         }
 
-        type = WbsEnums.getEnumFromString(Villager.Type.class, typeString);
+        type = WbsKeyed.getKeyedFromString(Villager.Type.class, typeString);
 
         if (type == null) {
             throw new InvalidConfigurationException("Invalid villager type \"" + typeString + "\". Valid options: " +
-                    WbsEnums.joiningPrettyStrings(Villager.Type.class), directory);
+                    WbsKeyed.joiningPrettyStrings(Villager.Type.class), directory);
         }
     }
 

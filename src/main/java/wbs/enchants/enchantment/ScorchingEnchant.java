@@ -1,14 +1,13 @@
 package wbs.enchants.enchantment;
 
-import me.sciguymjm.uberenchant.api.utils.Rarity;
+import io.papermc.paper.registry.keys.tags.EnchantmentTagKeys;
+import io.papermc.paper.registry.keys.tags.ItemTypeTagKeys;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Particle;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockState;
 import org.bukkit.block.Container;
-import org.bukkit.enchantments.Enchantment;
-import org.bukkit.enchantments.EnchantmentTarget;
 import org.bukkit.entity.Item;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -21,10 +20,8 @@ import org.bukkit.inventory.Recipe;
 import org.bukkit.inventory.RecipeChoice;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.scheduler.BukkitRunnable;
-import org.jetbrains.annotations.NotNull;
 import wbs.enchants.WbsEnchantment;
 import wbs.enchants.WbsEnchants;
-import wbs.utils.util.WbsItems;
 import wbs.utils.util.particles.NormalParticleEffect;
 import wbs.utils.util.particles.WbsParticleGroup;
 
@@ -70,9 +67,19 @@ public class ScorchingEnchant extends WbsEnchantment {
         }.runTaskTimer(WbsEnchants.getInstance(), 20, 20).getTaskId();
     }
 
+    private static final String DEFAULT_DESCRIPTION = "Smelts blocks you mine - simple!";
 
     public ScorchingEnchant() {
-        super("scorching");
+        super("scorching", DEFAULT_DESCRIPTION);
+
+        supportedItems = ItemTypeTagKeys.ENCHANTABLE_MINING;
+        exclusiveWith = EnchantmentTagKeys.EXCLUSIVE_SET_MINING;
+        weight = 1;
+    }
+
+    @Override
+    public String getDefaultDisplayName() {
+        return "Scorching";
     }
 
     @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
@@ -92,11 +99,11 @@ public class ScorchingEnchant extends WbsEnchantment {
 
         ItemStack item = player.getInventory().getItemInMainHand();
 
-        if (!WbsItems.isProperTool(broken, item)) {
+        if (!broken.isPreferredTool(item)) {
             return;
         }
 
-        if (containsEnchantment(item)) {
+        if (isEnchantmentOn(item)) {
             ItemMeta meta = item.getItemMeta();
             if (meta == null) {
                 return;
@@ -119,8 +126,18 @@ public class ScorchingEnchant extends WbsEnchantment {
             ItemStack stack = item.getItemStack();
 
             ItemStack result = null;
+            int escape = 0;
             for (Iterator<Recipe> it = Bukkit.recipeIterator(); it.hasNext(); ) {
-                Recipe recipe = it.next();
+                Recipe recipe;
+                try {
+                    escape++;
+                    recipe = it.next();
+                } catch (IllegalArgumentException ex) {
+                    if (escape < 100) {
+                        throw ex;
+                    }
+                    continue;
+                }
 
                 if (recipe instanceof FurnaceRecipe furnaceRecipe) {
                     RecipeChoice inputChoice = furnaceRecipe.getInputChoice();
@@ -139,48 +156,6 @@ public class ScorchingEnchant extends WbsEnchantment {
                 SMELT_EFFECT.play(entangledBlock.getLocation().add(0.5, 1, 0.5));
             }
         }
-    }
-
-
-    @Override
-    public @NotNull String getDescription() {
-        return "Smelts blocks you mine - simple!";
-    }
-
-    @Override
-    public String getDisplayName() {
-        return "&7Scorching";
-    }
-
-    @Override
-    public Rarity getRarity() {
-        return Rarity.RARE;
-    }
-
-    @Override
-    public int getMaxLevel() {
-        return 1;
-    }
-
-    @NotNull
-    @Override
-    public EnchantmentTarget getItemTarget() {
-        return EnchantmentTarget.TOOL;
-    }
-
-    @Override
-    public boolean isTreasure() {
-        return true;
-    }
-
-    @Override
-    public boolean isCursed() {
-        return false;
-    }
-
-    @Override
-    public Set<Enchantment> getDirectConflicts() {
-        return Set.of(SILK_TOUCH);
     }
 
     private record ScorchedBlock(UUID playerUUID, Block scorchedBlock, Long createdTimestamp) {}

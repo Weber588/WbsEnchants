@@ -1,14 +1,14 @@
 package wbs.enchants.util;
 
-import me.sciguymjm.uberenchant.api.UberEnchantment;
-import me.sciguymjm.uberenchant.api.utils.UberConfiguration;
-import me.sciguymjm.uberenchant.api.utils.UberUtils;
-import org.bukkit.Bukkit;
-import org.bukkit.Material;
+import io.papermc.paper.registry.RegistryAccess;
+import io.papermc.paper.registry.RegistryKey;
+import io.papermc.paper.registry.TypedKey;
+import io.papermc.paper.registry.keys.tags.EnchantmentTagKeys;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.EnchantmentStorageMeta;
+import org.jetbrains.annotations.NotNull;
 import wbs.enchants.WbsEnchantment;
-import wbs.enchants.events.EnchantsModifyEvent;
 
 import java.util.HashMap;
 import java.util.List;
@@ -16,14 +16,6 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 public class EnchantUtils {
-    public static boolean willConflict(Enchantment a, Enchantment b) {
-        if (directlyConflictsWith(a, b)) {
-            return true;
-        }
-
-        return getConflictsWith(b).contains(a);
-    }
-
     public static List<Enchantment> getConflictsWith(Enchantment enchant) {
         return getConflictsWith(enchant, getAllEnchants());
     }
@@ -35,30 +27,31 @@ public class EnchantUtils {
     }
 
     public static boolean directlyConflictsWith(Enchantment a, Enchantment b) {
-        return a == b || a.equals(b) || WbsEnchantment.matches(a, b) || a.conflictsWith(b) || b.conflictsWith(a);
+        return a == b || a.equals(b) || a.getKey().equals(b.getKey()) || a.conflictsWith(b) || b.conflictsWith(a);
     }
 
     public static List<Enchantment> getAllEnchants() {
-        return UberConfiguration.UberRecord.values()
-                .stream()
-                .map(UberConfiguration.UberRecord::enchantment)
-                .collect(Collectors.toList());
+        return RegistryAccess.registryAccess().getRegistry(RegistryKey.ENCHANTMENT).stream().toList();
     }
 
-    public static void addEnchantment(UberEnchantment enchant, ItemStack item, int level) {
-        if (item.getType() == Material.ENCHANTED_BOOK) {
-            UberUtils.addStoredEnchantment(enchant, item, level);
+    public static void addEnchantment(WbsEnchantment enchant, @NotNull ItemStack item, int level) {
+        if (item.getItemMeta() instanceof EnchantmentStorageMeta meta) {
+            meta.addStoredEnchant(enchant.getEnchantment(), level, true);
         } else {
-            Map<Enchantment, Integer> oldEnchants = item.getEnchantments();
-
-            UberUtils.addEnchantment(enchant, item, level);
-
-            HashMap<Enchantment, Integer> updatedEnchants = new HashMap<>(oldEnchants);
-            updatedEnchants.put(enchant, level);
-
-            EnchantsModifyEvent modifyEvent = new EnchantsModifyEvent(item, oldEnchants, updatedEnchants);
-
-            Bukkit.getPluginManager().callEvent(modifyEvent);
+            item.addUnsafeEnchantment(enchant.getEnchantment(), level);
         }
+    }
+
+    public static Map<Enchantment, Integer> getStoredEnchantments(ItemStack item) {
+        if (item.getItemMeta() instanceof EnchantmentStorageMeta meta) {
+            return meta.getStoredEnchants();
+        }
+
+        return new HashMap<>();
+    }
+
+    public static boolean isCurse(Enchantment enchant) {
+        return RegistryAccess.registryAccess().getRegistry(RegistryKey.ENCHANTMENT)
+                .getTag(EnchantmentTagKeys.CURSE).contains(TypedKey.create(RegistryKey.ENCHANTMENT, enchant.getKey()));
     }
 }

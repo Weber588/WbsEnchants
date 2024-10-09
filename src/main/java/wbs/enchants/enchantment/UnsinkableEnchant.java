@@ -1,30 +1,42 @@
 package wbs.enchants.enchantment;
 
-import me.sciguymjm.uberenchant.api.utils.Rarity;
+import io.papermc.paper.registry.keys.tags.ItemTypeTagKeys;
 import org.bukkit.Location;
 import org.bukkit.Material;
-import org.bukkit.Tag;
 import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.block.data.Waterlogged;
-import org.bukkit.enchantments.Enchantment;
-import org.bukkit.enchantments.EnchantmentTarget;
 import org.bukkit.entity.Boat;
 import org.bukkit.entity.Entity;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.vehicle.VehicleMoveEvent;
-import org.bukkit.inventory.ItemStack;
 import org.bukkit.util.BoundingBox;
 import org.bukkit.util.Vector;
-import org.jetbrains.annotations.NotNull;
 import wbs.enchants.WbsEnchantment;
 import wbs.enchants.enchantment.helper.VehicleEnchant;
 
 import java.util.List;
 
 public class UnsinkableEnchant extends WbsEnchantment implements VehicleEnchant {
+    private static final String DEFAULT_DESCRIPTION = "Boats with this enchantment can't stay sunk underwater!";
+
     public UnsinkableEnchant() {
-        super("unsinkable");
+        super("unsinkable", DEFAULT_DESCRIPTION);
+
+        supportedItems = ItemTypeTagKeys.BOATS;
+        weight = 10;
+
+        targetDescription = "Boat";
+    }
+
+    @Override
+    public String getDefaultDisplayName() {
+        return "&7Unsinkable";
+    }
+
+    @Override
+    public boolean canEnchant(Entity entity) {
+        return entity instanceof Boat;
     }
 
     @EventHandler
@@ -104,62 +116,5 @@ public class UnsinkableEnchant extends WbsEnchantment implements VehicleEnchant 
         } else {
             return block.getBlockData() instanceof Waterlogged data && data.isWaterlogged();
         }
-    }
-
-    @Override
-    public @NotNull String getDescription() {
-        return "&7Boats with this enchantment can't stay sunk underwater!";
-    }
-
-    @Override
-    public String getDisplayName() {
-        return "&7Unsinkable";
-    }
-
-    @Override
-    public Rarity getRarity() {
-        return Rarity.UNCOMMON;
-    }
-
-    @Override
-    public int getMaxLevel() {
-        return 1;
-    }
-
-    @NotNull
-    @Override
-    public EnchantmentTarget getItemTarget() {
-        // Overridden in canEnchantItem
-        return EnchantmentTarget.TOOL;
-    }
-
-    @Override
-    public boolean isTreasure() {
-        return false;
-    }
-
-    @Override
-    public boolean isCursed() {
-        return false;
-    }
-
-    @Override
-    public @NotNull WbsEnchantment getThisEnchantment() {
-        return this;
-    }
-
-    @Override
-    public boolean canEnchant(Entity entity) {
-        return entity instanceof Boat;
-    }
-
-    @Override
-    public boolean canEnchantItem(@NotNull ItemStack itemStack) {
-        return Tag.ITEMS_BOATS.isTagged(itemStack.getType()) || Tag.ITEMS_CHEST_BOATS.isTagged(itemStack.getType());
-    }
-
-    @Override
-    public @NotNull String getTargetDescription() {
-        return "Boat";
     }
 }

@@ -1,47 +1,47 @@
 package wbs.enchants.enchantment;
 
-import me.sciguymjm.uberenchant.api.utils.Rarity;
+import io.papermc.paper.registry.keys.tags.ItemTypeTagKeys;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
-import org.bukkit.enchantments.Enchantment;
-import org.bukkit.enchantments.EnchantmentTarget;
-import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
-import org.bukkit.event.entity.EntityDamageByBlockEvent;
-import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.inventory.EntityEquipment;
 import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
-import org.jetbrains.annotations.NotNull;
 import wbs.enchants.WbsEnchantment;
 import wbs.utils.util.WbsCollectionUtil;
 import wbs.utils.util.WbsItems;
 
 import java.util.Map;
-import java.util.Random;
-import java.util.Set;
 
 public class LavaWalkerEnchant extends WbsEnchantment {
+    private static final String DEFAULT_DESCRIPTION = "Frost walker... but for lava!";
     private static final Map<Material, Integer> REPLACEMENT_BLOCKS = Map.of(
             Material.OBSIDIAN, 9,
             Material.CRYING_OBSIDIAN, 1
     );
 
     public LavaWalkerEnchant() {
-        super("lava_walker");
+        super("lava_walker", DEFAULT_DESCRIPTION);
+
+        maxLevel = 2;
+        supportedItems = ItemTypeTagKeys.ENCHANTABLE_FOOT_ARMOR;
+        // TODO: exclusiveWith = Create frost walker tag, maybe either "fluid_walkers" or "heat"/"cold"?
+        weight = 1;
+    }
+
+    @Override
+    public String getDefaultDisplayName() {
+        return "Lava Walker";
     }
 
     @EventHandler
     public void onMovement(PlayerMoveEvent event) {
         Location to = event.getTo();
-        if (to == null) {
-            return;
-        }
 
         Player player = event.getPlayer();
         // Kind of eh way to check if player is on the ground - if they're within 0.05 blocks of the top of a
@@ -51,9 +51,6 @@ public class LavaWalkerEnchant extends WbsEnchantment {
         }
 
         EntityEquipment equipment = player.getEquipment();
-        if (equipment == null) {
-            return;
-        }
 
         Location from = event.getFrom();
         if (from.getBlock().equals(to.getBlock())) {
@@ -61,7 +58,7 @@ public class LavaWalkerEnchant extends WbsEnchantment {
         }
 
         ItemStack boots = equipment.getBoots();
-        if (boots != null && containsEnchantment(boots)) {
+        if (boots != null && isEnchantmentOn(boots)) {
             int level = getLevel(boots);
 
             int radius = Math.max(1, level) + 2;
@@ -92,46 +89,5 @@ public class LavaWalkerEnchant extends WbsEnchantment {
                 WbsItems.damageItem(player, boots, 1, EquipmentSlot.FEET);
             }
         }
-    }
-
-    @Override
-    public @NotNull String getDescription() {
-        return "Frost walker... but for lava!";
-    }
-
-    @Override
-    public String getDisplayName() {
-        return "&7Lava Walker";
-    }
-
-    @Override
-    public Rarity getRarity() {
-        return Rarity.VERY_RARE;
-    }
-
-    @Override
-    public int getMaxLevel() {
-        return 2;
-    }
-
-    @NotNull
-    @Override
-    public EnchantmentTarget getItemTarget() {
-        return EnchantmentTarget.ARMOR_FEET;
-    }
-
-    @Override
-    public boolean isTreasure() {
-        return false;
-    }
-
-    @Override
-    public boolean isCursed() {
-        return false;
-    }
-
-    @Override
-    public Set<Enchantment> getIndirectConflicts() {
-        return Set.of(FROST_WALKER);
     }
 }

@@ -2,10 +2,10 @@ package wbs.enchants.enchantment;
 
 import com.google.common.collect.HashBasedTable;
 import com.google.common.collect.Table;
-import me.sciguymjm.uberenchant.api.utils.Rarity;
-import org.bukkit.*;
-import org.bukkit.enchantments.Enchantment;
-import org.bukkit.enchantments.EnchantmentTarget;
+import org.bukkit.Bukkit;
+import org.bukkit.Location;
+import org.bukkit.Particle;
+import org.bukkit.World;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.block.Action;
@@ -20,7 +20,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import wbs.enchants.WbsEnchantment;
 import wbs.enchants.WbsEnchants;
-import wbs.utils.util.WbsMaterials;
+import wbs.enchants.WbsEnchantsBootstrap;
 import wbs.utils.util.WbsMath;
 import wbs.utils.util.entities.WbsEntityUtil;
 import wbs.utils.util.particles.RingParticleEffect;
@@ -29,13 +29,15 @@ import wbs.utils.util.providers.NumProvider;
 import wbs.utils.util.providers.generator.num.CycleGenerator;
 
 import java.awt.*;
-import java.awt.Color;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Random;
 import java.util.UUID;
 
 public class TransferenceEnchant extends WbsEnchantment {
+    private static final String DEFAULT_DESCRIPTION = "A map enchantment that, when right clicked, will take you" +
+            " to a random point on the map!";
+
     private static final Map<UUID, Integer> WARPING = new HashMap<>();
     private static final int MAX_ATTEMPTS = 50;
 
@@ -50,7 +52,17 @@ public class TransferenceEnchant extends WbsEnchantment {
             );
 
     public TransferenceEnchant() {
-        super("transference");
+        super("transference", DEFAULT_DESCRIPTION);
+
+        supportedItems = WbsEnchantsBootstrap.MAPS;
+        weight = 5;
+
+        targetDescription = "Map";
+    }
+
+    @Override
+    public String getDefaultDisplayName() {
+        return "Transference";
     }
 
     @EventHandler
@@ -69,7 +81,7 @@ public class TransferenceEnchant extends WbsEnchantment {
             return;
         }
 
-        if (containsEnchantment(item)) {
+        if (isEnchantmentOn(item)) {
             if (!(item.getItemMeta() instanceof MapMeta meta)) {
                 return;
             }
@@ -171,55 +183,8 @@ public class TransferenceEnchant extends WbsEnchantment {
             WARPING.put(player.getUniqueId(), taskId);
         }
     }
-    
-    @Override
-    public @NotNull String getDescription() {
-        return "A map enchantment that, when right clicked, will take you to a random point on the map!";
-    }
-
-    @Override
-    public String getDisplayName() {
-        return "&7Transference";
-    }
-
-    @Override
-    public Rarity getRarity() {
-        return Rarity.RARE;
-    }
-
-    @Override
-    public int getMaxLevel() {
-        return 1;
-    }
-
-    @NotNull
-    @Override
-    public EnchantmentTarget getItemTarget() {
-        // Doesn't matter, overriding anyway
-        return EnchantmentTarget.TOOL;
-    }
-
-    @Override
-    public boolean isTreasure() {
-        return false;
-    }
-
-    @Override
-    public boolean isCursed() {
-        return false;
-    }
-
-    @Override
-    public boolean canEnchantItem(@NotNull ItemStack itemStack) {
-        return itemStack.getType() == Material.FILLED_MAP;
-    }
-
-    @Override
-    public @NotNull String getTargetDescription() {
-        return "Map";
-    }
-
     private static class MockCanvas implements MapCanvas {
+
         private final MapView mapView;
         private final MapMeta meta;
         private MapCursorCollection mapCursorCollection = new MapCursorCollection();
@@ -268,13 +233,13 @@ public class TransferenceEnchant extends WbsEnchantment {
             return new Color(base.getRed(), base.getGreen(), base.getGreen(), base.getAlpha());
         }
 
-        @SuppressWarnings("deprecation")
+        @SuppressWarnings("removal")
         @Override
         public void setPixel(int x, int z, byte b) {
             colourTable.put(x, z, MapPalette.getColor(b));
         }
 
-        @SuppressWarnings("deprecation")
+        @SuppressWarnings("removal")
         @Override
         public byte getPixel(int x, int z) {
             Color color = colourTable.get(x, z);
@@ -284,7 +249,7 @@ public class TransferenceEnchant extends WbsEnchantment {
             return 0;
         }
 
-        @SuppressWarnings("deprecation")
+        @SuppressWarnings("removal")
         @Override
         public byte getBasePixel(int x, int z) {
             return MapPalette.matchColor(getBasePixelColor(x, z));

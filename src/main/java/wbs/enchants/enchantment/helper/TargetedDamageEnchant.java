@@ -1,9 +1,11 @@
 package wbs.enchants.enchantment.helper;
 
+import io.papermc.paper.registry.keys.tags.EnchantmentTagKeys;
+import io.papermc.paper.registry.keys.tags.ItemTypeTagKeys;
+import io.papermc.paper.registry.tag.TagKey;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.enchantments.Enchantment;
-import org.bukkit.enchantments.EnchantmentTarget;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.LivingEntity;
@@ -28,8 +30,16 @@ public abstract class TargetedDamageEnchant extends WbsEnchantment implements Da
 
     private final Set<EntityType> affectedMobTypes = new HashSet<>();
 
-    public TargetedDamageEnchant(String key) {
-        super(key);
+    public TargetedDamageEnchant(String key, @NotNull String description) {
+        super(key, description);
+
+        supportedItems = ItemTypeTagKeys.ENCHANTABLE_WEAPON;
+        exclusiveWith = EnchantmentTagKeys.EXCLUSIVE_SET_DAMAGE;
+    }
+
+    @Override
+    public @NotNull List<TagKey<Enchantment>> addToTags() {
+        return List.of(EnchantmentTagKeys.EXCLUSIVE_SET_DAMAGE);
     }
 
     @Override
@@ -60,29 +70,13 @@ public abstract class TargetedDamageEnchant extends WbsEnchantment implements Da
     }
 
     @Override
-    public int getMaxLevel() {
-        return 5;
-    }
-
-    @NotNull
-    @Override
-    public EnchantmentTarget getItemTarget() {
-        return EnchantmentTarget.WEAPON;
-    }
-
-    @Override
-    public Set<Enchantment> getIndirectConflicts() {
-        return Set.of(DAMAGE_ALL);
-    }
-
-    @Override
     public void configure(ConfigurationSection section, String directory) {
         super.configure(section, directory);
 
-        List<String> hogLikeMobs = section.getStringList(LIST_KEY);
+        List<String> affectedMobs = section.getStringList(LIST_KEY);
 
         String mobsDir = directory + "/" + LIST_KEY;
-        for (String typeString : hogLikeMobs) {
+        for (String typeString : affectedMobs) {
             EntityType type = WbsEnums.getEnumFromString(EntityType.class, typeString);
 
             if (type == null) {
@@ -113,6 +107,7 @@ public abstract class TargetedDamageEnchant extends WbsEnchantment implements Da
 
     @NotNull
     protected abstract Set<EntityType> getDefaultMobs();
+    @SuppressWarnings("unused")
     protected void onHit(@NotNull EntityDamageByEntityEvent event, @NotNull LivingEntity attacker, @NotNull Entity victim, @Nullable Projectile projectile) {
 
     }

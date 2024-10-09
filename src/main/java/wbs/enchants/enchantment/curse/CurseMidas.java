@@ -1,27 +1,38 @@
 package wbs.enchants.enchantment.curse;
 
-import me.sciguymjm.uberenchant.api.utils.Rarity;
+import io.papermc.paper.registry.keys.tags.EnchantmentTagKeys;
+import io.papermc.paper.registry.keys.tags.ItemTypeTagKeys;
+import io.papermc.paper.registry.tag.TagKey;
 import org.bukkit.Material;
 import org.bukkit.Particle;
-import org.bukkit.Tag;
 import org.bukkit.enchantments.Enchantment;
-import org.bukkit.enchantments.EnchantmentTarget;
 import org.bukkit.entity.Item;
 import org.bukkit.event.block.BlockDropItemEvent;
-import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
+import wbs.enchants.WbsEnchantsBootstrap;
 import wbs.enchants.enchantment.helper.BlockDropEnchantment;
 import wbs.utils.util.particles.NormalParticleEffect;
 import wbs.utils.util.particles.WbsParticleGroup;
 
-import java.util.Set;
+import java.util.List;
 
 public class CurseMidas extends BlockDropEnchantment {
+    private static final String DEFAULT_DESCRIPTION = "A pickaxe curse that causes mined metals to turn " +
+            "directly into gold!";
+
     private static final WbsParticleGroup EFFECT = new WbsParticleGroup()
             .addEffect(new NormalParticleEffect().setSpeed(0.5).setAmount(8), Particle.WAX_ON);
 
     public CurseMidas() {
-        super("curse_midas");
+        super("curse/midas", DEFAULT_DESCRIPTION);
+
+        supportedItems = ItemTypeTagKeys.PICKAXES;
+        exclusiveWith = WbsEnchantsBootstrap.EXCLUSIVE_SET_MIDAS;
+    }
+
+    @Override
+    public String getDefaultDisplayName() {
+        return "Curse of Midas";
     }
 
     @Override
@@ -46,49 +57,11 @@ public class CurseMidas extends BlockDropEnchantment {
         }
     }
 
+    @SuppressWarnings("UnstableApiUsage")
     @Override
-    public @NotNull String getDescription() {
-        return "A pickaxe curse that causes mined metals to turn directly into gold!";
-    }
-
-    @Override
-    public String getDisplayName() {
-        return "&cCurse of Midas";
-    }
-
-    @Override
-    public Rarity getRarity() {
-        return Rarity.RARE;
-    }
-
-    @Override
-    public int getMaxLevel() {
-        return 1;
-    }
-
-    @NotNull
-    @Override
-    public EnchantmentTarget getItemTarget() {
-        return EnchantmentTarget.TOOL;
-    }
-
-    @Override
-    public boolean canEnchantItem(@NotNull ItemStack itemStack) {
-        return Tag.ITEMS_PICKAXES.isTagged(itemStack.getType());
-    }
-
-    @Override
-    public boolean isTreasure() {
-        return false;
-    }
-
-    @Override
-    public boolean isCursed() {
-        return true;
-    }
-
-    @Override
-    public Set<Enchantment> getDirectConflicts() {
-        return Set.of(SILK_TOUCH);
+    public @NotNull List<TagKey<Enchantment>> addToTags() {
+        return List.of(
+                EnchantmentTagKeys.CURSE
+        );
     }
 }

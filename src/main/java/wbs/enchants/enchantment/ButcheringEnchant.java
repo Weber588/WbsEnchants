@@ -1,6 +1,5 @@
 package wbs.enchants.enchantment;
 
-import me.sciguymjm.uberenchant.api.utils.Rarity;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.*;
@@ -19,12 +18,22 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 public class ButcheringEnchant extends TargetedDamageEnchant {
+    private static final String DEFAULT_DESCRIPTION = "A damage enchant that deals extra damage to animals, " +
+            "and causes extra food to drop!";
+
     private static final String FOOD_INCREASE_KEY = "food-percent-increase-per-level";
 
     private int foodPercentIncreasePerLevel = 15;
 
     public ButcheringEnchant() {
-        super("butchering");
+        super("butchering", DEFAULT_DESCRIPTION);
+
+        maxLevel = 3;
+    }
+
+    @Override
+    public String getDefaultDisplayName() {
+        return "Butchering";
     }
 
     @EventHandler
@@ -69,42 +78,12 @@ public class ButcheringEnchant extends TargetedDamageEnchant {
     }
 
     @Override
-    public @NotNull String getDescription() {
-        return "A damage enchant that deals extra damage to animals, and causes extra food to drop!";
-    }
-
-    @Override
     protected @NotNull Set<EntityType> getDefaultMobs() {
         return Arrays.stream(EntityType.values())
                 .filter(type -> {
                     Class<? extends Entity> entityClass = type.getEntityClass();
                     return entityClass != null && Animals.class.isAssignableFrom(entityClass);
                 }).collect(Collectors.toSet());
-    }
-
-    @Override
-    public String getDisplayName() {
-        return "&7Butchering";
-    }
-
-    @Override
-    public Rarity getRarity() {
-        return Rarity.COMMON;
-    }
-
-    @Override
-    public boolean isTreasure() {
-        return false;
-    }
-
-    @Override
-    public boolean isCursed() {
-        return false;
-    }
-
-    @Override
-    public int getMaxLevel() {
-        return 3;
     }
 
     @Override

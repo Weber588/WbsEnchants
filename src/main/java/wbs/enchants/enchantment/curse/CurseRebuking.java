@@ -1,9 +1,11 @@
 package wbs.enchants.enchantment.curse;
 
-import me.sciguymjm.uberenchant.api.utils.Rarity;
+import io.papermc.paper.registry.keys.tags.EnchantmentTagKeys;
+import io.papermc.paper.registry.keys.tags.ItemTypeTagKeys;
+import io.papermc.paper.registry.tag.TagKey;
 import org.bukkit.damage.DamageSource;
 import org.bukkit.damage.DamageType;
-import org.bukkit.enchantments.EnchantmentTarget;
+import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Projectile;
@@ -18,11 +20,23 @@ import wbs.enchants.WbsEnchantment;
 import wbs.enchants.enchantment.helper.DamageEnchant;
 import wbs.enchants.util.EntityUtils;
 
+import java.util.List;
+
 public class CurseRebuking extends WbsEnchantment implements DamageEnchant {
     public static final int PERCENT_PER_LEVEL = 20;
+    private static final String DEFAULT_DESCRIPTION = "A weapon curse that causes the wielder to take " +
+            PERCENT_PER_LEVEL + "% of damage dealt per level!";
 
     public CurseRebuking() {
-        super("curse_rebuking");
+        super("curse/rebuking", DEFAULT_DESCRIPTION);
+
+        maxLevel = 2;
+        supportedItems = ItemTypeTagKeys.ENCHANTABLE_WEAPON;
+    }
+
+    @Override
+    public String getDefaultDisplayName() {
+        return "Curse of Rebuking";
     }
 
     // We'll register manually, so we can force MONITOR priority
@@ -52,39 +66,11 @@ public class CurseRebuking extends WbsEnchantment implements DamageEnchant {
         }
     }
 
+    @SuppressWarnings("UnstableApiUsage")
     @Override
-    public @NotNull String getDescription() {
-        return "A weapon curse that causes the wielder to take " + PERCENT_PER_LEVEL + "% of damage dealt per level!";
-    }
-
-    @Override
-    public String getDisplayName() {
-        return "&cCurse of Rebuking";
-    }
-
-    @Override
-    public Rarity getRarity() {
-        return Rarity.UNCOMMON;
-    }
-
-    @Override
-    public int getMaxLevel() {
-        return 2;
-    }
-
-    @NotNull
-    @Override
-    public EnchantmentTarget getItemTarget() {
-        return EnchantmentTarget.WEAPON;
-    }
-
-    @Override
-    public boolean isTreasure() {
-        return true;
-    }
-
-    @Override
-    public boolean isCursed() {
-        return true;
+    public @NotNull List<TagKey<Enchantment>> addToTags() {
+        return List.of(
+                EnchantmentTagKeys.CURSE
+        );
     }
 }

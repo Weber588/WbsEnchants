@@ -1,6 +1,5 @@
 package wbs.enchants.generation.contexts;
 
-import org.bukkit.Bukkit;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Piglin;
 import org.bukkit.entity.Player;
@@ -16,7 +15,8 @@ public class BarterContext extends ExistingLootContext {
 
     @Override
     protected int getDefaultChance() {
-        return (int) enchantment.getRarity().getWeight();
+        // TODO: Figure out how to get enchantment weight in 1.20.5+
+        return enchantment.getEnchantment().getWeight();
     }
 
     @EventHandler

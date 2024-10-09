@@ -1,9 +1,8 @@
 package wbs.enchants.enchantment;
 
-import me.sciguymjm.uberenchant.api.utils.Rarity;
+import io.papermc.paper.registry.keys.tags.ItemTypeTagKeys;
 import org.bukkit.NamespacedKey;
 import org.bukkit.Particle;
-import org.bukkit.enchantments.EnchantmentTarget;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
@@ -20,7 +19,6 @@ import org.bukkit.potion.PotionEffectType;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import wbs.enchants.WbsEnchantment;
-import wbs.enchants.WbsEnchants;
 import wbs.enchants.enchantment.helper.DamageEnchant;
 import wbs.utils.util.WbsMath;
 import wbs.utils.util.entities.WbsEntityUtil;
@@ -33,13 +31,27 @@ public class VampiricEnchant extends WbsEnchantment implements DamageEnchant {
     public static final int DURATION_PER_LEVEL = 10 * 20;
     public static final int CHANCE_PER_LEVEL = 20;
 
-    private static final NamespacedKey EXPIRE_TIME_KEY = new NamespacedKey(WbsEnchants.getInstance(), "vampiric_expire_time");
+    private static final String DEFAULT_DESCRIPTION = "When you damage a mob, you have a " + CHANCE_PER_LEVEL +
+            "% chance per level to gain " + HEAL_PERCENT + "% of the damage dealt, that expires after "
+            + DURATION_PER_LEVEL / 20 + " seconds (per level).";
+
+    // TODO: Check if this causes issues when the game runs slower? Should it be based on Bukkit.getCurrentTick()?
+    private static final NamespacedKey EXPIRE_TIME_KEY = new NamespacedKey("wbsenchants", "vampiric_expire_time");
 
     private static final WbsParticleGroup EFFECT = new WbsParticleGroup()
             .addEffect(new NormalParticleEffect().setXYZ(0.25).setY(0.5).setSpeed(0).setAmount(15), Particle.DAMAGE_INDICATOR);
 
     public VampiricEnchant() {
-        super("vampiric");
+        super("vampiric", DEFAULT_DESCRIPTION);
+
+        maxLevel = 3;
+        supportedItems = ItemTypeTagKeys.ENCHANTABLE_WEAPON;
+        weight = 5;
+    }
+
+    @Override
+    public String getDefaultDisplayName() {
+        return "Vampiric";
     }
 
     @Override
@@ -50,7 +62,7 @@ public class VampiricEnchant extends WbsEnchantment implements DamageEnchant {
         }
 
         ItemStack item = equipment.getItemInMainHand();
-        if (containsEnchantment(item)) {
+        if (isEnchantmentOn(item)) {
             int level = getLevel(item);
             if (WbsMath.chance(CHANCE_PER_LEVEL * level)) {
                 double damageDealt = event.getDamage();
@@ -105,45 +117,5 @@ public class VampiricEnchant extends WbsEnchantment implements DamageEnchant {
         } else {
             dataContainer.remove(EXPIRE_TIME_KEY);
         }
-    }
-
-    @Override
-    public String getDisplayName() {
-        return "&7Vampiric";
-    }
-
-    @Override
-    public Rarity getRarity() {
-        return Rarity.RARE;
-    }
-
-    @Override
-    public int getMaxLevel() {
-        return 3;
-    }
-
-    @NotNull
-    @Override
-    public EnchantmentTarget getItemTarget() {
-        return EnchantmentTarget.WEAPON;
-    }
-
-    @Override
-    public boolean isTreasure() {
-        return true;
-    }
-
-    @Override
-    public boolean isCursed() {
-        return false;
-    }
-
-    @Override
-    public @NotNull String getDescription() {
-        return "When you damage a mob, you have a " + CHANCE_PER_LEVEL + "% chance per level to gain " + HEAL_PERCENT +
-                "% of the damage dealt, that expires after " + DURATION_PER_LEVEL / 20 + " seconds (per level). " +
-                "At the maximum level of " + getMaxLevel() + ", you have a " + (getMaxLevel() * CHANCE_PER_LEVEL) +
-                "% chance to gain " + HEAL_PERCENT + "% of damage dealt for " + (DURATION_PER_LEVEL / 20 * getMaxLevel()) +
-                " seconds.";
     }
 }

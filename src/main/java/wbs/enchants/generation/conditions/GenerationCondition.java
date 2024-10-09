@@ -7,7 +7,6 @@ import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
-import wbs.enchants.WbsEnchants;
 
 public abstract class GenerationCondition {
     @NotNull
@@ -25,7 +24,7 @@ public abstract class GenerationCondition {
     }
 
     protected GenerationCondition(@NotNull String key, ConfigurationSection parentSection, String directory) {
-        this(new NamespacedKey(WbsEnchants.getInstance(), key), parentSection, directory);
+        this(new NamespacedKey("wbsenchants", key), parentSection, directory);
     }
 
     public boolean isNegated() {

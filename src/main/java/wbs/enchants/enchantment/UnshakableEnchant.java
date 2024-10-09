@@ -1,10 +1,6 @@
 package wbs.enchants.enchantment;
 
-import me.sciguymjm.uberenchant.api.utils.Rarity;
 import org.bukkit.Bukkit;
-import org.bukkit.Material;
-import org.bukkit.enchantments.Enchantment;
-import org.bukkit.enchantments.EnchantmentTarget;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.LivingEntity;
@@ -17,7 +13,6 @@ import org.bukkit.event.player.PlayerInteractEntityEvent;
 import org.bukkit.inventory.EntityEquipment;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.persistence.PersistentDataContainer;
-import org.jetbrains.annotations.NotNull;
 import wbs.enchants.WbsEnchantment;
 import wbs.enchants.WbsEnchants;
 import wbs.enchants.events.LeashEvents;
@@ -26,6 +21,7 @@ import wbs.utils.util.persistent.WbsPersistentDataType;
 import java.util.List;
 
 public class UnshakableEnchant extends WbsEnchantment {
+    private static final String DEFAULT_DESCRIPTION = "A lead enchantment that allows you to leash hostile mobs!";
 
     private static final List<EntityType> UNLEASHABLE_TYPES =
             List.of(EntityType.BAT,
@@ -35,22 +31,58 @@ public class UnshakableEnchant extends WbsEnchantment {
             );
 
     public UnshakableEnchant() {
-        super("unshakable");
+        super("unshakable", DEFAULT_DESCRIPTION);
+
+        // TODO: supportedItems = Create new #lead tag
+        weight = 10;
+
+        targetDescription = "Lead";
+    }
+
+    @Override
+    public String getDefaultDisplayName() {
+        return "Unshakeable";
+    }
+
+    @EventHandler(priority = EventPriority.LOWEST, ignoreCancelled = true)
+    public void onUnleash(EntityUnleashEvent event) {
+        if (event.getReason() != EntityUnleashEvent.UnleashReason.DISTANCE) {
+            return;
+        }
+
+        if (!(event.getEntity() instanceof LivingEntity entity)) {
+            return;
+        }
+
+        Entity leashHolder = entity.getLeashHolder();
+
+        // Clear the item tag so it doesn't drop
+        PersistentDataContainer container = entity.getPersistentDataContainer();
+        if (container.has(LeashEvents.LEASH_ITEM_KEY)) {
+            ItemStack item = container.get(LeashEvents.LEASH_ITEM_KEY, WbsPersistentDataType.ITEM);
+
+            if (item != null && isEnchantmentOn(item)) {
+                entity.setLeashHolder(null);
+                container.remove(LeashEvents.LEASH_ITEM_KEY);
+                WbsEnchants.getInstance().runSync(() -> {
+                    entity.teleport(leashHolder);
+                    entity.setLeashHolder(leashHolder);
+                    container.set(LeashEvents.LEASH_ITEM_KEY, WbsPersistentDataType.ITEM, item);
+                });
+            }
+        }
     }
 
     @EventHandler(priority = EventPriority.HIGHEST)
     public void onRightClick(PlayerInteractEntityEvent event) {
         Player player = event.getPlayer();
         EntityEquipment equipment = player.getEquipment();
-        if (equipment == null) {
-            return;
-        }
 
         ItemStack item = equipment.getItem(event.getHand());
 
         Entity entity = event.getRightClicked();
 
-        if (containsEnchantment(item)) {
+        if (isEnchantmentOn(item)) {
             if (!(entity instanceof LivingEntity livingEntity)) {
                 return;
             }
@@ -91,82 +123,6 @@ public class UnshakableEnchant extends WbsEnchantment {
                 }
             });
         }
-    }
-
-    @EventHandler(priority = EventPriority.LOWEST, ignoreCancelled = true)
-    public void onUnleash(EntityUnleashEvent event) {
-        if (event.getReason() != EntityUnleashEvent.UnleashReason.DISTANCE) {
-            return;
-        }
-
-        if (!(event.getEntity() instanceof LivingEntity entity)) {
-            return;
-        }
-
-        Entity leashHolder = entity.getLeashHolder();
-
-        // Clear the item tag so it doesn't drop
-        PersistentDataContainer container = entity.getPersistentDataContainer();
-        if (container.has(LeashEvents.LEASH_ITEM_KEY)) {
-            ItemStack item = container.get(LeashEvents.LEASH_ITEM_KEY, WbsPersistentDataType.ITEM);
-
-            if (item != null && containsEnchantment(item)) {
-                entity.setLeashHolder(null);
-                container.remove(LeashEvents.LEASH_ITEM_KEY);
-                WbsEnchants.getInstance().runSync(() -> {
-                    entity.teleport(leashHolder);
-                    entity.setLeashHolder(leashHolder);
-                    container.set(LeashEvents.LEASH_ITEM_KEY, WbsPersistentDataType.ITEM, item);
-                });
-            }
-        }
-    }
-
-    @Override
-    public @NotNull String getDescription() {
-        return "A lead enchantment that allows you to leash hostile mobs!";
-    }
-
-    @Override
-    public String getDisplayName() {
-        return "&7Unshakeable";
-    }
-
-    @Override
-    public Rarity getRarity() {
-        return Rarity.UNCOMMON;
-    }
-
-    @Override
-    public int getMaxLevel() {
-        return 1;
-    }
-
-    @NotNull
-    @Override
-    public EnchantmentTarget getItemTarget() {
-        // Doesn't matter - overriding with canEnchant
-        return EnchantmentTarget.ALL;
-    }
-
-    @Override
-    public boolean isTreasure() {
-        return false;
-    }
-
-    @Override
-    public boolean isCursed() {
-        return false;
-    }
-
-    @Override
-    public boolean canEnchantItem(@NotNull ItemStack itemStack) {
-        return itemStack.getType() == Material.LEAD;
-    }
-
-    @Override
-    public @NotNull String getTargetDescription() {
-        return "Leash";
     }
 
     private static final String BAT_RANT = "&wBats are, for some ungodly reason, " +

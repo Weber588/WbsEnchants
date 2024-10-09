@@ -1,19 +1,17 @@
 package wbs.enchants.enchantment;
 
-import me.sciguymjm.uberenchant.api.utils.Rarity;
+import io.papermc.paper.registry.keys.tags.ItemTypeTagKeys;
 import org.bukkit.Material;
 import org.bukkit.Particle;
 import org.bukkit.Sound;
 import org.bukkit.Tag;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
-import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
-import org.bukkit.event.EventHandler;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
-import wbs.enchants.EnchantsSettings;
+import wbs.enchants.WbsEnchantsBootstrap;
 import wbs.enchants.enchantment.helper.AbstractMultiBreakEnchant;
 import wbs.enchants.util.BlockChanger;
 import wbs.enchants.util.BlockQueryUtils;
@@ -24,12 +22,14 @@ import wbs.utils.util.particles.WbsParticleGroup;
 
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Set;
 import java.util.function.Predicate;
 
 public class BlastMinerEnchant extends AbstractMultiBreakEnchant {
+    private static final String DEFAULT_DESCRIPTION = "Mines a 3x1x3 square when you mine a stone-type block, " +
+            "increasing layers every level, for a maximum of 3x%max_level%x3 at level %max_level%.";
+
     private static final WbsParticleGroup EFFECT = new WbsParticleGroup()
-            .addEffect(new NormalParticleEffect().setAmount(1), Particle.EXPLOSION_LARGE);
+            .addEffect(new NormalParticleEffect().setAmount(1), Particle.EXPLOSION);
     private static final WbsSoundGroup SOUND = new WbsSoundGroup();
 
     static {
@@ -37,15 +37,16 @@ public class BlastMinerEnchant extends AbstractMultiBreakEnchant {
     }
 
     public BlastMinerEnchant() {
-        super("blast_miner");
+        super("blast_miner", DEFAULT_DESCRIPTION);
+        maxLevel = 3;
+        supportedItems = ItemTypeTagKeys.PICKAXES;
+        exclusiveWith = WbsEnchantsBootstrap.EXCLUSIVE_SET_MULTIMINER;
+        weight = 5;
     }
 
-
-    // Have to catch it in this class because EventHandler reflection is used on the object, not the parents :(
-    @EventHandler
     @Override
-    protected void catchEvent(BlockBreakEvent event) {
-        onBreakBlock(event);
+    public String getDefaultDisplayName() {
+        return "Blast Miner";
     }
 
     @Override
@@ -94,46 +95,5 @@ public class BlastMinerEnchant extends AbstractMultiBreakEnchant {
 
         EFFECT.play(broken.getLocation());
         SOUND.play(broken.getLocation());
-    }
-
-    @Override
-    public String getDisplayName() {
-        return "&7Blast Miner";
-    }
-
-    @Override
-    public Rarity getRarity() {
-        return Rarity.UNCOMMON;
-    }
-
-    @Override
-    public int getMaxLevel() {
-        return 5;
-    }
-
-    @Override
-    public boolean isTreasure() {
-        return true;
-    }
-
-    @Override
-    public boolean isCursed() {
-        return false;
-    }
-
-    @Override
-    public Set<Enchantment> getDirectConflicts() {
-        return Set.of(EnchantsSettings.VEIN_MINER);
-    }
-
-    @Override
-    public @NotNull String getDescription() {
-        return "Mines a 3x1x3 square when you mine a stone-type block, increasing layers every level, for a maximum of " +
-                "3x" + getMaxLevel() + "x3 at level " + getMaxLevel() + ".";
-    }
-
-    @Override
-    public @NotNull String getTargetDescription() {
-        return "Pickaxe";
     }
 }

@@ -1,13 +1,14 @@
 package wbs.enchants.enchantment;
 
-import me.sciguymjm.uberenchant.api.utils.Rarity;
+import io.papermc.paper.registry.keys.tags.EnchantmentTagKeys;
+import io.papermc.paper.registry.keys.tags.ItemTypeTagKeys;
+import io.papermc.paper.registry.tag.TagKey;
 import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.enchantments.Enchantment;
-import org.bukkit.enchantments.EnchantmentTarget;
 import org.bukkit.entity.Item;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.block.BlockDropItemEvent;
@@ -21,48 +22,32 @@ import wbs.utils.util.WbsEnums;
 import java.util.*;
 
 public class CrushingEnchant extends BlockDropEnchantment {
+    private static final String DEFAULT_DESCRIPTION = "A tool enchantment that crushes blocks into other, " +
+            "more broken-down versions!";
     private static final String CRUSH_MAP_KEY = "crush-materials";
 
     private final Map<Material, CrushDefinition> crushingMap = new HashMap<>();
 
     public CrushingEnchant() {
-        super("crushing", EventPriority.HIGHEST);
+        super("crushing", DEFAULT_DESCRIPTION, EventPriority.HIGHEST);
+
+        weight = 5;
+        supportedItems = ItemTypeTagKeys.ENCHANTABLE_MINING;
+        exclusiveWith = EnchantmentTagKeys.EXCLUSIVE_SET_MINING;
     }
 
     @Override
-    public @NotNull String getDescription() {
-        return "A tool enchantment that crushes blocks into other, more broken-down versions!";
+    public @NotNull List<TagKey<Enchantment>> addToTags() {
+        LinkedList<TagKey<Enchantment>> toAdd = new LinkedList<>(super.addToTags());
+
+        toAdd.add(EnchantmentTagKeys.EXCLUSIVE_SET_MINING);
+
+        return toAdd;
     }
 
     @Override
-    public String getDisplayName() {
-        return "&7Crushing";
-    }
-
-    @Override
-    public Rarity getRarity() {
-        return Rarity.RARE;
-    }
-
-    @Override
-    public int getMaxLevel() {
-        return 1;
-    }
-
-    @NotNull
-    @Override
-    public EnchantmentTarget getItemTarget() {
-        return EnchantmentTarget.TOOL;
-    }
-
-    @Override
-    public boolean isTreasure() {
-        return false;
-    }
-
-    @Override
-    public boolean isCursed() {
-        return false;
+    public String getDefaultDisplayName() {
+        return "Crushing";
     }
 
     @Override
@@ -246,11 +231,6 @@ public class CrushingEnchant extends BlockDropEnchantment {
     }
 
     @Override
-    public Set<Enchantment> getDirectConflicts() {
-        return Set.of(SILK_TOUCH, LOOT_BONUS_BLOCKS);
-    }
-
-    @Override
     protected void apply(BlockDropItemEvent event, MarkedLocation marked) {
         unmark(marked);
 
@@ -286,8 +266,8 @@ public class CrushingEnchant extends BlockDropEnchantment {
         List<ItemStack> condensed = new LinkedList<>();
 
         while (!stacks.isEmpty()) {
-            ItemStack toMove = stacks.get(0);
-            stacks.remove(0);
+            ItemStack toMove = stacks.getFirst();
+            stacks.removeFirst();
 
             List<ItemStack> toAdd = new LinkedList<>();
 

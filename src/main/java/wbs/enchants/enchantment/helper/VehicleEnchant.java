@@ -33,9 +33,6 @@ public interface VehicleEnchant extends EnchantInterface, AutoRegistrableEnchant
         }
 
         EntityEquipment equipment = player.getEquipment();
-        if (equipment == null) {
-            return;
-        }
 
         Entity entity = event.getEntity();
 
@@ -47,7 +44,7 @@ public interface VehicleEnchant extends EnchantInterface, AutoRegistrableEnchant
         NamespacedKey key = enchant.getKey();
 
         ItemStack placedItem = equipment.getItem(event.getHand());
-        if (enchant.containsEnchantment(placedItem)) {
+        if (enchant.isEnchantmentOn(placedItem)) {
             int level = enchant.getLevel(placedItem);
 
             PersistentDataContainer container = entity.getPersistentDataContainer();
@@ -127,10 +124,10 @@ public interface VehicleEnchant extends EnchantInterface, AutoRegistrableEnchant
         } else if (vehicle instanceof Minecart minecart) {
             material = switch (minecart.getType()) {
                 case MINECART -> Material.MINECART;
-                case MINECART_CHEST -> Material.CHEST_MINECART;
-                case MINECART_FURNACE -> Material.FURNACE_MINECART;
-                case MINECART_HOPPER -> Material.HOPPER_MINECART;
-                case MINECART_TNT-> Material.TNT_MINECART;
+                case CHEST_MINECART -> Material.CHEST_MINECART;
+                case FURNACE_MINECART -> Material.FURNACE_MINECART;
+                case HOPPER_MINECART -> Material.HOPPER_MINECART;
+                case TNT_MINECART-> Material.TNT_MINECART;
                 default -> null;
             };
         } else {
@@ -144,8 +141,7 @@ public interface VehicleEnchant extends EnchantInterface, AutoRegistrableEnchant
         ItemStack item = new ItemStack(material);
 
         WbsEnchantment enchant = getThisEnchantment();
-
-        if (!enchant.canEnchantItem(item)) {
+        if (!enchant.getEnchantment().canEnchantItem(item)) {
             return;
         }
 

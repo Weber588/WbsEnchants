@@ -13,7 +13,7 @@ public class MobDeathContext extends ExistingLootContext {
 
     @Override
     protected int getDefaultChance() {
-        return (int) enchantment.getRarity().getWeight();
+        return enchantment.getEnchantment().getWeight();
     }
 
     @EventHandler

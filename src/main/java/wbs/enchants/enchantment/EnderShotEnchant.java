@@ -1,22 +1,17 @@
 package wbs.enchants.enchantment;
 
-import me.sciguymjm.uberenchant.api.utils.Rarity;
+import io.papermc.paper.registry.keys.tags.ItemTypeTagKeys;
 import org.bukkit.FluidCollisionMode;
 import org.bukkit.Location;
 import org.bukkit.Particle;
 import org.bukkit.World;
-import org.bukkit.enchantments.Enchantment;
-import org.bukkit.enchantments.EnchantmentTarget;
 import org.bukkit.entity.AbstractArrow;
 import org.bukkit.entity.Entity;
-import org.bukkit.entity.LivingEntity;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.entity.EntityShootBowEvent;
-import org.bukkit.event.world.LootGenerateEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.util.RayTraceResult;
 import org.bukkit.util.Vector;
-import org.jetbrains.annotations.NotNull;
 import wbs.enchants.WbsEnchantment;
 import wbs.utils.util.WbsMath;
 import wbs.utils.util.particles.LineParticleEffect;
@@ -24,16 +19,26 @@ import wbs.utils.util.particles.NormalParticleEffect;
 import wbs.utils.util.particles.WbsParticleGroup;
 
 public class EnderShotEnchant extends WbsEnchantment {
+    private static final String DEFAULT_DESCRIPTION = "Fired arrows travel instantly in a straight line to its target.";
+
     private static final WbsParticleGroup EFFECT = new WbsParticleGroup().addEffect(
             new LineParticleEffect().setScaleAmount(true).setRadius(0.05).setSpeed(0.01).setAmount(4), Particle.REVERSE_PORTAL
     );
 
     private static final WbsParticleGroup WIFF_EFFECT = new WbsParticleGroup().addEffect(
-            new NormalParticleEffect().setAmount(15), Particle.SPELL_WITCH
+            new NormalParticleEffect().setAmount(15), Particle.WITCH
     );
 
     public EnderShotEnchant() {
-        super("ender_shot");
+        super("ender_shot", DEFAULT_DESCRIPTION);
+
+        supportedItems = ItemTypeTagKeys.ENCHANTABLE_BOW;
+        weight = 1;
+    }
+
+    @Override
+    public String getDefaultDisplayName() {
+        return "Ender Shot";
     }
 
     @EventHandler
@@ -45,7 +50,7 @@ public class EnderShotEnchant extends WbsEnchantment {
         }
 
         ItemStack item = event.getBow();
-        if (item != null && containsEnchantment(item)) {
+        if (item != null && isEnchantmentOn(item)) {
 
             Vector velocity = projectile.getVelocity();
             Location startLocation = projectile.getLocation();
@@ -77,60 +82,6 @@ public class EnderShotEnchant extends WbsEnchantment {
                 Location lineStartLocation = startLocation.clone()
                         .add(WbsMath.scaleVector(startToFinish, 1));
                 EFFECT.play(lineStartLocation, teleportLocation);
-            }
-        }
-    }
-
-    @Override
-    public @NotNull String getDescription() {
-        return "Fired arrows travel instantly in a straight line to its target.";
-    }
-
-    @Override
-    public String getDisplayName() {
-        return "&7Ender Shot";
-    }
-
-    @Override
-    public Rarity getRarity() {
-        return Rarity.VERY_RARE;
-    }
-
-    @Override
-    public int getMaxLevel() {
-        return 1;
-    }
-
-    @NotNull
-    @Override
-    public EnchantmentTarget getItemTarget() {
-        return EnchantmentTarget.BOW;
-    }
-
-    @Override
-    public boolean isTreasure() {
-        return true;
-    }
-
-    @Override
-    public boolean isCursed() {
-        return false;
-    }
-
-    @Override
-    public void onLootGenerate(LootGenerateEvent event) {
-        if (WbsMath.chance(10)) {
-            Location location = event.getLootContext().getLocation();
-            World world = location.getWorld();
-            if (world == null) {
-                return;
-            }
-            if (world.getEnvironment() == World.Environment.THE_END) {
-                for (ItemStack stack : event.getLoot()) {
-                    if (tryAdd(stack, 0)) {
-                        return;
-                    }
-                }
             }
         }
     }

@@ -1,12 +1,24 @@
 package wbs.enchants;
 
+import com.mojang.brigadier.Command;
+import com.mojang.brigadier.builder.LiteralArgumentBuilder;
+import io.papermc.paper.command.brigadier.CommandSourceStack;
+import io.papermc.paper.command.brigadier.Commands;
+import io.papermc.paper.plugin.lifecycle.event.LifecycleEventManager;
+import io.papermc.paper.plugin.lifecycle.event.types.LifecycleEvents;
 import org.bukkit.event.HandlerList;
-import wbs.enchants.command.CommandCustomEnchant;
-import wbs.enchants.events.GrindstoneEvents;
+import org.bukkit.plugin.Plugin;
+import org.jetbrains.annotations.NotNull;
+import wbs.enchants.command.Subcommand;
+import wbs.enchants.command.SubcommandInfo;
+import wbs.enchants.command.SubcommandList;
 import wbs.enchants.events.LeashEvents;
-import wbs.enchants.events.LootGenerateEvents;
 import wbs.utils.util.plugin.WbsPlugin;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
+@SuppressWarnings("UnstableApiUsage")
 public class WbsEnchants extends WbsPlugin {
     private static WbsEnchants instance;
     public static WbsEnchants getInstance() {
@@ -20,10 +32,36 @@ public class WbsEnchants extends WbsPlugin {
         instance  = this;
         settings = new EnchantsSettings(this);
 
-        new CommandCustomEnchant(this, getCommand("customenchants"));
+        List<Subcommand> subcommands = List.of(
+                new SubcommandInfo(this, "info"),
+                new SubcommandList(this, "list")
+        );
 
-        registerListener(new GrindstoneEvents());
-        registerListener(new LootGenerateEvents());
+        LifecycleEventManager<@NotNull Plugin> manager = this.getLifecycleManager();
+        manager.registerEventHandler(LifecycleEvents.COMMANDS, event -> {
+            LiteralArgumentBuilder<CommandSourceStack> builder = Commands.literal("customenchantments");
+
+            String options = subcommands.stream()
+                    .map(Subcommand::getLabel)
+                    .collect(Collectors.joining("|"));
+
+            builder.executes(context -> {
+                sendMessage(
+                        "Usage: &h/" + context.getInput().split(" ")[0] + " [" + options + "]",
+                        context.getSource().getSender());
+                return Command.SINGLE_SUCCESS;
+            });
+
+            for (Subcommand subcommand : subcommands) {
+                builder.then(subcommand.getArgument());
+            }
+
+            event.registrar().register(builder.build(),
+                    "Commands relating to the WbsEnchantments plugin.",
+                    List.of("wbsenchants:customenchantments", "cench", "wbsenchants:cench")
+            );
+        });
+
         registerListener(new LeashEvents());
 
         settings.reload();

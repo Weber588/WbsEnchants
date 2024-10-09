@@ -1,6 +1,6 @@
 package wbs.enchants.generation.contexts;
 
-import me.sciguymjm.uberenchant.api.UberEnchantment;
+import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.attribute.Attribute;
@@ -18,6 +18,7 @@ import org.bukkit.loot.LootContext;
 import org.bukkit.loot.LootTable;
 import wbs.enchants.WbsEnchantment;
 import wbs.enchants.WbsEnchants;
+import wbs.enchants.util.EnchantUtils;
 
 import java.util.*;
 
@@ -35,8 +36,9 @@ public class LootTableContext extends ExistingLootContext {
 
     @Override
     protected int getDefaultChance() {
-        return (int) enchantment.getRarity().getWeight() * 3;
+        return enchantment.getEnchantment().getWeight() * 3;
     }
+
 
     private boolean canAddTo(LootTable table) {
         if (tables.isEmpty()) {
@@ -115,7 +117,7 @@ public class LootTableContext extends ExistingLootContext {
                 // enchant randomly as normal, and then choose an item at random. If it's one we enchanted, set the
                 // item directly and override by setting the item inside the block as our item.
 
-                Inventory fake = Bukkit.createInventory(null, 9 * 3, "");
+                Inventory fake = Bukkit.createInventory(null, 9 * 3, Component.empty());
 
                 lootTable.fillInventory(fake, new Random(), builder.build());
 
@@ -138,11 +140,11 @@ public class LootTableContext extends ExistingLootContext {
 
                     WbsEnchants.getInstance().getLogger().info("fakeChosen " + fakeChosen);
 
-                    boolean hasEnchantStored = UberEnchantment.getStoredEnchantments(fakeChosen).keySet()
+                    boolean hasEnchantStored = EnchantUtils.getStoredEnchantments(fakeChosen).keySet()
                             .stream()
                             .anyMatch(check -> check.getKey().equals(enchantment.getKey()));
 
-                    if (hasEnchantStored || enchantment.containsEnchantment(fakeChosen)) {
+                    if (hasEnchantStored || enchantment.isEnchantmentOn(fakeChosen)) {
                         state.setLootTable(null);
                         state.setItem(fakeChosen);
                         state.update();

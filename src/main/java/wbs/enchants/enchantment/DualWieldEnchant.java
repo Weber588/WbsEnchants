@@ -1,13 +1,10 @@
 package wbs.enchants.enchantment;
 
-import me.sciguymjm.uberenchant.api.utils.Rarity;
+import io.papermc.paper.registry.keys.tags.ItemTypeTagKeys;
 import org.bukkit.FluidCollisionMode;
 import org.bukkit.Location;
-import org.bukkit.Tag;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.attribute.AttributeInstance;
-import org.bukkit.enchantments.Enchantment;
-import org.bukkit.enchantments.EnchantmentTarget;
 import org.bukkit.entity.Damageable;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
@@ -30,18 +27,24 @@ import java.util.Map;
 import java.util.UUID;
 
 public class DualWieldEnchant extends WbsEnchantment implements DamageEnchant {
+    private static final String DEFAULT_DESCRIPTION = "When an item with this enchantment is in your offhand, " +
+            "it swings automatically after attacking!";
+
     // TODO: Get this from player entity attack range attribute in 1.20.5
     private static final double ATTACK_RANGE = 3.5;
 
     private static final Map<UUID, Integer> DUAL_SWING_TASKS = new HashMap<>();
 
     public DualWieldEnchant() {
-        super("dual_wield");
+        super("dual_wield", DEFAULT_DESCRIPTION);
+
+        supportedItems = ItemTypeTagKeys.ENCHANTABLE_SWORD;
+        weight = 10;
     }
 
     @Override
-    public @NotNull String getDescription() {
-        return "When an item with this enchantment is in your offhand, it swings automatically after attacking!";
+    public String getDefaultDisplayName() {
+        return "Dual Wield";
     }
 
     @Override
@@ -62,7 +65,7 @@ public class DualWieldEnchant extends WbsEnchantment implements DamageEnchant {
 
         ItemStack offHand = equipment.getItemInOffHand();
 
-        if (containsEnchantment(offHand)) {
+        if (isEnchantmentOn(offHand)) {
             AttributeInstance speedAttr = attacker.getAttribute(Attribute.GENERIC_ATTACK_SPEED);
 
             if (speedAttr == null) {
@@ -92,7 +95,7 @@ public class DualWieldEnchant extends WbsEnchantment implements DamageEnchant {
                     }
 
                     ItemStack updatedOffHand = updatedEquipment.getItemInOffHand();
-                    if (!containsEnchantment(updatedOffHand)) {
+                    if (!isEnchantmentOn(updatedOffHand)) {
                         DUAL_SWING_TASKS.remove(attacker.getUniqueId());
                         return;
                     }
@@ -127,41 +130,5 @@ public class DualWieldEnchant extends WbsEnchantment implements DamageEnchant {
 
             DUAL_SWING_TASKS.put(attacker.getUniqueId(), taskId);
         }
-    }
-
-    @Override
-    public String getDisplayName() {
-        return "&7Dual Wield";
-    }
-
-    @Override
-    public Rarity getRarity() {
-        return Rarity.UNCOMMON;
-    }
-
-    @Override
-    public int getMaxLevel() {
-        return 1;
-    }
-
-    @NotNull
-    @Override
-    public EnchantmentTarget getItemTarget() {
-        return EnchantmentTarget.WEAPON;
-    }
-
-    @Override
-    public boolean isTreasure() {
-        return false;
-    }
-
-    @Override
-    public boolean isCursed() {
-        return false;
-    }
-
-    @Override
-    public boolean canEnchantItem(@NotNull ItemStack itemStack) {
-        return Tag.ITEMS_SWORDS.isTagged(itemStack.getType());
     }
 }

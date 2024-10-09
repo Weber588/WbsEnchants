@@ -1,8 +1,15 @@
 package wbs.enchants;
 
-import me.sciguymjm.uberenchant.api.UberEnchantment;
-import me.sciguymjm.uberenchant.api.utils.UberConfiguration;
+import com.google.gson.Gson;
+import io.papermc.paper.registry.RegistryAccess;
+import io.papermc.paper.registry.RegistryKey;
+import io.papermc.paper.registry.TypedKey;
+import io.papermc.paper.registry.data.EnchantmentRegistryEntry;
+import io.papermc.paper.registry.event.RegistryFreezeEvent;
+import io.papermc.paper.registry.tag.TagKey;
+import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
+import org.bukkit.Keyed;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import org.bukkit.command.CommandSender;
@@ -12,97 +19,75 @@ import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.HandlerList;
-import org.bukkit.event.world.LootGenerateEvent;
-import org.bukkit.inventory.EntityEquipment;
-import org.bukkit.inventory.EquipmentSlot;
-import org.bukkit.inventory.ItemStack;
+import org.bukkit.event.Listener;
+import org.bukkit.inventory.*;
 import org.bukkit.inventory.meta.EnchantmentStorageMeta;
 import org.bukkit.inventory.meta.ItemMeta;
-import org.bukkit.loot.LootTable;
 import org.bukkit.plugin.PluginManager;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import wbs.enchants.enchantment.helper.BlockEnchant;
 import wbs.enchants.enchantment.helper.DamageEnchant;
+import wbs.enchants.enchantment.helper.NonPersistentBlockEnchant;
 import wbs.enchants.enchantment.helper.VehicleEnchant;
 import wbs.enchants.generation.ContextManager;
 import wbs.enchants.generation.GenerationContext;
 import wbs.enchants.util.EnchantUtils;
-import wbs.enchants.util.UberRegistrable;
 import wbs.utils.exceptions.InvalidConfigurationException;
-import wbs.utils.util.WbsEnums;
-import wbs.utils.util.WbsMath;
-import wbs.utils.util.plugin.WbsPlugin;
+import wbs.utils.util.string.WbsStrings;
 
 import java.util.*;
 
-public abstract class WbsEnchantment extends UberEnchantment implements UberRegistrable, Comparable<WbsEnchantment> {
-    private static final Random RANDOM = new Random();
-
-    public static boolean matches(@NotNull Enchantment a, @NotNull Enchantment b) {
-        return Objects.equals(a, b) || a.getKey().equals(b.getKey());
-    }
-
+@SuppressWarnings("UnstableApiUsage")
+public abstract class WbsEnchantment implements Comparable<WbsEnchantment>, Keyed, Listener {
     private final String stringKey;
 
     protected boolean isEnabled = true;
-    protected double cost = EnchantsSettings.DEFAULT_COST;
-    protected double costMultiplier = EnchantsSettings.DEFAULT_COST_MODIFIER;
     @NotNull
     protected Map<Integer, Double> costForLevel = new HashMap<>();
-    protected double removalCost = EnchantsSettings.DEFAULT_REMOVAL_COST;
-    protected double extractionCost = EnchantsSettings.DEFAULT_EXTRACT_COST;
-    protected boolean canUseOnAnything = EnchantsSettings.DEFAULT_USABLE_ANYWHERE;
     @NotNull
     protected List<String> aliases = new LinkedList<>();
 
+    // TODO: Read these from config, with defaults based on what implementors provide in constructor
+    protected int maxLevel = 1;
+    protected int weight = 1;
+    protected TagKey<ItemType> primaryItems;
+    protected TagKey<ItemType> supportedItems;
+    protected TagKey<Enchantment> exclusiveWith;
+    protected int anvilCost;
+    @NotNull
+    protected String description;
+    protected String targetDescription;
+
     protected final List<GenerationContext> generationContexts = new LinkedList<>();
 
-    protected WbsPlugin plugin = WbsEnchants.getInstance();
-
-    public WbsEnchantment(String key) {
-        super(new NamespacedKey(WbsEnchants.getInstance(), key));
+    public WbsEnchantment(String key, @NotNull String description) {
         stringKey = key;
-        EnchantsSettings.register(this);
-
-        // These (and similar) can theoretically be called from the implementer itself, but this makes it harder to
-        // accidentally forget it.
-        if (this instanceof DamageEnchant damageEnchant) {
-            if (damageEnchant.autoRegister()) {
-                damageEnchant.registerDamageEvent();
-            }
-        }
-        if (this instanceof VehicleEnchant vehicleEnchant) {
-            if (vehicleEnchant.autoRegister()) {
-                vehicleEnchant.registerVehicleEvents();
-            }
-        }
-        if (this instanceof BlockEnchant blockEnchant) {
-            if (blockEnchant.autoRegister()) {
-                blockEnchant.registerBlockEvents();
-            }
-        }
+        this.description = description;
+        EnchantManager.register(this);
     }
 
     @NotNull
-    public abstract String getDescription();
+    public final String getDescription() {
+        return description
+                .replaceAll("%max_level%", String.valueOf(getMaxLevel()));
+    }
     @NotNull
     public String getTargetDescription() {
-        return switch (getItemTarget()) {
-            case ARMOR_HEAD -> "Helmet";
-            case ARMOR_TORSO -> "Chestplate";
-            case ARMOR_LEGS -> "Leggings";
-            case ARMOR_FEET -> "Boots";
-            default -> WbsEnums.toPrettyString(getItemTarget());
-        };
+        if (targetDescription == null) {
+            targetDescription = getSupportedItems().key().value();
+            targetDescription = targetDescription.substring(0, targetDescription.lastIndexOf('/') + 1)
+                    .replaceAll("_", " ");
+
+            targetDescription = WbsStrings.capitalizeAll(targetDescription);
+        }
+        return targetDescription;
     }
 
-    @Override
     public String getPermission() {
-        return "wbsenchants.enchantment." + getName();
+        return "wbsenchants.enchantment." + getKey().getNamespace() + "." + getKey().getKey();
     }
 
-    @Override
     public int getStartLevel() {
         return 0;
     }
@@ -112,54 +97,22 @@ public abstract class WbsEnchantment extends UberEnchantment implements UberRegi
         return aliases;
     }
 
-    @Override
-    public boolean canEnchantItem(@NotNull ItemStack itemStack) {
-        return getItemTarget().includes(itemStack);
-    }
-
     @NotNull
-    @Override
     public NamespacedKey getKey() {
-        return new NamespacedKey(WbsEnchants.getInstance(), stringKey);
+        return new NamespacedKey("wbsenchants", stringKey);
     }
 
-    @NotNull
-    protected Map<NamespacedKey, Double> getLootKeyChances() {
-        return new HashMap<>();
+    public TypedKey<Enchantment> getTypedKey() {
+        return TypedKey.create(RegistryKey.ENCHANTMENT, getKey());
     }
 
-    @Nullable
-    public Double getAddToChance(LootTable table) {
-        return getLootKeyChances().get(table.getKey());
-    }
-
-    public void onLootGenerate(LootGenerateEvent event) {
-        Double chance = getAddToChance(event.getLootTable());
-
-        if (chance == null) {
-            return;
-        }
-
-        if (!WbsMath.chance(chance)) {
-            return;
-        }
-
-        for (ItemStack stack : event.getLoot()) {
-            int level;
-            int maxLevel = getMaxLevel();
-            if (maxLevel < 1) {
-                level = 0;
-            } else {
-                level = RANDOM.nextInt(maxLevel) + 1;
-            }
-            if (tryAdd(stack, level)) {
-                return;
-            }
-        }
-    }
 
     public boolean matches(String asString) {
-        if (stringKey.equalsIgnoreCase(asString)) {
+        if (getKey().toString().equalsIgnoreCase(asString)) {
+            return true;
+        } else if (stringKey.equalsIgnoreCase(asString)) {
+            return true;
+        } else if (getKey().value().equalsIgnoreCase(asString)) {
             return true;
         }
 
@@ -177,7 +130,8 @@ public abstract class WbsEnchantment extends UberEnchantment implements UberRegi
     }
 
     public boolean tryAdd(ItemStack stack, int level) {
-        if (stack.getType() != Material.ENCHANTED_BOOK && !canEnchantItem(stack)) {
+        Enchantment enchantment = getEnchantment();
+        if (stack.getType() != Material.ENCHANTED_BOOK && !enchantment.canEnchantItem(stack)) {
             return false;
         }
 
@@ -192,7 +146,7 @@ public abstract class WbsEnchantment extends UberEnchantment implements UberRegi
         }
 
         for (Enchantment other : existing) {
-            if (conflictsWith(other)) {
+            if (enchantment.conflictsWith(other)) {
                 return false;
             }
         }
@@ -202,56 +156,19 @@ public abstract class WbsEnchantment extends UberEnchantment implements UberRegi
         return true;
     }
 
-    public double getCost() {
-        return EnchantsSettings.DEFAULT_COST;
-    }
-
-    public double getCostMultiplier() {
-        return EnchantsSettings.DEFAULT_COST_MODIFIER;
-    }
-
     @NotNull
     public Map<Integer, Double> getCostForLevel() {
         return new HashMap<>();
     }
 
-    public double getRemovalCost() {
-        return EnchantsSettings.DEFAULT_REMOVAL_COST;
-    }
-
-    public double getExtractionCost() {
-        return EnchantsSettings.DEFAULT_EXTRACT_COST;
-    }
-
-    public boolean canUseOnAnything() {
-        return EnchantsSettings.DEFAULT_USABLE_ANYWHERE;
-    }
-
-    public void registerUberRecord() {
-        UberConfiguration.registerUberRecord(
-                this,
-                this.getCost(),
-                this.getCostMultiplier(),
-                this.getRemovalCost(),
-                this.getExtractionCost(),
-                this.canUseOnAnything(),
-                this.getAliases(),
-                this.getCostForLevel()
-        );
-    }
-
+    // TODO: Add all new fields from 1.20.5
     public ConfigurationSection buildConfigurationSection(YamlConfiguration baseFile) {
-        ConfigurationSection section = baseFile.createSection(getName());
+        ConfigurationSection section = baseFile.createSection(getKey().getKey());
 
         section.set("enabled", isEnabled);
         section.set("min_level", getStartLevel());
         section.set("max_level", getMaxLevel());
-        section.set("cost", getCost());
-        section.set("cost_multiplier", getCostMultiplier());
         section.createSection("cost_for_level", getCostForLevel());
-        section.set("removal_cost", getRemovalCost());
-        section.set("extraction_cost", getExtractionCost());
-        section.set("use_on_anything", canUseOnAnything());
         section.set("aliases", getAliases());
 
         generationContexts.forEach(context -> context.createSection(section, "generation"));
@@ -259,15 +176,9 @@ public abstract class WbsEnchantment extends UberEnchantment implements UberRegi
         return section;
     }
 
-    @Override
+    // TODO: Add all new fields from 1.20.5
     public void configure(ConfigurationSection section, String directory) {
         isEnabled = section.getBoolean("enabled", isEnabled);
-        cost = section.getDouble("cost", getCost());
-        costMultiplier = section.getDouble("cost_multiplier", getCostMultiplier());
-        removalCost = section.getDouble("removal_cost", getRemovalCost());
-        extractionCost = section.getDouble("extraction_cost", getExtractionCost());
-        canUseOnAnything = section.getBoolean("use_on_anything", canUseOnAnything());
-
         aliases = section.getStringList("aliases");
 
         ConfigurationSection generationSection = section.getConfigurationSection("generation");
@@ -327,10 +238,37 @@ public abstract class WbsEnchantment extends UberEnchantment implements UberRegi
     }
 
     /**
-     * @return Whether or not this enchantment is under development, and should override user configuration.
+     * @return Whether this enchantment is under development, and should override user configuration.
      */
     public boolean developerMode() {
         return WbsEnchants.getInstance().settings.isDeveloperMode();
+    }
+
+    public void registerEvents() {
+        Bukkit.getPluginManager().registerEvents(this, WbsEnchants.getInstance());
+
+        // These (and similar) can theoretically be called from the implementer itself, but this makes it harder to
+        // accidentally forget it.
+        if (this instanceof DamageEnchant damageEnchant) {
+            if (damageEnchant.autoRegister()) {
+                damageEnchant.registerDamageEvent();
+            }
+        }
+        if (this instanceof VehicleEnchant vehicleEnchant) {
+            if (vehicleEnchant.autoRegister()) {
+                vehicleEnchant.registerVehicleEvents();
+            }
+        }
+        if (this instanceof BlockEnchant blockEnchant) {
+            if (blockEnchant.autoRegister()) {
+                blockEnchant.registerBlockEvents();
+            }
+        }
+        if (this instanceof NonPersistentBlockEnchant npBlockEnchant) {
+            if (npBlockEnchant.autoRegister()) {
+                npBlockEnchant.registerNonPersistentBlockEvents();
+            }
+        }
     }
 
     public void registerGenerationContexts() {
@@ -342,58 +280,16 @@ public abstract class WbsEnchantment extends UberEnchantment implements UberRegi
         }
     }
 
-    public void setPlugin(WbsPlugin plugin) {
-        this.plugin = plugin;
-    }
-
     public void sendMessage(String message, CommandSender sender) {
-        plugin.sendMessage(message, sender);
+        WbsEnchants.getInstance().sendMessage(message, sender);
     }
 
     public void sendActionBar(String message, Player player) {
-        plugin.sendActionBar(message, player);
+        WbsEnchants.getInstance().sendActionBar(message, player);
     }
 
     public boolean isEnabled() {
         return isEnabled;
-    }
-
-    @Override
-    public boolean conflictsWith(@NotNull Enchantment enchantment) {
-        Set<Enchantment> knownDirectConflicts = new HashSet<>(getDirectConflicts());
-        Set<Enchantment> indirectConflicts = new HashSet<>(getIndirectConflicts());
-        knownDirectConflicts.addAll(indirectConflicts);
-
-        boolean directlyConflicts = knownDirectConflicts.stream()
-                .anyMatch(check -> WbsEnchantment.matches(check, enchantment));
-
-        if (directlyConflicts) {
-            return true;
-        }
-
-        if (WbsEnchantment.matches(enchantment, EnchantsSettings.CURSE_VANILLA)) {
-            // Make an exception for Curse of Vanilla since indirectly conflicting with a vanilla enchant
-            // shouldn't also cause it to conflict with that curse.
-            return false;
-        }
-
-        // Does not directly conflict -- check if any indirect conflicts conflict.
-        return indirectConflicts.stream()
-                .anyMatch(enchantment::conflictsWith);
-    }
-
-    public Set<Enchantment> getDirectConflicts() {
-        return getIndirectConflicts();
-    }
-
-    public Set<Enchantment> getIndirectConflicts() {
-        return new HashSet<>();
-    }
-
-    @NotNull
-    @Override
-    public String getTranslationKey() {
-        return getKey().toString();
     }
 
     /**
@@ -430,7 +326,8 @@ public abstract class WbsEnchantment extends UberEnchantment implements UberRegi
         }
 
         ItemStack item = equipment.getItem(slot);
-        if (containsEnchantment(item)) {
+
+        if (isEnchantmentOn(item)) {
             return item;
         }
 
@@ -455,5 +352,187 @@ public abstract class WbsEnchantment extends UberEnchantment implements UberRegi
 
     public int compareTo(WbsEnchantment other) {
         return getKey().getKey().compareTo(other.getKey().getKey());
+    }
+
+    @NotNull
+    public Enchantment getEnchantment() {
+        Enchantment enchantment = RegistryAccess.registryAccess()
+                .getRegistry(RegistryKey.ENCHANTMENT)
+                .get(this.getKey());
+
+        if (enchantment == null) {
+            throw new IllegalStateException("Server enchantment not found for enchantment \"" + this.getKey() + "\".");
+        }
+
+        return enchantment;
+    }
+
+    public boolean isEnchantmentOn(@NotNull ItemStack item) {
+        return item.containsEnchantment(getEnchantment());
+    }
+
+    public int getLevel(@NotNull ItemStack item) {
+        return item.getEnchantments().getOrDefault(getEnchantment(), 0);
+    }
+
+    public abstract String getDefaultDisplayName();
+
+    // Costs based on Smite by default, just feels like the most middle enchant -- less common than prot
+    // or unbreaking, not as rare as thorns or infinity
+
+    protected EnchantmentRegistryEntry.EnchantmentCost getDefaultMaximumCost() {
+        return EnchantmentRegistryEntry.EnchantmentCost.of(25, 8);
+    }
+
+    protected EnchantmentRegistryEntry.EnchantmentCost getDefaultMinimumCost() {
+        return EnchantmentRegistryEntry.EnchantmentCost.of(5, 8);
+    }
+
+    public int getDefaultWeight() {
+        return 1;
+    }
+    public int getDefaultMaxLevel() {
+        return 1;
+    }
+    public int getDefaultAnvilCost() {
+        return 1;
+    }
+
+    public TagKey<ItemType> getDefaultSupportedItems() {
+        return WbsEnchantsBootstrap.ITEM_EMPTY;
+    }
+    @Nullable
+    public TagKey<ItemType> getDefaultPrimaryItems() {
+        return WbsEnchantsBootstrap.ITEM_EMPTY;
+    }
+    public TagKey<Enchantment> getDefaultExclusiveSet() {
+        return WbsEnchantsBootstrap.ENCHANTMENT_EMPTY;
+    }
+
+    // TODO: Move these to read from getEnchantment once they're implemented in paper API
+    public String getDisplayName() {
+        return this.getDefaultDisplayName();
+    }
+
+    @NotNull
+    protected EquipmentSlotGroup getActiveSlots() {
+        return EquipmentSlotGroup.ANY;
+    }
+
+    @NotNull
+    protected EnchantmentRegistryEntry.EnchantmentCost getMaximumCost() {
+        return EnchantmentRegistryEntry.EnchantmentCost.of(25, 8);
+    }
+
+    @NotNull
+    protected EnchantmentRegistryEntry.EnchantmentCost getMinimumCost() {
+        return EnchantmentRegistryEntry.EnchantmentCost.of(5, 8);
+    }
+
+    public final int getWeight() {
+        return this.weight;
+    }
+    public final int getMaxLevel() {
+        return this.maxLevel;
+    }
+    public final int getAnvilCost() {
+        return this.anvilCost;
+    }
+
+    @NotNull
+    public final TagKey<ItemType> getSupportedItems() {
+        // Why doesn't java have a null coalescing operator </3
+        if (this.supportedItems == null) {
+            this.supportedItems = WbsEnchantsBootstrap.ITEM_EMPTY;
+            System.out.println("supported items was null, defaulting to: " + this.supportedItems);
+        }
+
+        return this.supportedItems;
+    }
+    @NotNull
+    public final TagKey<ItemType> getPrimaryItems() {
+        return Objects.requireNonNullElseGet(this.primaryItems, this::getDefaultPrimaryItems);
+    }
+    @NotNull
+    public final TagKey<Enchantment> getExclusiveSet() {
+        return Objects.requireNonNullElseGet(this.exclusiveWith, this::getDefaultExclusiveSet);
+    }
+
+    /**
+     * Provides a list of enchantment tags to add this to during registration. <br/>
+     * Common (minecraft:) tags are:
+     * <li>curse</li>
+     * <li>in_enchanting_table</li>
+     * <li>tradeable</li>
+     * <li>on_random_loot</li>
+     * <li>on_mob_spawn_equipment</li>
+     * <li>double_trade_price</li>
+     * <li>on_traded_equipment</li>
+     * <li>treasure</li>
+     * <li>non_treasure</li>
+     * @return The enchantment tags this enchantment should be a part of
+     */
+    @NotNull
+    public List<TagKey<Enchantment>> addToTags() {
+        return List.of();
+    }
+
+    public void buildTo(RegistryFreezeEvent<Enchantment, EnchantmentRegistryEntry.@NotNull Builder> event,
+                        EnchantmentRegistryEntry.Builder builder) {
+        builder.description(Component.text(getDefaultDisplayName())) // TODO: Update this to actual
+                .supportedItems(event.getOrCreateTag(getSupportedItems()))
+                .primaryItems(event.getOrCreateTag(getPrimaryItems()))
+                .minimumCost(getMinimumCost())
+                .maximumCost(getMaximumCost())
+                .activeSlots(getActiveSlots())
+                .exclusiveWith(event.getOrCreateTag(getExclusiveSet()))
+                .anvilCost(getAnvilCost())
+                .maxLevel(getMaxLevel())
+                .weight(getWeight());
+    }
+
+    public String buildJsonDefinition() {
+        JsonDefinition def = new JsonDefinition();
+
+        def.description = getDefaultDisplayName();
+        def.exclusive_set = getExclusiveSet().toString();
+        def.supported_items = getSupportedItems().toString();
+        def.weight = getWeight();
+        def.max_level = getMaxLevel();
+        def.min_cost = new JsonEnchCost(getMinimumCost());
+        def.max_cost = new JsonEnchCost(getMaximumCost());
+        def.anvil_cost = getAnvilCost();
+        def.slots = getActiveSlots().toString();
+
+        return def.toString();
+    }
+
+    private static class JsonDefinition {
+        private String description;
+        private String exclusive_set;
+        private String supported_items;
+        private int weight;
+        private int max_level;
+        private JsonEnchCost min_cost;
+        private JsonEnchCost max_cost;
+        private int anvil_cost;
+        private String slots;
+
+        @Override
+        public String toString() {
+            return new Gson().toJson(this);
+        }
+    }
+
+    private static class JsonEnchCost {
+        private int base;
+        private int per_level_above_first;
+
+        public JsonEnchCost(EnchantmentRegistryEntry.EnchantmentCost cost) {
+            if (cost != null) {
+                this.base = cost.baseCost();
+                this.per_level_above_first = cost.additionalPerLevelCost();
+            }
+        }
     }
 }

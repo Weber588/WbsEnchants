@@ -1,21 +1,17 @@
 package wbs.enchants.enchantment;
 
-import me.sciguymjm.uberenchant.api.utils.Rarity;
+import io.papermc.paper.registry.keys.tags.ItemTypeTagKeys;
 import org.bukkit.Material;
-import org.bukkit.Tag;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.block.data.Ageable;
 import org.bukkit.block.data.type.Fire;
-import org.bukkit.enchantments.Enchantment;
-import org.bukkit.enchantments.EnchantmentTarget;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.Contract;
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import wbs.enchants.WbsEnchantment;
 import wbs.enchants.util.BlockChanger;
@@ -25,6 +21,9 @@ import java.util.Collection;
 import java.util.List;
 
 public class HarvesterEnchant extends WbsEnchantment {
+    private static final String DEFAULT_DESCRIPTION = "When you break or right click a crop, a 3x3 area is harvested " +
+            "and replanted automatically. Width increases by 2 per level.";
+
     public static List<Material> UNHARVESTABLE_CROPS = List.of(
             Material.PITCHER_CROP,
             Material.TORCHFLOWER_CROP,
@@ -34,7 +33,17 @@ public class HarvesterEnchant extends WbsEnchantment {
     );
 
     public HarvesterEnchant() {
-        super("harvester");
+        super("harvester", DEFAULT_DESCRIPTION);
+
+        supportedItems = ItemTypeTagKeys.HOES;
+        maxLevel = 2;
+
+        targetDescription = "Hoe";
+    }
+
+    @Override
+    public String getDefaultDisplayName() {
+        return "Harvester";
     }
 
     @EventHandler
@@ -53,7 +62,7 @@ public class HarvesterEnchant extends WbsEnchantment {
 
         ItemStack item = player.getInventory().getItemInMainHand();
 
-        if (containsEnchantment(item)) {
+        if (isEnchantmentOn(item)) {
             if (crop.getAge() == crop.getMaximumAge()) {
                 if (event.getAction() == Action.LEFT_CLICK_BLOCK) {
                     event.setCancelled(true);
@@ -132,53 +141,5 @@ public class HarvesterEnchant extends WbsEnchantment {
         }
 
         return crop;
-    }
-
-    @Override
-    public String getDisplayName() {
-        return "&7Harvester";
-    }
-
-    @Override
-    public Rarity getRarity() {
-        return Rarity.COMMON;
-    }
-
-    @Override
-    public int getMaxLevel() {
-        return 2;
-    }
-
-    @NotNull
-    @Override
-    public EnchantmentTarget getItemTarget() {
-        return EnchantmentTarget.TOOL;
-    }
-
-    @Override
-    public boolean isTreasure() {
-        return false;
-    }
-
-    @Override
-    public boolean isCursed() {
-        return false;
-    }
-
-    @Override
-    public @NotNull String getDescription() {
-        int maxWidth = getMaxLevel() * 2 + 1;
-        return "When you break or right click a crop, a 3x3 area is harvested and replanted automatically. Width " +
-                "increases by 2 per level, up to a maximum of " + maxWidth + " at level " + getMaxLevel() + ".";
-    }
-
-    @Override
-    public @NotNull String getTargetDescription() {
-        return "Hoe";
-    }
-
-    @Override
-    public boolean canEnchantItem(@NotNull ItemStack itemStack) {
-        return Tag.ITEMS_HOES.isTagged(itemStack.getType());
     }
 }

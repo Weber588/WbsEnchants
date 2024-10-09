@@ -11,6 +11,7 @@ import org.bukkit.event.block.BlockDropItemEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.scheduler.BukkitRunnable;
+import org.jetbrains.annotations.NotNull;
 import wbs.enchants.WbsEnchantment;
 import wbs.enchants.WbsEnchants;
 import wbs.enchants.util.EventUtils;
@@ -21,13 +22,21 @@ import java.util.*;
 public abstract class BlockDropEnchantment extends WbsEnchantment {
     private final Map<Location, MarkedLocation> marked = new HashMap<>();
     private int timerId = -1;
+    private final EventPriority dropPriority;
 
-    public BlockDropEnchantment(String key) {
-        this(key, EventPriority.NORMAL);
+    public BlockDropEnchantment(String key, @NotNull String description) {
+        this(key, description, EventPriority.NORMAL);
     }
 
-    public BlockDropEnchantment(String key, EventPriority dropPriority) {
-        super(key);
+    public BlockDropEnchantment(String key, @NotNull String description, EventPriority dropPriority) {
+        super(key, description);
+
+        this.dropPriority = dropPriority;
+    }
+
+    @Override
+    public void registerEvents() {
+        super.registerEvents();
 
         EventUtils.register(BlockBreakEvent.class, this::onBlockBreak, EventPriority.MONITOR);
         EventUtils.register(BlockDropItemEvent.class, this::onBlockDrop, dropPriority);
@@ -100,14 +109,12 @@ public abstract class BlockDropEnchantment extends WbsEnchantment {
             return;
         }
 
-        if (containsEnchantment(item)) {
-            ItemMeta meta = item.getItemMeta();
-            if (meta == null) {
-                return;
-            }
-
-            mark(player, broken, broken.getLocation());
+        ItemMeta meta = item.getItemMeta();
+        if (meta == null) {
+            return;
         }
+
+        mark(player, broken, broken.getLocation());
     }
 
     public void onBlockDrop(BlockDropItemEvent event) {

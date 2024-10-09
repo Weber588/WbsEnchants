@@ -1,13 +1,9 @@
 package wbs.enchants.enchantment;
 
-import me.sciguymjm.uberenchant.api.utils.Rarity;
+import io.papermc.paper.registry.keys.tags.ItemTypeTagKeys;
 import org.bukkit.NamespacedKey;
-import org.bukkit.enchantments.Enchantment;
-import org.bukkit.enchantments.EnchantmentTarget;
 import org.bukkit.entity.*;
-import org.bukkit.event.EventHandler;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
-import org.bukkit.event.entity.EntityDeathEvent;
 import org.bukkit.inventory.EntityEquipment;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.MerchantRecipe;
@@ -16,63 +12,31 @@ import org.bukkit.persistence.PersistentDataType;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import wbs.enchants.WbsEnchantment;
-import wbs.enchants.WbsEnchants;
 import wbs.enchants.enchantment.helper.DamageEnchant;
 import wbs.utils.util.WbsMath;
 
 import java.util.List;
 import java.util.Random;
-import java.util.Set;
 
 public class PilferingEnchant extends WbsEnchantment implements DamageEnchant {
+    private static final String DEFAULT_DESCRIPTION = "Devised by the illagers, this enchantment allows you to shake " +
+            "down villagers to steal their trades without paying!";
     private static final int DROP_CHANCE_PER_LEVEL = 5;
 
-    private static final NamespacedKey TIMES_HIT = new NamespacedKey(WbsEnchants.getInstance(), "times_pilfered");
+    private static final NamespacedKey TIMES_HIT = new NamespacedKey("wbsenchants", "times_pilfered");
 
     public PilferingEnchant() {
-        super("pilfering");
+        super("pilfering", DEFAULT_DESCRIPTION);
+
+        maxLevel = 3;
+        supportedItems = ItemTypeTagKeys.ENCHANTABLE_WEAPON;
+        // TODO: exclusiveWith = Create set for Looting
+        weight = 10;
     }
 
     @Override
-    public @NotNull String getDescription() {
-        return "Devised by the illagers, this enchantment allows you to shake down villagers to steal their trades " +
-                "without paying!";
-    }
-
-    @Override
-    public String getDisplayName() {
-        return "&7Pilfering";
-    }
-
-    @Override
-    public Rarity getRarity() {
-        return Rarity.UNCOMMON;
-    }
-
-    @Override
-    public int getMaxLevel() {
-        return 3;
-    }
-
-    @NotNull
-    @Override
-    public EnchantmentTarget getItemTarget() {
-        return EnchantmentTarget.WEAPON;
-    }
-
-    @Override
-    public boolean isTreasure() {
-        return false;
-    }
-
-    @Override
-    public boolean isCursed() {
-        return false;
-    }
-
-    @Override
-    public Set<Enchantment> getDirectConflicts() {
-        return Set.of(LOOT_BONUS_MOBS);
+    public String getDefaultDisplayName() {
+        return "Pilfering";
     }
 
     @Override
@@ -99,7 +63,7 @@ public class PilferingEnchant extends WbsEnchantment implements DamageEnchant {
         }
 
         ItemStack item = equipment.getItemInMainHand();
-        if (containsEnchantment(item)) {
+        if (isEnchantmentOn(item)) {
             int level = getLevel(item);
 
             if (!WbsMath.chance(DROP_CHANCE_PER_LEVEL * level)) {

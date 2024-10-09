@@ -1,25 +1,53 @@
 package wbs.enchants.enchantment;
 
-import me.sciguymjm.uberenchant.api.utils.Rarity;
+import io.papermc.paper.registry.tag.TagKey;
 import org.bukkit.Sound;
 import org.bukkit.block.Bell;
 import org.bukkit.block.Block;
-import org.bukkit.enchantments.EnchantmentTarget;
 import org.bukkit.entity.Monster;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.block.BellRingEvent;
+import org.bukkit.inventory.ItemType;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.jetbrains.annotations.NotNull;
 import wbs.enchants.WbsEnchantment;
+import wbs.enchants.WbsEnchants;
+import wbs.enchants.WbsEnchantsBootstrap;
 import wbs.enchants.enchantment.helper.BlockEnchant;
 import wbs.utils.util.WbsSound;
 import wbs.utils.util.entities.selector.RadiusSelector;
 
 public class DivineResonanceEnchant extends WbsEnchantment implements BlockEnchant {
+    private static final String DEFAULT_DESCRIPTION = "Bells enchanted with this will apply glowing to all " +
+            "hostile mobs within radius, regardless of whether or not they're raiders, " +
+            "and regardless of whether there's a raid going on!";
+
     public DivineResonanceEnchant() {
-        super("divine_resonance");
+        super("divine_resonance", DEFAULT_DESCRIPTION);
+
+        weight = 1;
+    }
+
+    @Override
+    public boolean canEnchant(Block block) {
+        return block.getState() instanceof Bell;
+    }
+
+    @Override
+    public String getDefaultDisplayName() {
+        return "Divine Resonance";
+    }
+
+    @Override
+    public TagKey<ItemType> getDefaultSupportedItems() {
+        return WbsEnchantsBootstrap.BELL;
+    }
+
+    @Override
+    public @NotNull String getTargetDescription() {
+        return "Bell";
     }
 
     @EventHandler
@@ -47,56 +75,8 @@ public class DivineResonanceEnchant extends WbsEnchantment implements BlockEncha
                                     .forEach(effect::apply);
                         }
                     }
-                }.runTaskLater(plugin, 40);
+                }.runTaskLater(WbsEnchants.getInstance(), 40);
             }
         }
-    }
-
-    @Override
-    public @NotNull String getDescription() {
-        return "Bells enchanted with this will apply glowing to all hostile mobs within radius, regardless of " +
-                "whether or not they're pillagers, and regardless of whether there's a raid going on!";
-    }
-
-    @Override
-    public String getDisplayName() {
-        return "&7Divine Resonance";
-    }
-
-    @Override
-    public Rarity getRarity() {
-        return Rarity.VERY_RARE;
-    }
-
-    @Override
-    public int getMaxLevel() {
-        return 1;
-    }
-
-    @NotNull
-    @Override
-    public EnchantmentTarget getItemTarget() {
-        // Bell enchant -- Overridden below
-        return EnchantmentTarget.TOOL;
-    }
-
-    @Override
-    public boolean isTreasure() {
-        return false;
-    }
-
-    @Override
-    public boolean isCursed() {
-        return false;
-    }
-
-    @Override
-    public boolean canEnchant(Block block) {
-        return block.getState() instanceof Bell;
-    }
-
-    @Override
-    public @NotNull String getTargetDescription() {
-        return "Bell";
     }
 }

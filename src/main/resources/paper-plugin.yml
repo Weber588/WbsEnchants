@@ -1,0 +1,15 @@
+name: WbsEnchants
+version: '1.0'
+main: wbs.enchants.WbsEnchants
+description: WbsEnchants
+api-version: '1.21.1'
+bootstrapper: wbs.enchants.WbsEnchantsBootstrap
+dependencies:
+  bootstrap:
+    WbsUtils:
+      load: BEFORE
+      required: true
+  server:
+    WbsUtils:
+      load: BEFORE
+      required: true

@@ -1,13 +1,11 @@
 package wbs.enchants.enchantment;
 
-import me.sciguymjm.uberenchant.api.utils.Rarity;
+import io.papermc.paper.registry.keys.tags.ItemTypeTagKeys;
 import org.bukkit.Material;
 import org.bukkit.Tag;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
-import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
-import org.bukkit.event.EventHandler;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
@@ -19,14 +17,21 @@ import java.util.List;
 import java.util.function.Predicate;
 
 public class ExcavatorEnchant extends AbstractMultiBreakEnchant {
+    public static final String DEFAULT_DESCRIPTION = "Mines a 3x3 square at level 1, increasing the width by 2 per level.";
+
     public ExcavatorEnchant() {
-        super("excavator", Tag.ITEMS_SHOVELS);
+        super("excavator", DEFAULT_DESCRIPTION);
+
+        maxLevel = 2;
+        supportedItems = ItemTypeTagKeys.SHOVELS;
+        weight = 10;
+
+        targetDescription = "Shovel";
     }
 
-    @EventHandler
     @Override
-    protected void catchEvent(BlockBreakEvent event) {
-        onBreakBlock(event);
+    public String getDefaultDisplayName() {
+        return "Excavator";
     }
 
     @Override
@@ -50,42 +55,5 @@ public class ExcavatorEnchant extends AbstractMultiBreakEnchant {
                 .setToUpdatePerChunk(toBreakPerChunk)
                 .setMatching(matching)
                 .breakBlocks(player);
-    }
-
-    @Override
-    public String getDisplayName() {
-        return "&7Excavator";
-    }
-
-    @Override
-    public Rarity getRarity() {
-        return Rarity.UNCOMMON;
-    }
-
-    @Override
-    public int getMaxLevel() {
-        return 2;
-    }
-
-    @Override
-    public boolean isTreasure() {
-        return false;
-    }
-
-    @Override
-    public boolean isCursed() {
-        return false;
-    }
-
-    @Override
-    public @NotNull String getDescription() {
-        int maxWidth = getMaxLevel() * 2 + 1;
-        return "Mines a 3x3 square at level 1, increasing the width by 2 per level, up to " + maxWidth +  " at level "
-                + getMaxLevel() + ".";
-    }
-
-    @Override
-    public @NotNull String getTargetDescription() {
-        return "Shovel";
     }
 }

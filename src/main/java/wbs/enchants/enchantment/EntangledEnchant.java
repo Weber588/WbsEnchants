@@ -1,15 +1,12 @@
 package wbs.enchants.enchantment;
 
-import me.sciguymjm.uberenchant.api.utils.Rarity;
+import io.papermc.paper.registry.keys.tags.ItemTypeTagKeys;
 import org.bukkit.Location;
 import org.bukkit.Material;
-import org.bukkit.NamespacedKey;
 import org.bukkit.Particle;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockState;
 import org.bukkit.block.Container;
-import org.bukkit.enchantments.Enchantment;
-import org.bukkit.enchantments.EnchantmentTarget;
 import org.bukkit.entity.Item;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -19,10 +16,8 @@ import org.bukkit.event.block.BlockDropItemEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
-import org.bukkit.loot.LootTables;
 import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.scheduler.BukkitRunnable;
-import org.jetbrains.annotations.NotNull;
 import wbs.enchants.WbsEnchantment;
 import wbs.enchants.WbsEnchants;
 import wbs.utils.util.WbsEnums;
@@ -33,11 +28,15 @@ import wbs.utils.util.persistent.WbsPersistentDataType;
 import java.util.*;
 
 public class EntangledEnchant extends WbsEnchantment {
+    private static final String DEFAULT_DESCRIPTION = "Crouch and punch a container (chest, barrel etc) to " +
+            "\"entangle\" your tool to it. Once entangled, drops from blocks broken will go straight to that chest " +
+            "anywhere in the world, so long as it has enough space for it.";
+
     private static final Map<Location, Entanglement> ENTANGLEMENTS = new HashMap<>();
     private static int timerId = -1;
 
     private static final WbsParticleGroup ENTANGLED_EFFECT = new WbsParticleGroup().addEffect(
-            new NormalParticleEffect().setXYZ(0).setAmount(10), Particle.SPELL_WITCH
+            new NormalParticleEffect().setXYZ(0).setAmount(10), Particle.WITCH
     );
 
     private static void createEntanglement(Player player, Block entangledBlock, Location location) {
@@ -73,9 +72,16 @@ public class EntangledEnchant extends WbsEnchantment {
         }.runTaskTimer(WbsEnchants.getInstance(), 20, 20).getTaskId();
     }
 
-
     public EntangledEnchant() {
-        super("entangled");
+        super("entangled", DEFAULT_DESCRIPTION);
+
+        supportedItems = ItemTypeTagKeys.ENCHANTABLE_MINING;
+        weight = 1;
+    }
+
+    @Override
+    public String getDefaultDisplayName() {
+        return "Entangled";
     }
 
     @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
@@ -93,7 +99,7 @@ public class EntangledEnchant extends WbsEnchantment {
 
         ItemStack item = player.getInventory().getItemInMainHand();
 
-        if (containsEnchantment(item)) {
+        if (isEnchantmentOn(item)) {
             BlockState state = clicked.getState();
             if (!(state instanceof Container)) {
                 return;
@@ -131,7 +137,7 @@ public class EntangledEnchant extends WbsEnchantment {
 
         ItemStack item = player.getInventory().getItemInMainHand();
 
-        if (containsEnchantment(item)) {
+        if (isEnchantmentOn(item)) {
             BlockState state = broken.getState();
             if (state instanceof Container) {
                 return;
@@ -210,56 +216,6 @@ public class EntangledEnchant extends WbsEnchantment {
                 item.setItemStack(new ItemStack(Material.AIR));
             }
         }
-    }
-
-    @Override
-    public String getDisplayName() {
-        return "&7Entangled";
-    }
-
-    @Override
-    public Rarity getRarity() {
-        return Rarity.VERY_RARE;
-    }
-
-    @Override
-    public int getMaxLevel() {
-        return 1;
-    }
-
-    @NotNull
-    @Override
-    public EnchantmentTarget getItemTarget() {
-        return EnchantmentTarget.TOOL;
-    }
-
-    @Override
-    public boolean isTreasure() {
-        return true;
-    }
-
-    @Override
-    public boolean isCursed() {
-        return false;
-    }
-
-    @Override
-    public @NotNull String getDescription() {
-        return "Crouch and punch a container (chest, barrel etc) to \"entangle\" your tool to it. Once entangled, " +
-                "drops from blocks broken will go straight to that chest anywhere in the world, so long as it has " +
-                "enough space for it.";
-    }
-
-    @Override
-    public @NotNull Map<NamespacedKey, Double> getLootKeyChances() {
-        Map<NamespacedKey, Double> tableChances = new HashMap<>();
-
-        // TODO: Make these configurable in a config
-        tableChances.put(LootTables.END_CITY_TREASURE.getKey(), 50.0);
-        tableChances.put(NamespacedKey.fromString("stellarity:end_city/ship_treasure"), 65.0);
-        tableChances.put(NamespacedKey.fromString("stellarity:end_city/top_tower"), 25.0);
-
-        return tableChances;
     }
 
     private record Entanglement(UUID playerUUID, Block entangledBlock, Long createdTimestamp) { }

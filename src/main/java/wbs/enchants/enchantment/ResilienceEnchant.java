@@ -1,8 +1,7 @@
 package wbs.enchants.enchantment;
 
-import me.sciguymjm.uberenchant.api.utils.Rarity;
-import org.bukkit.enchantments.Enchantment;
-import org.bukkit.enchantments.EnchantmentTarget;
+import io.papermc.paper.registry.keys.tags.EnchantmentTagKeys;
+import io.papermc.paper.registry.keys.tags.ItemTypeTagKeys;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Projectile;
@@ -12,17 +11,29 @@ import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import wbs.enchants.WbsEnchantment;
+import wbs.enchants.WbsEnchants;
 import wbs.enchants.enchantment.helper.DamageEnchant;
-import wbs.enchants.util.EnchantUtils;
-
-import java.util.Set;
 
 public class ResilienceEnchant extends WbsEnchantment implements DamageEnchant {
     private static final int DEFAULT_INVULN_TICKS = 10;
     private static final int BONUS_TICKS_PER_LEVEL = 3;
 
+    private static final String DEFAULT_DESCRIPTION = "When you take damage, instead of the regular " +
+            DEFAULT_INVULN_TICKS / 20.0 + " seconds of invulnerability after taking damage, you're invulnerable " +
+            "for an additional " + BONUS_TICKS_PER_LEVEL / 20.0 + " seconds per level";
+
     public ResilienceEnchant() {
-        super("resilient");
+        super("resilience", DEFAULT_DESCRIPTION);
+
+        maxLevel = 2;
+        supportedItems = ItemTypeTagKeys.ENCHANTABLE_ARMOR;
+        exclusiveWith = EnchantmentTagKeys.EXCLUSIVE_SET_ARMOR;
+        weight = 5;
+    }
+
+    @Override
+    public String getDefaultDisplayName() {
+        return "Resilience";
     }
 
     @Override
@@ -38,7 +49,7 @@ public class ResilienceEnchant extends WbsEnchantment implements DamageEnchant {
 
         int totalLevels = 0;
         for (ItemStack item : equipment.getArmorContents()) {
-            if (item != null && containsEnchantment(item)) {
+            if (item != null && isEnchantmentOn(item)) {
                 totalLevels += Math.max(1, getLevel(item));
             }
         }
@@ -47,56 +58,7 @@ public class ResilienceEnchant extends WbsEnchantment implements DamageEnchant {
             int bonusTicks = totalLevels * BONUS_TICKS_PER_LEVEL;
 
             // Run next tick to avoid interfering with this damage action
-            plugin.runSync(() -> entity.setNoDamageTicks(bonusTicks));
+            WbsEnchants.getInstance().runSync(() -> entity.setNoDamageTicks(bonusTicks));
         }
-    }
-
-    @Override
-    public @NotNull String getDescription() {
-        double defaultSeconds = DEFAULT_INVULN_TICKS / 20.0;
-        double bonusSeconds = BONUS_TICKS_PER_LEVEL / 20.0;
-
-        double maxBonus = defaultSeconds + (bonusSeconds * 4 * getMaxLevel());
-
-        return "When you take damage, instead of the regular " + defaultSeconds + " seconds of invulnerability " +
-                "after taking damage, you're invulnerable for an additional " + bonusSeconds + " seconds " +
-                "per level, for a maximum of " + maxBonus + " seconds of invulnerability with level " + getMaxLevel() +
-                " on all armour pieces.";
-    }
-
-    @Override
-    public String getDisplayName() {
-        return "&7Resilience";
-    }
-
-    @Override
-    public Rarity getRarity() {
-        return Rarity.RARE;
-    }
-
-    @Override
-    public int getMaxLevel() {
-        return 2;
-    }
-
-    @NotNull
-    @Override
-    public EnchantmentTarget getItemTarget() {
-        return EnchantmentTarget.ARMOR;
-    }
-
-    @Override
-    public boolean isTreasure() {
-        return false;
-    }
-
-    @Override
-    public boolean isCursed() {
-        return false;
-    }
-
-    @Override
-    public Set<Enchantment> getIndirectConflicts() {
-        return Set.of(PROTECTION_ENVIRONMENTAL);
     }
 }

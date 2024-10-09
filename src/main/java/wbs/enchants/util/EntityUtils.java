@@ -1,5 +1,7 @@
 package wbs.enchants.util;
 
+import org.bukkit.Bukkit;
+import org.bukkit.NamespacedKey;
 import org.bukkit.Tag;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.LivingEntity;
@@ -14,6 +16,9 @@ import wbs.utils.util.entities.WbsEntityUtil;
 import java.util.HashMap;
 
 public class EntityUtils {
+
+    public static Tag<EntityType> UNDEAD = Bukkit.getTag("entity_types", NamespacedKey.minecraft("undead"), EntityType.class);
+
     public static boolean willCrit(LivingEntity entity) {
         return entity.getFallDistance() > 0 &&
                 !entity.hasPotionEffect(PotionEffectType.BLINDNESS) &&
@@ -32,7 +37,7 @@ public class EntityUtils {
 
     public static boolean isHotVulnerable(EntityType type) {
         return switch(type) {
-            case SNOWMAN, STRAY, POLAR_BEAR -> true;
+            case SNOW_GOLEM, STRAY, POLAR_BEAR -> true;
             default -> false;
         };
     }

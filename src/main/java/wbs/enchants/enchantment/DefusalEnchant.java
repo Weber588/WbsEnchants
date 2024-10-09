@@ -1,10 +1,8 @@
 package wbs.enchants.enchantment;
 
-import me.sciguymjm.uberenchant.api.utils.Rarity;
+import io.papermc.paper.registry.keys.tags.ItemTypeTagKeys;
 import org.bukkit.Particle;
 import org.bukkit.Sound;
-import org.bukkit.enchantments.Enchantment;
-import org.bukkit.enchantments.EnchantmentTarget;
 import org.bukkit.entity.*;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.inventory.EntityEquipment;
@@ -12,13 +10,12 @@ import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import wbs.enchants.WbsEnchantment;
+import wbs.enchants.WbsEnchantsBootstrap;
 import wbs.enchants.enchantment.helper.DamageEnchant;
 import wbs.utils.util.WbsMath;
 import wbs.utils.util.entities.selector.RadiusSelector;
 import wbs.utils.util.particles.NormalParticleEffect;
 import wbs.utils.util.particles.WbsParticleGroup;
-
-import java.util.Set;
 
 public class DefusalEnchant extends WbsEnchantment implements DamageEnchant {
     private static final int DEFAULT_CREEPER_FUSE_TICKS = 30;
@@ -26,51 +23,22 @@ public class DefusalEnchant extends WbsEnchantment implements DamageEnchant {
     private static final WbsParticleGroup EFFECT = new WbsParticleGroup()
             .addEffect(new NormalParticleEffect().setXYZ(0.5).setY(1).setSpeed(0.1).setAmount(3), Particle.CLOUD);
 
+    private static final String DEFAULT_DESCRIPTION = "When hitting a creeper that's preparing to explode, you have a " + CHANCE_PER_LEVEL + "% chance " +
+            "per level to defuse it, instantly restarting its fuse time to zero. After a successful defusal, " +
+            "the creeper's time to explode increases by 100% for each level above level 1.";
+
     public DefusalEnchant() {
-        super("defusal");
+        super("defusal", DEFAULT_DESCRIPTION);
+
+        maxLevel = 3;
+        supportedItems = ItemTypeTagKeys.ENCHANTABLE_WEAPON;
+        exclusiveWith = WbsEnchantsBootstrap.EXCLUSIVE_SET_DEFUSAL;
+        weight = 5;
     }
 
     @Override
-    public @NotNull String getDescription() {
-        return "When hitting a creeper that's preparing to explode, you have a " + CHANCE_PER_LEVEL + "% chance " +
-                "per level to defuse it, instantly restarting its fuse time to zero. After a successful defusal, " +
-                "the creeper's time to explode increases by 100% for each level above level 1.";
-    }
-
-    @Override
-    public String getDisplayName() {
-        return "&7Defusal";
-    }
-
-    @Override
-    public Rarity getRarity() {
-        return Rarity.RARE;
-    }
-
-    @Override
-    public int getMaxLevel() {
-        return 3;
-    }
-
-    @NotNull
-    @Override
-    public EnchantmentTarget getItemTarget() {
-        return EnchantmentTarget.WEAPON;
-    }
-
-    @Override
-    public boolean isTreasure() {
-        return false;
-    }
-
-    @Override
-    public boolean isCursed() {
-        return false;
-    }
-
-    @Override
-    public Set<Enchantment> getDirectConflicts() {
-        return Set.of(KNOCKBACK);
+    public String getDefaultDisplayName() {
+        return "Defusal";
     }
 
     @Override
@@ -89,7 +57,7 @@ public class DefusalEnchant extends WbsEnchantment implements DamageEnchant {
         }
 
         ItemStack item = equipment.getItemInMainHand();
-        if (containsEnchantment(item)) {
+        if (isEnchantmentOn(item)) {
             int level = getLevel(item);
             if (WbsMath.chance(CHANCE_PER_LEVEL * level)) {
                 creeper.setFuseTicks(0);

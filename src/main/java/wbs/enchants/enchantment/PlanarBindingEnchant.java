@@ -1,9 +1,9 @@
 package wbs.enchants.enchantment;
 
-import me.sciguymjm.uberenchant.api.utils.Rarity;
-import org.bukkit.*;
-import org.bukkit.enchantments.Enchantment;
-import org.bukkit.enchantments.EnchantmentTarget;
+import io.papermc.paper.registry.keys.tags.ItemTypeTagKeys;
+import org.bukkit.NamespacedKey;
+import org.bukkit.Particle;
+import org.bukkit.Sound;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
@@ -12,19 +12,14 @@ import org.bukkit.event.EventPriority;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityTeleportEvent;
 import org.bukkit.event.player.PlayerTeleportEvent;
-import org.bukkit.event.world.LootGenerateEvent;
 import org.bukkit.inventory.EntityEquipment;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
-import org.jetbrains.annotations.NotNull;
 import wbs.enchants.WbsEnchantment;
-import wbs.enchants.WbsEnchants;
-import wbs.utils.util.WbsMath;
 import wbs.utils.util.WbsSound;
 import wbs.utils.util.WbsSoundGroup;
 import wbs.utils.util.entities.WbsEntityUtil;
-import wbs.utils.util.particles.NormalParticleEffect;
 import wbs.utils.util.particles.RingParticleEffect;
 import wbs.utils.util.particles.WbsParticleEffect;
 import wbs.utils.util.particles.WbsParticleGroup;
@@ -37,12 +32,12 @@ public class PlanarBindingEnchant extends WbsEnchantment {
 
     public static final String STRING_KEY = "planar_binding";
 
-    public static final NamespacedKey TIME_KEY = new NamespacedKey(WbsEnchants.getInstance(),  STRING_KEY + "/expire_time");
-    public static final NamespacedKey LEVEL_KEY = new NamespacedKey(WbsEnchants.getInstance(), STRING_KEY + "/binding_level");
+    public static final NamespacedKey TIME_KEY = new NamespacedKey("wbsenchants",  STRING_KEY + "/expire_time");
+    public static final NamespacedKey LEVEL_KEY = new NamespacedKey("wbsenchants", STRING_KEY + "/binding_level");
 
     private static final WbsParticleEffect RING_EFFECT = new RingParticleEffect().setRadius(0.75).setAmount(20);
     private static final WbsParticleGroup EFFECT = new WbsParticleGroup()
-            .addEffect(RING_EFFECT, Particle.SPELL_WITCH)
+            .addEffect(RING_EFFECT, Particle.WITCH)
             .addEffect(RING_EFFECT, Particle.REVERSE_PORTAL);
 
     private static final WbsSoundGroup SOUND = new WbsSoundGroup();
@@ -51,8 +46,21 @@ public class PlanarBindingEnchant extends WbsEnchantment {
         SOUND.addSound(new WbsSound(Sound.BLOCK_BEACON_DEACTIVATE, 2f, 0.75f));
     }
 
+    private static final String DEFAULT_DESCRIPTION = "After hitting a mob, it is unable to teleport for " +
+            TIME_PER_LEVEL + " seconds (per level).";
+
     public PlanarBindingEnchant() {
-        super(STRING_KEY);
+        super(STRING_KEY, DEFAULT_DESCRIPTION);
+
+        maxLevel = 3;
+        supportedItems = ItemTypeTagKeys.ENCHANTABLE_WEAPON;
+        weight = 5;
+    }
+
+
+    @Override
+    public String getDefaultDisplayName() {
+        return "Planar Binding";
     }
 
     @EventHandler
@@ -67,7 +75,7 @@ public class PlanarBindingEnchant extends WbsEnchantment {
         }
         ItemStack item = equipment.getItemInMainHand();
 
-        if (containsEnchantment(item)) {
+        if (isEnchantmentOn(item)) {
             PersistentDataContainer dataContainer = event.getEntity().getPersistentDataContainer();
 
             int level = getLevel(item);
@@ -123,60 +131,5 @@ public class PlanarBindingEnchant extends WbsEnchantment {
             }
         }
         return false;
-    }
-
-    @Override
-    public String getDisplayName() {
-        return "&7Planar Binding";
-    }
-
-    @Override
-    public Rarity getRarity() {
-        return Rarity.RARE;
-    }
-
-    @Override
-    public int getMaxLevel() {
-        return 3;
-    }
-
-    @NotNull
-    @Override
-    public EnchantmentTarget getItemTarget() {
-        return EnchantmentTarget.WEAPON;
-    }
-
-    @Override
-    public boolean isTreasure() {
-        return true;
-    }
-
-    @Override
-    public boolean isCursed() {
-        return false;
-    }
-
-    @Override
-    public @NotNull String getDescription() {
-        return "After hitting a mob, it is unable to teleport for " + TIME_PER_LEVEL + " seconds (per level).";
-    }
-
-    @Override
-    public void onLootGenerate(LootGenerateEvent event) {
-        if (WbsMath.chance(10)) {
-            Location location = event.getLootContext().getLocation();
-            World world = location.getWorld();
-            if (world == null) {
-                return;
-            }
-            String lootKey = event.getLootTable().getKey().getKey();
-            if (lootKey.contains("stronghold") || lootKey.contains("end_city")) {
-                for (ItemStack stack : event.getLoot()) {
-                    if (tryAdd(stack, 1)) {
-                        return;
-                    }
-                }
-            }
-        }
     }
 }

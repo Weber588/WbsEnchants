@@ -1,23 +1,23 @@
 package wbs.enchants.enchantment;
 
-import me.sciguymjm.uberenchant.api.utils.Rarity;
+import io.papermc.paper.registry.keys.tags.ItemTypeTagKeys;
+import io.papermc.paper.registry.tag.TagKey;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.enchantments.Enchantment;
-import org.bukkit.enchantments.EnchantmentTarget;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.player.PlayerItemDamageEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
-import org.bukkit.inventory.EntityEquipment;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.Damageable;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.jetbrains.annotations.NotNull;
-import wbs.enchants.EnchantsSettings;
+import wbs.enchants.EnchantManager;
 import wbs.enchants.WbsEnchantment;
 import wbs.enchants.WbsEnchants;
+import wbs.enchants.WbsEnchantsBootstrap;
 
 import java.util.*;
 
@@ -56,17 +56,12 @@ public class ManathirstEnchant extends WbsEnchantment {
                 continue;
             }
 
-            if (!player.isOnline() || player.getTotalExperience() < EnchantsSettings.MANATHIRST.xpPerDura) {
-                continue;
-            }
-
-            EntityEquipment equipment = player.getEquipment();
-            if (equipment == null) {
+            if (!player.isOnline() || player.getTotalExperience() < EnchantManager.MANATHIRST.xpPerDura) {
                 continue;
             }
 
             for (ItemStack item : player.getInventory().getContents()) {
-                if (item != null && EnchantsSettings.MANATHIRST.containsEnchantment(item)) {
+                if (item != null && EnchantManager.MANATHIRST.isEnchantmentOn(item)) {
                     if (!(item.getItemMeta() instanceof Damageable damageable)) {
                         continue;
                     }
@@ -91,74 +86,38 @@ public class ManathirstEnchant extends WbsEnchantment {
             if (damageable.getDamage() > 0) {
                 Player player = toRepair.get(item);
                 damageable.setDamage(damageable.getDamage() - 1);
-                player.setTotalExperience(player.getTotalExperience() - EnchantsSettings.MANATHIRST.xpPerDura);
+                player.setTotalExperience(player.getTotalExperience() - EnchantManager.MANATHIRST.xpPerDura);
 
                 item.setItemMeta(damageable);
             }
         }
     }
 
+    private static final String DEFAULT_DESCRIPTION = "An alternative to mending, items with this enchantment will " +
+            "slowly drain your XP bar to repair itself. Items are repaired slower than mending, " +
+            "but will continuously self-repair so long as you have XP, even if you haven't gained any recently!";
+
     private int xpPerDura = 3;
 
     public ManathirstEnchant() {
-        super("manathirst");
-    }
+        super("manathirst",DEFAULT_DESCRIPTION );
 
-    @EventHandler
-    public void onItemDamage(PlayerItemDamageEvent event) {
-        ItemStack item = event.getItem();
-
-        if (containsEnchantment(item)) {
-            addToRepairTimer(event.getPlayer().getUniqueId());
-        }
-    }
-
-    @EventHandler
-    public void onJoin(PlayerJoinEvent event) {
-        addToRepairTimer(event.getPlayer().getUniqueId());
+        supportedItems = ItemTypeTagKeys.ENCHANTABLE_DURABILITY;
+        exclusiveWith = WbsEnchantsBootstrap.EXCLUSIVE_SET_SELF_REPAIRING;
     }
 
     @Override
-    public @NotNull String getDescription() {
-        return "An alternative to mending, items with this enchantment will slowly drain your XP bar to repair itself. " +
-                "Items are repaired slower than mending, but will continuously self-repair so long as you have " +
-                "XP, even if you haven't gained any recently!";
+    public @NotNull List<TagKey<Enchantment>> addToTags() {
+        LinkedList<TagKey<Enchantment>> tags = new LinkedList<>(super.addToTags());
+
+        tags.add(WbsEnchantsBootstrap.EXCLUSIVE_SET_SELF_REPAIRING);
+
+        return tags;
     }
 
     @Override
-    public String getDisplayName() {
-        return "&7Manathirst";
-    }
-
-    @Override
-    public Rarity getRarity() {
-        return Rarity.RARE;
-    }
-
-    @Override
-    public int getMaxLevel() {
-        return 1;
-    }
-
-    @NotNull
-    @Override
-    public EnchantmentTarget getItemTarget() {
-        return EnchantmentTarget.BREAKABLE;
-    }
-
-    @Override
-    public boolean isTreasure() {
-        return false;
-    }
-
-    @Override
-    public boolean isCursed() {
-        return false;
-    }
-
-    @Override
-    public Set<Enchantment> getIndirectConflicts() {
-        return Set.of(MENDING);
+    public String getDefaultDisplayName() {
+        return "Manathirst";
     }
 
     @Override
@@ -173,5 +132,19 @@ public class ManathirstEnchant extends WbsEnchantment {
         ConfigurationSection section = super.buildConfigurationSection(baseFile);
         section.set("xp-per-durability", xpPerDura);
         return section;
+    }
+
+    @EventHandler
+    public void onItemDamage(PlayerItemDamageEvent event) {
+        ItemStack item = event.getItem();
+
+        if (isEnchantmentOn(item)) {
+            addToRepairTimer(event.getPlayer().getUniqueId());
+        }
+    }
+
+    @EventHandler
+    public void onJoin(PlayerJoinEvent event) {
+        addToRepairTimer(event.getPlayer().getUniqueId());
     }
 }

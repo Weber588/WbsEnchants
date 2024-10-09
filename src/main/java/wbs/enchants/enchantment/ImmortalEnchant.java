@@ -1,12 +1,11 @@
 package wbs.enchants.enchantment;
 
-import me.sciguymjm.uberenchant.api.utils.Rarity;
+import io.papermc.paper.registry.keys.tags.ItemTypeTagKeys;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import org.bukkit.Tag;
 import org.bukkit.block.Block;
 import org.bukkit.enchantments.Enchantment;
-import org.bukkit.enchantments.EnchantmentTarget;
 import org.bukkit.entity.Item;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
@@ -39,17 +38,29 @@ import wbs.utils.util.WbsEnums;
 import wbs.utils.util.string.WbsStringify;
 
 import java.time.Duration;
-import java.util.HashMap;
 import java.util.Objects;
 
 public class ImmortalEnchant extends WbsEnchantment {
-    private static final NamespacedKey TRUE_AGE_KEY = new NamespacedKey(WbsEnchants.getInstance(), "true_age");
+    private static final NamespacedKey TRUE_AGE_KEY = new NamespacedKey("wbsenchants", "true_age");
 
     private static final int ITEM_DESPAWN_AGE = 60 * 60 * 20;
     private static final int PICKUP_DELAY = 5 * 20;
 
+    private static final String DEFAULT_DESCRIPTION = "Instead of breaking, items with this enchantment will " +
+            "simply stop working, or unequip itself. When dropped, the item takes " +
+            WbsStringify.toString(Duration.ofSeconds(ITEM_DESPAWN_AGE / 20), true) +
+            " to despawn, and cannot be destroyed except for the void.";
+
     public ImmortalEnchant() {
-        super("immortal");
+        super("immortal", DEFAULT_DESCRIPTION);
+
+        supportedItems = ItemTypeTagKeys.ENCHANTABLE_DURABILITY;
+        weight = 1;
+    }
+
+    @Override
+    public String getDefaultDisplayName() {
+        return "Immortal";
     }
 
     // region Item damage/break
@@ -61,7 +72,7 @@ public class ImmortalEnchant extends WbsEnchantment {
     public void onItemDamage(PlayerItemDamageEvent event) {
         ItemStack item = event.getItem();
 
-        if (containsEnchantment(item)) {
+        if (isEnchantmentOn(item)) {
             if (!willBreak(item, event.getDamage())) {
                 return;
             }
@@ -78,7 +89,7 @@ public class ImmortalEnchant extends WbsEnchantment {
     public void onItemBreak(PlayerItemBreakEvent event) {
         ItemStack item = event.getBrokenItem();
 
-        if (containsEnchantment(item)) {
+        if (isEnchantmentOn(item)) {
             // Something went wrong with our other event! Log this and return the item as a failsafe
             WbsEnchants.getInstance().getLogger().warning("Immortal enchant failed to prevent an item break!");
             WbsEnchants.getInstance().getLogger().warning("The item should have been returned to the player," +
@@ -128,7 +139,7 @@ public class ImmortalEnchant extends WbsEnchantment {
         }
 
         sendActionBar("Your " + displayName + " was saved by its "
-                + getDisplayName() + "&r enchantment!", player);
+                + getDefaultDisplayName() + "&r enchantment!", player);
     }
 
     // endregion
@@ -140,11 +151,13 @@ public class ImmortalEnchant extends WbsEnchantment {
         Player player = event.getPlayer();
         ItemStack item = player.getInventory().getItemInMainHand();
 
-        if (!Tag.ITEMS_TOOLS.isTagged(item.getType())) {
+        ItemMeta meta = item.getItemMeta();
+
+        if (meta == null || meta.getTool().getRules().isEmpty()) {
             return;
         }
 
-        if (containsEnchantment(item)) {
+        if (isEnchantmentOn(item)) {
             if (willBreak(item, 1)) {
                 event.setCancelled(true);
                 notifyImmortal(player, item);
@@ -168,7 +181,7 @@ public class ImmortalEnchant extends WbsEnchantment {
         int durabilityToTake = (int) Math.max(1, Math.floor(event.getDamage() / 4));
 
         for (ItemStack armourItem : equipment.getArmorContents()) {
-            if (armourItem != null && containsEnchantment(armourItem)) {
+            if (armourItem != null && isEnchantmentOn(armourItem)) {
                 if (willBreak(armourItem, durabilityToTake)) {
                     notifyImmortal(player, armourItem);
                     unequip(player, armourItem);
@@ -193,7 +206,7 @@ public class ImmortalEnchant extends WbsEnchantment {
             }
         }
 
-        if (containsEnchantment(item)) {
+        if (isEnchantmentOn(item)) {
             if (willBreak(item, 1)) {
                 notifyImmortal(player, item);
                 event.setCancelled(true);
@@ -216,7 +229,7 @@ public class ImmortalEnchant extends WbsEnchantment {
             return;
         }
 
-        if (containsEnchantment(item)) {
+        if (isEnchantmentOn(item)) {
             if (!willBreak(item, 1)) {
                 return;
             }
@@ -246,7 +259,7 @@ public class ImmortalEnchant extends WbsEnchantment {
             return;
         }
 
-        if (containsEnchantment(item)) {
+        if (isEnchantmentOn(item)) {
             if (willBreak(item, 1)) {
                 event.setCancelled(true);
                 if (event.getEntity() instanceof Player player) {
@@ -268,7 +281,7 @@ public class ImmortalEnchant extends WbsEnchantment {
         }
 
         ItemStack held = equipment.getItemInMainHand();
-        if (containsEnchantment(held)) {
+        if (isEnchantmentOn(held) && willBreak(held, 1)) {
             event.setCancelled(true);
             if (damager instanceof Player player) {
                 notifyImmortal(player, held);
@@ -281,10 +294,10 @@ public class ImmortalEnchant extends WbsEnchantment {
                 continue;
             }
 
-            if (containsEnchantment(stack)) {
+            if (isEnchantmentOn(stack) && willBreak(held, 1)) {
                 ItemMeta meta = stack.getItemMeta();
                 Objects.requireNonNull(meta);
-                if (meta.hasEnchant(THORNS)) {
+                if (meta.hasEnchant(Enchantment.THORNS)) {
                     event.setCancelled(true);
                     if (damager instanceof Player player) {
                         notifyImmortal(player, held);
@@ -304,7 +317,7 @@ public class ImmortalEnchant extends WbsEnchantment {
         Item itemEntity = event.getEntity();
         ItemStack item = itemEntity.getItemStack();
 
-        if (containsEnchantment(item)) {
+        if (isEnchantmentOn(item)) {
             PersistentDataContainer container = itemEntity.getPersistentDataContainer();
             Integer trueAge = container.get(TRUE_AGE_KEY, PersistentDataType.INTEGER);
             if (trueAge == null) {
@@ -328,7 +341,7 @@ public class ImmortalEnchant extends WbsEnchantment {
             return;
         }
 
-        if (containsEnchantment(itemEntity.getItemStack())) {
+        if (isEnchantmentOn(itemEntity.getItemStack())) {
             if (!DamageUtils.isUnstoppable(event.getCause())) {
                 event.setCancelled(true);
             }
@@ -336,43 +349,4 @@ public class ImmortalEnchant extends WbsEnchantment {
     }
 
     // endregion
-
-    @Override
-    public @NotNull String getDescription() {
-        return "Instead of breaking, items with this enchantment will simply stop working, or unequip itself. " +
-                "When dropped, the item takes " +
-                WbsStringify.toString(Duration.ofSeconds(ITEM_DESPAWN_AGE / 20), true) +
-                " to despawn, and cannot be destroyed except for the void.";
-    }
-
-    @Override
-    public String getDisplayName() {
-        return "&7Immortal";
-    }
-
-    @Override
-    public Rarity getRarity() {
-        return Rarity.VERY_RARE;
-    }
-
-    @Override
-    public int getMaxLevel() {
-        return 1;
-    }
-
-    @NotNull
-    @Override
-    public EnchantmentTarget getItemTarget() {
-        return EnchantmentTarget.BREAKABLE;
-    }
-
-    @Override
-    public boolean isTreasure() {
-        return false;
-    }
-
-    @Override
-    public boolean isCursed() {
-        return false;
-    }
 }

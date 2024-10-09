@@ -1,37 +1,43 @@
 package wbs.enchants.enchantment;
 
-import me.sciguymjm.uberenchant.api.utils.Rarity;
+import io.papermc.paper.registry.keys.tags.ItemTypeTagKeys;
 import org.bukkit.Material;
-import org.bukkit.enchantments.Enchantment;
-import org.bukkit.enchantments.EnchantmentTarget;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Projectile;
-import org.bukkit.event.EventHandler;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
-import org.bukkit.inventory.*;
+import org.bukkit.inventory.EntityEquipment;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.PlayerInventory;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import wbs.enchants.WbsEnchantment;
-import wbs.enchants.WbsEnchants;
 import wbs.enchants.enchantment.helper.DamageEnchant;
 import wbs.enchants.util.EntityUtils;
 import wbs.utils.util.WbsMath;
 
 import java.util.Random;
-import java.util.Set;
 
 public class DisarmingEnchant extends WbsEnchantment implements DamageEnchant {
+    private static final int CHANCE_PER_LEVEL = 10;
+    private static final String DEFAULT_DESCRIPTION = "When you critically hit a mob, you have a " + CHANCE_PER_LEVEL +
+            "% chance of disarming it (per level). Disarming a non-player will force it to drop the item it's holding, " +
+            "and disarming a player will slightly rearrange their hotbar to force them to reselect their weapon.";
+
     private static final Random RANDOM = new Random(System.currentTimeMillis());
 
     public DisarmingEnchant() {
-        super("disarming");
+        super("disarming", DEFAULT_DESCRIPTION);
+
+        maxLevel = 3;
+        supportedItems = ItemTypeTagKeys.ENCHANTABLE_WEAPON;
+        weight = 10;
     }
 
-    @EventHandler
-    public void catchEvent(EntityDamageByEntityEvent event) {
-        onDamage(event);
+    @Override
+    public String getDefaultDisplayName() {
+        return "Disarming";
     }
 
     @Override
@@ -45,13 +51,10 @@ public class DisarmingEnchant extends WbsEnchantment implements DamageEnchant {
         }
 
         EntityEquipment equipment = attacker.getEquipment();
-        if (equipment == null) {
-            return;
-        }
 
         ItemStack item = equipment.getItemInMainHand();
-        if (containsEnchantment(item)) {
-            if (!WbsMath.chance(getLevel(item) * 10)) {
+        if (isEnchantmentOn(item)) {
+            if (!WbsMath.chance(getLevel(item) * CHANCE_PER_LEVEL)) {
                 return;
             }
 
@@ -91,48 +94,5 @@ public class DisarmingEnchant extends WbsEnchantment implements DamageEnchant {
                 }
             }
         }
-    }
-
-    @Override
-    public String getDisplayName() {
-        return "&7Disarming";
-    }
-
-    @Override
-    public Rarity getRarity() {
-        return Rarity.UNCOMMON;
-    }
-
-    @Override
-    public int getMaxLevel() {
-        return 3;
-    }
-
-    @NotNull
-    @Override
-    public EnchantmentTarget getItemTarget() {
-        return EnchantmentTarget.WEAPON;
-    }
-
-    @Override
-    public boolean isTreasure() {
-        return false;
-    }
-
-    @Override
-    public boolean isCursed() {
-        return false;
-    }
-
-    @Override
-    public Set<Enchantment> getDirectConflicts() {
-        return Set.of(KNOCKBACK);
-    }
-
-    @Override
-    public @NotNull String getDescription() {
-        return "When you critically hit a mob, you have a 10% chance of disarming it (per level). " +
-                "Disarming a non-player will force it to drop the item it's holding, and disarming a player " +
-                "will slightly rearrange their hotbar to force them to reselect their weapon.";
     }
 }

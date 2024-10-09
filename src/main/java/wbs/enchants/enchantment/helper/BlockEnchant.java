@@ -20,7 +20,7 @@ import wbs.enchants.util.EventUtils;
 import java.util.List;
 
 public interface BlockEnchant extends EnchantInterface, AutoRegistrableEnchant {
-    NamespacedKey BLOCK_ENCHANTS_KEY = new NamespacedKey(WbsEnchants.getInstance(), "block_enchants");
+    NamespacedKey BLOCK_ENCHANTS_KEY = new NamespacedKey("wbsenchants", "block_enchants");
 
     static NamespacedKey getBlockKey(Block block) {
         // Don't need to track world; this tag will be stored on a chunk
@@ -70,9 +70,6 @@ public interface BlockEnchant extends EnchantInterface, AutoRegistrableEnchant {
     default void onPlace(BlockPlaceEvent event) {
         Player player = event.getPlayer();
         EntityEquipment equipment = player.getEquipment();
-        if (equipment == null) {
-            return;
-        }
 
         Block block = event.getBlock();
         if (!canEnchant(block)) {
@@ -83,7 +80,7 @@ public interface BlockEnchant extends EnchantInterface, AutoRegistrableEnchant {
         NamespacedKey key = enchant.getKey();
 
         ItemStack placedItem = equipment.getItem(event.getHand());
-        if (enchant.containsEnchantment(placedItem)) {
+        if (enchant.isEnchantmentOn(placedItem)) {
             int level = enchant.getLevel(placedItem);
 
             PersistentDataContainer blockContainer = getBlockContainer(block);

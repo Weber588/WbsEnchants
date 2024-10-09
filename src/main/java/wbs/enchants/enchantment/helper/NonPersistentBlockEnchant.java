@@ -8,7 +8,7 @@ import org.bukkit.inventory.ItemStack;
 import wbs.enchants.WbsEnchantment;
 import wbs.enchants.util.EventUtils;
 
-public interface NonPersistentBlockEnchant extends EnchantInterface {
+public interface NonPersistentBlockEnchant extends EnchantInterface, AutoRegistrableEnchant {
     default void registerNonPersistentBlockEvents() {
         EventUtils.register(BlockPlaceEvent.class, this::onPlace);
     }
@@ -18,9 +18,6 @@ public interface NonPersistentBlockEnchant extends EnchantInterface {
 
         Player player = event.getPlayer();
         EntityEquipment equipment = player.getEquipment();
-        if (equipment == null) {
-            return;
-        }
 
         if (!canEnchant(block)) {
             return;
@@ -29,7 +26,7 @@ public interface NonPersistentBlockEnchant extends EnchantInterface {
         WbsEnchantment enchant = getThisEnchantment();
 
         ItemStack placedItem = equipment.getItem(event.getHand());
-        if (enchant.containsEnchantment(placedItem)) {
+        if (enchant.isEnchantmentOn(placedItem)) {
             onPlace(event, placedItem);
         }
     }

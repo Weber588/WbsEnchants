@@ -1,18 +1,17 @@
 package wbs.enchants.enchantment;
 
-import me.sciguymjm.uberenchant.api.utils.Rarity;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
-import org.bukkit.enchantments.EnchantmentTarget;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
-import org.jetbrains.annotations.NotNull;
+import org.bukkit.inventory.meta.ItemMeta;
 import wbs.enchants.WbsEnchantment;
+import wbs.enchants.WbsEnchantsBootstrap;
 import wbs.enchants.enchantment.helper.BlockEnchant;
 import wbs.enchants.util.EntityUtils;
 
@@ -21,14 +20,29 @@ import java.util.Map;
 import java.util.Objects;
 
 public class HandheldEnchant extends WbsEnchantment implements BlockEnchant {
+    private static final String DEFAULT_DESCRIPTION = "An enchantment for a variety of utility blocks that allow " +
+            "them to be used directly from your hand, no placing required!";
 
     // Making this public so other enchants/plugins can theoretically add their own functionality if needed
     public final Map<Material, RightClickFunction> functionalities = new HashMap<>();
 
     public HandheldEnchant() {
-        super("handheld");
+        super("handheld", DEFAULT_DESCRIPTION);
+
+        supportedItems = WbsEnchantsBootstrap.ENCHANTABLE_HANDHELD;
 
         loadFunctionalities();
+    }
+
+    @Override
+    public String getDefaultDisplayName() {
+        return "Handheld";
+    }
+
+    // TODO: Base this on supportedItems tag but for blocks?... How does that work with blocktype vs itemtype?
+    @Override
+    public boolean canEnchant(Block block) {
+        return functionalities.containsKey(block.getType());
     }
 
     private void loadFunctionalities() {
@@ -74,56 +88,8 @@ public class HandheldEnchant extends WbsEnchantment implements BlockEnchant {
         }
     }
 
-    @Override
-    public @NotNull String getDescription() {
-        return "An enchantment for a variety of utility blocks that allow them to be used directly from your hand, " +
-                "no placing required!";
-    }
-
-    @Override
-    public String getDisplayName() {
-        return "&7Handheld";
-    }
-
-    @Override
-    public Rarity getRarity() {
-        return Rarity.COMMON;
-    }
-
-    @Override
-    public int getMaxLevel() {
-        return 1;
-    }
-
-    @NotNull
-    @Override
-    public EnchantmentTarget getItemTarget() {
-        //noinspection deprecation
-        return EnchantmentTarget.ALL;
-    }
-
-    @Override
-    public boolean isTreasure() {
-        return false;
-    }
-
-    @Override
-    public boolean isCursed() {
-        return false;
-    }
-
-    @Override
-    public boolean canEnchant(Block block) {
-        return functionalities.containsKey(block.getType());
-    }
-
-    @Override
-    public boolean canEnchantItem(@NotNull ItemStack itemStack) {
-        return functionalities.containsKey(itemStack.getType());
-    }
-
     @FunctionalInterface
-    private interface RightClickFunction {
+    public interface RightClickFunction {
         void onRightClick(PlayerInteractEvent event, Player player, ItemStack item);
     }
 
@@ -133,13 +99,15 @@ public class HandheldEnchant extends WbsEnchantment implements BlockEnchant {
 
         @Override
         default void onRightClick(PlayerInteractEvent event, Player player, ItemStack item) {
+            ItemMeta meta = item.getItemMeta();
             player.openInventory(
                     Bukkit.createInventory(
                             player,
                             getInventoryType(),
-                            Objects.requireNonNull(
-                                    item.getItemMeta()
-                            ).getDisplayName()
+                            Objects.requireNonNullElse(
+                                    meta.displayName(),
+                                    meta.itemName()
+                            )
                     )
             );
         }

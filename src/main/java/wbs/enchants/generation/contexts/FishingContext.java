@@ -1,16 +1,15 @@
 package wbs.enchants.generation.contexts;
 
-import me.sciguymjm.uberenchant.api.UberEnchantment;
+import io.papermc.paper.registry.RegistryAccess;
+import io.papermc.paper.registry.RegistryKey;
+import io.papermc.paper.registry.keys.tags.EnchantmentTagKeys;
 import org.bukkit.configuration.ConfigurationSection;
-import org.bukkit.entity.FishHook;
 import org.bukkit.entity.Item;
-import org.bukkit.entity.Piglin;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.player.PlayerFishEvent;
 import wbs.enchants.WbsEnchantment;
 import wbs.enchants.util.EnchantUtils;
-import wbs.utils.util.entities.selector.RadiusSelector;
 
 import java.util.List;
 
@@ -23,7 +22,12 @@ public class FishingContext extends ExistingLootContext {
 
     @Override
     protected int getDefaultChance() {
-        return (int) (100.0 / (EnchantUtils.getAllEnchants().size() - 2));
+        int numOfCurses = RegistryAccess.registryAccess()
+                .getRegistry(RegistryKey.ENCHANTMENT)
+                .getTag(EnchantmentTagKeys.CURSE)
+                .size();
+
+        return (int) (100.0 / (EnchantUtils.getAllEnchants().size() - numOfCurses));
     }
 
     @EventHandler

@@ -1,8 +1,6 @@
 package wbs.enchants.enchantment;
 
-import me.sciguymjm.uberenchant.api.utils.Rarity;
-import org.bukkit.enchantments.Enchantment;
-import org.bukkit.enchantments.EnchantmentTarget;
+import io.papermc.paper.registry.keys.tags.ItemTypeTagKeys;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Projectile;
@@ -18,14 +16,21 @@ import wbs.enchants.WbsEnchantment;
 import wbs.enchants.enchantment.helper.DamageEnchant;
 
 public class PinpointEnchant extends WbsEnchantment implements DamageEnchant {
+    private static final String DEFAULT_DESCRIPTION = "Arrows like needles mean the damage is highly localised, " +
+            "making it possible to hit the same entity with multiple arrows in quick succession, " +
+            "or even at the same time.";
+
     public PinpointEnchant() {
-        super("pinpoint");
+        super("pinpoint", DEFAULT_DESCRIPTION);
+
+        supportedItems = ItemTypeTagKeys.ENCHANTABLE_BOW;
+
+        weight = 5;
     }
 
     @Override
-    public @NotNull String getDescription() {
-        return "Arrows like needles mean the damage is highly localised, making it possible to hit the same entity " +
-                "with multiple arrows in quick succession, or even at the same time.";
+    public String getDefaultDisplayName() {
+        return "&7Pinpoint";
     }
 
     @Override
@@ -62,41 +67,10 @@ public class PinpointEnchant extends WbsEnchantment implements DamageEnchant {
             }
         }
 
-        if (containsEnchantment(item)) {
+        if (isEnchantmentOn(item)) {
             PersistentDataContainer container = projectile.getPersistentDataContainer();
 
             container.set(getKey(), PersistentDataType.BOOLEAN, true);
         }
-    }
-
-    @Override
-    public String getDisplayName() {
-        return "&7Pinpoint";
-    }
-
-    @Override
-    public Rarity getRarity() {
-        return null;
-    }
-
-    @Override
-    public int getMaxLevel() {
-        return 0;
-    }
-
-    @NotNull
-    @Override
-    public EnchantmentTarget getItemTarget() {
-        return EnchantmentTarget.BOW;
-    }
-
-    @Override
-    public boolean isTreasure() {
-        return false;
-    }
-
-    @Override
-    public boolean isCursed() {
-        return false;
     }
 }

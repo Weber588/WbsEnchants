@@ -1,26 +1,33 @@
 package wbs.enchants.enchantment;
 
-import me.sciguymjm.uberenchant.api.utils.Rarity;
-import org.bukkit.Location;
-import org.bukkit.World;
-import org.bukkit.enchantments.Enchantment;
-import org.bukkit.enchantments.EnchantmentTarget;
+import io.papermc.paper.registry.keys.tags.ItemTypeTagKeys;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.entity.EntityDamageEvent;
-import org.bukkit.event.world.LootGenerateEvent;
 import org.bukkit.inventory.EntityEquipment;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
-import org.jetbrains.annotations.NotNull;
 import wbs.enchants.WbsEnchantment;
 import wbs.enchants.util.DamageUtils;
-import wbs.utils.util.WbsMath;
 
 public class HellborneEnchant extends WbsEnchantment {
+    private static final String DEFAULT_DESCRIPTION = "You have strength and immunity to fire tick damage, " +
+            "with strength level relating to the level of the enchantment while you're on fire.";
+
     public HellborneEnchant() {
-        super("hellborne");
+        super("hellborne", DEFAULT_DESCRIPTION);
+
+        maxLevel = 2;
+        supportedItems = ItemTypeTagKeys.ENCHANTABLE_CHEST_ARMOR;
+        weight = 1;
+
+        targetDescription = "Chestplate";
+    }
+
+    @Override
+    public String getDefaultDisplayName() {
+        return "Hellborne";
     }
 
     @EventHandler
@@ -40,7 +47,7 @@ public class HellborneEnchant extends WbsEnchantment {
 
         ItemStack chestItem = equipment.getChestplate();
 
-        if (chestItem != null && containsEnchantment(chestItem)) {
+        if (chestItem != null && isEnchantmentOn(chestItem)) {
             int ticks = Math.max(20, living.getFireTicks());
 
             if (event.getCause() == EntityDamageEvent.DamageCause.FIRE_TICK) {
@@ -48,68 +55,8 @@ public class HellborneEnchant extends WbsEnchantment {
             }
 
             int level = getLevel(chestItem);
-            PotionEffect strengthEffect = new PotionEffect(PotionEffectType.INCREASE_DAMAGE, ticks, level - 1);
+            PotionEffect strengthEffect = new PotionEffect(PotionEffectType.STRENGTH, ticks, level - 1);
             living.addPotionEffect(strengthEffect);
-        }
-    }
-
-    @Override
-    public String getDisplayName() {
-        return "&7Hellborne";
-    }
-
-    @Override
-    public Rarity getRarity() {
-        return Rarity.VERY_RARE;
-    }
-
-    @Override
-    public int getMaxLevel() {
-        return 2;
-    }
-
-    @NotNull
-    @Override
-    public EnchantmentTarget getItemTarget() {
-        return EnchantmentTarget.ARMOR_TORSO;
-    }
-
-    @Override
-    public boolean isTreasure() {
-        return true;
-    }
-
-    @Override
-    public boolean isCursed() {
-        return false;
-    }
-
-    @Override
-    public @NotNull String getDescription() {
-        return "You have strength and immunity to fire tick damage, with strength level relating to the " +
-                "level of the enchantment while you're on fire.";
-    }
-
-    @Override
-    public @NotNull String getTargetDescription() {
-        return "Chestplate";
-    }
-
-    @Override
-    public void onLootGenerate(LootGenerateEvent event) {
-        if (WbsMath.chance(10)) {
-            Location location = event.getLootContext().getLocation();
-            World world = location.getWorld();
-            if (world == null) {
-                return;
-            }
-            if (world.getEnvironment() == World.Environment.NETHER) {
-                for (ItemStack stack : event.getLoot()) {
-                    if (tryAdd(stack, 1)) {
-                        return;
-                    }
-                }
-            }
         }
     }
 }
