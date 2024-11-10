@@ -29,7 +29,7 @@ import java.util.function.Supplier;
 @SuppressWarnings({"UnstableApiUsage", "unused"})
 public class WbsEnchantsBootstrap implements PluginBootstrap {
     public static final String NAMESPACE = "wbsenchants";
-    private static NamespacedKey createKey(String value) {
+    public static NamespacedKey createKey(String value) {
         return new NamespacedKey(NAMESPACE, value);
     }
     

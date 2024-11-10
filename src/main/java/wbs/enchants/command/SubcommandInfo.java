@@ -3,6 +3,9 @@ package wbs.enchants.command;
 import com.mojang.brigadier.Command;
 import com.mojang.brigadier.context.CommandContext;
 import io.papermc.paper.command.brigadier.CommandSourceStack;
+import net.kyori.adventure.text.serializer.gson.GsonComponentSerializer;
+import net.md_5.bungee.api.chat.TextComponent;
+import net.md_5.bungee.chat.ComponentSerializer;
 import org.bukkit.command.CommandSender;
 import org.bukkit.enchantments.Enchantment;
 import org.jetbrains.annotations.NotNull;
@@ -62,11 +65,10 @@ public class SubcommandInfo extends EnchantmentSubcommand {
 
             for (Enchantment conflict : conflicts) {
                 messageBuilder.append("\n    &h- ");
-
-                // Go with 5, known to be always " V" so we can just scrub it
-                String displayName = conflict.displayName(5).toString();
-                displayName = displayName.substring(0, displayName.length() - 2);
-                messageBuilder.append("&7" + displayName);
+                // Convert from adventure text component to bungeecord component -- need to update WbsPlugin at some
+                // point to support both. This works because both systems serialize to Mojang style
+                String displayAsJSON = GsonComponentSerializer.gson().serializer().toJson(conflict.displayName(1));
+                messageBuilder.append((TextComponent) ComponentSerializer.deserialize(displayAsJSON));
             }
 
             messageBuilder.build().send(sender);

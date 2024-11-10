@@ -56,6 +56,8 @@ public class EnchantManager {
     public static final HandheldEnchant HANDHELD = new HandheldEnchant();
     public static final HogsbaneEnchant HOGSBANE = new HogsbaneEnchant();
     public static final ButcheringEnchant BUTCHERING = new ButcheringEnchant();
+    public static final SoulTouchEnchant SOUL_TOUCH = new SoulTouchEnchant();
+    public static final SoulstealingEnchant SOULSTEALING = new SoulstealingEnchant();
 
     public static final CurseRebuking CURSE_REBUKING = new CurseRebuking();
     public static final CurseVanilla CURSE_VANILLA = new CurseVanilla();
