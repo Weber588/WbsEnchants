@@ -26,10 +26,7 @@ import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.plugin.PluginManager;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import wbs.enchants.enchantment.helper.BlockEnchant;
-import wbs.enchants.enchantment.helper.DamageEnchant;
-import wbs.enchants.enchantment.helper.NonPersistentBlockEnchant;
-import wbs.enchants.enchantment.helper.VehicleEnchant;
+import wbs.enchants.enchantment.helper.*;
 import wbs.enchants.generation.ContextManager;
 import wbs.enchants.generation.GenerationContext;
 import wbs.enchants.util.EnchantUtils;
@@ -249,6 +246,7 @@ public abstract class WbsEnchantment implements Comparable<WbsEnchantment>, Keye
 
         // These (and similar) can theoretically be called from the implementer itself, but this makes it harder to
         // accidentally forget it.
+        // TODO: Create a registry of auto registration that can be iterated over instead of hardcoding into this class
         if (this instanceof DamageEnchant damageEnchant) {
             if (damageEnchant.autoRegister()) {
                 damageEnchant.registerDamageEvent();
@@ -267,6 +265,11 @@ public abstract class WbsEnchantment implements Comparable<WbsEnchantment>, Keye
         if (this instanceof NonPersistentBlockEnchant npBlockEnchant) {
             if (npBlockEnchant.autoRegister()) {
                 npBlockEnchant.registerNonPersistentBlockEvents();
+            }
+        }
+        if (this instanceof ProjectileEnchant projectileEnchant) {
+            if (projectileEnchant.autoRegister()) {
+                projectileEnchant.registerProjectileEvents();
             }
         }
     }

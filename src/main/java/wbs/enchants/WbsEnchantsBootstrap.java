@@ -29,6 +29,7 @@ import java.util.function.Supplier;
 @SuppressWarnings({"UnstableApiUsage", "unused"})
 public class WbsEnchantsBootstrap implements PluginBootstrap {
     public static final String NAMESPACE = "wbsenchants";
+
     public static NamespacedKey createKey(String value) {
         return new NamespacedKey(NAMESPACE, value);
     }
@@ -48,6 +49,7 @@ public class WbsEnchantsBootstrap implements PluginBootstrap {
     public static final TagKey<ItemType> ELYTRA = ItemTypeTagKeys.create(createKey("enchantable/elytra"));
     public static final TagKey<ItemType> BUCKET = ItemTypeTagKeys.create(createKey("enchantable/bucket"));
     public static final TagKey<ItemType> SHIELD = ItemTypeTagKeys.create(createKey("enchantable/shield"));
+    public static final TagKey<ItemType> ENCHANTABLE_PROJECTILE_WEAPON = ItemTypeTagKeys.create(createKey("enchantable/projectile_weapon"));
 
     // TODO: Put this somewhere proper (config?)
     private static Set<CustomTag<ItemType>> getItemTags() {
@@ -97,6 +99,10 @@ public class WbsEnchantsBootstrap implements PluginBootstrap {
                 ),
                 new CustomTag<>(SHIELD,
                         ItemType.SHIELD
+                ),
+                new CustomTag<>(ENCHANTABLE_PROJECTILE_WEAPON,
+                        ItemType.BOW,
+                        ItemType.CROSSBOW
                 )
         );
     }
