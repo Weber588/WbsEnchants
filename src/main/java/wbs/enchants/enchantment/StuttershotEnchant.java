@@ -1,12 +1,10 @@
 package wbs.enchants.enchantment;
 
 import org.bukkit.Location;
-import org.bukkit.block.Block;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Projectile;
 import org.bukkit.event.entity.ProjectileHitEvent;
 import org.bukkit.event.entity.ProjectileLaunchEvent;
-import org.bukkit.projectiles.ProjectileSource;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.jetbrains.annotations.NotNull;
 import wbs.enchants.WbsEnchantment;
@@ -15,7 +13,7 @@ import wbs.enchants.WbsEnchantsBootstrap;
 import wbs.enchants.enchantment.helper.ProjectileEnchant;
 import wbs.utils.util.WbsMath;
 
-public class StuttershotEnchant extends WbsEnchantment implements ProjectileEnchant {
+public class StuttershotEnchant extends WbsEnchantment implements ProjectileEnchant<Projectile> {
     private static final double CHANCE_PER_LEVEL = 10;
 
     private static final String DESCRIPTION = "A ranged weapon enchantment that gives a " + CHANCE_PER_LEVEL + "% " +
@@ -31,6 +29,11 @@ public class StuttershotEnchant extends WbsEnchantment implements ProjectileEnch
     @Override
     public String getDefaultDisplayName() {
         return "Stuttershot";
+    }
+
+    @Override
+    public Class<Projectile> getProjectileClass() {
+        return Projectile.class;
     }
 
     @Override

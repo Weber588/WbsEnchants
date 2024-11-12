@@ -18,7 +18,7 @@ import wbs.enchants.util.EventUtils;
 
 import java.util.Objects;
 
-public interface ProjectileEnchant extends BlockEnchant {
+public interface ProjectileEnchant<T extends Projectile> extends BlockEnchant {
 
     default void registerProjectileEvents() {
         EventUtils.register(ProjectileLaunchEvent.class, this::onShoot, EventPriority.NORMAL, true);
@@ -66,8 +66,22 @@ public interface ProjectileEnchant extends BlockEnchant {
         return level;
     }
 
+    @Nullable
+    default T castIfSubtype(Projectile projectile) {
+        Class<T> projectileClass = getProjectileClass();
+
+        if (projectileClass.isInstance(projectile)) {
+            return projectileClass.cast(projectile);
+        }
+        return null;
+    }
+
     default void onHit(ProjectileHitEvent event) {
-        Projectile projectile = event.getEntity();
+        T projectile = castIfSubtype(event.getEntity());
+
+        if (projectile == null) {
+            return;
+        }
 
         WrappedProjectileSource source = getSource(projectile);
         Integer level = getLevel(source);
@@ -80,7 +94,11 @@ public interface ProjectileEnchant extends BlockEnchant {
     }
 
     default void onShoot(ProjectileLaunchEvent event) {
-        Projectile projectile = event.getEntity();
+        T projectile = castIfSubtype(event.getEntity());
+
+        if (projectile == null) {
+            return;
+        }
 
         WrappedProjectileSource source = getSource(projectile);
         Integer level = getLevel(source);
@@ -92,8 +110,9 @@ public interface ProjectileEnchant extends BlockEnchant {
         onShoot(event, projectile, source, level);
     }
 
-    void onShoot(ProjectileLaunchEvent event, Projectile projectile, @NotNull WrappedProjectileSource source, int level);
-    void onHit(ProjectileHitEvent event, Projectile projectile, @NotNull WrappedProjectileSource source, int level);
+    Class<T> getProjectileClass();
+    void onShoot(ProjectileLaunchEvent event, T projectile, @NotNull WrappedProjectileSource source, int level);
+    void onHit(ProjectileHitEvent event, T projectile, @NotNull WrappedProjectileSource source, int level);
 
     record WrappedProjectileSource(@Nullable LivingEntity livingShooter,
                                    @Nullable BlockState blockShooter,
