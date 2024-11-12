@@ -1,5 +1,6 @@
 package wbs.enchants.enchantment.helper;
 
+import org.bukkit.block.Block;
 import org.bukkit.block.BlockState;
 import org.bukkit.entity.AbstractArrow;
 import org.bukkit.entity.LivingEntity;
@@ -97,7 +98,10 @@ public interface ProjectileEnchant extends BlockEnchant {
     record WrappedProjectileSource(@Nullable LivingEntity livingShooter,
                                    @Nullable BlockState blockShooter,
                                    @Nullable ItemStack projectileItem,
-                                   @Nullable ItemStack shootingItem) {
+                                   @Nullable ItemStack shootingItem) {}
 
+    @Override
+    default boolean canEnchant(Block block) {
+        return block.getState() instanceof ProjectileSource;
     }
 }

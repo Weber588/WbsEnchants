@@ -34,11 +34,6 @@ public class StuttershotEnchant extends WbsEnchantment implements ProjectileEnch
     }
 
     @Override
-    public boolean canEnchant(Block block) {
-        return block.getState() instanceof ProjectileSource;
-    }
-
-    @Override
     public void onShoot(ProjectileLaunchEvent event, Projectile projectile, @NotNull ProjectileEnchant.WrappedProjectileSource source, int level) {
         if (WbsMath.chance(CHANCE_PER_LEVEL * level)) {
             Entity copy = projectile.copy();
