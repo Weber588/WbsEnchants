@@ -2,14 +2,13 @@ package wbs.enchants.enchantment;
 
 import org.bukkit.Location;
 import org.bukkit.block.Block;
-import org.bukkit.block.BlockState;
 import org.bukkit.entity.Entity;
-import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Projectile;
-import org.bukkit.inventory.ItemStack;
+import org.bukkit.event.entity.ProjectileHitEvent;
+import org.bukkit.event.entity.ProjectileLaunchEvent;
 import org.bukkit.projectiles.ProjectileSource;
 import org.bukkit.scheduler.BukkitRunnable;
-import org.jetbrains.annotations.Nullable;
+import org.jetbrains.annotations.NotNull;
 import wbs.enchants.WbsEnchantment;
 import wbs.enchants.WbsEnchants;
 import wbs.enchants.WbsEnchantsBootstrap;
@@ -40,7 +39,7 @@ public class StuttershotEnchant extends WbsEnchantment implements ProjectileEnch
     }
 
     @Override
-    public void onShoot(Projectile projectile, @Nullable LivingEntity livingShooter, @Nullable BlockState blockShooter, @Nullable ItemStack projectileItem, @Nullable ItemStack shootingItem, int level) {
+    public void onShoot(ProjectileLaunchEvent event, Projectile projectile, @NotNull ProjectileEnchant.WrappedProjectileSource source, int level) {
         if (WbsMath.chance(CHANCE_PER_LEVEL * level)) {
             Entity copy = projectile.copy();
             Location location = projectile.getLocation();
@@ -50,13 +49,18 @@ public class StuttershotEnchant extends WbsEnchantment implements ProjectileEnch
                 public void run() {
                     Location spawnLoc = location;
 
-                    if (livingShooter != null && livingShooter.isValid()) {
-                        spawnLoc = livingShooter.getEyeLocation();
+                    if (source.livingShooter() != null && source.livingShooter().isValid()) {
+                        spawnLoc = source.livingShooter().getEyeLocation();
                     }
 
                     copy.spawnAt(spawnLoc);
                 }
             }.runTaskLater(WbsEnchants.getInstance(), 5);
         }
+    }
+
+    @Override
+    public void onHit(ProjectileHitEvent event, Projectile projectile, @NotNull WrappedProjectileSource source, int level) {
+
     }
 }
