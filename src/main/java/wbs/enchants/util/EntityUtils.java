@@ -1,12 +1,14 @@
 package wbs.enchants.util;
 
 import org.bukkit.Bukkit;
+import org.bukkit.Location;
 import org.bukkit.NamespacedKey;
 import org.bukkit.Tag;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.EquipmentSlot;
+import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.potion.PotionEffectType;
 import org.jetbrains.annotations.Nullable;
@@ -43,9 +45,13 @@ public class EntityUtils {
     }
 
     public static void giveSafely(Player player, ItemStack item) {
-        HashMap<Integer, ItemStack> failed = player.getInventory().addItem(item);
+        giveSafely(player.getInventory(), player.getLocation(), item);
+    }
+
+    public static void giveSafely(Inventory inventory, Location fallbackLocation, ItemStack item) {
+        HashMap<Integer, ItemStack> failed = inventory.addItem(item);
         if (!failed.isEmpty()) {
-            player.getWorld().dropItemNaturally(player.getLocation(), item);
+            fallbackLocation.getWorld().dropItemNaturally(fallbackLocation, item);
         }
     }
 
