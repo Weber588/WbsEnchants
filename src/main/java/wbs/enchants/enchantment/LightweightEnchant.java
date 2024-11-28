@@ -33,6 +33,7 @@ public class LightweightEnchant extends WbsEnchantment implements DamageEnchant 
     public LightweightEnchant() {
         super("lightweight", DEFAULT_DESCRIPTION);
 
+        maxLevel = MAX_LEVEL;
         supportedItems = WbsEnchantsBootstrap.SHIELD;
         weight = 10;
     }
