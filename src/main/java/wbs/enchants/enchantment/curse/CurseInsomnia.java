@@ -34,7 +34,7 @@ public class CurseInsomnia extends WbsEnchantment {
         // Just check if there's ANY armour with this enchant on it, don't care about details
         if (getHighestEnchantedArmour(player) != null) {
             event.setCancelled(true);
-            sendActionBar("&7The &c" + getDefaultDisplayName() + "&7 prevents your sleep...", player);
+            sendActionBar("&c" + getDisplayName() + "&7 prevents your sleep...", player);
         }
     }
 

@@ -7,6 +7,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
+import wbs.enchants.WbsEnchantsBootstrap;
 import wbs.enchants.enchantment.helper.AbstractMultiBreakEnchant;
 import wbs.enchants.util.BlockChanger;
 import wbs.enchants.util.BlockQueryUtils;
@@ -25,6 +26,7 @@ public class VeinMinerEnchant extends AbstractMultiBreakEnchant {
 
         maxLevel = 4;
         supportedItems = ItemTypeTagKeys.PICKAXES;
+        exclusiveWith = WbsEnchantsBootstrap.EXCLUSIVE_SET_MULTIMINER;
 
         targetDescription = "Pickaxe";
     }

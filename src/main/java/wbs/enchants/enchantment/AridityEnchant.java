@@ -32,11 +32,6 @@ public class AridityEnchant extends WbsEnchantment implements NonPersistentBlock
     }
 
     @Override
-    public int getDefaultWeight() {
-        return 5;
-    }
-
-    @Override
     public @NotNull String getTargetDescription() {
         return "Sponge";
     }

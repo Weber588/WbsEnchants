@@ -1,6 +1,5 @@
 package wbs.enchants;
 
-import com.google.gson.Gson;
 import io.papermc.paper.registry.RegistryAccess;
 import io.papermc.paper.registry.RegistryKey;
 import io.papermc.paper.registry.TypedKey;
@@ -31,6 +30,7 @@ import wbs.enchants.generation.ContextManager;
 import wbs.enchants.generation.GenerationContext;
 import wbs.enchants.util.EnchantUtils;
 import wbs.utils.exceptions.InvalidConfigurationException;
+import wbs.utils.util.string.RomanNumerals;
 import wbs.utils.util.string.WbsStrings;
 
 import java.util.*;
@@ -41,13 +41,13 @@ public abstract class WbsEnchantment implements Comparable<WbsEnchantment>, Keye
 
     protected boolean isEnabled = true;
     @NotNull
-    protected Map<Integer, Double> costForLevel = new HashMap<>();
-    @NotNull
     protected List<String> aliases = new LinkedList<>();
 
-    // TODO: Read these from config, with defaults based on what implementors provide in constructor
     protected int maxLevel = 1;
     protected int weight = 1;
+    // Defaulting to Smite levels; feels the most middling
+    protected EnchantmentRegistryEntry.EnchantmentCost maximumCost = EnchantmentRegistryEntry.EnchantmentCost.of(25, 8);
+    protected EnchantmentRegistryEntry.EnchantmentCost minimumCost = EnchantmentRegistryEntry.EnchantmentCost.of(5, 8);
     protected TagKey<ItemType> primaryItems;
     protected TagKey<ItemType> supportedItems;
     protected TagKey<Enchantment> exclusiveWith;
@@ -55,6 +55,7 @@ public abstract class WbsEnchantment implements Comparable<WbsEnchantment>, Keye
     @NotNull
     protected String description;
     protected String targetDescription;
+    private String displayName;
 
     protected final List<GenerationContext> generationContexts = new LinkedList<>();
 
@@ -83,10 +84,6 @@ public abstract class WbsEnchantment implements Comparable<WbsEnchantment>, Keye
 
     public String getPermission() {
         return "wbsenchants.enchantment." + getKey().getNamespace() + "." + getKey().getKey();
-    }
-
-    public int getStartLevel() {
-        return 0;
     }
 
     @NotNull
@@ -153,20 +150,26 @@ public abstract class WbsEnchantment implements Comparable<WbsEnchantment>, Keye
         return true;
     }
 
-    @NotNull
-    public Map<Integer, Double> getCostForLevel() {
-        return new HashMap<>();
-    }
-
     // TODO: Add all new fields from 1.20.5
     public ConfigurationSection buildConfigurationSection(YamlConfiguration baseFile) {
         ConfigurationSection section = baseFile.createSection(getKey().getKey());
 
         section.set("enabled", isEnabled);
-        section.set("min_level", getStartLevel());
-        section.set("max_level", getMaxLevel());
-        section.createSection("cost_for_level", getCostForLevel());
         section.set("aliases", getAliases());
+        section.set("display_name", getDisplayName());
+
+        section.set("supported_items", getSupportedItems().key().toString());
+        section.set("primary_items", getPrimaryItems().key().toString());
+
+        section.set("minimum_cost.base_cost", getMinimumCost().baseCost());
+        section.set("minimum_cost.additional_per_level_cost", getMinimumCost().additionalPerLevelCost());
+        section.set("maximum_cost.base_cost", getMaximumCost().baseCost());
+        section.set("maximum_cost.additional_per_level_cost", getMaximumCost().additionalPerLevelCost());
+
+        section.set("exclusive_with", getExclusiveSet().key().toString());
+        section.set("anvil_cost", getAnvilCost());
+        section.set("max_level", getMaxLevel());
+        section.set("weight", getWeight());
 
         generationContexts.forEach(context -> context.createSection(section, "generation"));
 
@@ -177,6 +180,38 @@ public abstract class WbsEnchantment implements Comparable<WbsEnchantment>, Keye
     public void configure(ConfigurationSection section, String directory) {
         isEnabled = section.getBoolean("enabled", isEnabled);
         aliases = section.getStringList("aliases");
+        displayName = section.getString("display_name", getDisplayName());
+
+        NamespacedKey namespacedKey = parseKey(section, "supported_items", directory);
+        if (namespacedKey != null) {
+            supportedItems = TagKey.create(RegistryKey.ITEM, namespacedKey);
+        }
+
+        namespacedKey = parseKey(section, "primary_items", directory);
+        if (namespacedKey != null) {
+            primaryItems = TagKey.create(RegistryKey.ITEM, namespacedKey);
+        }
+
+        int minBaseCost = section.getInt("minimum_cost.base_cost", getMinimumCost().baseCost());
+        int minExtraCost = section.getInt("minimum_cost.additional_per_level_cost", getMinimumCost().additionalPerLevelCost());
+
+        minimumCost = EnchantmentRegistryEntry.EnchantmentCost.of(minBaseCost, minExtraCost);
+
+        int maxBaseCost = section.getInt("maximum_cost.base_cost", getMaximumCost().baseCost());
+        int maxExtraCost = section.getInt("maximum_cost.additional_per_level_cost", getMaximumCost().additionalPerLevelCost());
+
+        maximumCost = EnchantmentRegistryEntry.EnchantmentCost.of(maxBaseCost, maxExtraCost);
+
+        namespacedKey = parseKey(section, "exclusive_with", directory);
+        if (namespacedKey != null) {
+            exclusiveWith = TagKey.create(RegistryKey.ENCHANTMENT, namespacedKey);
+        }
+
+        anvilCost = section.getInt("anvil_cost", anvilCost);
+        // TODO: Add hard coded "safe max level" field on implementors to let enchants limit to safe maximums?
+        maxLevel = section.getInt("max_level", maxLevel);
+
+        weight = section.getInt("weight", weight);
 
         ConfigurationSection generationSection = section.getConfigurationSection("generation");
         if (generationSection != null) {
@@ -206,32 +241,21 @@ public abstract class WbsEnchantment implements Comparable<WbsEnchantment>, Keye
                 }
             }
         }
+    }
 
-        ConfigurationSection costLevelSection = section.getConfigurationSection("cost_for_level");
-
-        if (costLevelSection != null) {
-            for (String key : costLevelSection.getKeys(false)) {
-                if (!key.matches("[0-9]")) {
-                    WbsEnchants.getInstance().settings.logError("Invalid level: \"" + key + "\"",
-                            directory + "/cost_for_level");
-                    continue;
-                }
-
-                int level;
-                try {
-                    level = Integer.parseInt(key);
-                } catch (NumberFormatException e) {
-                    // Should be impossible unless they put a number larger than int limit
-                    WbsEnchants.getInstance().settings.logError("An unexpected error occurred while parsing level: \""
-                            + key + "\". Error: " + e.getLocalizedMessage(), directory + "/cost_for_level");
-                    continue;
-                }
-
-                if (costLevelSection.isDouble(key) || costLevelSection.isInt(key)) {
-                    costForLevel.put(level, costLevelSection.getDouble(key));
-                }
+    private NamespacedKey parseKey(ConfigurationSection section, String key, String directory) {
+        String keyString = section.getString(key);
+        if (keyString != null) {
+            NamespacedKey namespacedKey = NamespacedKey.fromString(keyString);
+            if (namespacedKey != null) {
+                return namespacedKey;
+            } else {
+                WbsEnchants.getInstance().settings.logError("Invalid namespaced key: " + keyString,
+                        directory + "/" + key);
             }
         }
+
+        return null;
     }
 
     /**
@@ -247,29 +271,23 @@ public abstract class WbsEnchantment implements Comparable<WbsEnchantment>, Keye
         // These (and similar) can theoretically be called from the implementer itself, but this makes it harder to
         // accidentally forget it.
         // TODO: Create a registry of auto registration that can be iterated over instead of hardcoding into this class
-        if (this instanceof DamageEnchant damageEnchant) {
-            if (damageEnchant.autoRegister()) {
-                damageEnchant.registerDamageEvent();
-            }
-        }
-        if (this instanceof VehicleEnchant vehicleEnchant) {
-            if (vehicleEnchant.autoRegister()) {
-                vehicleEnchant.registerVehicleEvents();
-            }
-        }
-        if (this instanceof BlockEnchant blockEnchant) {
-            if (blockEnchant.autoRegister()) {
-                blockEnchant.registerBlockEvents();
-            }
-        }
-        if (this instanceof NonPersistentBlockEnchant npBlockEnchant) {
-            if (npBlockEnchant.autoRegister()) {
-                npBlockEnchant.registerNonPersistentBlockEvents();
-            }
-        }
-        if (this instanceof ProjectileEnchant projectileEnchant) {
-            if (projectileEnchant.autoRegister()) {
-                projectileEnchant.registerProjectileEvents();
+        if (this instanceof AutoRegistrableEnchant autoRegistrable) {
+            if (autoRegistrable.autoRegister()) {
+                if (autoRegistrable instanceof DamageEnchant damageEnchant) {
+                    damageEnchant.registerDamageEvent();
+                }
+                if (this instanceof VehicleEnchant vehicleEnchant) {
+                    vehicleEnchant.registerVehicleEvents();
+                }
+                if (this instanceof BlockEnchant blockEnchant) {
+                    blockEnchant.registerBlockEvents();
+                }
+                if (this instanceof NonPersistentBlockEnchant npBlockEnchant) {
+                    npBlockEnchant.registerNonPersistentBlockEvents();
+                }
+                if (this instanceof ProjectileEnchant<?> projectileEnchant) {
+                    projectileEnchant.registerProjectileEvents();
+                }
             }
         }
     }
@@ -346,7 +364,12 @@ public abstract class WbsEnchantment implements Comparable<WbsEnchantment>, Keye
 
     @Nullable
     public ItemStack getHighestEnchantedArmour(LivingEntity entity) {
-        return Arrays.stream(ARMOUR_SLOTS)
+        return getHighestEnchanted(entity, List.of(ARMOUR_SLOTS));
+    }
+
+    @Nullable
+    public ItemStack getHighestEnchanted(LivingEntity entity, Collection<EquipmentSlot> slots) {
+        return slots.stream()
                 .map(slot -> getIfEnchanted(entity, slot))
                 .filter(Objects::nonNull)
                 .max(Comparator.comparingInt(this::getLevel))
@@ -379,6 +402,13 @@ public abstract class WbsEnchantment implements Comparable<WbsEnchantment>, Keye
     }
 
     public abstract String getDefaultDisplayName();
+    public String getDisplayName() {
+        if (this.displayName == null) {
+            this.displayName = getDefaultDisplayName();
+        }
+
+        return this.displayName;
+    }
 
     // Costs based on Smite by default, just feels like the most middle enchant -- less common than prot
     // or unbreaking, not as rare as thorns or infinity
@@ -391,30 +421,12 @@ public abstract class WbsEnchantment implements Comparable<WbsEnchantment>, Keye
         return EnchantmentRegistryEntry.EnchantmentCost.of(5, 8);
     }
 
-    public int getDefaultWeight() {
-        return 1;
-    }
-    public int getDefaultMaxLevel() {
-        return 1;
-    }
-    public int getDefaultAnvilCost() {
-        return 1;
-    }
-
-    public TagKey<ItemType> getDefaultSupportedItems() {
-        return WbsEnchantsBootstrap.ITEM_EMPTY;
-    }
     @Nullable
     public TagKey<ItemType> getDefaultPrimaryItems() {
         return WbsEnchantsBootstrap.ITEM_EMPTY;
     }
     public TagKey<Enchantment> getDefaultExclusiveSet() {
         return WbsEnchantsBootstrap.ENCHANTMENT_EMPTY;
-    }
-
-    // TODO: Move these to read from getEnchantment once they're implemented in paper API
-    public String getDisplayName() {
-        return this.getDefaultDisplayName();
     }
 
     @NotNull
@@ -424,12 +436,12 @@ public abstract class WbsEnchantment implements Comparable<WbsEnchantment>, Keye
 
     @NotNull
     protected EnchantmentRegistryEntry.EnchantmentCost getMaximumCost() {
-        return EnchantmentRegistryEntry.EnchantmentCost.of(25, 8);
+        return this.maximumCost;
     }
 
     @NotNull
     protected EnchantmentRegistryEntry.EnchantmentCost getMinimumCost() {
-        return EnchantmentRegistryEntry.EnchantmentCost.of(5, 8);
+        return this.minimumCost;
     }
 
     public final int getWeight() {
@@ -447,6 +459,7 @@ public abstract class WbsEnchantment implements Comparable<WbsEnchantment>, Keye
         // Why doesn't java have a null coalescing operator </3
         if (this.supportedItems == null) {
             this.supportedItems = WbsEnchantsBootstrap.ITEM_EMPTY;
+            // Using standard out, as this method needs to be called in bootstrap
             System.out.println("supported items was null, defaulting to: " + this.supportedItems);
         }
 
@@ -482,7 +495,7 @@ public abstract class WbsEnchantment implements Comparable<WbsEnchantment>, Keye
 
     public void buildTo(RegistryFreezeEvent<Enchantment, EnchantmentRegistryEntry.@NotNull Builder> event,
                         EnchantmentRegistryEntry.Builder builder) {
-        builder.description(Component.text(getDefaultDisplayName())) // TODO: Update this to actual
+        builder.description(Component.text(getDisplayName())) // TODO: Update this to actual
                 .supportedItems(event.getOrCreateTag(getSupportedItems()))
                 .primaryItems(event.getOrCreateTag(getPrimaryItems()))
                 .minimumCost(getMinimumCost())
@@ -494,48 +507,28 @@ public abstract class WbsEnchantment implements Comparable<WbsEnchantment>, Keye
                 .weight(getWeight());
     }
 
-    public String buildJsonDefinition() {
-        JsonDefinition def = new JsonDefinition();
+    public String getHoverText() {
+        return getHoverText(EnumSet.allOf(HoverOptions.class));
+    }
+    public String getHoverText(EnumSet<HoverOptions> options) {
+        String text = "&h&m        &h " + getDisplayName() + "&h &m        ";
 
-        def.description = getDefaultDisplayName();
-        def.exclusive_set = getExclusiveSet().toString();
-        def.supported_items = getSupportedItems().toString();
-        def.weight = getWeight();
-        def.max_level = getMaxLevel();
-        def.min_cost = new JsonEnchCost(getMinimumCost());
-        def.max_cost = new JsonEnchCost(getMaximumCost());
-        def.anvil_cost = getAnvilCost();
-        def.slots = getActiveSlots().toString();
+        if (options.contains(HoverOptions.MAX_LEVEL)) {
+            text += "\n&rMax level: &h" + RomanNumerals.toRoman(getMaxLevel()) + " (" + getMaxLevel() + ")";
+        }
+        if (options.contains(HoverOptions.TARGET)) {
+            text += "\n&rTarget: &h" + getTargetDescription();
+        }
+        if (options.contains(HoverOptions.DESCRIPTION)) {
+            text += "\n&rDescription: &h" + getDescription();
+        }
 
-        return def.toString();
+        return text;
     }
 
-    private static class JsonDefinition {
-        private String description;
-        private String exclusive_set;
-        private String supported_items;
-        private int weight;
-        private int max_level;
-        private JsonEnchCost min_cost;
-        private JsonEnchCost max_cost;
-        private int anvil_cost;
-        private String slots;
-
-        @Override
-        public String toString() {
-            return new Gson().toJson(this);
-        }
-    }
-
-    private static class JsonEnchCost {
-        private int base;
-        private int per_level_above_first;
-
-        public JsonEnchCost(EnchantmentRegistryEntry.EnchantmentCost cost) {
-            if (cost != null) {
-                this.base = cost.baseCost();
-                this.per_level_above_first = cost.additionalPerLevelCost();
-            }
-        }
+    public enum HoverOptions {
+        MAX_LEVEL,
+        TARGET,
+        DESCRIPTION
     }
 }

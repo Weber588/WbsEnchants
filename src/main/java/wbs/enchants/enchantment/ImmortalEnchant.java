@@ -139,7 +139,7 @@ public class ImmortalEnchant extends WbsEnchantment {
         }
 
         sendActionBar("Your " + displayName + " was saved by its "
-                + getDefaultDisplayName() + "&r enchantment!", player);
+                + getDisplayName() + "&r enchantment!", player);
     }
 
     // endregion
