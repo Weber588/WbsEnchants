@@ -10,6 +10,7 @@ import org.bukkit.event.HandlerList;
 import org.bukkit.plugin.Plugin;
 import org.jetbrains.annotations.NotNull;
 import wbs.enchants.command.Subcommand;
+import wbs.enchants.command.SubcommandHeld;
 import wbs.enchants.command.SubcommandInfo;
 import wbs.enchants.command.SubcommandList;
 import wbs.enchants.events.LeashEvents;
@@ -34,7 +35,8 @@ public class WbsEnchants extends WbsPlugin {
 
         List<Subcommand> subcommands = List.of(
                 new SubcommandInfo(this, "info"),
-                new SubcommandList(this, "list")
+                new SubcommandList(this, "list"),
+                new SubcommandHeld(this, "held")
         );
 
         LifecycleEventManager<@NotNull Plugin> manager = this.getLifecycleManager();

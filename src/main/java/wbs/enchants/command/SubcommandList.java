@@ -12,7 +12,6 @@ import wbs.enchants.WbsEnchants;
 import wbs.enchants.util.EnchantUtils;
 import wbs.utils.util.plugin.WbsMessageBuilder;
 import wbs.utils.util.plugin.WbsPlugin;
-import wbs.utils.util.string.RomanNumerals;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -67,21 +66,10 @@ public class SubcommandList extends Subcommand {
         return keyString + "&r";
     }
 
-    private static String getHoverText(WbsEnchantment enchant) {
-        String text = "&h&m        &h " + enchant.getDefaultDisplayName() + "&h &m        ";
-
-        text += "\n&rMax level: &h" + RomanNumerals.toRoman(enchant.getMaxLevel()) + " (" + enchant.getMaxLevel() + ")";
-        text += "\n&rTarget: &h" + enchant.getTargetDescription();
-        text += "\n&rDescription: &h" + enchant.getDescription();
-
-        text += "\n\n&hClick to view full info!";
-
-        return text;
-    }
 
     private static void appendEnchant(WbsMessageBuilder builder, WbsEnchantment enchant) {
         builder.append(getKeyDisplay(enchant))
-                .addHoverText(getHoverText(enchant))
+                .addHoverText(enchant.getHoverText() + "\n\n&hClick to view full info!")
                 .addClickCommand("/" +
                         WbsEnchants.getInstance().getName().toLowerCase()
                                 + ":customenchants info " + enchant.getKey().getKey()

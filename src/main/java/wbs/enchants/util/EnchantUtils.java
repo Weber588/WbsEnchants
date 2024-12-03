@@ -8,8 +8,11 @@ import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.EnchantmentStorageMeta;
 import org.jetbrains.annotations.NotNull;
+import wbs.enchants.EnchantManager;
 import wbs.enchants.WbsEnchantment;
+import wbs.utils.util.string.RomanNumerals;
 
+import java.util.EnumSet;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -53,5 +56,47 @@ public class EnchantUtils {
     public static boolean isCurse(Enchantment enchant) {
         return RegistryAccess.registryAccess().getRegistry(RegistryKey.ENCHANTMENT)
                 .getTag(EnchantmentTagKeys.CURSE).contains(TypedKey.create(RegistryKey.ENCHANTMENT, enchant.getKey()));
+    }
+
+    public static WbsEnchantment getAsCustom(Enchantment enchantment) {
+        return EnchantManager.getRegistered().stream()
+                .filter(check -> check.getKey().equals(enchantment.getKey()))
+                .findFirst()
+                .orElse(null);
+    }
+
+    public static String getHoverText(Enchantment enchantment) {
+        return getHoverText(enchantment, EnumSet.noneOf(WbsEnchantment.HoverOptions.class));
+    }
+
+    public static String getHoverText(Enchantment enchantment, EnumSet<WbsEnchantment.HoverOptions> options) {
+        WbsEnchantment customEnchantment = getAsCustom(enchantment);
+        if (customEnchantment != null) {
+            return customEnchantment.getHoverText(options);
+        }
+
+        String text = "&h&m        &h " + enchantment.displayName(0) + "&h &m        ";
+
+        if (options.contains(WbsEnchantment.HoverOptions.MAX_LEVEL)) {
+            text += "\n&rMax level: &h" + RomanNumerals.toRoman(enchantment.getMaxLevel()) + " (" + enchantment.getMaxLevel() + ")";
+        }
+
+        if (options.contains(WbsEnchantment.HoverOptions.TARGET)) {
+            text += "\n&rTarget: &h#" + enchantment.getSupportedItems().registryKey().key().asString();
+        }
+
+        if (options.contains(WbsEnchantment.HoverOptions.DESCRIPTION)) {
+            if (enchantment.key().namespace().equals("minecraft")) {
+                text += "\n&rDescription: [Vanilla Enchantment]";
+            } else {
+                text += "\n&rDescription: &wUnknown";
+            }
+        }
+
+        return text;
+    }
+
+    public static boolean isWbsManaged(Enchantment enchantment) {
+        return getAsCustom(enchantment) != null;
     }
 }

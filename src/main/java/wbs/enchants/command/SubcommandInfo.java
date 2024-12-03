@@ -3,13 +3,11 @@ package wbs.enchants.command;
 import com.mojang.brigadier.Command;
 import com.mojang.brigadier.context.CommandContext;
 import io.papermc.paper.command.brigadier.CommandSourceStack;
-import net.kyori.adventure.text.serializer.gson.GsonComponentSerializer;
-import net.md_5.bungee.api.chat.TextComponent;
-import net.md_5.bungee.chat.ComponentSerializer;
 import org.bukkit.command.CommandSender;
 import org.bukkit.enchantments.Enchantment;
 import org.jetbrains.annotations.NotNull;
 import wbs.enchants.WbsEnchantment;
+import wbs.enchants.WbsEnchants;
 import wbs.enchants.enchantment.helper.ConflictEnchantment;
 import wbs.enchants.util.EnchantUtils;
 import wbs.utils.util.plugin.WbsMessageBuilder;
@@ -44,7 +42,7 @@ public class SubcommandInfo extends EnchantmentSubcommand {
         String line = "=====================================";
         plugin.sendMessage(line, sender);
 
-        plugin.sendMessageNoPrefix("Name: &h" + enchant.getDefaultDisplayName(), sender);
+        plugin.sendMessageNoPrefix("Name: &h" + enchant.getDisplayName(), sender);
         plugin.sendMessageNoPrefix("Maximum level: &h" + RomanNumerals.toRoman(maxLevel) + " (" + maxLevel + ")", sender);
         plugin.sendMessageNoPrefix("Target: &h" + enchant.getTargetDescription(), sender);
         if (enchant.getPermission() != null) {
@@ -64,11 +62,23 @@ public class SubcommandInfo extends EnchantmentSubcommand {
             WbsMessageBuilder messageBuilder = plugin.buildMessageNoPrefix("Conflicts with:");
 
             for (Enchantment conflict : conflicts) {
-                messageBuilder.append("\n    &h- ");
-                // Convert from adventure text component to bungeecord component -- need to update WbsPlugin at some
-                // point to support both. This works because both systems serialize to Mojang style
-                String displayAsJSON = GsonComponentSerializer.gson().serializer().toJson(conflict.displayName(1));
-                messageBuilder.append((TextComponent) ComponentSerializer.deserialize(displayAsJSON));
+                boolean isCustom = EnchantUtils.isWbsManaged(conflict);
+
+                String hoverText = EnchantUtils.getHoverText(conflict);
+                if (isCustom) {
+                    hoverText += "\n\n&hClick to view full info!";
+                }
+
+                messageBuilder.append("\n    &h- ")
+                        .append(conflict.displayName(0))
+                        .addHoverText(hoverText);
+
+                if (isCustom) {
+                    messageBuilder.addClickCommand("/" +
+                            WbsEnchants.getInstance().getName().toLowerCase()
+                            + ":customenchants info " + enchant.getKey().getKey()
+                    );
+                }
             }
 
             messageBuilder.build().send(sender);
@@ -77,4 +87,5 @@ public class SubcommandInfo extends EnchantmentSubcommand {
         plugin.sendMessage(line, sender);
         return Command.SINGLE_SUCCESS;
     }
+
 }
