@@ -2,28 +2,25 @@ package wbs.enchants.command;
 
 import com.mojang.brigadier.StringReader;
 import com.mojang.brigadier.arguments.ArgumentType;
+import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.mojang.brigadier.suggestion.Suggestions;
 import com.mojang.brigadier.suggestion.SuggestionsBuilder;
-import io.papermc.paper.command.brigadier.argument.ArgumentTypes;
 import io.papermc.paper.command.brigadier.argument.CustomArgumentType;
-import net.kyori.adventure.text.Component;
 import org.jetbrains.annotations.NotNull;
-import wbs.enchants.WbsEnchants;
 import wbs.enchants.type.EnchantmentType;
 import wbs.enchants.type.EnchantmentTypeManager;
 
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 
-public class EnchantmentTypeArgumentType implements CustomArgumentType<EnchantmentType, Component> {
+public class EnchantmentTypeArgumentType implements CustomArgumentType<EnchantmentType, String> {
     @Override
     public @NotNull EnchantmentType parse(@NotNull StringReader stringReader) throws CommandSyntaxException {
-        String search = stringReader.readString();
-
-        WbsEnchants.getInstance().getLogger().info("searching for enchantment type: " + search
-                + " (via string reader: " + stringReader + ")");
+        String search = stringReader.getRemaining();
+        // Stop string reader from screaming when we don't read using cursor regularly
+        stringReader.setCursor(stringReader.getTotalLength());
 
         Optional<EnchantmentType> found = EnchantmentTypeManager.getRegistered()
                 .stream()
@@ -40,15 +37,17 @@ public class EnchantmentTypeArgumentType implements CustomArgumentType<Enchantme
     }
 
     @Override
-    public @NotNull ArgumentType<Component> getNativeType() {
-        return ArgumentTypes.component();
+    public @NotNull ArgumentType<String> getNativeType() {
+        return StringArgumentType.greedyString();
     }
 
     @Override
     public <S> @NotNull CompletableFuture<Suggestions> listSuggestions(@NotNull CommandContext<S> context,
                                                                        @NotNull SuggestionsBuilder builder) {
         for (EnchantmentType type : EnchantmentTypeManager.getRegistered()) {
-            builder.suggest(type.getKey().getKey());
+        //    if (type.getKey().getKey().toLowerCase().startsWith(context.getInput().toLowerCase())) {
+                builder.suggest(type.getKey().getKey());
+        //    }
         }
 
         return builder.buildFuture();

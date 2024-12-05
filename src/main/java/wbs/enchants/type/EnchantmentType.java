@@ -13,7 +13,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import wbs.enchants.WbsEnchantsBootstrap;
 
-public abstract class EnchantmentType implements Keyed {
+public abstract class EnchantmentType implements Keyed, Comparable<EnchantmentType> {
     protected final String name;
     protected final NamespacedKey key;
 
@@ -55,7 +55,6 @@ public abstract class EnchantmentType implements Keyed {
         if (search == null) {
             return false;
         }
-
         if (search.equalsIgnoreCase(key.asString())) {
             return true;
         }
@@ -76,5 +75,9 @@ public abstract class EnchantmentType implements Keyed {
                 .hoverEvent(
                         HoverEvent.hoverEvent(HoverEvent.Action.SHOW_TEXT, getDescription())
                 );
+    }
+
+    public int compareTo(EnchantmentType type) {
+        return getKey().compareTo(type.getKey());
     }
 }

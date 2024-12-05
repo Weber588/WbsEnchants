@@ -31,7 +31,7 @@ public class UnsinkableEnchant extends WbsEnchantment implements VehicleEnchant 
 
     @Override
     public String getDefaultDisplayName() {
-        return "&7Unsinkable";
+        return "Unsinkable";
     }
 
     @Override

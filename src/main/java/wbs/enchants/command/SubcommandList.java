@@ -66,7 +66,16 @@ public class SubcommandList extends Subcommand {
             return 0;
         }
 
-        WbsMessageBuilder builder = new WbsMessageBuilder(plugin, "Enchantments: ");
+        enchants.sort(WbsEnchantment::compareTo);
+
+        Component opening;
+        if (type != null) {
+            opening = type.getNameComponent().append(Component.text(" enchantments:"));
+        } else {
+            opening = Component.text("Enchantments:");
+        }
+
+        WbsMessageBuilder builder = plugin.buildMessage("").append(opening.color(plugin.getTextColour())).append("\n");
 
         WbsEnchantment first = enchants.getFirst();
         enchants.removeFirst();

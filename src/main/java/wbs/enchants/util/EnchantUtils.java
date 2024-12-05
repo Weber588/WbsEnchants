@@ -92,7 +92,10 @@ public class EnchantUtils {
             builder.append("\n&rMax level: &h" + RomanNumerals.toRoman(enchantment.getMaxLevel()) + " (" + enchantment.getMaxLevel() + ")");
         }
         if (options.contains(WbsEnchantment.HoverOptions.TARGET)) {
-            builder.append("\n&rTarget: &h#" + enchantment.getSupportedItems().registryKey().key().asString());
+            // TODO: Find a way to show target tag. Currently can't, since Enchantment only has getSupportedItems
+            //  which is a set of supported item keys, not the tag itself.
+            //  Either find a way to get that tag directly, or find a way to iterate over all item tags and
+            //  find a tag that exactly matches the Enchantment.
         }
         if (options.contains(WbsEnchantment.HoverOptions.DESCRIPTION)) {
             if (enchantment.key().namespace().equals("minecraft")) {

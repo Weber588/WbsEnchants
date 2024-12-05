@@ -2,29 +2,28 @@ package wbs.enchants.command;
 
 import com.mojang.brigadier.StringReader;
 import com.mojang.brigadier.arguments.ArgumentType;
+import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.mojang.brigadier.suggestion.Suggestions;
 import com.mojang.brigadier.suggestion.SuggestionsBuilder;
-import io.papermc.paper.command.brigadier.argument.ArgumentTypes;
 import io.papermc.paper.command.brigadier.argument.CustomArgumentType;
-import net.kyori.adventure.text.Component;
 import org.jetbrains.annotations.NotNull;
 import wbs.enchants.EnchantManager;
 import wbs.enchants.WbsEnchantment;
-import wbs.enchants.WbsEnchants;
 
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 
 @SuppressWarnings("UnstableApiUsage")
-public class CustomEnchantArgumentType implements CustomArgumentType<WbsEnchantment, Component> {
+public class CustomEnchantArgumentType implements CustomArgumentType<WbsEnchantment, String> {
     @Override
     public @NotNull WbsEnchantment parse(@NotNull StringReader stringReader) throws CommandSyntaxException {
-        String[] inputs = stringReader.readString().split(" ");
+        String[] inputs = stringReader.getRemaining().split(" ");
+        // Stop string reader from screaming when we don't read using cursor regularly
+        stringReader.setCursor(stringReader.getTotalLength());
+
         String search = inputs[inputs.length - 1];
-        WbsEnchants.getInstance().getLogger().info("searching for enchantment: " + search
-                + " (via string reader: " + stringReader + ")");
 
         Optional<WbsEnchantment> found = EnchantManager.getRegistered()
                 .stream()
@@ -41,8 +40,8 @@ public class CustomEnchantArgumentType implements CustomArgumentType<WbsEnchantm
     }
 
     @Override
-    public @NotNull ArgumentType<Component> getNativeType() {
-        return ArgumentTypes.component();
+    public @NotNull ArgumentType<String> getNativeType() {
+        return StringArgumentType.greedyString();
     }
 
     @Override

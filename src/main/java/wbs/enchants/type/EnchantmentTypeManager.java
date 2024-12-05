@@ -14,12 +14,12 @@ import java.util.function.Predicate;
 public class EnchantmentTypeManager {
     private static final Map<Key, EnchantmentType> REGISTERED_TYPES = new HashMap<>();
 
-    public static final RegularEnchantmentType REGULAR = new RegularEnchantmentType();
-    public static final CurseEnchantmentType CURSE = new CurseEnchantmentType();
-    public static final ParadoxicalEnchantmentType PARADOXICAL = new ParadoxicalEnchantmentType();
-    public static final EtherealEnchantmentType ETHEREAL = new EtherealEnchantmentType();
+    public static final RegularEnchantmentType REGULAR = register(new RegularEnchantmentType());
+    public static final CurseEnchantmentType CURSE = register(new CurseEnchantmentType());
+    public static final ParadoxicalEnchantmentType PARADOXICAL = register(new ParadoxicalEnchantmentType());
+    public static final EtherealEnchantmentType ETHEREAL = register(new EtherealEnchantmentType());
 
-    public static EnchantmentType register(EnchantmentType type) {
+    public static <T extends EnchantmentType> T register(T type) {
         if (REGISTERED_TYPES.containsKey(type.getKey())) {
             throw new IllegalStateException("Type already registered: " + type.getKey());
         }

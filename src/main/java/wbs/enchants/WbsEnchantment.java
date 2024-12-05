@@ -384,6 +384,10 @@ public abstract class WbsEnchantment implements Comparable<WbsEnchantment>, Keye
     }
 
     public int compareTo(WbsEnchantment other) {
+        int typeComparison = getType().compareTo(other.getType());
+        if (typeComparison != 0) {
+            return typeComparison;
+        }
         return getKey().getKey().compareTo(other.getKey().getKey());
     }
 
