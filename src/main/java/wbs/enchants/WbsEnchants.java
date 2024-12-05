@@ -60,7 +60,13 @@ public class WbsEnchants extends WbsPlugin {
 
             event.registrar().register(builder.build(),
                     "Commands relating to the WbsEnchantments plugin.",
-                    List.of("wbsenchants:customenchantments", "cench", "wbsenchants:cench")
+                    List.of(
+                            "wbsenchants:customenchantments",
+                            "cench",
+                            "wbsenchants:cench",
+                            "customenchants",
+                            "wbsenchants:customenchants"
+                    )
             );
         });
 

@@ -5,6 +5,7 @@ import com.mojang.brigadier.context.CommandContext;
 import io.papermc.paper.command.brigadier.CommandSourceStack;
 import io.papermc.paper.registry.RegistryAccess;
 import io.papermc.paper.registry.RegistryKey;
+import net.kyori.adventure.text.Component;
 import org.bukkit.Material;
 import org.bukkit.command.CommandSender;
 import org.bukkit.enchantments.Enchantment;
@@ -51,8 +52,8 @@ public class SubcommandHeld extends EnchantmentSubcommand {
             if (enchants.isEmpty()) {
                 plugin.sendMessage(WbsEnums.toPrettyString(held.getType()) + " does not support any enchantments.", sender);
             } else {
-                WbsMessageBuilder builder = new WbsMessageBuilder(plugin,
-                        WbsEnums.toPrettyString(held.getType()) + " supports the following enchantment(s):"
+                WbsMessageBuilder builder = plugin.buildMessage(
+                        WbsEnums.toPrettyString(held.getType()) + " supports the following enchantment(s):\n"
                 );
 
                 Enchantment first = enchants.getFirst();
@@ -78,13 +79,13 @@ public class SubcommandHeld extends EnchantmentSubcommand {
     private static void appendEnchant(WbsMessageBuilder builder, Enchantment enchant) {
         boolean isCustom = EnchantUtils.isWbsManaged(enchant);
 
-        String hoverText = EnchantUtils.getHoverText(enchant);
+        Component hoverText = EnchantUtils.getHoverText(enchant);
         if (isCustom) {
-            hoverText += "\n\n&hClick to view full info!";
+            hoverText = hoverText.append(Component.text("\n\nClick to view full info!"))
+                    .color(WbsEnchants.getInstance().getTextColour());
         }
 
-        builder.append("\n    &h- ")
-                .append(enchant.displayName(0))
+        builder.append(EnchantUtils.getDisplayName(enchant))
                 .addHoverText(hoverText);
 
         if (isCustom) {

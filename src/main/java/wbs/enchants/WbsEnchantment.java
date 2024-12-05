@@ -28,8 +28,11 @@ import org.jetbrains.annotations.Nullable;
 import wbs.enchants.enchantment.helper.*;
 import wbs.enchants.generation.ContextManager;
 import wbs.enchants.generation.GenerationContext;
+import wbs.enchants.type.EnchantmentType;
+import wbs.enchants.type.EnchantmentTypeManager;
 import wbs.enchants.util.EnchantUtils;
 import wbs.utils.exceptions.InvalidConfigurationException;
+import wbs.utils.util.plugin.WbsMessageBuilder;
 import wbs.utils.util.string.RomanNumerals;
 import wbs.utils.util.string.WbsStrings;
 
@@ -65,6 +68,10 @@ public abstract class WbsEnchantment implements Comparable<WbsEnchantment>, Keye
         EnchantManager.register(this);
     }
 
+    public EnchantmentType getType() {
+        return EnchantmentTypeManager.REGULAR;
+    }
+
     @NotNull
     public final String getDescription() {
         return description
@@ -74,7 +81,7 @@ public abstract class WbsEnchantment implements Comparable<WbsEnchantment>, Keye
     public String getTargetDescription() {
         if (targetDescription == null) {
             targetDescription = getSupportedItems().key().value();
-            targetDescription = targetDescription.substring(0, targetDescription.lastIndexOf('/') + 1)
+            targetDescription = targetDescription.substring(targetDescription.lastIndexOf('/') + 1)
                     .replaceAll("_", " ");
 
             targetDescription = WbsStrings.capitalizeAll(targetDescription);
@@ -495,7 +502,7 @@ public abstract class WbsEnchantment implements Comparable<WbsEnchantment>, Keye
 
     public void buildTo(RegistryFreezeEvent<Enchantment, EnchantmentRegistryEntry.@NotNull Builder> event,
                         EnchantmentRegistryEntry.Builder builder) {
-        builder.description(Component.text(getDisplayName())) // TODO: Update this to actual
+        builder.description(displayName())
                 .supportedItems(event.getOrCreateTag(getSupportedItems()))
                 .primaryItems(event.getOrCreateTag(getPrimaryItems()))
                 .minimumCost(getMinimumCost())
@@ -507,23 +514,33 @@ public abstract class WbsEnchantment implements Comparable<WbsEnchantment>, Keye
                 .weight(getWeight());
     }
 
-    public String getHoverText() {
-        return getHoverText(EnumSet.allOf(HoverOptions.class));
+    public Component getHoverText() {
+        return getHoverText(null);
     }
-    public String getHoverText(EnumSet<HoverOptions> options) {
-        String text = "&h&m        &h " + getDisplayName() + "&h &m        ";
+    public Component getHoverText(@Nullable EnumSet<HoverOptions> options) {
+        if (options == null) {
+            options = EnumSet.allOf(HoverOptions.class);
+        }
+
+        WbsMessageBuilder builder = WbsEnchants.getInstance().buildMessage("&h&m        &h ")
+                .append(displayName())
+                .append(" &h&m        &h");
 
         if (options.contains(HoverOptions.MAX_LEVEL)) {
-            text += "\n&rMax level: &h" + RomanNumerals.toRoman(getMaxLevel()) + " (" + getMaxLevel() + ")";
+            builder.append("\n&rMax level: &h" + RomanNumerals.toRoman(getMaxLevel()) + " (" + getMaxLevel() + ")");
         }
         if (options.contains(HoverOptions.TARGET)) {
-            text += "\n&rTarget: &h" + getTargetDescription();
+            builder.append("\n&rTarget: &h" + getTargetDescription());
         }
         if (options.contains(HoverOptions.DESCRIPTION)) {
-            text += "\n&rDescription: &h" + getDescription();
+            builder.append("\n&rDescription: &h" + getDescription());
         }
 
-        return text;
+        return builder.toComponent();
+    }
+
+    public Component displayName() {
+        return Component.text(getDisplayName()).color(getType().getColour());
     }
 
     public enum HoverOptions {

@@ -1,20 +1,16 @@
 package wbs.enchants.enchantment.curse;
 
-import io.papermc.paper.registry.keys.tags.EnchantmentTagKeys;
 import io.papermc.paper.registry.keys.tags.ItemTypeTagKeys;
-import io.papermc.paper.registry.tag.TagKey;
 import org.bukkit.Material;
 import org.bukkit.Particle;
-import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Item;
 import org.bukkit.event.block.BlockDropItemEvent;
-import org.jetbrains.annotations.NotNull;
 import wbs.enchants.WbsEnchantsBootstrap;
 import wbs.enchants.enchantment.helper.BlockDropEnchantment;
+import wbs.enchants.type.EnchantmentType;
+import wbs.enchants.type.EnchantmentTypeManager;
 import wbs.utils.util.particles.NormalParticleEffect;
 import wbs.utils.util.particles.WbsParticleGroup;
-
-import java.util.List;
 
 public class CurseMidas extends BlockDropEnchantment {
     private static final String DEFAULT_DESCRIPTION = "A pickaxe curse that causes mined metals to turn " +
@@ -57,11 +53,8 @@ public class CurseMidas extends BlockDropEnchantment {
         }
     }
 
-    @SuppressWarnings("UnstableApiUsage")
     @Override
-    public @NotNull List<TagKey<Enchantment>> addToTags() {
-        return List.of(
-                EnchantmentTagKeys.CURSE
-        );
+    public EnchantmentType getType() {
+        return EnchantmentTypeManager.CURSE;
     }
 }

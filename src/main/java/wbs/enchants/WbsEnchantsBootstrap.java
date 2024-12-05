@@ -22,6 +22,8 @@ import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.ItemType;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.jetbrains.annotations.NotNull;
+import wbs.enchants.type.EnchantmentType;
+import wbs.enchants.type.EnchantmentTypeManager;
 
 import java.util.*;
 import java.util.function.Supplier;
@@ -143,9 +145,10 @@ public class WbsEnchantsBootstrap implements PluginBootstrap {
     public void bootstrap(@NotNull BootstrapContext context) {
         LifecycleEventManager<@NotNull BootstrapContext> manager = context.getLifecycleManager();
 
+        Multimap<EnchantmentType, TypedKey<Enchantment>> typeEnchantments = HashMultimap.create();
+
         // Register a new handled for the freeze lifecycle event on the enchantment registry
         manager.registerEventHandler(RegistryEvents.ENCHANTMENT.freeze().newHandler(event -> {
-            System.out.println("Enchantment freeze called");
             for (WbsEnchantment enchant : EnchantManager.getRegistered()) {
                 event.registry().register(
                         TypedKey.create(RegistryKey.ENCHANTMENT, enchant.getKey()),
@@ -154,10 +157,35 @@ public class WbsEnchantsBootstrap implements PluginBootstrap {
             }
         }));
 
+        for (WbsEnchantment enchant : EnchantManager.getRegistered()) {
+            typeEnchantments.put(enchant.getType(), enchant.getTypedKey());
+        }
+
+        Set<CustomTag<Enchantment>> dynamicEnchantmentTags = new HashSet<>();
+
+        for (EnchantmentType type : EnchantmentTypeManager.getRegistered()) {
+            Collection<TypedKey<Enchantment>> enchantmentKeys = typeEnchantments.get(type);
+            TagKey<Enchantment> tagKey = type.getTagKey();
+
+            // Don't create a tag for Regular.
+            // Instead, we'll determine if an enchant is "regular" by checking all other types first.
+            if (tagKey == null) {
+                continue;
+            }
+
+            CustomTag<Enchantment> typeTag = new CustomTag<>(tagKey);
+            typeTag.typedKeys = new LinkedList<>();
+
+            typeTag.typedKeys.addAll(enchantmentKeys);
+
+            dynamicEnchantmentTags.add(typeTag);
+        }
+
         CustomTag<Enchantment> vanillaTag = new CustomTag<>(VANILLA);
         vanillaTag.typedKeys = new LinkedList<>();
         CustomTag<Enchantment> customTag = new CustomTag<>(CUSTOM);
         customTag.typedKeys = new LinkedList<>();
+
         manager.registerEventHandler(RegistryEvents.ENCHANTMENT.entryAdd().newHandler(event -> {
             TypedKey<Enchantment> key = event.key();
             if (key.key().namespace().equalsIgnoreCase("minecraft")) {
@@ -167,7 +195,10 @@ public class WbsEnchantsBootstrap implements PluginBootstrap {
             }
         }));
 
-        registerCustomTags(context, RegistryKey.ENCHANTMENT, () -> Set.of(customTag, vanillaTag));
+        dynamicEnchantmentTags.add(customTag);
+        dynamicEnchantmentTags.add(vanillaTag);
+
+        registerCustomTags(context, RegistryKey.ENCHANTMENT, () -> dynamicEnchantmentTags);
 
         registerCustomTags(context, RegistryKey.ITEM, WbsEnchantsBootstrap::getItemTags);
         registerCustomTags(context, RegistryKey.ENCHANTMENT, WbsEnchantsBootstrap::getEnchantmentTags);
@@ -184,21 +215,6 @@ public class WbsEnchantsBootstrap implements PluginBootstrap {
                 event.registrar().addToTag(tag, toAdd.get(tag));
             }
         }));
-
-        /*
-        registerCustomTags(manager, RegistryKey.ENCHANTMENT, () -> Set.of(
-                new CustomTag<>("custom",
-                        RegistryAccess.registryAccess().getRegistry(RegistryKey.ENCHANTMENT).stream()
-                                .filter(enchantment -> !enchantment.key().namespace().equals("minecraft"))
-                                .toList()
-                ),
-                new CustomTag<>("vanilla",
-                        RegistryAccess.registryAccess().getRegistry(RegistryKey.ENCHANTMENT).stream()
-                                .filter(enchantment -> enchantment.key().namespace().equals("minecraft"))
-                                .toList()
-                )
-        ));
-         */
     }
 
     private static <T extends Keyed> void registerCustomTags(@NotNull BootstrapContext context,

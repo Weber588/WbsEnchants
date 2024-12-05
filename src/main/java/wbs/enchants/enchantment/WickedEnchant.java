@@ -13,6 +13,8 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import wbs.enchants.WbsEnchantment;
 import wbs.enchants.enchantment.helper.DamageEnchant;
+import wbs.enchants.type.EnchantmentType;
+import wbs.enchants.type.EnchantmentTypeManager;
 import wbs.enchants.util.EnchantUtils;
 import wbs.enchants.util.EntityUtils;
 import wbs.utils.util.entities.WbsEntityUtil;
@@ -68,5 +70,10 @@ public class WickedEnchant extends WbsEnchantment implements DamageEnchant {
                 HIT_EFFECT.play(WbsEntityUtil.getMiddleLocation(victim));
             }
         }
+    }
+
+    @Override
+    public EnchantmentType getType() {
+        return EnchantmentTypeManager.PARADOXICAL;
     }
 }

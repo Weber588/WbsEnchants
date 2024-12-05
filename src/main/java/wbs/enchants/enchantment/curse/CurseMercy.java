@@ -1,18 +1,14 @@
 package wbs.enchants.enchantment.curse;
 
-import io.papermc.paper.registry.keys.tags.EnchantmentTagKeys;
 import io.papermc.paper.registry.keys.tags.ItemTypeTagKeys;
-import io.papermc.paper.registry.tag.TagKey;
-import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.entity.EntityDeathEvent;
 import org.bukkit.inventory.ItemStack;
-import org.jetbrains.annotations.NotNull;
 import wbs.enchants.WbsEnchantment;
-
-import java.util.List;
+import wbs.enchants.type.EnchantmentType;
+import wbs.enchants.type.EnchantmentTypeManager;
 
 public class CurseMercy extends WbsEnchantment {
     private static final String DEFAULT_DESCRIPTION = "A weapon curse that refuses to deal a killing blow.";
@@ -43,11 +39,8 @@ public class CurseMercy extends WbsEnchantment {
         }
     }
 
-    @SuppressWarnings("UnstableApiUsage")
     @Override
-    public @NotNull List<TagKey<Enchantment>> addToTags() {
-        return List.of(
-                EnchantmentTagKeys.CURSE
-        );
+    public EnchantmentType getType() {
+        return EnchantmentTypeManager.CURSE;
     }
 }

@@ -3,12 +3,14 @@ package wbs.enchants.command;
 import com.mojang.brigadier.Command;
 import com.mojang.brigadier.context.CommandContext;
 import io.papermc.paper.command.brigadier.CommandSourceStack;
+import net.kyori.adventure.text.Component;
 import org.bukkit.command.CommandSender;
 import org.bukkit.enchantments.Enchantment;
 import org.jetbrains.annotations.NotNull;
 import wbs.enchants.WbsEnchantment;
 import wbs.enchants.WbsEnchants;
 import wbs.enchants.enchantment.helper.ConflictEnchantment;
+import wbs.enchants.type.EnchantmentType;
 import wbs.enchants.util.EnchantUtils;
 import wbs.utils.util.plugin.WbsMessageBuilder;
 import wbs.utils.util.plugin.WbsPlugin;
@@ -39,21 +41,20 @@ public class SubcommandInfo extends EnchantmentSubcommand {
             maxLevel = 1;
         }
 
+        EnchantmentType type = enchant.getType();
+
         String line = "=====================================";
-        plugin.sendMessage(line, sender);
-
-        plugin.sendMessageNoPrefix("Name: &h" + enchant.getDisplayName(), sender);
-        plugin.sendMessageNoPrefix("Maximum level: &h" + RomanNumerals.toRoman(maxLevel) + " (" + maxLevel + ")", sender);
-        plugin.sendMessageNoPrefix("Target: &h" + enchant.getTargetDescription(), sender);
-        if (enchant.getPermission() != null) {
-            //    sendMessageNoPrefix("Permission: &h" + enchant.getPermission(), sender);
-        }
-
-        plugin.sendMessageNoPrefix("Description: &h" + enchant.getDescription(), sender);
+        plugin.buildMessage(line)
+                .append("\n&rName: &h" + enchant.getDisplayName())
+                .append("\n&rType: ").append(type.getNameComponent())
+                .append("\n&rMaximum level: &h" + RomanNumerals.toRoman(maxLevel) + " (" + maxLevel + ")")
+                .append("\n&rTarget: &h" + enchant.getTargetDescription())
+                .append("\n&rDescription: &h" + enchant.getDescription())
+                .send(sender);
 
         List<Enchantment> conflicts = EnchantUtils.getConflictsWith(enchant.getEnchantment());
         // Don't show enchants that only exist to conflict (typically curses)
-        conflicts.removeIf(check -> check instanceof ConflictEnchantment);
+        conflicts.removeIf(check -> EnchantUtils.getAsCustom(check) instanceof ConflictEnchantment);
         conflicts.removeIf(other -> enchant.getKey().equals(other.getKey()));
 
         if (enchant instanceof ConflictEnchantment conflictEnchant) {
@@ -64,13 +65,14 @@ public class SubcommandInfo extends EnchantmentSubcommand {
             for (Enchantment conflict : conflicts) {
                 boolean isCustom = EnchantUtils.isWbsManaged(conflict);
 
-                String hoverText = EnchantUtils.getHoverText(conflict);
+                Component hoverText = EnchantUtils.getHoverText(conflict);
                 if (isCustom) {
-                    hoverText += "\n\n&hClick to view full info!";
+                    hoverText = hoverText.append(Component.text("\n\nClick to view full info!"))
+                            .color(plugin.getTextColour());
                 }
 
                 messageBuilder.append("\n    &h- ")
-                        .append(conflict.displayName(0))
+                        .append(EnchantUtils.getDisplayName(conflict))
                         .addHoverText(hoverText);
 
                 if (isCustom) {

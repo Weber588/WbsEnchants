@@ -13,6 +13,8 @@ import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 import wbs.enchants.WbsEnchantsBootstrap;
 import wbs.enchants.enchantment.helper.AbstractMultiBreakEnchant;
+import wbs.enchants.type.EnchantmentType;
+import wbs.enchants.type.EnchantmentTypeManager;
 import wbs.enchants.util.BlockChanger;
 import wbs.enchants.util.BlockQueryUtils;
 import wbs.utils.util.WbsSound;
@@ -95,5 +97,10 @@ public class BlastMinerEnchant extends AbstractMultiBreakEnchant {
 
         EFFECT.play(broken.getLocation());
         SOUND.play(broken.getLocation());
+    }
+
+    @Override
+    public EnchantmentType getType() {
+        return EnchantmentTypeManager.PARADOXICAL;
     }
 }

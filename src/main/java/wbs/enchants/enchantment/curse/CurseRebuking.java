@@ -1,11 +1,8 @@
 package wbs.enchants.enchantment.curse;
 
-import io.papermc.paper.registry.keys.tags.EnchantmentTagKeys;
 import io.papermc.paper.registry.keys.tags.ItemTypeTagKeys;
-import io.papermc.paper.registry.tag.TagKey;
 import org.bukkit.damage.DamageSource;
 import org.bukkit.damage.DamageType;
-import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Projectile;
@@ -18,9 +15,9 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import wbs.enchants.WbsEnchantment;
 import wbs.enchants.enchantment.helper.DamageEnchant;
+import wbs.enchants.type.EnchantmentType;
+import wbs.enchants.type.EnchantmentTypeManager;
 import wbs.enchants.util.EntityUtils;
-
-import java.util.List;
 
 public class CurseRebuking extends WbsEnchantment implements DamageEnchant {
     public static final int PERCENT_PER_LEVEL = 20;
@@ -66,11 +63,8 @@ public class CurseRebuking extends WbsEnchantment implements DamageEnchant {
         }
     }
 
-    @SuppressWarnings("UnstableApiUsage")
     @Override
-    public @NotNull List<TagKey<Enchantment>> addToTags() {
-        return List.of(
-                EnchantmentTagKeys.CURSE
-        );
+    public EnchantmentType getType() {
+        return EnchantmentTypeManager.CURSE;
     }
 }

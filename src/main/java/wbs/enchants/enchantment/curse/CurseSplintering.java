@@ -1,21 +1,18 @@
 package wbs.enchants.enchantment.curse;
 
-import io.papermc.paper.registry.keys.tags.EnchantmentTagKeys;
 import io.papermc.paper.registry.keys.tags.ItemTypeTagKeys;
-import io.papermc.paper.registry.tag.TagKey;
 import org.bukkit.Material;
 import org.bukkit.Tag;
 import org.bukkit.block.Block;
-import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.inventory.ItemStack;
-import org.jetbrains.annotations.NotNull;
 import wbs.enchants.WbsEnchantment;
+import wbs.enchants.type.EnchantmentType;
+import wbs.enchants.type.EnchantmentTypeManager;
 import wbs.utils.util.WbsMath;
 
-import java.util.List;
 import java.util.Random;
 
 public class CurseSplintering extends WbsEnchantment {
@@ -53,11 +50,8 @@ public class CurseSplintering extends WbsEnchantment {
         }
     }
 
-    @SuppressWarnings("UnstableApiUsage")
     @Override
-    public @NotNull List<TagKey<Enchantment>> addToTags() {
-        return List.of(
-                EnchantmentTagKeys.CURSE
-        );
+    public EnchantmentType getType() {
+        return EnchantmentTypeManager.CURSE;
     }
 }

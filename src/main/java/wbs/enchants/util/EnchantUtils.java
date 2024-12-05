@@ -4,12 +4,17 @@ import io.papermc.paper.registry.RegistryAccess;
 import io.papermc.paper.registry.RegistryKey;
 import io.papermc.paper.registry.TypedKey;
 import io.papermc.paper.registry.keys.tags.EnchantmentTagKeys;
+import net.kyori.adventure.text.Component;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.EnchantmentStorageMeta;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import wbs.enchants.EnchantManager;
 import wbs.enchants.WbsEnchantment;
+import wbs.enchants.WbsEnchants;
+import wbs.enchants.type.EnchantmentTypeManager;
+import wbs.utils.util.plugin.WbsMessageBuilder;
 import wbs.utils.util.string.RomanNumerals;
 
 import java.util.EnumSet;
@@ -58,45 +63,59 @@ public class EnchantUtils {
                 .getTag(EnchantmentTagKeys.CURSE).contains(TypedKey.create(RegistryKey.ENCHANTMENT, enchant.getKey()));
     }
 
-    public static WbsEnchantment getAsCustom(Enchantment enchantment) {
+    public static @Nullable WbsEnchantment getAsCustom(Enchantment enchantment) {
         return EnchantManager.getRegistered().stream()
                 .filter(check -> check.getKey().equals(enchantment.getKey()))
                 .findFirst()
                 .orElse(null);
     }
 
-    public static String getHoverText(Enchantment enchantment) {
-        return getHoverText(enchantment, EnumSet.noneOf(WbsEnchantment.HoverOptions.class));
+    public static Component getHoverText(Enchantment enchantment) {
+        return getHoverText(enchantment, null);
     }
 
-    public static String getHoverText(Enchantment enchantment, EnumSet<WbsEnchantment.HoverOptions> options) {
+    public static Component getHoverText(Enchantment enchantment, EnumSet<WbsEnchantment.HoverOptions> options) {
         WbsEnchantment customEnchantment = getAsCustom(enchantment);
         if (customEnchantment != null) {
             return customEnchantment.getHoverText(options);
         }
 
-        String text = "&h&m        &h " + enchantment.displayName(0) + "&h &m        ";
+        if (options == null) {
+            options = EnumSet.allOf(WbsEnchantment.HoverOptions.class);
+        }
+
+        WbsMessageBuilder builder = WbsEnchants.getInstance().buildMessage("&h&m        &h ")
+                .append(getDisplayName(enchantment))
+                .append(" &h&m        &h");
 
         if (options.contains(WbsEnchantment.HoverOptions.MAX_LEVEL)) {
-            text += "\n&rMax level: &h" + RomanNumerals.toRoman(enchantment.getMaxLevel()) + " (" + enchantment.getMaxLevel() + ")";
+            builder.append("\n&rMax level: &h" + RomanNumerals.toRoman(enchantment.getMaxLevel()) + " (" + enchantment.getMaxLevel() + ")");
         }
-
         if (options.contains(WbsEnchantment.HoverOptions.TARGET)) {
-            text += "\n&rTarget: &h#" + enchantment.getSupportedItems().registryKey().key().asString();
+            builder.append("\n&rTarget: &h#" + enchantment.getSupportedItems().registryKey().key().asString());
         }
-
         if (options.contains(WbsEnchantment.HoverOptions.DESCRIPTION)) {
             if (enchantment.key().namespace().equals("minecraft")) {
-                text += "\n&rDescription: [Vanilla Enchantment]";
+                builder.append("\n&rDescription: &hVanilla Enchantment");
             } else {
-                text += "\n&rDescription: &wUnknown";
+                builder.append("\n&rDescription: &hUnknown - Custom Enchantment");
             }
         }
 
-        return text;
+        return builder.toComponent();
     }
 
     public static boolean isWbsManaged(Enchantment enchantment) {
         return getAsCustom(enchantment) != null;
+    }
+
+    public static Component getDisplayName(Enchantment enchant) {
+        Component displayName = enchant.description();
+
+        if (!displayName.hasStyling()) {
+            displayName = displayName.color(EnchantmentTypeManager.getType(enchant).getColour());
+        }
+
+        return displayName;
     }
 }

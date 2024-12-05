@@ -1,19 +1,15 @@
 package wbs.enchants.enchantment.curse;
 
-import io.papermc.paper.registry.keys.tags.EnchantmentTagKeys;
-import io.papermc.paper.registry.tag.TagKey;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.attribute.AttributeInstance;
-import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.inventory.ItemStack;
-import org.jetbrains.annotations.NotNull;
 import wbs.enchants.WbsEnchantment;
-
-import java.util.List;
+import wbs.enchants.type.EnchantmentType;
+import wbs.enchants.type.EnchantmentTypeManager;
 
 public class CurseCowardice extends WbsEnchantment {
     private static final String DEFAULT_DESCRIPTION = "A curse that turns your weapon fearful, reducing its damage " +
@@ -51,11 +47,8 @@ public class CurseCowardice extends WbsEnchantment {
         }
     }
 
-    @SuppressWarnings("UnstableApiUsage")
     @Override
-    public @NotNull List<TagKey<Enchantment>> addToTags() {
-        return List.of(
-                EnchantmentTagKeys.CURSE
-        );
+    public EnchantmentType getType() {
+        return EnchantmentTypeManager.CURSE;
     }
 }

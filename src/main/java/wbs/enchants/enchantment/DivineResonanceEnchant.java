@@ -1,20 +1,17 @@
 package wbs.enchants.enchantment;
 
-import io.papermc.paper.registry.tag.TagKey;
 import org.bukkit.Sound;
 import org.bukkit.block.Bell;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Monster;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.block.BellRingEvent;
-import org.bukkit.inventory.ItemType;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.jetbrains.annotations.NotNull;
 import wbs.enchants.WbsEnchantment;
 import wbs.enchants.WbsEnchants;
-import wbs.enchants.WbsEnchantsBootstrap;
 import wbs.enchants.enchantment.helper.BlockEnchant;
 import wbs.utils.util.WbsSound;
 import wbs.utils.util.entities.selector.RadiusSelector;
@@ -38,11 +35,6 @@ public class DivineResonanceEnchant extends WbsEnchantment implements BlockEncha
     @Override
     public String getDefaultDisplayName() {
         return "Divine Resonance";
-    }
-
-    @Override
-    public TagKey<ItemType> getDefaultSupportedItems() {
-        return WbsEnchantsBootstrap.BELL;
     }
 
     @Override

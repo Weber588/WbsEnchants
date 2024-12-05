@@ -30,7 +30,7 @@ public class PinpointEnchant extends WbsEnchantment implements DamageEnchant {
 
     @Override
     public String getDefaultDisplayName() {
-        return "&7Pinpoint";
+        return "Pinpoint";
     }
 
     @Override

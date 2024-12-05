@@ -10,25 +10,24 @@ import io.papermc.paper.command.brigadier.argument.ArgumentTypes;
 import io.papermc.paper.command.brigadier.argument.CustomArgumentType;
 import net.kyori.adventure.text.Component;
 import org.jetbrains.annotations.NotNull;
-import wbs.enchants.EnchantManager;
-import wbs.enchants.WbsEnchantment;
 import wbs.enchants.WbsEnchants;
+import wbs.enchants.type.EnchantmentType;
+import wbs.enchants.type.EnchantmentTypeManager;
 
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 
-@SuppressWarnings("UnstableApiUsage")
-public class CustomEnchantArgumentType implements CustomArgumentType<WbsEnchantment, Component> {
+public class EnchantmentTypeArgumentType implements CustomArgumentType<EnchantmentType, Component> {
     @Override
-    public @NotNull WbsEnchantment parse(@NotNull StringReader stringReader) throws CommandSyntaxException {
-        String[] inputs = stringReader.readString().split(" ");
-        String search = inputs[inputs.length - 1];
-        WbsEnchants.getInstance().getLogger().info("searching for enchantment: " + search
+    public @NotNull EnchantmentType parse(@NotNull StringReader stringReader) throws CommandSyntaxException {
+        String search = stringReader.readString();
+
+        WbsEnchants.getInstance().getLogger().info("searching for enchantment type: " + search
                 + " (via string reader: " + stringReader + ")");
 
-        Optional<WbsEnchantment> found = EnchantManager.getRegistered()
+        Optional<EnchantmentType> found = EnchantmentTypeManager.getRegistered()
                 .stream()
-                .filter(ench -> ench.matches(search))
+                .filter(type -> type.matches(search))
                 .findFirst();
 
         if (found.isPresent()) {
@@ -36,7 +35,7 @@ public class CustomEnchantArgumentType implements CustomArgumentType<WbsEnchantm
         } else {
             throw new CommandSyntaxException(
                     CommandSyntaxException.BUILT_IN_EXCEPTIONS.dispatcherParseException(),
-                    () -> "Enchantment not found: " + search + ".");
+                    () -> "Type not found: " + search + ".");
         }
     }
 
@@ -48,8 +47,8 @@ public class CustomEnchantArgumentType implements CustomArgumentType<WbsEnchantm
     @Override
     public <S> @NotNull CompletableFuture<Suggestions> listSuggestions(@NotNull CommandContext<S> context,
                                                                        @NotNull SuggestionsBuilder builder) {
-        for (WbsEnchantment ench : EnchantManager.getRegistered()) {
-            builder.suggest(ench.getKey().getKey());
+        for (EnchantmentType type : EnchantmentTypeManager.getRegistered()) {
+            builder.suggest(type.getKey().getKey());
         }
 
         return builder.buildFuture();

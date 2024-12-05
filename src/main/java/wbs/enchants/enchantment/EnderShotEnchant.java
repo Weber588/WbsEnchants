@@ -13,6 +13,8 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.util.RayTraceResult;
 import org.bukkit.util.Vector;
 import wbs.enchants.WbsEnchantment;
+import wbs.enchants.type.EnchantmentType;
+import wbs.enchants.type.EnchantmentTypeManager;
 import wbs.utils.util.WbsMath;
 import wbs.utils.util.particles.LineParticleEffect;
 import wbs.utils.util.particles.NormalParticleEffect;
@@ -84,5 +86,10 @@ public class EnderShotEnchant extends WbsEnchantment {
                 EFFECT.play(lineStartLocation, teleportLocation);
             }
         }
+    }
+
+    @Override
+    public EnchantmentType getType() {
+        return EnchantmentTypeManager.ETHEREAL;
     }
 }
