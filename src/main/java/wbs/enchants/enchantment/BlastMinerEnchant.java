@@ -2,8 +2,6 @@ package wbs.enchants.enchantment;
 
 import io.papermc.paper.registry.keys.tags.ItemTypeTagKeys;
 import org.bukkit.Material;
-import org.bukkit.Particle;
-import org.bukkit.Sound;
 import org.bukkit.Tag;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
@@ -17,10 +15,6 @@ import wbs.enchants.type.EnchantmentType;
 import wbs.enchants.type.EnchantmentTypeManager;
 import wbs.enchants.util.BlockChanger;
 import wbs.enchants.util.BlockQueryUtils;
-import wbs.utils.util.WbsSound;
-import wbs.utils.util.WbsSoundGroup;
-import wbs.utils.util.particles.NormalParticleEffect;
-import wbs.utils.util.particles.WbsParticleGroup;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -29,14 +23,6 @@ import java.util.function.Predicate;
 public class BlastMinerEnchant extends AbstractMultiBreakEnchant {
     private static final String DEFAULT_DESCRIPTION = "Mines a 3x1x3 square when you mine a stone-type block, " +
             "increasing layers every level, for a maximum of 3x%max_level%x3 at level %max_level%.";
-
-    private static final WbsParticleGroup EFFECT = new WbsParticleGroup()
-            .addEffect(new NormalParticleEffect().setAmount(1), Particle.EXPLOSION);
-    private static final WbsSoundGroup SOUND = new WbsSoundGroup();
-
-    static {
-        SOUND.addSound(new WbsSound(Sound.ENTITY_GENERIC_EXPLODE));
-    }
 
     public BlastMinerEnchant() {
         super("blast_miner", DEFAULT_DESCRIPTION);
@@ -95,8 +81,7 @@ public class BlastMinerEnchant extends AbstractMultiBreakEnchant {
                 .setMatching(matching)
                 .breakBlocks(player);
 
-        EFFECT.play(broken.getLocation());
-        SOUND.play(broken.getLocation());
+        broken.getWorld().createExplosion(broken.getLocation(), 2f, false, false, player);
     }
 
     @Override
