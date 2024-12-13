@@ -2,6 +2,8 @@ package wbs.enchants;
 
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.YamlConfiguration;
+import wbs.enchants.type.EnchantmentType;
+import wbs.enchants.type.EnchantmentTypeManager;
 import wbs.utils.util.plugin.WbsSettings;
 
 @SuppressWarnings("unused")
@@ -20,6 +22,7 @@ public class EnchantsSettings extends WbsSettings {
         loadConfig();
     //    EnchantManager.buildDatapack();
         loadEnchants();
+        EnchantmentTypeManager.getRegistered().forEach(EnchantmentType::registerListeners);
     }
 
     private void loadConfig() {
@@ -32,6 +35,7 @@ public class EnchantsSettings extends WbsSettings {
         return developerMode;
     }
 
+    // TODO: Move this into the bootstrap phase
     private void loadEnchants() {
         enchantsFile = loadConfigSafely(genConfig("enchantments.yml"));
 

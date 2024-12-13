@@ -62,6 +62,7 @@ public class EnchantManager {
     public static final EchoingEnchant ECHOING = new EchoingEnchant();
     public static final DimensionalStabilityEnchant DIMENSIONAL_STABILITY = new DimensionalStabilityEnchant();
     public static final AnimaConduitEnchant ANIMA_CONDUIT = new AnimaConduitEnchant();
+    public static final TreeFellerEnchant TREE_FELLER = new TreeFellerEnchant();
 
     public static final CurseRebuking CURSE_REBUKING = new CurseRebuking();
     public static final CurseVanilla CURSE_VANILLA = new CurseVanilla();

@@ -6,6 +6,7 @@ import io.papermc.paper.command.brigadier.CommandSourceStack;
 import io.papermc.paper.registry.RegistryAccess;
 import io.papermc.paper.registry.RegistryKey;
 import net.kyori.adventure.text.Component;
+import org.bukkit.Keyed;
 import org.bukkit.Material;
 import org.bukkit.command.CommandSender;
 import org.bukkit.enchantments.Enchantment;
@@ -18,6 +19,7 @@ import wbs.utils.util.WbsEnums;
 import wbs.utils.util.plugin.WbsMessageBuilder;
 import wbs.utils.util.plugin.WbsPlugin;
 
+import java.util.Comparator;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -52,6 +54,8 @@ public class SubcommandHeld extends EnchantmentSubcommand {
             if (enchants.isEmpty()) {
                 plugin.sendMessage(WbsEnums.toPrettyString(held.getType()) + " does not support any enchantments.", sender);
             } else {
+                enchants.sort(Comparator.comparing(Keyed::getKey));
+
                 WbsMessageBuilder builder = plugin.buildMessage(
                         WbsEnums.toPrettyString(held.getType()) + " supports the following enchantment(s):\n"
                 );

@@ -64,10 +64,6 @@ public class BlockChanger {
 
         WbsEnchants plugin = WbsEnchants.getInstance();
 
-        // Helps with developing -- UberEnchants doesn't allow proper deregistering of events on reload
-        if (!plugin.isEnabled()) {
-            return;
-        }
         new BukkitRunnable() {
             @Override
             public void run() {
@@ -110,7 +106,7 @@ public class BlockChanger {
                             return false;
                         }
 
-                        toUpdate = blocksToUpdate.remove(0);
+                        toUpdate = blocksToUpdate.removeFirst();
                     } while (!matching.test(toUpdate));
 
                     updated = apply(toUpdate, operation);

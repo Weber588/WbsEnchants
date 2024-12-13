@@ -4,6 +4,7 @@ import com.mojang.brigadier.Command;
 import com.mojang.brigadier.context.CommandContext;
 import io.papermc.paper.command.brigadier.CommandSourceStack;
 import net.kyori.adventure.text.Component;
+import org.bukkit.Keyed;
 import org.bukkit.command.CommandSender;
 import org.bukkit.enchantments.Enchantment;
 import org.jetbrains.annotations.NotNull;
@@ -16,6 +17,7 @@ import wbs.utils.util.plugin.WbsMessageBuilder;
 import wbs.utils.util.plugin.WbsPlugin;
 import wbs.utils.util.string.RomanNumerals;
 
+import java.util.Comparator;
 import java.util.List;
 
 @SuppressWarnings("UnstableApiUsage")
@@ -60,6 +62,8 @@ public class SubcommandInfo extends EnchantmentSubcommand {
         if (enchant instanceof ConflictEnchantment conflictEnchant) {
             plugin.sendMessageNoPrefix("Conflicts with: &h" + conflictEnchant.getConflictsDescription(), sender);
         } else if (!conflicts.isEmpty()) {
+            conflicts.sort(Comparator.comparing(Keyed::getKey));
+
             WbsMessageBuilder messageBuilder = plugin.buildMessageNoPrefix("Conflicts with:");
 
             for (Enchantment conflict : conflicts) {

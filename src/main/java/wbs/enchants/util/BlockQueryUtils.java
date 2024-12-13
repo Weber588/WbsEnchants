@@ -44,8 +44,11 @@ public class BlockQueryUtils {
 
         return found;
     }
-
     public static List<Block> getVeinMatching(@NotNull Block central, int blocksToGet, Predicate<Block> matching) {
+        return getVeinMatching(central, blocksToGet, matching, false);
+    }
+
+    public static List<Block> getVeinMatching(@NotNull Block central, int blocksToGet, Predicate<Block> matching, boolean includeDiagonals) {
         List<Block> found = new LinkedList<>();
         found.add(central);
 
@@ -58,7 +61,7 @@ public class BlockQueryUtils {
 
         // +1 to account for the first element being the central block
         while (found.size() < blocksToGet + 1 && current != null) {
-            List<Block> adjacent = getAdjacentBlocks(current, finalPredicate);
+            List<Block> adjacent = getAdjacentBlocks(current, finalPredicate, includeDiagonals);
 
             found.addAll(adjacent);
             searchQueue.addAll(adjacent);
@@ -75,20 +78,52 @@ public class BlockQueryUtils {
     }
 
     public static List<Block> getAdjacentBlocks(@NotNull Block central, Predicate<Block> matching) {
+        return getAdjacentBlocks(central, matching, false);
+    }
+
+    public static List<Block> getAdjacentBlocks(@NotNull Block central, Predicate<Block> matching, boolean includeDiagonals) {
         int centralX = central.getX();
         int centralY = central.getY();
         int centralZ = central.getZ();
 
         World world = central.getWorld();
 
-        return List.of(
+        List<Block> blocks = new LinkedList<>(List.of(
                 world.getBlockAt(centralX + 1, centralY, centralZ),
                 world.getBlockAt(centralX - 1, centralY, centralZ),
                 world.getBlockAt(centralX, centralY + 1, centralZ),
                 world.getBlockAt(centralX, centralY - 1, centralZ),
                 world.getBlockAt(centralX, centralY, centralZ + 1),
-                world.getBlockAt(centralX, centralY, centralZ -1)
-        ).stream()
+                world.getBlockAt(centralX, centralY, centralZ - 1)
+        ));
+
+        if (includeDiagonals) {
+            blocks.addAll(List.of(
+                    // Edge diagonals
+                    world.getBlockAt(centralX + 1, centralY + 1, centralZ),
+                    world.getBlockAt(centralX - 1, centralY + 1, centralZ),
+                    world.getBlockAt(centralX, centralY + 1, centralZ + 1),
+                    world.getBlockAt(centralX, centralY + 1, centralZ - 1),
+
+                    world.getBlockAt(centralX + 1, centralY - 1, centralZ),
+                    world.getBlockAt(centralX - 1, centralY - 1, centralZ),
+                    world.getBlockAt(centralX, centralY - 1, centralZ + 1),
+                    world.getBlockAt(centralX, centralY - 1, centralZ - 1),
+
+                    // Corner diagonals
+                    world.getBlockAt(centralX + 1, centralY - 1, centralZ + 1),
+                    world.getBlockAt(centralX - 1, centralY - 1, centralZ + 1),
+                    world.getBlockAt(centralX + 1, centralY - 1, centralZ + 1),
+                    world.getBlockAt(centralX + 1, centralY - 1, centralZ - 1),
+
+                    world.getBlockAt(centralX + 1, centralY - 1, centralZ + 1),
+                    world.getBlockAt(centralX - 1, centralY - 1, centralZ + 1),
+                    world.getBlockAt(centralX + 1, centralY - 1, centralZ + 1),
+                    world.getBlockAt(centralX + 1, centralY - 1, centralZ - 1)
+            ));
+        }
+
+        return blocks.stream()
                 .filter(matching)
                 .collect(Collectors.toList());
     }
@@ -139,5 +174,20 @@ public class BlockQueryUtils {
         return found.stream()
                 .filter(matching)
                 .collect(Collectors.toList());
+    }
+
+    public static List<Block> getAdjacent(@NotNull List<Block> surrounding, Predicate<Block> matching) {
+        List<Block> allAdjacent = new LinkedList<>();
+        for (Block block : surrounding) {
+            List<Block> adjacent = getAdjacentBlocks(block, matching);
+
+            adjacent.forEach(toAdd -> {
+                if (!allAdjacent.contains(toAdd)) {
+                    allAdjacent.add(toAdd);
+                }
+            });
+        }
+
+        return allAdjacent;
     }
 }

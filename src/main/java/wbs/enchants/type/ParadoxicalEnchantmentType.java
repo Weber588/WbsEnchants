@@ -1,7 +1,6 @@
 package wbs.enchants.type;
 
 import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextColor;
 import org.jetbrains.annotations.NotNull;
 
@@ -18,6 +17,6 @@ public class ParadoxicalEnchantmentType extends EnchantmentType {
 
     @Override
     public TextColor getColour() {
-        return NamedTextColor.DARK_PURPLE;
+        return TextColor.color(0xaa77aa);
     }
 }
