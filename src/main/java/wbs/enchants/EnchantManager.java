@@ -65,6 +65,7 @@ public class EnchantManager {
     public static final TreeFellerEnchant TREE_FELLER = new TreeFellerEnchant();
     public static final SpiritheartEnchant SPIRITHEART = new SpiritheartEnchant();
     public static final AfterlifeEnchant AFTERLIFE = new AfterlifeEnchant();
+    public static final CavingEnchant CAVING = new CavingEnchant();
 
     public static final CurseRebuking CURSE_REBUKING = new CurseRebuking();
     public static final CurseVanilla CURSE_VANILLA = new CurseVanilla();
