@@ -125,8 +125,8 @@ public class WbsEnchantsBootstrap implements PluginBootstrap {
     private static Set<CustomTag<Enchantment>> getEnchantmentTags() {
         return Set.of(
                 CustomTag.getKeyTag(EXCLUSIVE_SET_SELF_REPAIRING,
-                        TypedKey.create(RegistryKey.ENCHANTMENT, NamespacedKey.minecraft("mending")),
-                        TypedKey.create(RegistryKey.ENCHANTMENT, new NamespacedKey("nova_structures", "photosynthesis"))
+                        TypedKey.create(RegistryKey.ENCHANTMENT, NamespacedKey.minecraft("mending"))
+                     //   TypedKey.create(RegistryKey.ENCHANTMENT, new NamespacedKey("nova_structures", "photosynthesis"))
                 ),
                 CustomTag.getKeyTag(EXCLUSIVE_SET_FALL_DAMAGE_AFFECTING,
                         TypedKey.create(RegistryKey.ENCHANTMENT, NamespacedKey.minecraft("feather_falling"))

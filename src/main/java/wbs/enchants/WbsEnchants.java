@@ -9,10 +9,7 @@ import io.papermc.paper.plugin.lifecycle.event.types.LifecycleEvents;
 import org.bukkit.event.HandlerList;
 import org.bukkit.plugin.Plugin;
 import org.jetbrains.annotations.NotNull;
-import wbs.enchants.command.Subcommand;
-import wbs.enchants.command.SubcommandHeld;
-import wbs.enchants.command.SubcommandInfo;
-import wbs.enchants.command.SubcommandList;
+import wbs.enchants.command.*;
 import wbs.enchants.events.LeashEvents;
 import wbs.utils.util.plugin.WbsPlugin;
 
@@ -36,7 +33,8 @@ public class WbsEnchants extends WbsPlugin {
         List<Subcommand> subcommands = List.of(
                 new SubcommandInfo(this, "info"),
                 new SubcommandList(this, "list"),
-                new SubcommandHeld(this, "held")
+                new SubcommandHeld(this, "held"),
+                new SubcommandAdd(this, "add")
         );
 
         LifecycleEventManager<@NotNull Plugin> manager = this.getLifecycleManager();

@@ -16,13 +16,24 @@ public abstract class EnchantmentSubcommand extends Subcommand {
     @Override
     public LiteralArgumentBuilder<CommandSourceStack> getArgument() {
         return Commands.literal(label)
+                .requires(this::canRun)
                 .executes(this::executeNoArgs)
                 .then(Commands.argument("enchantment", new CustomEnchantArgumentType())
                         .executes(this::execute)
+                        .then(Commands.argument("level", new EnchantmentLevelArgumentType())
+                                .executes(this::executeLevel)
+                        )
                 );
+    }
+
+    protected boolean canRun(CommandSourceStack context) {
+        return true;
     }
 
     protected abstract int executeNoArgs(CommandContext<CommandSourceStack> context);
 
     protected abstract int execute(CommandContext<CommandSourceStack> context);
+    protected int executeLevel(CommandContext<CommandSourceStack> context) {
+        return execute(context);
+    }
 }

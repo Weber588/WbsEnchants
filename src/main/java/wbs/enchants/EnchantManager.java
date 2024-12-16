@@ -66,6 +66,7 @@ public class EnchantManager {
     public static final SpiritheartEnchant SPIRITHEART = new SpiritheartEnchant();
     public static final AfterlifeEnchant AFTERLIFE = new AfterlifeEnchant();
     public static final CavingEnchant CAVING = new CavingEnchant();
+    public static final EarthboundEnchant EARTHBOUND = new EarthboundEnchant();
 
     public static final CurseRebuking CURSE_REBUKING = new CurseRebuking();
     public static final CurseVanilla CURSE_VANILLA = new CurseVanilla();
