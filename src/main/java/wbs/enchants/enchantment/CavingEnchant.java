@@ -3,6 +3,8 @@ package wbs.enchants.enchantment;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
+import org.bukkit.block.BlockFace;
+import org.bukkit.block.BlockSupport;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.player.PlayerMoveEvent;
@@ -13,8 +15,11 @@ import wbs.enchants.WbsEnchantment;
 import wbs.enchants.WbsEnchantsBootstrap;
 
 import java.util.List;
+import java.util.Set;
 
 public class CavingEnchant extends WbsEnchantment {
+    public static final Set<Material> PLACEABLE_TYPES = Set.of(Material.TORCH, Material.SOUL_TORCH);
+    public static final int LIGHT_LEVEL_REQUIRED = 2;
     public static final String DESCRIPTION = "Torches inside bundles on your hotbar with this enchantment " +
             "will automatically place themselves on the ground when you walk into the dark!";
 
@@ -35,16 +40,24 @@ public class CavingEnchant extends WbsEnchantment {
         Location from = event.getFrom();
         Location to = event.getTo();
 
-        if (from.toBlockLocation().equals(to.toBlockLocation())) {
+        if (from.getBlock().equals(to.getBlock())) {
+            return;
+        }
+
+        if (to.getBlock().getLightFromBlocks() > LIGHT_LEVEL_REQUIRED) {
+            return;
+        }
+        Block block = to.getBlock();
+        if (!to.getBlock().isReplaceable()) {
+            return;
+        }
+
+        Block onBlock = block.getRelative(BlockFace.DOWN);
+        if (!onBlock.getBlockData().isFaceSturdy(BlockFace.UP, BlockSupport.CENTER)) {
             return;
         }
 
         Player player = event.getPlayer();
-        Block block = player.getLocation().getBlock();
-        if (!block.isBuildable()) {
-            return;
-        }
-
         PlayerInventory inventory = player.getInventory();
         boolean placedTorch = false;
         for (int i = 0; i < 9; i++) {
@@ -62,14 +75,19 @@ public class CavingEnchant extends WbsEnchantment {
                     List<ItemStack> bundleItems = bundle.getItems();
 
                     for (ItemStack bundleItem : bundleItems) {
-                        // TODO: Add support for other types (Lanterns?)
-                        if (bundleItem.getType() == Material.TORCH) {
+                        Material type = bundleItem.getType();
+                        if (PLACEABLE_TYPES.contains(type)) {
                             bundleItem.setAmount(bundleItem.getAmount() - 1);
 
-                            block.setType(bundleItem.getType());
+                            block.setType(type);
                             placedTorch = true;
                             break;
                         }
+                    }
+
+                    if (placedTorch) {
+                        bundle.setItems(bundleItems);
+                        hotbarItem.setItemMeta(bundle);
                     }
                 }
             }
