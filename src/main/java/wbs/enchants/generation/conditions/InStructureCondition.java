@@ -1,12 +1,11 @@
 package wbs.enchants.generation.conditions;
 
-import org.bukkit.*;
+import org.bukkit.Location;
+import org.bukkit.NamespacedKey;
+import org.bukkit.Registry;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.generator.structure.StructureType;
-import org.bukkit.generator.structure.Structure;
-import org.bukkit.util.StructureSearchResult;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 import wbs.utils.exceptions.InvalidConfigurationException;
 
 import java.util.stream.Collectors;
@@ -14,12 +13,10 @@ import java.util.stream.Collectors;
 public class InStructureCondition extends GenerationCondition {
     public static final String KEY = "in-structure";
 
-    @Nullable
-    private final Structure structure;
     @NotNull
     private final StructureType type;
 
-    protected InStructureCondition(@NotNull String key, ConfigurationSection parentSection, String directory) {
+    public InStructureCondition(@NotNull String key, ConfigurationSection parentSection, String directory) {
         super(key, parentSection, directory);
 
         String typeString;
@@ -33,7 +30,7 @@ public class InStructureCondition extends GenerationCondition {
 
         if (typeString == null) {
             throw new InvalidConfigurationException("Specify a structure type: " +
-                    Registry.STRUCTURE.stream()
+                    Registry.STRUCTURE_TYPE.stream()
                             .map(structure -> structure.getKey().toString())
                             .collect(Collectors.joining(", ")),
                     directory);
@@ -45,44 +42,28 @@ public class InStructureCondition extends GenerationCondition {
             structureKey = NamespacedKey.minecraft(typeString);
         }
 
-        structure = Registry.STRUCTURE.get(structureKey);
-
-        if (structure != null) {
-            type = structure.getStructureType();
+        StructureType check = Registry.STRUCTURE_TYPE.get(structureKey);
+        if (check != null) {
+            type = check;
         } else {
-            StructureType type = Registry.STRUCTURE_TYPE.get(structureKey);
-            if (type != null) {
-                this.type = type;
-            } else {
-                throw new InvalidConfigurationException("Invalid structure type \"" + typeString + "\". Valid options: " +
-                        Registry.STRUCTURE.stream()
-                                .map(structure -> structure.getKey().toString())
-                                .collect(Collectors.joining(", ")),
-                        directory);
-            }
+            throw new InvalidConfigurationException("Specify a structure type: " +
+                    Registry.STRUCTURE_TYPE.stream()
+                            .map(structure -> structure.getKey().toString())
+                            .collect(Collectors.joining(", ")),
+                    directory);
         }
     }
 
     @Override
     public boolean test(Location location) {
-
-        // why no work </3
-        // Chunk chunk = location.getChunk();
-        // GeneratedStructure structure = chunk.getStructures();
-
-        // Hacky way for now
-        World world = location.getWorld();
-        if (world == null) {
-            return false;
-        }
-
-        StructureSearchResult structureSearchResult;
-        if (structure != null) {
-            structureSearchResult = world.locateNearestStructure(location, structure, 16, false);
-        } else {
-            structureSearchResult = world.locateNearestStructure(location, type, 16, false);
-        }
-
-        return structureSearchResult != null;
+        return location.getChunk()
+                .getStructures()
+                .stream()
+                .anyMatch(generated -> {
+                    if (generated.getStructure().getStructureType() == type) {
+                        return generated.getBoundingBox().contains(location.toVector());
+                    }
+                    return false;
+                });
     }
 }

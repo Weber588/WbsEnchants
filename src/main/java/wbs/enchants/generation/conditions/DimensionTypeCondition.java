@@ -24,15 +24,27 @@ public class DimensionTypeCondition extends GenerationCondition {
         ConfigurationSection section = parentSection.getConfigurationSection(key);
         if (section != null) {
             typeStrings = section.getStringList("type");
-            directory = directory + "/type";
+            directory = directory + "/" + KEY;
         } else {
             typeStrings = parentSection.getStringList(KEY);
         }
 
         if (typeStrings.isEmpty()) {
-            throw new InvalidConfigurationException("Specify a dimension type: " +
-                    WbsEnums.joiningPrettyStrings(World.Environment.class),
-                    directory);
+            String single = null;
+            if (section != null) {
+                single = section.getString("type");
+                directory = directory + "/" + KEY;
+            } else {
+                single = parentSection.getString(KEY);
+            }
+
+            if (single == null) {
+                throw new InvalidConfigurationException("Specify a dimension type: " +
+                        WbsEnums.joiningPrettyStrings(World.Environment.class),
+                        directory);
+            } else {
+                typeStrings.add(single);
+            }
         }
 
         for (String typeString : typeStrings) {

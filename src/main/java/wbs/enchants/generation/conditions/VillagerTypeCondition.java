@@ -19,7 +19,7 @@ public class VillagerTypeCondition extends GenerationCondition {
         if (section != null) {
             typeString = section.getString("type");
         } else {
-            typeString = parentSection.getString("type");
+            typeString = parentSection.getString(key);
         }
 
         if (typeString == null) {

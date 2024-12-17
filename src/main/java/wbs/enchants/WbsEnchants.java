@@ -34,7 +34,9 @@ public class WbsEnchants extends WbsPlugin {
                 new SubcommandInfo(this, "info"),
                 new SubcommandList(this, "list"),
                 new SubcommandHeld(this, "held"),
-                new SubcommandAdd(this, "add")
+                new SubcommandAdd(this, "add"),
+                new SubcommandReload(this, "reload"),
+                new SubcommandErrors(this, "errors")
         );
 
         LifecycleEventManager<@NotNull Plugin> manager = this.getLifecycleManager();

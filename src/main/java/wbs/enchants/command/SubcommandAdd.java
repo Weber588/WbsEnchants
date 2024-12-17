@@ -7,6 +7,7 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import wbs.enchants.WbsEnchantment;
 import wbs.utils.util.plugin.WbsPlugin;
 
@@ -21,6 +22,21 @@ public class SubcommandAdd extends EnchantmentSubcommand {
         CommandSender sender = context.getSource().getSender();
         plugin.sendMessage("Usage: &h/cench add <enchantment>", sender);
         return 0;
+    }
+
+    @Override
+    protected boolean filter(@Nullable CommandContext<?> context, WbsEnchantment enchantment) {
+        if (context == null) {
+            return true;
+        }
+
+        if (context.getSource() instanceof CommandSourceStack source) {
+            if (source.getSender() instanceof Player player) {
+                return enchantment.getEnchantment().canEnchantItem(player.getInventory().getItemInMainHand());
+            }
+        }
+
+        return true;
     }
 
     @Override

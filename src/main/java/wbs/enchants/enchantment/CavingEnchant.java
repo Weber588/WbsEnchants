@@ -19,7 +19,7 @@ import java.util.Set;
 
 public class CavingEnchant extends WbsEnchantment {
     public static final Set<Material> PLACEABLE_TYPES = Set.of(Material.TORCH, Material.SOUL_TORCH);
-    public static final int LIGHT_LEVEL_REQUIRED = 2;
+    public static final int LIGHT_LEVEL_REQUIRED = 0;
     public static final String DESCRIPTION = "Torches inside bundles on your hotbar with this enchantment " +
             "will automatically place themselves on the ground when you walk into the dark!";
 
@@ -77,7 +77,11 @@ public class CavingEnchant extends WbsEnchantment {
                     for (ItemStack bundleItem : bundleItems) {
                         Material type = bundleItem.getType();
                         if (PLACEABLE_TYPES.contains(type)) {
-                            bundleItem.setAmount(bundleItem.getAmount() - 1);
+                            if (bundleItem.getAmount() == 1) {
+                                bundleItems.remove(bundleItem);
+                            } else {
+                                bundleItem.setAmount(bundleItem.getAmount() - 1);
+                            }
 
                             block.setType(type);
                             placedTorch = true;

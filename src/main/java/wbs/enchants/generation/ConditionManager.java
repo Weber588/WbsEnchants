@@ -23,6 +23,9 @@ public final class ConditionManager {
         registerContext(HeightCondition.KEY, HeightCondition::new);
         registerContext(BlockTypeCondition.KEY, BlockTypeCondition::new);
         registerContext(DimensionTypeCondition.KEY, DimensionTypeCondition::new);
+        registerContext(WorldCondition.KEY, WorldCondition::new);
+        registerContext(InStructureCondition.KEY, InStructureCondition::new);
+        registerContext(SpawnReasonCondition.KEY, SpawnReasonCondition::new);
     }
 
     public static void registerContext(String key, ConditionConstructor producer) {
@@ -50,7 +53,7 @@ public final class ConditionManager {
     }
 
     @FunctionalInterface
-    private interface ConditionConstructor {
+    public interface ConditionConstructor {
         GenerationCondition from(String key, ConfigurationSection parentSection, String directory);
     }
 }
