@@ -41,16 +41,14 @@ public class SubcommandAdd extends EnchantmentSubcommand {
 
     @Override
     protected int execute(CommandContext<CommandSourceStack> context) {
-        WbsEnchantment enchant = context.getArgument("enchantment", WbsEnchantment.class);
-        return enchant(context, enchant, 1);
+        return enchant(context, getEnchantment(context), 1);
     }
 
     @Override
     protected int executeLevel(CommandContext<CommandSourceStack> context) {
-        WbsEnchantment enchant = context.getArgument("enchantment", WbsEnchantment.class);
         int level = context.getArgument("level", Integer.class);
 
-        return enchant(context, enchant, level);
+        return enchant(context, getEnchantment(context), level);
     }
 
     private int enchant(CommandContext<CommandSourceStack> context, WbsEnchantment enchant, int level) {

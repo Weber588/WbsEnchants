@@ -1,11 +1,15 @@
 package wbs.enchants.command;
 
+import com.mojang.brigadier.arguments.IntegerArgumentType;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.context.CommandContext;
 import io.papermc.paper.command.brigadier.CommandSourceStack;
 import io.papermc.paper.command.brigadier.Commands;
+import io.papermc.paper.command.brigadier.argument.ArgumentTypes;
+import net.kyori.adventure.key.Key;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import wbs.enchants.EnchantManager;
 import wbs.enchants.WbsEnchantment;
 import wbs.utils.util.plugin.WbsPlugin;
 
@@ -20,9 +24,11 @@ public abstract class EnchantmentSubcommand extends Subcommand {
         return Commands.literal(label)
                 .requires(this::canRun)
                 .executes(this::executeNoArgs)
-                .then(Commands.argument("enchantment", new CustomEnchantArgumentType(this::filter))
+                .then(Commands.argument("enchantment", ArgumentTypes.key())
+                        .suggests(new CustomEnchantmentSuggestionProvider(this::filter))
                         .executes(this::execute)
-                        .then(Commands.argument("level", new EnchantmentLevelArgumentType())
+                        .then(Commands.argument("level", IntegerArgumentType.integer())
+                                .suggests(new EnchantmentLevelSuggestionProvider())
                                 .executes(this::executeLevel)
                         )
                 );
@@ -41,5 +47,11 @@ public abstract class EnchantmentSubcommand extends Subcommand {
     protected abstract int execute(CommandContext<CommandSourceStack> context);
     protected int executeLevel(CommandContext<CommandSourceStack> context) {
         return execute(context);
+    }
+
+    protected WbsEnchantment getEnchantment(CommandContext<CommandSourceStack> context) {
+        Key enchantKey = context.getArgument("enchantment", Key.class);
+
+        return EnchantManager.getFromKey(enchantKey);
     }
 }

@@ -1,5 +1,7 @@
 package wbs.enchants;
 
+import net.kyori.adventure.key.Key;
+import org.jetbrains.annotations.Nullable;
 import wbs.enchants.enchantment.*;
 import wbs.enchants.enchantment.curse.*;
 import wbs.utils.util.WbsFileUtil;
@@ -117,5 +119,13 @@ public class EnchantManager {
 
     public static List<WbsEnchantment> getRegistered() {
         return Collections.unmodifiableList(REGISTERED_ENCHANTMENTS);
+    }
+
+    public static @Nullable WbsEnchantment getFromKey(Key enchantKey) {
+        return REGISTERED_ENCHANTMENTS.stream()
+                .filter(enchant -> enchant.getKey().equals(enchantKey))
+                .findFirst()
+                .orElse(null);
+
     }
 }

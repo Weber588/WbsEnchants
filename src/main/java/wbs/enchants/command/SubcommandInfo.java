@@ -35,7 +35,7 @@ public class SubcommandInfo extends EnchantmentSubcommand {
 
     @Override
     protected int execute(CommandContext<CommandSourceStack> context) {
-        WbsEnchantment enchant = context.getArgument("enchantment", WbsEnchantment.class);
+        WbsEnchantment enchant = getEnchantment(context);
         CommandSender sender = context.getSource().getSender();
 
         int maxLevel = enchant.getEnchantment().getMaxLevel();
