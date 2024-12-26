@@ -41,4 +41,13 @@ public class SpawnReasonCondition extends GenerationCondition {
     public boolean test(Entity entity) {
         return entity.getEntitySpawnReason() == type;
     }
+
+    @Override
+    public String toString() {
+        return "SpawnReasonCondition{" +
+                "type=" + type +
+                ", key=" + key +
+                ", negated=" + negated +
+                '}';
+    }
 }

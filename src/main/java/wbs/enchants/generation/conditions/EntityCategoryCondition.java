@@ -44,4 +44,13 @@ public class EntityCategoryCondition extends GenerationCondition {
 
         return living.getCategory() == type;
     }
+
+    @Override
+    public String toString() {
+        return "EntityCategoryCondition{" +
+                "type=" + type +
+                ", key=" + key +
+                ", negated=" + negated +
+                '}';
+    }
 }

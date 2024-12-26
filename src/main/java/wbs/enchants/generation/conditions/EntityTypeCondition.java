@@ -41,4 +41,13 @@ public class EntityTypeCondition extends GenerationCondition {
     public boolean test(Entity entity) {
         return entity.getType() == type;
     }
+
+    @Override
+    public String toString() {
+        return "EntityTypeCondition{" +
+                "type=" + type +
+                ", key=" + key +
+                ", negated=" + negated +
+                '}';
+    }
 }

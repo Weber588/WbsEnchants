@@ -16,6 +16,7 @@ import org.jetbrains.annotations.NotNull;
 import wbs.enchants.WbsEnchants;
 import wbs.enchants.util.EnchantUtils;
 import wbs.utils.util.WbsEnums;
+import wbs.utils.util.commands.brigadier.WbsSubcommand;
 import wbs.utils.util.plugin.WbsMessageBuilder;
 import wbs.utils.util.plugin.WbsPlugin;
 
@@ -24,18 +25,13 @@ import java.util.LinkedList;
 import java.util.List;
 
 @SuppressWarnings("UnstableApiUsage")
-public class SubcommandHeld extends EnchantmentSubcommand {
-    public SubcommandHeld(@NotNull WbsPlugin plugin, @NotNull String label) {
-        super(plugin, label);
+public class SubcommandHeld extends WbsSubcommand {
+    public SubcommandHeld(@NotNull WbsPlugin plugin) {
+        super(plugin, "held");
     }
 
     @Override
     protected int executeNoArgs(CommandContext<CommandSourceStack> context) {
-        return execute(context);
-    }
-
-    @Override
-    protected int execute(CommandContext<CommandSourceStack> context) {
         CommandSender sender = context.getSource().getSender();
 
         if (sender instanceof Player player) {
@@ -78,7 +74,6 @@ public class SubcommandHeld extends EnchantmentSubcommand {
             return 0;
         }
     }
-
 
     private static void appendEnchant(WbsMessageBuilder builder, Enchantment enchant) {
         boolean isCustom = EnchantUtils.isWbsManaged(enchant);

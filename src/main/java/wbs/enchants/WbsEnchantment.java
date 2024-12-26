@@ -547,6 +547,10 @@ public abstract class WbsEnchantment implements Comparable<WbsEnchantment>, Keye
         return Component.text(getDisplayName()).color(getType().getColour());
     }
 
+    public List<GenerationContext> getGenerationContexts() {
+        return new LinkedList<>(generationContexts);
+    }
+
     public enum HoverOptions {
         MAX_LEVEL,
         TARGET,

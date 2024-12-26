@@ -43,4 +43,13 @@ public class VillagerTypeCondition extends GenerationCondition {
 
         return villager.getVillagerType() == type;
     }
+
+    @Override
+    public String toString() {
+        return "VillagerTypeCondition{" +
+                "type=" + type +
+                ", key=" + key +
+                ", negated=" + negated +
+                '}';
+    }
 }

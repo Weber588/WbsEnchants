@@ -29,4 +29,13 @@ public class WorldCondition extends GenerationCondition {
 
         return false;
     }
+
+    @Override
+    public String toString() {
+        return "WorldCondition{" +
+                "name='" + name + '\'' +
+                ", key=" + key +
+                ", negated=" + negated +
+                '}';
+    }
 }

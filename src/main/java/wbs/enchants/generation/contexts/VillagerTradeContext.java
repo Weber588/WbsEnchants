@@ -93,4 +93,14 @@ public class VillagerTradeContext extends GenerationContext {
             event.setRecipe(newRecipe);
         }
     }
+
+    @Override
+    public String toString() {
+        return "VillagerTradeContext{" +
+                "replaceableEnchants=" + replaceableEnchants +
+                ", enchantment=" + enchantment +
+                ", conditions=" + conditions +
+                ", key='" + key + '\'' +
+                '}';
+    }
 }

@@ -77,4 +77,17 @@ public class BiomeCondition extends GenerationCondition {
         return temp <= maxTemp && temp >= minTemp &&
                 humidity <= maxHumidity && humidity >= minHumidity;
     }
+
+    @Override
+    public String toString() {
+        return "BiomeCondition{" +
+                "maxHumidity=" + maxHumidity +
+                ", key=" + key +
+                ", matches=" + matches +
+                ", minTemp=" + minTemp +
+                ", maxTemp=" + maxTemp +
+                ", minHumidity=" + minHumidity +
+                ", negated=" + negated +
+                '}';
+    }
 }

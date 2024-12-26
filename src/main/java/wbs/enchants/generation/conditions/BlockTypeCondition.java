@@ -3,7 +3,6 @@ package wbs.enchants.generation.conditions;
 import org.bukkit.*;
 import org.bukkit.configuration.ConfigurationSection;
 import org.jetbrains.annotations.NotNull;
-import wbs.enchants.WbsEnchantment;
 import wbs.enchants.WbsEnchants;
 import wbs.utils.util.WbsEnums;
 
@@ -68,5 +67,15 @@ public class BlockTypeCondition extends GenerationCondition {
         }
 
         return false;
+    }
+
+    @Override
+    public String toString() {
+        return "BlockTypeCondition{" +
+                "exactMatches=" + exactMatches +
+                ", tagMatches=" + tagMatches +
+                ", key=" + key +
+                ", negated=" + negated +
+                '}';
     }
 }

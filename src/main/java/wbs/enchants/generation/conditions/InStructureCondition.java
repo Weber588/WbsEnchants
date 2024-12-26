@@ -66,4 +66,13 @@ public class InStructureCondition extends GenerationCondition {
                     return false;
                 });
     }
+
+    @Override
+    public String toString() {
+        return "InStructureCondition{" +
+                "type=" + type +
+                ", key=" + key +
+                ", negated=" + negated +
+                '}';
+    }
 }

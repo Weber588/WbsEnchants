@@ -13,8 +13,8 @@ import wbs.utils.util.plugin.WbsPlugin;
 
 @SuppressWarnings("UnstableApiUsage")
 public class SubcommandAdd extends EnchantmentSubcommand {
-    public SubcommandAdd(@NotNull WbsPlugin plugin, @NotNull String label) {
-        super(plugin, label);
+    public SubcommandAdd(@NotNull WbsPlugin plugin) {
+        super(plugin, "add");
     }
 
     @Override

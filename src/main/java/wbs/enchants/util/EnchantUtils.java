@@ -45,6 +45,7 @@ public class EnchantUtils {
     public static void addEnchantment(WbsEnchantment enchant, @NotNull ItemStack item, int level) {
         if (item.getItemMeta() instanceof EnchantmentStorageMeta meta) {
             meta.addStoredEnchant(enchant.getEnchantment(), level, true);
+            item.setItemMeta(meta);
         } else {
             item.addUnsafeEnchantment(enchant.getEnchantment(), level);
         }

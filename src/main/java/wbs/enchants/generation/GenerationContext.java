@@ -19,6 +19,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Objects;
 import java.util.Random;
+import java.util.stream.Collectors;
 
 public abstract class GenerationContext implements Listener {
     protected static final Random RANDOM = new Random(System.currentTimeMillis());
@@ -159,6 +160,17 @@ public abstract class GenerationContext implements Listener {
 
     public String getKey() {
         return key;
+    }
+
+    @Override
+    public String toString() {
+        return "GenerationContext{" +
+                "enchantment=" + enchantment.getKey().asString() +
+                ", conditions=" + conditions.stream().map(Object::toString).collect(Collectors.joining("; ")) +
+                ", chanceToRun=" + chanceToRun +
+                ", key='" + key + '\'' +
+                ", levelGenerator=" + levelGenerator +
+                '}';
     }
 
     protected record LevelGenerator(WbsEnchantment enchantment, int staticLevel, double scalingFactor, LevelMode mode) {

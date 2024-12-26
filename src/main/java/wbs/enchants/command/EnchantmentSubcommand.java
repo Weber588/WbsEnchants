@@ -11,27 +11,25 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import wbs.enchants.EnchantManager;
 import wbs.enchants.WbsEnchantment;
+import wbs.utils.util.commands.brigadier.WbsSubcommand;
 import wbs.utils.util.plugin.WbsPlugin;
 
 @SuppressWarnings("UnstableApiUsage")
-public abstract class EnchantmentSubcommand extends Subcommand {
+public abstract class EnchantmentSubcommand extends WbsSubcommand {
     public EnchantmentSubcommand(@NotNull WbsPlugin plugin, @NotNull String label) {
         super(plugin, label);
     }
 
     @Override
-    public LiteralArgumentBuilder<CommandSourceStack> getArgument() {
-        return Commands.literal(label)
-                .requires(this::canRun)
-                .executes(this::executeNoArgs)
-                .then(Commands.argument("enchantment", ArgumentTypes.key())
-                        .suggests(new CustomEnchantmentSuggestionProvider(this::filter))
-                        .executes(this::execute)
-                        .then(Commands.argument("level", IntegerArgumentType.integer())
-                                .suggests(new EnchantmentLevelSuggestionProvider())
-                                .executes(this::executeLevel)
-                        )
-                );
+    protected void addThens(LiteralArgumentBuilder<CommandSourceStack> builder) {
+        builder.then(Commands.argument("enchantment", ArgumentTypes.key())
+                .suggests(new CustomEnchantmentSuggestionProvider(this::filter))
+                .executes(this::execute)
+                .then(Commands.argument("level", IntegerArgumentType.integer())
+                        .suggests(new EnchantmentLevelSuggestionProvider())
+                        .executes(this::executeLevel)
+                )
+        );
     }
 
     protected boolean filter(@Nullable CommandContext<?> context, WbsEnchantment enchantment) {

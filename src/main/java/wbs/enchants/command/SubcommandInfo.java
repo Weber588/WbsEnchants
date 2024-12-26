@@ -22,8 +22,8 @@ import java.util.List;
 
 @SuppressWarnings("UnstableApiUsage")
 public class SubcommandInfo extends EnchantmentSubcommand {
-    public SubcommandInfo(@NotNull WbsPlugin plugin, @NotNull String label) {
-        super(plugin, label);
+    public SubcommandInfo(@NotNull WbsPlugin plugin) {
+        super(plugin, "info");
     }
 
     @Override
@@ -46,12 +46,22 @@ public class SubcommandInfo extends EnchantmentSubcommand {
         EnchantmentType type = enchant.getType();
 
         String line = "=====================================";
-        plugin.buildMessage(line)
+        WbsMessageBuilder builder = plugin.buildMessage(line)
                 .append("\n&rName: &h" + enchant.getDisplayName())
                 .append("\n&rType: ").append(type.getNameComponent())
                 .append("\n&rMaximum level: &h" + RomanNumerals.toRoman(maxLevel) + " (" + maxLevel + ")")
                 .append("\n&rTarget: &h" + enchant.getTargetDescription())
-                .append("\n&rDescription: &h" + enchant.getDescription())
+                .append("\n&rDescription: &h" + enchant.getDescription());
+
+        if (sender.isOp()) {
+            builder.append("\n&rGeneration: &h");
+
+            enchant.getGenerationContexts().forEach(genContext -> {
+                builder.append("\n\t" + genContext.toString());
+            });
+        }
+
+        builder
                 .send(sender);
 
         List<Enchantment> conflicts = EnchantUtils.getConflictsWith(enchant.getEnchantment());

@@ -25,4 +25,14 @@ public abstract class RangeCondition extends GenerationCondition {
     protected boolean inRange(int value) {
         return value <= max && value >= min;
     }
+
+    @Override
+    public String toString() {
+        return "RangeCondition{" +
+                "min=" + min +
+                ", max=" + max +
+                ", key=" + key +
+                ", negated=" + negated +
+                '}';
+    }
 }

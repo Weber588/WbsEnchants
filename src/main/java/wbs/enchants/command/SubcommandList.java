@@ -13,6 +13,7 @@ import wbs.enchants.EnchantManager;
 import wbs.enchants.WbsEnchantment;
 import wbs.enchants.WbsEnchants;
 import wbs.enchants.type.EnchantmentType;
+import wbs.utils.util.commands.brigadier.WbsSubcommand;
 import wbs.utils.util.plugin.WbsMessageBuilder;
 import wbs.utils.util.plugin.WbsPlugin;
 
@@ -20,20 +21,20 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @SuppressWarnings("UnstableApiUsage")
-public class SubcommandList extends Subcommand {
-    public SubcommandList(@NotNull WbsPlugin plugin, @NotNull String label) {
-        super(plugin, label);
+public class SubcommandList extends WbsSubcommand {
+    public SubcommandList(@NotNull WbsPlugin plugin) {
+        super(plugin, "list");
     }
 
     @Override
-    public LiteralArgumentBuilder<CommandSourceStack> getArgument() {
-        return Commands.literal(label)
-                .executes(this::executeNoArgs)
+    protected void addThens(LiteralArgumentBuilder<CommandSourceStack> builder) {
+        builder
                 .then(Commands.argument("type", new EnchantmentTypeArgumentType())
                         .executes(this::execute)
                 );
     }
-    private int executeNoArgs(CommandContext<CommandSourceStack> context) {
+
+    protected int executeNoArgs(CommandContext<CommandSourceStack> context) {
         CommandSender sender = context.getSource().getSender();
 
         return execute(sender, null);

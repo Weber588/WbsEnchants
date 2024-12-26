@@ -70,4 +70,13 @@ public class DimensionTypeCondition extends GenerationCondition {
         World.Environment dimensionType = Objects.requireNonNull(location.getWorld()).getEnvironment();
         return dimensionTypes.contains(dimensionType);
     }
+
+    @Override
+    public String toString() {
+        return "DimensionTypeCondition{" +
+                "dimensionTypes=" + dimensionTypes +
+                ", key=" + key +
+                ", negated=" + negated +
+                '}';
+    }
 }
