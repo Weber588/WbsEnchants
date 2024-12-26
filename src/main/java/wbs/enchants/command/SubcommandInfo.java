@@ -92,7 +92,7 @@ public class SubcommandInfo extends EnchantmentSubcommand {
                 if (isCustom) {
                     messageBuilder.addClickCommand("/" +
                             WbsEnchants.getInstance().getName().toLowerCase()
-                            + ":customenchants info " + enchant.getKey().getKey()
+                            + ":customenchants info " + enchant.getKey().asString()
                     );
                 }
             }
