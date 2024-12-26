@@ -60,7 +60,7 @@ public abstract class WbsEnchantment implements Comparable<WbsEnchantment>, Keye
     protected String targetDescription;
     private String displayName;
 
-    protected final List<GenerationContext> generationContexts = new LinkedList<>();
+    protected final List<@NotNull GenerationContext> generationContexts = new LinkedList<>();
 
     public WbsEnchantment(String key, @NotNull String description) {
         stringKey = key;

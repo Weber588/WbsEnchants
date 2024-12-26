@@ -1,9 +1,10 @@
 package wbs.enchants.generation;
 
 import org.bukkit.configuration.ConfigurationSection;
-import org.jetbrains.annotations.Nullable;
+import org.jetbrains.annotations.NotNull;
 import wbs.enchants.WbsEnchantment;
 import wbs.enchants.generation.contexts.*;
+import wbs.utils.exceptions.InvalidConfigurationException;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -20,27 +21,28 @@ public final class ContextManager {
         registerContext("spawn", MobSpawnContext::new);
         registerContext("bartering", BarterContext::new);
         registerContext("fishing", FishingContext::new);
+        registerContext("loot-replace", LootTableReplacementContext::new);
     }
     
     public static void registerContext(String key, ContextConstructor producer) {
         registeredContexts.put(key, producer);
     }
 
-    @Nullable
+    @NotNull
     public static GenerationContext getContext(String key,
                                                WbsEnchantment enchantment,
                                                ConfigurationSection section,
                                                String directory) {
         ContextConstructor registeredContext = registeredContexts.get(key);
         if (registeredContext == null) {
-            return null;
+            throw new InvalidConfigurationException("Invalid context key: " + key, directory);
         }
 
         return registeredContext.from(key, enchantment, section, directory);
     }
 
     @FunctionalInterface
-    private interface ContextConstructor {
+    public interface ContextConstructor {
         GenerationContext from(String key, WbsEnchantment enchantment, ConfigurationSection section, String directory);
     }
 }
