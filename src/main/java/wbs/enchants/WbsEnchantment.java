@@ -222,6 +222,7 @@ public abstract class WbsEnchantment implements Comparable<WbsEnchantment>, Keye
 
         ConfigurationSection generationSection = section.getConfigurationSection("generation");
         if (generationSection != null) {
+            generationContexts.clear();
             for (String key : generationSection.getKeys(false)) {
                 ConfigurationSection contextSection = generationSection.getConfigurationSection(key);
 
