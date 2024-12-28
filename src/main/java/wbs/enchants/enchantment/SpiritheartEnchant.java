@@ -28,7 +28,15 @@ public class SpiritheartEnchant extends WbsEnchantment {
     private static int getTimeUntilMidnight() {
         long mainWorldTimestamp = Bukkit.getWorlds().getFirst().getFullTime();
 
-        return (int) (TICKS_PER_DAY - (mainWorldTimestamp % TICKS_PER_DAY));
+        long ticksSinceStartOfDay = (mainWorldTimestamp % TICKS_PER_DAY);
+
+        long ticksUntilDawn = (TICKS_PER_DAY - ticksSinceStartOfDay);
+        long ticksUntilMidnight = ticksUntilDawn - (TICKS_PER_DAY / 4);
+        if (ticksUntilMidnight < 0) {
+            ticksUntilMidnight += TICKS_PER_DAY;
+        }
+
+        return (int) ticksUntilMidnight;
     }
 
     public static final int POTION_LEVEL_PER_LEVEL = 1;
@@ -64,7 +72,8 @@ public class SpiritheartEnchant extends WbsEnchantment {
         PersistentDataContainer container = entity.getPersistentDataContainer();
 
         Integer lastAppliedTick = container.get(LAST_APPLIED_KEY, PersistentDataType.INTEGER);
-        if (lastAppliedTick == null || lastAppliedTick < Bukkit.getCurrentTick() + TICKS_PER_DAY) {
+        // If they've never had it, or if they last got it more than 1 day ago (or in the first second of the day), give it again
+        if (lastAppliedTick == null || lastAppliedTick < Bukkit.getCurrentTick() - TICKS_PER_DAY + 20) {
             int level = getLevel(enchanted);
 
             PotionEffect effect = new PotionEffect(PotionEffectType.ABSORPTION,
