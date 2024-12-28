@@ -58,7 +58,7 @@ public class AnimaConduitEnchant extends WbsEnchantment {
         ));
 
         if (activeItem != null) {
-            if (WbsMath.chance(CHANCE_PER_LEVEL * getLevel(activeItem))) {
+            if (WbsMath.chance(CHANCE_PER_LEVEL * getLevel(activeItem) * event.getExperienceOrb().getExperience())) {
                 event.setCancelled(true);
                 event.getExperienceOrb().remove();
 
