@@ -9,6 +9,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
+import wbs.enchants.WbsEnchants;
 import wbs.enchants.WbsEnchantsBootstrap;
 import wbs.enchants.enchantment.helper.AbstractMultiBreakEnchant;
 import wbs.enchants.type.EnchantmentType;
@@ -29,7 +30,7 @@ public class BlastMinerEnchant extends AbstractMultiBreakEnchant {
         maxLevel = 3;
         supportedItems = ItemTypeTagKeys.PICKAXES;
         exclusiveWith = WbsEnchantsBootstrap.EXCLUSIVE_SET_MULTIMINER;
-        weight = 5;
+        weight = 3;
     }
 
     @Override
@@ -81,7 +82,15 @@ public class BlastMinerEnchant extends AbstractMultiBreakEnchant {
                 .setMatching(matching)
                 .breakBlocks(player);
 
-        broken.getWorld().createExplosion(broken.getLocation(), 2f, false, false, player);
+        WbsEnchants.getInstance().runSync(() ->
+                broken.getWorld().createExplosion(player,
+                        broken.getLocation(),
+                        3f,
+                        false, // Don't set fire
+                        false, // Don't break blocks (we did that already)
+                        false // Don't protect player (source) from taking damage
+                )
+        );
     }
 
     @Override
