@@ -278,6 +278,7 @@ public abstract class WbsEnchantment implements Comparable<WbsEnchantment>, Keye
 
         // These (and similar) can theoretically be called from the implementer itself, but this makes it harder to
         // accidentally forget it.
+        // Times I've forgotten so far: 2
         // TODO: Create a registry of auto registration that can be iterated over instead of hardcoding into this class
         if (this instanceof AutoRegistrableEnchant autoRegistrable) {
             if (autoRegistrable.autoRegister()) {
@@ -295,6 +296,9 @@ public abstract class WbsEnchantment implements Comparable<WbsEnchantment>, Keye
                 }
                 if (this instanceof ProjectileEnchant<?> projectileEnchant) {
                     projectileEnchant.registerProjectileEvents();
+                }
+                if (this instanceof ShieldBlockEnchant shieldBlockEnchant) {
+                    shieldBlockEnchant.registerShieldBlockEvent();
                 }
             }
         }
