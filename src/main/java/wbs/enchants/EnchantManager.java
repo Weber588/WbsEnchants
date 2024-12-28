@@ -72,6 +72,8 @@ public class EnchantManager {
     public static final DisengageEnchant DISENGAGE = new DisengageEnchant();
     public static final EnderspiteEnchant ENDERSPITE = new EnderspiteEnchant();
     public static final FrostcreepEnchant FROSTCREEP = new FrostcreepEnchant();
+    // public static final HellfireEnchant HELLFIRE = new HellfireEnchant();
+    public static final OutreachEnchant OUTREACH = new OutreachEnchant();
 
     public static final CurseRebuking CURSE_REBUKING = new CurseRebuking();
     public static final CurseVanilla CURSE_VANILLA = new CurseVanilla();
