@@ -8,6 +8,9 @@ import org.bukkit.inventory.ItemStack;
 import wbs.enchants.WbsEnchantment;
 import wbs.enchants.util.EventUtils;
 
+/**
+ * Represents an enchantment that can go on a block that won't be retained when placed or picked up
+ */
 public interface NonPersistentBlockEnchant extends EnchantInterface, AutoRegistrableEnchant {
     default void registerNonPersistentBlockEvents() {
         EventUtils.register(BlockPlaceEvent.class, this::onPlace);

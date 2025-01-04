@@ -85,7 +85,7 @@ public class BlastMinerEnchant extends AbstractMultiBreakEnchant {
         WbsEnchants.getInstance().runSync(() ->
                 broken.getWorld().createExplosion(player,
                         broken.getLocation(),
-                        3f,
+                        2.5f,
                         false, // Don't set fire
                         false, // Don't break blocks (we did that already)
                         false // Don't protect player (source) from taking damage

@@ -19,6 +19,10 @@ import wbs.enchants.util.EventUtils;
 
 import java.util.List;
 
+/**
+ * Represents an enchantment that can go on a block in the inventory, that will persist in the chunk data, allowing it
+ * to be placed and picked up while retaining the enchantment.
+ */
 public interface BlockEnchant extends EnchantInterface, AutoRegistrableEnchant {
     NamespacedKey BLOCK_ENCHANTS_KEY = new NamespacedKey("wbsenchants", "block_enchants");
 

@@ -24,6 +24,8 @@ import java.util.stream.Collectors;
 public class SubcommandList extends WbsSubcommand {
     public SubcommandList(@NotNull WbsPlugin plugin) {
         super(plugin, "list");
+
+        permission = "wbsenchants.command." + label;
     }
 
     @Override

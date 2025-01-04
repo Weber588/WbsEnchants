@@ -18,6 +18,8 @@ import wbs.utils.util.plugin.WbsPlugin;
 public abstract class EnchantmentSubcommand extends WbsSubcommand {
     public EnchantmentSubcommand(@NotNull WbsPlugin plugin, @NotNull String label) {
         super(plugin, label);
+
+        permission = "wbsenchants.command." + label;
     }
 
     @Override

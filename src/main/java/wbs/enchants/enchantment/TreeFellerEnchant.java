@@ -9,10 +9,12 @@ import org.bukkit.block.data.type.Leaves;
 import org.bukkit.entity.Player;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.Damageable;
 import org.jetbrains.annotations.NotNull;
 import wbs.enchants.enchantment.helper.AbstractMultiBreakEnchant;
 import wbs.enchants.util.BlockChanger;
 import wbs.enchants.util.BlockQueryUtils;
+import wbs.utils.util.WbsMath;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -22,6 +24,7 @@ public class TreeFellerEnchant extends AbstractMultiBreakEnchant {
 
     private static final String DEFAULT_DESCRIPTION = "When breaking a log, the entire tree will be cut down, but " +
             "use up hunger in exchange for each block broken.";
+    private static final double MAX_FOOD_LOSS_CHANCE = 50;
 
     public TreeFellerEnchant() {
         super("tree_feller", DEFAULT_DESCRIPTION);
@@ -96,16 +99,32 @@ public class TreeFellerEnchant extends AbstractMultiBreakEnchant {
                 .setDelayTicks(1)
                 .setToUpdatePerChunk(level * 3)
                 .setMatching(isSameType.or(isNaturalLeaves))
+                .afterUpdate(alreadyBroken -> {
+                    if (Tag.LEAVES.isTagged(alreadyBroken.getType()) && WbsMath.chance(MAX_FOOD_LOSS_CHANCE / level)) {
+                        int foodLevel = player.getFoodLevel();
+                        player.setFoodLevel(Math.max(foodLevel - 1, 0));
+                    }
+
+                    alreadyBroken.getWorld().spawnParticle(Particle.BLOCK,
+                            alreadyBroken.getLocation(),
+                            15,
+                            0.5,
+                            0.5,
+                            0.5,
+                            alreadyBroken.getBlockData());
+                })
                 .run(player, toBreak -> {
-                    boolean result = player.breakBlock(toBreak);
-                    if (result) {
-                        toBreak.getWorld().spawnParticle(Particle.BLOCK,
-                                toBreak.getLocation(),
-                                15,
-                                0.5,
-                                0.5,
-                                0.5,
-                                toBreak.getBlockData());
+                    boolean result;
+                    ItemStack held = player.getInventory().getItemInMainHand();
+
+                    // Don't use durability on leaves
+                    if (Tag.LEAVES.isTagged(toBreak.getType()) && held instanceof Damageable damageable && damageable.hasDamageValue()) {
+                        int damage = damageable.getDamage();
+                        result = player.breakBlock(toBreak);
+                        damageable.setDamage(damage);
+                        held.setItemMeta(damageable);
+                    } else {
+                        result = player.breakBlock(toBreak);
                     }
                     return result;
                 });

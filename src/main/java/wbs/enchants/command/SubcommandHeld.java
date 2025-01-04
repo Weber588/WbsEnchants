@@ -28,6 +28,8 @@ import java.util.List;
 public class SubcommandHeld extends WbsSubcommand {
     public SubcommandHeld(@NotNull WbsPlugin plugin) {
         super(plugin, "held");
+
+        permission = "wbsenchants.command." + label;
     }
 
     @Override

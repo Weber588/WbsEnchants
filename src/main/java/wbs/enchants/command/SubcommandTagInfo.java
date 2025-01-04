@@ -36,6 +36,8 @@ public class SubcommandTagInfo extends WbsSubcommand {
 
     public SubcommandTagInfo(@NotNull WbsPlugin plugin) {
         super(plugin, "taginfo");
+
+        permission = "wbsenchants.command." + label;
     }
 
     @Override

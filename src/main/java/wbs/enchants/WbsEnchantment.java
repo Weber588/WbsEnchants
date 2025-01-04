@@ -183,8 +183,7 @@ public abstract class WbsEnchantment implements Comparable<WbsEnchantment>, Keye
         return section;
     }
 
-    // TODO: Add all new fields from 1.20.5
-    public void configure(ConfigurationSection section, String directory) {
+    public void configureBoostrap(ConfigurationSection section, String directory) {
         isEnabled = section.getBoolean("enabled", isEnabled);
         aliases = section.getStringList("aliases");
         displayName = section.getString("display_name", getDisplayName());
@@ -219,6 +218,10 @@ public abstract class WbsEnchantment implements Comparable<WbsEnchantment>, Keye
         maxLevel = section.getInt("max_level", maxLevel);
 
         weight = section.getInt("weight", weight);
+    }
+
+    public void configure(ConfigurationSection section, String directory) {
+        configureBoostrap(section, directory);
 
         ConfigurationSection generationSection = section.getConfigurationSection("generation");
         if (generationSection != null) {
@@ -241,11 +244,10 @@ public abstract class WbsEnchantment implements Comparable<WbsEnchantment>, Keye
                             errorDir = contextDir;
                         }
 
-                        WbsEnchants.getInstance().settings.logError(ex.getMessage(), errorDir);
+                        throw new InvalidConfigurationException(ex.getMessage(), contextDir);
                     }
                 } else {
-                    WbsEnchants.getInstance().settings.logError("Generation type must be a section: " + key,
-                            contextDir);
+                    throw new InvalidConfigurationException("Generation type must be a section: " + key, contextDir);
                 }
             }
         }
@@ -258,7 +260,7 @@ public abstract class WbsEnchantment implements Comparable<WbsEnchantment>, Keye
             if (namespacedKey != null) {
                 return namespacedKey;
             } else {
-                WbsEnchants.getInstance().settings.logError("Invalid namespaced key: " + keyString,
+                throw new InvalidConfigurationException("Invalid namespaced key: " + keyString,
                         directory + "/" + key);
             }
         }

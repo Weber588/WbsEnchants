@@ -1,6 +1,7 @@
 package wbs.enchants.enchantment;
 
 import io.papermc.paper.registry.keys.tags.ItemTypeTagKeys;
+import org.bukkit.Bukkit;
 import org.bukkit.NamespacedKey;
 import org.bukkit.Particle;
 import org.bukkit.entity.Entity;
@@ -10,6 +11,7 @@ import org.bukkit.entity.Projectile;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
+import org.bukkit.event.entity.EntityRegainHealthEvent;
 import org.bukkit.inventory.EntityEquipment;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.persistence.PersistentDataContainer;
@@ -84,10 +86,11 @@ public class VampiricEnchant extends WbsEnchantment implements DamageEnchant {
 
                 attacker.addPotionEffect(healthBoostEffect);
                 attacker.addPotionEffect(witherEffect);
+                attacker.heal(healthBoostLevel, EntityRegainHealthEvent.RegainReason.MAGIC);
 
                 PersistentDataContainer dataContainer = attacker.getPersistentDataContainer();
 
-                long expireTime = System.currentTimeMillis() + ((long) durationInTicks * (1000 / 20));
+                long expireTime = Bukkit.getCurrentTick() + ((long) durationInTicks * (1000 / 20));
                 dataContainer.set(EXPIRE_TIME_KEY, PersistentDataType.LONG, expireTime);
 
                 EFFECT.play(WbsEntityUtil.getMiddleLocation(victim));
@@ -112,7 +115,7 @@ public class VampiricEnchant extends WbsEnchantment implements DamageEnchant {
             return;
         }
 
-        if (vampiricTimestamp > System.currentTimeMillis()) {
+        if (vampiricTimestamp > Bukkit.getCurrentTick()) {
             event.setCancelled(true);
         } else {
             dataContainer.remove(EXPIRE_TIME_KEY);

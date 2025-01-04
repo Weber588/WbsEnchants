@@ -14,6 +14,7 @@ import org.bukkit.inventory.meta.BundleMeta;
 import wbs.enchants.WbsEnchantment;
 import wbs.enchants.WbsEnchantsBootstrap;
 
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 
@@ -72,7 +73,7 @@ public class CavingEnchant extends WbsEnchantment {
 
             if (hotbarItem.getItemMeta() instanceof BundleMeta bundle) {
                 if (isEnchantmentOn(hotbarItem)) {
-                    List<ItemStack> bundleItems = bundle.getItems();
+                    List<ItemStack> bundleItems = new LinkedList<>(bundle.getItems());
 
                     for (ItemStack bundleItem : bundleItems) {
                         Material type = bundleItem.getType();
