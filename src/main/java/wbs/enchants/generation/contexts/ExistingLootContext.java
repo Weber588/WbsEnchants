@@ -3,7 +3,7 @@ package wbs.enchants.generation.contexts;
 import org.bukkit.Material;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.inventory.ItemStack;
-import wbs.enchants.WbsEnchantment;
+import wbs.enchants.EnchantmentDefinition;
 import wbs.enchants.WbsEnchants;
 import wbs.enchants.generation.GenerationContext;
 import wbs.utils.util.WbsCollectionUtil;
@@ -21,8 +21,8 @@ public abstract class ExistingLootContext extends GenerationContext {
     private List<Material> addMaterialOptions = List.of(Material.ENCHANTED_BOOK);
     private boolean clear;
 
-    public ExistingLootContext(String key, WbsEnchantment enchantment, ConfigurationSection section, String directory) {
-        super(key, enchantment, section, directory);
+    public ExistingLootContext(String key, EnchantmentDefinition definition, ConfigurationSection section, String directory) {
+        super(key, definition, section, directory);
 
         bookToEnchantedBookChance = section.getDouble("convert-to-enchanted-book-chance", bookToEnchantedBookChance);
         maxEnchantments = section.getInt("max-enchantments", maxEnchantments);
@@ -77,7 +77,7 @@ public abstract class ExistingLootContext extends GenerationContext {
                 }
             }
 
-            if (enchantment.tryAdd(stack, generateLevel())) {
+            if (definition.tryAdd(stack, generateLevel())) {
                 generated++;
                 if (generated >= maxEnchantments) {
                     break;
@@ -91,7 +91,7 @@ public abstract class ExistingLootContext extends GenerationContext {
         if (generated < maxEnchantments) {
             if (WbsMath.chance(addChance)) {
                 ItemStack toAdd = new ItemStack(WbsCollectionUtil.getRandom(addMaterialOptions));
-                if (enchantment.tryAdd(toAdd, generateLevel())) {
+                if (definition.tryAdd(toAdd, generateLevel())) {
                     generated++;
                     existing.add(toAdd);
                 }

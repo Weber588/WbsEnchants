@@ -26,13 +26,9 @@ public class FrostcreepEnchant extends WbsEnchantment implements ShieldBlockEnch
     public FrostcreepEnchant() {
         super("frostcreep", DESCRIPTION);
 
-        supportedItems = WbsEnchantsBootstrap.SHIELD;
-        maxLevel = 3;
-    }
-
-    @Override
-    public String getDefaultDisplayName() {
-        return "Frostcreep";
+        getDefinition()
+                .supportedItems(WbsEnchantsBootstrap.SHIELD)
+                .maxLevel(3);
     }
 
     @Override

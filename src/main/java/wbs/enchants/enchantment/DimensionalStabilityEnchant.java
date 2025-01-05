@@ -15,11 +15,6 @@ public class DimensionalStabilityEnchant extends WbsEnchantment implements Block
         super("dimensional_stability", DESCRIPTION);
     }
 
-    @Override
-    public String getDefaultDisplayName() {
-        return "Dimensional Stability";
-    }
-
     @EventHandler
     public void onSleep(PlayerBedFailEnterEvent event) {
         Block bed = event.getBed();

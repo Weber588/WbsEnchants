@@ -1,6 +1,5 @@
 package wbs.enchants.enchantment;
 
-import io.papermc.paper.registry.keys.tags.ItemTypeTagKeys;
 import org.bukkit.entity.EntityType;
 import org.jetbrains.annotations.NotNull;
 import wbs.enchants.enchantment.helper.TargetedDamageEnchant;
@@ -14,13 +13,8 @@ public class HogsbaneEnchant extends TargetedDamageEnchant {
     public HogsbaneEnchant() {
         super("hogsbane", DEFAULT_DESCRIPTION);
 
-        supportedItems = ItemTypeTagKeys.ENCHANTABLE_WEAPON;
-        maxLevel = 5;
-    }
-
-    @Override
-    public String getDefaultDisplayName() {
-        return "Hogsbane";
+        getDefinition()
+                .maxLevel(5);
     }
 
     @Override

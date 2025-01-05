@@ -22,14 +22,11 @@ public class DecayEnchant extends TargetedDamageEnchant {
 
     public DecayEnchant() {
         super("decay", DEFAULT_DESCRIPTION);
-        maxLevel = 5;
-        supportedItems = ItemTypeTagKeys.HOES;
-        weight = 5;
-    }
 
-    @Override
-    public String getDefaultDisplayName() {
-        return "Decay";
+        getDefinition()
+                .maxLevel(5)
+                .weight(5)
+                .supportedItems(ItemTypeTagKeys.HOES);
     }
 
     @EventHandler
@@ -69,7 +66,7 @@ public class DecayEnchant extends TargetedDamageEnchant {
     protected boolean shouldAffect(Entity victim) {
         return super.shouldAffect(victim) || (
                 victim instanceof LivingEntity livingVictim &&
-                        !EntityUtils.UNDEAD.isTagged(livingVictim.getType())
+                        !EntityUtils.getUndead().isTagged(livingVictim.getType())
         );
     }
 
@@ -77,7 +74,7 @@ public class DecayEnchant extends TargetedDamageEnchant {
     protected double getBonusDamage(Entity victim) {
         if (victim instanceof Illager) {
             return 2;
-        } else if (EntityUtils.UNDEAD.isTagged(victim.getType())) {
+        } else if (EntityUtils.getUndead().isTagged(victim.getType())) {
             return 0;
         }
 

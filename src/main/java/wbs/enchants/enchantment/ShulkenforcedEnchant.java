@@ -1,5 +1,6 @@
 package wbs.enchants.enchantment;
 
+import io.papermc.paper.registry.keys.tags.EnchantmentTagKeys;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Vehicle;
 import org.bukkit.event.entity.EntityPlaceEvent;
@@ -15,16 +16,10 @@ public class ShulkenforcedEnchant extends WbsEnchantment implements VehicleEncha
     public ShulkenforcedEnchant() {
         super("shulkenforced", DEFAULT_DESCRIPTION);
 
-        maxLevel = 1;
-        supportedItems = WbsEnchantsBootstrap.ENCHANTABLE_VEHICLE;
-        weight = 10;
-
-        targetDescription = "Vehicle";
-    }
-
-    @Override
-    public String getDefaultDisplayName() {
-        return "Shulkenforced";
+        getDefinition()
+                .supportedItems(WbsEnchantsBootstrap.ENCHANTABLE_VEHICLE)
+                .exclusiveInject(EnchantmentTagKeys.EXCLUSIVE_SET_MINING)
+                .weight(10);
     }
 
     @Override

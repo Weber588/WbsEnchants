@@ -27,15 +27,12 @@ public class FrenziedEnchant extends WbsEnchantment implements DamageEnchant {
     public FrenziedEnchant() {
         super("frenzied", DEFAULT_DESCRIPTION);
 
-        supportedItems = ItemTypeTagKeys.ENCHANTABLE_WEAPON;
-        weight = 5;
+        getDefinition()
+                .supportedItems(ItemTypeTagKeys.ENCHANTABLE_WEAPON)
+                .weight(5)
+                .targetDescription("Shovel");
     }
 
-
-    @Override
-    public String getDefaultDisplayName() {
-        return "Frenzied";
-    }
 
     @Override
     public void handleAttack(@NotNull EntityDamageByEntityEvent event, @NotNull LivingEntity attacker, @NotNull Entity victim, @Nullable Projectile projectile) {

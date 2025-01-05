@@ -35,16 +35,12 @@ public class FrostburnEnchant extends TargetedDamageEnchant {
 
     public FrostburnEnchant() {
         super("frostburn", DEFAULT_DESCRIPTION);
-
-        maxLevel = 3;
-        supportedItems = ItemTypeTagKeys.ENCHANTABLE_WEAPON;
         // TODO: exclusiveWith = Create #heat enchantment set (for fire aspect and for flame)
-        weight = 10;
-    }
 
-    @Override
-    public String getDefaultDisplayName() {
-        return "Frostburn";
+        getDefinition()
+                .supportedItems(ItemTypeTagKeys.ENCHANTABLE_WEAPON)
+                .maxLevel(3)
+                .weight(10);
     }
 
     @Override

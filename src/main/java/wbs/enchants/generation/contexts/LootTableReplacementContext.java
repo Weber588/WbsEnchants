@@ -9,7 +9,7 @@ import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.world.LootGenerateEvent;
-import wbs.enchants.WbsEnchantment;
+import wbs.enchants.EnchantmentDefinition;
 import wbs.enchants.WbsEnchants;
 import wbs.enchants.generation.GenerationContext;
 import wbs.utils.exceptions.InvalidConfigurationException;
@@ -21,8 +21,8 @@ import java.util.Map;
 public class LootTableReplacementContext extends GenerationContext {
     public final List<Enchantment> toReplace = new LinkedList<>();
 
-    public LootTableReplacementContext(String key, WbsEnchantment enchantment, ConfigurationSection section, String directory) {
-        super(key, enchantment, section, directory);
+    public LootTableReplacementContext(String key, EnchantmentDefinition definition, ConfigurationSection section, String directory) {
+        super(key, definition, section, directory);
 
         Registry<Enchantment> registry = RegistryAccess.registryAccess().getRegistry(RegistryKey.ENCHANTMENT);
 
@@ -73,7 +73,7 @@ public class LootTableReplacementContext extends GenerationContext {
                 }
 
                 if (replacedAny) {
-                    enchantment.tryAdd(item, generateLevel());
+                    definition.tryAdd(item, generateLevel());
                 }
             });
         }

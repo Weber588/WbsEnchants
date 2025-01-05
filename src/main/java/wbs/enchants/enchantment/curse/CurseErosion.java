@@ -15,7 +15,6 @@ import org.bukkit.inventory.ItemStack;
 import wbs.enchants.WbsEnchantment;
 import wbs.enchants.WbsEnchants;
 import wbs.enchants.WbsEnchantsBootstrap;
-import wbs.enchants.type.EnchantmentType;
 import wbs.enchants.type.EnchantmentTypeManager;
 import wbs.utils.util.WbsCollectionUtil;
 import wbs.utils.util.WbsMath;
@@ -40,15 +39,11 @@ public class CurseErosion extends WbsEnchantment {
     private static final double CHANCE_PER_LEVEL = 25;
 
     public CurseErosion() {
-        super("curse/erosion", DEFAULT_DESCRIPTION);
+        super("curse/erosion", EnchantmentTypeManager.CURSE, "Curse of Erosion", DEFAULT_DESCRIPTION);
 
-        supportedItems = WbsEnchantsBootstrap.ENCHANTABLE_GROUND_MINING;
-        maxLevel = 2;
-    }
-
-    @Override
-    public String getDefaultDisplayName() {
-        return "Curse of Erosion";
+        getDefinition()
+                .maxLevel(2)
+                .supportedItems(WbsEnchantsBootstrap.ENCHANTABLE_GROUND_MINING);
     }
 
     @EventHandler(priority = EventPriority.MONITOR)
@@ -92,10 +87,5 @@ public class CurseErosion extends WbsEnchantment {
                 block.setType(Material.AIR);
             });
         }
-    }
-
-    @Override
-    public EnchantmentType getType() {
-        return EnchantmentTypeManager.CURSE;
     }
 }

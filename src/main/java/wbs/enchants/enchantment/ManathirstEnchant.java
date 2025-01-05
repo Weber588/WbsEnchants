@@ -1,11 +1,9 @@
 package wbs.enchants.enchantment;
 
 import io.papermc.paper.registry.keys.tags.ItemTypeTagKeys;
-import io.papermc.paper.registry.tag.TagKey;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.YamlConfiguration;
-import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.player.PlayerItemDamageEvent;
@@ -13,7 +11,6 @@ import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.Damageable;
 import org.bukkit.scheduler.BukkitRunnable;
-import org.jetbrains.annotations.NotNull;
 import wbs.enchants.EnchantManager;
 import wbs.enchants.WbsEnchantment;
 import wbs.enchants.WbsEnchants;
@@ -86,7 +83,7 @@ public class ManathirstEnchant extends WbsEnchantment {
             if (damageable.getDamage() > 0) {
                 Player player = toRepair.get(item);
                 damageable.setDamage(damageable.getDamage() - 1);
-                player.setTotalExperience(player.getTotalExperience() - EnchantManager.MANATHIRST.xpPerDura);
+                player.setTotalExperience(Math.max(0, player.getTotalExperience() - EnchantManager.MANATHIRST.xpPerDura));
 
                 item.setItemMeta(damageable);
             }
@@ -100,24 +97,11 @@ public class ManathirstEnchant extends WbsEnchantment {
     private int xpPerDura = 3;
 
     public ManathirstEnchant() {
-        super("manathirst",DEFAULT_DESCRIPTION );
+        super("manathirst", DEFAULT_DESCRIPTION);
 
-        supportedItems = ItemTypeTagKeys.ENCHANTABLE_DURABILITY;
-        exclusiveWith = WbsEnchantsBootstrap.EXCLUSIVE_SET_SELF_REPAIRING;
-    }
-
-    @Override
-    public @NotNull List<TagKey<Enchantment>> addToTags() {
-        LinkedList<TagKey<Enchantment>> tags = new LinkedList<>(super.addToTags());
-
-        tags.add(WbsEnchantsBootstrap.EXCLUSIVE_SET_SELF_REPAIRING);
-
-        return tags;
-    }
-
-    @Override
-    public String getDefaultDisplayName() {
-        return "Manathirst";
+        getDefinition()
+                .supportedItems(ItemTypeTagKeys.ENCHANTABLE_DURABILITY)
+                .exclusiveInject(WbsEnchantsBootstrap.EXCLUSIVE_SET_SELF_REPAIRING);
     }
 
     @Override

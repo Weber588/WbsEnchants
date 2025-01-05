@@ -29,14 +29,10 @@ public class HandheldEnchant extends WbsEnchantment implements BlockEnchant {
     public HandheldEnchant() {
         super("handheld", DEFAULT_DESCRIPTION);
 
-        supportedItems = WbsEnchantsBootstrap.ENCHANTABLE_HANDHELD;
+        getDefinition()
+                .supportedItems(WbsEnchantsBootstrap.ENCHANTABLE_HANDHELD);
 
         loadFunctionalities();
-    }
-
-    @Override
-    public String getDefaultDisplayName() {
-        return "Handheld";
     }
 
     // TODO: Base this on supportedItems tag but for blocks?... How does that work with blocktype vs itemtype?

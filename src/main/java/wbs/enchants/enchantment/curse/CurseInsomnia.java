@@ -5,7 +5,6 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.player.PlayerBedEnterEvent;
 import wbs.enchants.WbsEnchantment;
-import wbs.enchants.type.EnchantmentType;
 import wbs.enchants.type.EnchantmentTypeManager;
 
 public class CurseInsomnia extends WbsEnchantment {
@@ -13,14 +12,10 @@ public class CurseInsomnia extends WbsEnchantment {
             "sleeping while worn.";
 
     public CurseInsomnia() {
-        super("curse/insomnia", DEFAULT_DESCRIPTION);
+        super("curse/insomnia", EnchantmentTypeManager.CURSE, "Curse of Insomnia", DEFAULT_DESCRIPTION);
 
-        supportedItems = ItemTypeTagKeys.ENCHANTABLE_HEAD_ARMOR;
-    }
-
-    @Override
-    public String getDefaultDisplayName() {
-        return "Curse of Insomnia";
+        getDefinition()
+                .supportedItems(ItemTypeTagKeys.ENCHANTABLE_HEAD_ARMOR);
     }
 
     @EventHandler
@@ -30,12 +25,7 @@ public class CurseInsomnia extends WbsEnchantment {
         // Just check if there's ANY armour with this enchant on it, don't care about details
         if (getHighestEnchantedArmour(player) != null) {
             event.setCancelled(true);
-            sendActionBar("&c" + getDisplayName() + "&7 prevents your sleep...", player);
+            sendActionBar("&c" + displayName() + "&7 prevents your sleep...", player);
         }
-    }
-
-    @Override
-    public EnchantmentType getType() {
-        return EnchantmentTypeManager.CURSE;
     }
 }

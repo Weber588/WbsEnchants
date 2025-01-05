@@ -30,14 +30,10 @@ public class DisarmingEnchant extends WbsEnchantment implements DamageEnchant {
     public DisarmingEnchant() {
         super("disarming", DEFAULT_DESCRIPTION);
 
-        maxLevel = 3;
-        supportedItems = ItemTypeTagKeys.ENCHANTABLE_WEAPON;
-        weight = 10;
-    }
-
-    @Override
-    public String getDefaultDisplayName() {
-        return "Disarming";
+        getDefinition()
+                .maxLevel(3)
+                .weight(10)
+                .supportedItems(ItemTypeTagKeys.ENCHANTABLE_SWORD);
     }
 
     @Override

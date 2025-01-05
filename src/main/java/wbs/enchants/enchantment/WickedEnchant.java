@@ -13,7 +13,6 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import wbs.enchants.WbsEnchantment;
 import wbs.enchants.enchantment.helper.DamageEnchant;
-import wbs.enchants.type.EnchantmentType;
 import wbs.enchants.type.EnchantmentTypeManager;
 import wbs.enchants.util.EnchantUtils;
 import wbs.enchants.util.EntityUtils;
@@ -36,15 +35,10 @@ public class WickedEnchant extends WbsEnchantment implements DamageEnchant {
             );
 
     public WickedEnchant() {
-        super("wicked", DEFAULT_DESCRIPTION);
+        super("wicked", EnchantmentTypeManager.PARADOXICAL, DEFAULT_DESCRIPTION);
 
-        supportedItems = ItemTypeTagKeys.ENCHANTABLE_WEAPON;
-        weight = 1;
-    }
-
-    @Override
-    public String getDefaultDisplayName() {
-        return "Wicked";
+        getDefinition()
+                .supportedItems(ItemTypeTagKeys.ENCHANTABLE_WEAPON);
     }
 
     @Override
@@ -70,10 +64,5 @@ public class WickedEnchant extends WbsEnchantment implements DamageEnchant {
                 HIT_EFFECT.play(WbsEntityUtil.getMiddleLocation(victim));
             }
         }
-    }
-
-    @Override
-    public EnchantmentType getType() {
-        return EnchantmentTypeManager.PARADOXICAL;
     }
 }

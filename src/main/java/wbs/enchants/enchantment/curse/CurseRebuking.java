@@ -15,7 +15,6 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import wbs.enchants.WbsEnchantment;
 import wbs.enchants.enchantment.helper.DamageEnchant;
-import wbs.enchants.type.EnchantmentType;
 import wbs.enchants.type.EnchantmentTypeManager;
 import wbs.enchants.util.EntityUtils;
 
@@ -25,15 +24,11 @@ public class CurseRebuking extends WbsEnchantment implements DamageEnchant {
             PERCENT_PER_LEVEL + "% of damage dealt per level!";
 
     public CurseRebuking() {
-        super("curse/rebuking", DEFAULT_DESCRIPTION);
+        super("curse/rebuking", EnchantmentTypeManager.CURSE, "Curse of Rebuking", DEFAULT_DESCRIPTION);
 
-        maxLevel = 2;
-        supportedItems = ItemTypeTagKeys.ENCHANTABLE_WEAPON;
-    }
-
-    @Override
-    public String getDefaultDisplayName() {
-        return "Curse of Rebuking";
+        getDefinition()
+                .maxLevel(2)
+                .supportedItems(ItemTypeTagKeys.ENCHANTABLE_WEAPON);
     }
 
     // We'll register manually, so we can force MONITOR priority
@@ -61,10 +56,5 @@ public class CurseRebuking extends WbsEnchantment implements DamageEnchant {
                 attacker.damage(rebukeDamage, DamageSource.builder(DamageType.MAGIC).withCausingEntity(attacker).build());
             }
         }
-    }
-
-    @Override
-    public EnchantmentType getType() {
-        return EnchantmentTypeManager.CURSE;
     }
 }

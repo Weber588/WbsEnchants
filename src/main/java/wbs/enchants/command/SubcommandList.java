@@ -50,7 +50,7 @@ public class SubcommandList extends WbsSubcommand {
     }
 
     private int execute(CommandSender sender, @Nullable EnchantmentType type) {
-        List<WbsEnchantment> enchants = EnchantManager.getRegistered()
+        List<WbsEnchantment> enchants = EnchantManager.getCustomRegistered()
                 .stream()
                 .sorted()
                 .collect(Collectors.toList());
@@ -61,7 +61,7 @@ public class SubcommandList extends WbsSubcommand {
         }
 
         if (type != null) {
-            enchants = enchants.stream().filter(enchant -> enchant.getType() == type).collect(Collectors.toList());
+            enchants = enchants.stream().filter(enchant -> enchant.type() == type).collect(Collectors.toList());
         }
 
         if (enchants.isEmpty()) {
@@ -102,7 +102,7 @@ public class SubcommandList extends WbsSubcommand {
                         )
                 ).addClickCommand("/" +
                         WbsEnchants.getInstance().getName().toLowerCase()
-                                + ":customenchants info " + enchant.getKey().asString()
+                                + ":customenchants info " + enchant.key().asString()
                 );
     }
 }

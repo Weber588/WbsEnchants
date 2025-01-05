@@ -17,13 +17,9 @@ public class AfterlifeEnchant extends WbsEnchantment {
     public AfterlifeEnchant() {
         super("afterlife", DESCRIPTION);
 
-        maxLevel = 1;
-        supportedItems = ItemTypeTagKeys.ENCHANTABLE_DURABILITY;
-    }
-
-    @Override
-    public String getDefaultDisplayName() {
-        return "Afterlife";
+        getDefinition()
+                .maxLevel(1)
+                .supportedItems(ItemTypeTagKeys.ENCHANTABLE_DURABILITY);
     }
 
     @EventHandler

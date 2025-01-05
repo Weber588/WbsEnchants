@@ -21,12 +21,8 @@ public class EchoingEnchant extends WbsEnchantment implements ProjectileEnchant<
     public EchoingEnchant() {
         super("echoing", DESCRIPTION);
 
-        supportedItems = WbsEnchantsBootstrap.ENCHANTABLE_PROJECTILE_WEAPON;
-    }
-
-    @Override
-    public String getDefaultDisplayName() {
-        return "Echoing";
+        getDefinition()
+                .supportedItems(WbsEnchantsBootstrap.ENCHANTABLE_PROJECTILE_WEAPON);
     }
 
     @Override

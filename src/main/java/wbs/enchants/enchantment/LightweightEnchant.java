@@ -22,25 +22,21 @@ import wbs.utils.util.WbsMath;
 
 public class LightweightEnchant extends WbsEnchantment implements DamageEnchant {
     public static final int MAX_LEVEL = 3;
-    public static double getAutoblockChance(int maxLevel) {
-        return 30.0 / maxLevel;
+    public static double getAutoblockChance(int level) {
+        return 30.0 / level;
     }
 
     private static final String DEFAULT_DESCRIPTION = "While holding a Lightweight shield in your offhand, you have a "
-            + getAutoblockChance(MAX_LEVEL) + "% chance per level of automatically blocking an attack, " +
+            + getAutoblockChance(1) + "% chance per level of automatically blocking an attack, " +
             "if you could block it with the shield.";
 
     public LightweightEnchant() {
         super("lightweight", DEFAULT_DESCRIPTION);
 
-        maxLevel = MAX_LEVEL;
-        supportedItems = WbsEnchantsBootstrap.SHIELD;
-        weight = 10;
-    }
-
-    @Override
-    public String getDefaultDisplayName() {
-        return "Lightweight";
+        getDefinition()
+                .maxLevel(MAX_LEVEL)
+                .supportedItems(WbsEnchantsBootstrap.SHIELD)
+                .weight(10);
     }
 
     @Override
@@ -78,7 +74,7 @@ public class LightweightEnchant extends WbsEnchantment implements DamageEnchant 
 
         if (isEnchantmentOn(offhandItem)) {
             int level = getLevel(offhandItem);
-            if (WbsMath.chance(getAutoblockChance(getMaxLevel()) * level)) {
+            if (WbsMath.chance(getAutoblockChance(maxLevel()) * level)) {
                 // Check if player would be able to block
 
                 Vector facingDirection = playerVictim.getEyeLocation().getDirection();
@@ -101,7 +97,7 @@ public class LightweightEnchant extends WbsEnchantment implements DamageEnchant 
                 playerVictim.swingOffHand();
                 playerVictim.playEffect(EntityEffect.SHIELD_BLOCK);
 
-                int noDamageTicks = playerVictim.getMaximumNoDamageTicks() / ((getMaxLevel() + 1) - level);
+                int noDamageTicks = playerVictim.getMaximumNoDamageTicks() / ((maxLevel() + 1) - level);
                 playerVictim.setNoDamageTicks(noDamageTicks);
                 playerVictim.setCooldown(offhandItem.getType(), Math.max(noDamageTicks, 0));
 

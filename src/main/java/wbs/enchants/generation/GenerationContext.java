@@ -9,7 +9,7 @@ import org.bukkit.event.Listener;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import wbs.enchants.WbsEnchantment;
+import wbs.enchants.EnchantmentDefinition;
 import wbs.enchants.generation.conditions.GenerationCondition;
 import wbs.utils.exceptions.InvalidConfigurationException;
 import wbs.utils.util.WbsEnums;
@@ -24,7 +24,7 @@ import java.util.stream.Collectors;
 public abstract class GenerationContext implements Listener {
     protected static final Random RANDOM = new Random(System.currentTimeMillis());
 
-    protected final WbsEnchantment enchantment;
+    protected final EnchantmentDefinition definition;
     protected final List<GenerationCondition> conditions = new LinkedList<>();
     private final double chanceToRun;
 
@@ -33,9 +33,9 @@ public abstract class GenerationContext implements Listener {
     @NotNull
     private final LevelGenerator levelGenerator;
 
-    public GenerationContext(String key, WbsEnchantment enchantment, ConfigurationSection section, String directory) {
+    public GenerationContext(String key, EnchantmentDefinition definition, ConfigurationSection section, String directory) {
         this.key = key;
-        this.enchantment = enchantment;
+        this.definition = definition;
         String conditionsKey = "conditions";
         ConfigurationSection conditionsSection = section.getConfigurationSection(conditionsKey);
 
@@ -57,7 +57,7 @@ public abstract class GenerationContext implements Listener {
         String levelKey = "level";
         if (section.isInt(levelKey)) {
             int level = section.getInt(levelKey);
-            levelGenerator = new LevelGenerator(enchantment, level);
+            levelGenerator = new LevelGenerator(definition, level);
         } else if (section.isString(levelKey)) {
             String modeString = Objects.requireNonNull(section.getString(levelKey));
 
@@ -66,7 +66,7 @@ public abstract class GenerationContext implements Listener {
                 throw new InvalidConfigurationException("Invalid mode or static level: " + modeString);
             }
 
-            levelGenerator = new LevelGenerator(enchantment, mode);
+            levelGenerator = new LevelGenerator(definition, mode);
         } else if (section.isConfigurationSection(levelKey)) {
             ConfigurationSection levelSection = Objects.requireNonNull(section.getConfigurationSection(levelKey));
 
@@ -79,9 +79,9 @@ public abstract class GenerationContext implements Listener {
                 throw new InvalidConfigurationException("Invalid mode or static level: " + modeString);
             }
 
-            levelGenerator = new LevelGenerator(enchantment, staticLevel, scalingFactor, mode);
+            levelGenerator = new LevelGenerator(definition, staticLevel, scalingFactor, mode);
         } else {
-            levelGenerator = new LevelGenerator(enchantment, LevelMode.RANDOM);
+            levelGenerator = new LevelGenerator(definition, LevelMode.RANDOM);
         }
     }
 
@@ -165,7 +165,7 @@ public abstract class GenerationContext implements Listener {
     @Override
     public String toString() {
         return "GenerationContext{" +
-                "enchantment=" + enchantment.getKey().asString() +
+                "enchantment=" + definition.key().asString() +
                 ", conditions=" + conditions.stream().map(Object::toString).collect(Collectors.joining("; ")) +
                 ", chanceToRun=" + chanceToRun +
                 ", key='" + key + '\'' +
@@ -173,17 +173,17 @@ public abstract class GenerationContext implements Listener {
                 '}';
     }
 
-    protected record LevelGenerator(WbsEnchantment enchantment, int staticLevel, double scalingFactor, LevelMode mode) {
-        public LevelGenerator(WbsEnchantment enchantment, LevelMode mode) {
-            this(enchantment, 1, 2, mode);
+    protected record LevelGenerator(EnchantmentDefinition definition, int staticLevel, double scalingFactor, LevelMode mode) {
+        public LevelGenerator(EnchantmentDefinition definition, LevelMode mode) {
+            this(definition, 1, 2, mode);
         }
 
-        public LevelGenerator(WbsEnchantment enchantment, int staticLevel) {
-            this(enchantment, staticLevel, 2, LevelMode.STATIC);
+        public LevelGenerator(EnchantmentDefinition definition, int staticLevel) {
+            this(definition, staticLevel, 2, LevelMode.STATIC);
         }
 
         public int getLevel() {
-            int maxLevel = enchantment.getMaxLevel();
+            int maxLevel = definition.maxLevel();
             if (maxLevel == 0) {
                 return staticLevel;
             }

@@ -1,11 +1,11 @@
 package wbs.enchants.enchantment;
 
+import io.papermc.paper.registry.keys.tags.ItemTypeTagKeys;
 import org.bukkit.block.Beacon;
 import org.bukkit.event.block.BlockDropItemEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.inventory.ItemStack;
 import wbs.enchants.WbsEnchantment;
-import wbs.enchants.WbsEnchantsBootstrap;
 import wbs.enchants.enchantment.helper.BlockStateEnchant;
 
 public class OutreachEnchant extends WbsEnchantment implements BlockStateEnchant<Beacon> {
@@ -16,13 +16,9 @@ public class OutreachEnchant extends WbsEnchantment implements BlockStateEnchant
     public OutreachEnchant() {
         super("outreach", DESCRIPTION);
 
-        supportedItems = WbsEnchantsBootstrap.ENCHANTABLE_BEACON;
-        maxLevel = 3;
-    }
-
-    @Override
-    public String getDefaultDisplayName() {
-        return "Outreach";
+        getDefinition()
+                .supportedItems(ItemTypeTagKeys.ENCHANTABLE_WEAPON)
+                .maxLevel(3);
     }
 
     @Override

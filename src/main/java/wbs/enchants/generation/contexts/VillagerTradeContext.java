@@ -9,7 +9,7 @@ import org.bukkit.event.entity.VillagerAcquireTradeEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.MerchantRecipe;
 import org.bukkit.inventory.meta.EnchantmentStorageMeta;
-import wbs.enchants.WbsEnchantment;
+import wbs.enchants.EnchantmentDefinition;
 import wbs.enchants.WbsEnchants;
 import wbs.enchants.generation.GenerationContext;
 import wbs.enchants.util.EnchantUtils;
@@ -22,8 +22,8 @@ public class VillagerTradeContext extends GenerationContext {
 
     private final List<String> replaceableEnchants;
 
-    public VillagerTradeContext(String key, WbsEnchantment enchantment, ConfigurationSection section, String directory) {
-        super(key, enchantment, section, directory);
+    public VillagerTradeContext(String key, EnchantmentDefinition definition, ConfigurationSection section, String directory) {
+        super(key, definition, section, directory);
 
         replaceableEnchants = section.getStringList("replaceable").stream()
                 .map(String::toLowerCase)
@@ -77,7 +77,7 @@ public class VillagerTradeContext extends GenerationContext {
             WbsEnchants.getInstance().getLogger().info("toReplace: " + toReplace.getKey());
 
             result.setItemMeta(meta);
-            EnchantUtils.addEnchantment(enchantment, result, generateLevel());
+            EnchantUtils.addEnchantment(definition, result, generateLevel());
 
             MerchantRecipe newRecipe = new MerchantRecipe(result,
                     recipe.getUses(),
@@ -98,7 +98,7 @@ public class VillagerTradeContext extends GenerationContext {
     public String toString() {
         return "VillagerTradeContext{" +
                 "replaceableEnchants=" + replaceableEnchants +
-                ", enchantment=" + enchantment +
+                ", enchantment=" + definition +
                 ", conditions=" + conditions +
                 ", key='" + key + '\'' +
                 '}';

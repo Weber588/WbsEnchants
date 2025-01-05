@@ -40,14 +40,14 @@ public class EnchantsSettings extends WbsSettings {
         enchantsFile = loadConfigSafely(genConfig("enchantments.yml"));
 
         boolean newEnchantAdded = false;
-        for (WbsEnchantment enchant : EnchantManager.getRegistered()) {
-            ConfigurationSection enchantSection = enchantsFile.getConfigurationSection(enchant.getKey().getKey());
+        for (WbsEnchantment enchant : EnchantManager.getCustomRegistered()) {
+            ConfigurationSection enchantSection = enchantsFile.getConfigurationSection(enchant.key().value());
 
             if (enchantSection == null) {
                 newEnchantAdded = true;
                 enchant.buildConfigurationSection(enchantsFile);
             } else {
-                enchant.configure(enchantSection, enchantsFile.getName() + "/" + enchant.getKey().getKey());
+                enchant.configure(enchantSection, enchantsFile.getName() + "/" + enchant.key().value());
             }
 
             if (!enchant.isEnabled()) {
@@ -65,8 +65,8 @@ public class EnchantsSettings extends WbsSettings {
 
     private void saveEnchants() {
         enchantsFile = saveYamlData(enchantsFile, "enchantments.yml", "enchantment", safeYaml ->
-                EnchantManager.getRegistered().forEach(enchant -> {
-                    ConfigurationSection enchantSection = safeYaml.getConfigurationSection(enchant.getKey().getKey());
+                EnchantManager.getCustomRegistered().forEach(enchant -> {
+                    ConfigurationSection enchantSection = safeYaml.getConfigurationSection(enchant.key().value());
 
                     // Only write to config if the file doesn't already contain a definition for enchants -- don't want
                     // to override user configuration. (Or write if the enchantment is marked as "in development" and should

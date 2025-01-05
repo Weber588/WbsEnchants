@@ -38,13 +38,9 @@ public class DualWieldEnchant extends WbsEnchantment implements DamageEnchant {
     public DualWieldEnchant() {
         super("dual_wield", DEFAULT_DESCRIPTION);
 
-        supportedItems = ItemTypeTagKeys.ENCHANTABLE_SWORD;
-        weight = 10;
-    }
-
-    @Override
-    public String getDefaultDisplayName() {
-        return "Dual Wield";
+        getDefinition()
+                .weight(10)
+                .supportedItems(ItemTypeTagKeys.ENCHANTABLE_SWORD);
     }
 
     @Override

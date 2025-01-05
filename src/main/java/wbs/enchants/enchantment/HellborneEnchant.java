@@ -9,7 +9,6 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import wbs.enchants.WbsEnchantment;
-import wbs.enchants.type.EnchantmentType;
 import wbs.enchants.type.EnchantmentTypeManager;
 import wbs.enchants.util.DamageUtils;
 
@@ -18,18 +17,12 @@ public class HellborneEnchant extends WbsEnchantment {
             "with strength level relating to the level of the enchantment while you're on fire.";
 
     public HellborneEnchant() {
-        super("hellborne", DEFAULT_DESCRIPTION);
+        super("hellborne", EnchantmentTypeManager.ETHEREAL, DEFAULT_DESCRIPTION);
 
-        maxLevel = 2;
-        supportedItems = ItemTypeTagKeys.ENCHANTABLE_CHEST_ARMOR;
-        weight = 1;
-
-        targetDescription = "Chestplate";
-    }
-
-    @Override
-    public String getDefaultDisplayName() {
-        return "Hellborne";
+        getDefinition()
+                .maxLevel(2)
+                .supportedItems(ItemTypeTagKeys.ENCHANTABLE_CHEST_ARMOR)
+                .targetDescription("Chestplate");
     }
 
     @EventHandler
@@ -60,10 +53,5 @@ public class HellborneEnchant extends WbsEnchantment {
             PotionEffect strengthEffect = new PotionEffect(PotionEffectType.STRENGTH, ticks, level - 1);
             living.addPotionEffect(strengthEffect);
         }
-    }
-
-    @Override
-    public EnchantmentType getType() {
-        return EnchantmentTypeManager.ETHEREAL;
     }
 }

@@ -54,15 +54,10 @@ public class TransferenceEnchant extends WbsEnchantment {
     public TransferenceEnchant() {
         super("transference", DEFAULT_DESCRIPTION);
 
-        supportedItems = WbsEnchantsBootstrap.MAPS;
-        weight = 5;
-
-        targetDescription = "Map";
-    }
-
-    @Override
-    public String getDefaultDisplayName() {
-        return "Transference";
+        getDefinition()
+                .supportedItems(WbsEnchantsBootstrap.MAPS)
+                .weight(5)
+                .targetDescription("Map");
     }
 
     @EventHandler

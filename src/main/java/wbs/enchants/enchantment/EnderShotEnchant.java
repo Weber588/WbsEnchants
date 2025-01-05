@@ -13,7 +13,6 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.util.RayTraceResult;
 import org.bukkit.util.Vector;
 import wbs.enchants.WbsEnchantment;
-import wbs.enchants.type.EnchantmentType;
 import wbs.enchants.type.EnchantmentTypeManager;
 import wbs.utils.util.WbsMath;
 import wbs.utils.util.particles.LineParticleEffect;
@@ -32,15 +31,10 @@ public class EnderShotEnchant extends WbsEnchantment {
     );
 
     public EnderShotEnchant() {
-        super("ender_shot", DEFAULT_DESCRIPTION);
+        super("ender_shot", EnchantmentTypeManager.ETHEREAL, DEFAULT_DESCRIPTION);
 
-        supportedItems = ItemTypeTagKeys.ENCHANTABLE_BOW;
-        weight = 1;
-    }
-
-    @Override
-    public String getDefaultDisplayName() {
-        return "Ender Shot";
+        getDefinition()
+                .supportedItems(ItemTypeTagKeys.ENCHANTABLE_BOW);
     }
 
     @EventHandler
@@ -86,10 +80,5 @@ public class EnderShotEnchant extends WbsEnchantment {
                 EFFECT.play(lineStartLocation, teleportLocation);
             }
         }
-    }
-
-    @Override
-    public EnchantmentType getType() {
-        return EnchantmentTypeManager.ETHEREAL;
     }
 }

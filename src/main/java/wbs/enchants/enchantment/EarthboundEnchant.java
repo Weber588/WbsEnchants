@@ -18,14 +18,9 @@ public class EarthboundEnchant extends WbsEnchantment {
     public EarthboundEnchant() {
         super("earthbound", DESCRIPTION);
 
-        maxLevel = 1;
-        supportedItems = ItemTypeTagKeys.ENCHANTABLE_FOOT_ARMOR;
-        exclusiveWith = WbsEnchantsBootstrap.EXCLUSIVE_SET_FALL_DAMAGE_AFFECTING;
-    }
-
-    @Override
-    public String getDefaultDisplayName() {
-        return "Earthbound";
+        getDefinition()
+                .supportedItems(ItemTypeTagKeys.ENCHANTABLE_FOOT_ARMOR)
+                .exclusiveInject(WbsEnchantsBootstrap.EXCLUSIVE_SET_FALL_DAMAGE_AFFECTING);
     }
 
     @EventHandler

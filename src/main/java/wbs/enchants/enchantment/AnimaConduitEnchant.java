@@ -31,13 +31,9 @@ public class AnimaConduitEnchant extends WbsEnchantment {
     public AnimaConduitEnchant() {
         super("anima_conduit", DESCRIPTION);
 
-        maxLevel = 4;
-        supportedItems = ItemTypeTagKeys.ENCHANTABLE_CHEST_ARMOR;
-    }
-
-    @Override
-    public String getDefaultDisplayName() {
-        return "Anima Conduit";
+        getDefinition()
+                .maxLevel(4)
+                .supportedItems(ItemTypeTagKeys.ENCHANTABLE_CHEST_ARMOR);
     }
 
     @EventHandler

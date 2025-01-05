@@ -10,6 +10,7 @@ import net.kyori.adventure.key.Key;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import wbs.enchants.EnchantManager;
+import wbs.enchants.EnchantmentDefinition;
 import wbs.enchants.WbsEnchantment;
 import wbs.utils.util.commands.brigadier.WbsSubcommand;
 import wbs.utils.util.plugin.WbsPlugin;
@@ -49,9 +50,14 @@ public abstract class EnchantmentSubcommand extends WbsSubcommand {
         return execute(context);
     }
 
-    protected WbsEnchantment getEnchantment(CommandContext<CommandSourceStack> context) {
+    protected EnchantmentDefinition getEnchantment(CommandContext<CommandSourceStack> context) {
         Key enchantKey = context.getArgument("enchantment", Key.class);
 
-        return EnchantManager.getFromKey(enchantKey);
+        WbsEnchantment customEnchantment = EnchantManager.getFromKey(enchantKey);
+        if (customEnchantment != null) {
+            return customEnchantment.getDefinition();
+        } else {
+            return EnchantManager.getExternalDefinition(enchantKey);
+        }
     }
 }

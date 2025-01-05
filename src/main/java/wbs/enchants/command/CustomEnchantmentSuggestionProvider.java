@@ -18,7 +18,7 @@ public class CustomEnchantmentSuggestionProvider extends KeyedSuggestionProvider
 
     @Override
     public Iterable<WbsEnchantment> getSuggestions(CommandContext<CommandSourceStack> context) {
-        return EnchantManager.getRegistered().stream().filter(ench -> filter.test(context, ench)).toList();
+        return EnchantManager.getCustomRegistered().stream().filter(ench -> filter.test(context, ench)).toList();
     }
 
     public CustomEnchantmentSuggestionProvider(BiPredicate<@Nullable CommandContext<?>, WbsEnchantment> filter) {

@@ -28,15 +28,11 @@ public class PilferingEnchant extends WbsEnchantment implements DamageEnchant {
     public PilferingEnchant() {
         super("pilfering", DEFAULT_DESCRIPTION);
 
-        maxLevel = 3;
-        supportedItems = ItemTypeTagKeys.ENCHANTABLE_WEAPON;
+        getDefinition()
+                .supportedItems(ItemTypeTagKeys.ENCHANTABLE_WEAPON)
+                .maxLevel(3)
+                .weight(10);
         // TODO: exclusiveWith = Create set for Looting
-        weight = 10;
-    }
-
-    @Override
-    public String getDefaultDisplayName() {
-        return "Pilfering";
     }
 
     @Override

@@ -8,7 +8,6 @@ import org.bukkit.event.EventPriority;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.inventory.ItemStack;
 import wbs.enchants.WbsEnchantment;
-import wbs.enchants.type.EnchantmentType;
 import wbs.enchants.type.EnchantmentTypeManager;
 
 public class CurseCowardice extends WbsEnchantment {
@@ -16,14 +15,7 @@ public class CurseCowardice extends WbsEnchantment {
             "the closer your enemies get.";
 
     public CurseCowardice() {
-        super("curse/cowardice", DEFAULT_DESCRIPTION);
-
-        maxLevel = 1;
-    }
-
-    @Override
-    public String getDefaultDisplayName() {
-        return "Curse of Cowardice";
+        super("curse/cowardice", EnchantmentTypeManager.CURSE, "Curse of Cowardice", DEFAULT_DESCRIPTION);
     }
 
     @EventHandler(priority = EventPriority.LOWEST)
@@ -45,10 +37,5 @@ public class CurseCowardice extends WbsEnchantment {
                 event.setDamage(event.getDamage() * modifier);
             }
         }
-    }
-
-    @Override
-    public EnchantmentType getType() {
-        return EnchantmentTypeManager.CURSE;
     }
 }

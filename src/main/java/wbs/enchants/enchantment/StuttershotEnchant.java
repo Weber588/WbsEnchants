@@ -22,13 +22,9 @@ public class StuttershotEnchant extends WbsEnchantment implements ProjectileEnch
     public StuttershotEnchant() {
         super("stuttershot", DESCRIPTION);
 
-        maxLevel = 3;
-        supportedItems = WbsEnchantsBootstrap.ENCHANTABLE_PROJECTILE_WEAPON;
-    }
-
-    @Override
-    public String getDefaultDisplayName() {
-        return "Stuttershot";
+        getDefinition()
+                .supportedItems(WbsEnchantsBootstrap.ENCHANTABLE_PROJECTILE_WEAPON)
+                .maxLevel(3);
     }
 
     @Override

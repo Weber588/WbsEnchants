@@ -5,18 +5,17 @@ import org.bukkit.entity.Piglin;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.entity.PiglinBarterEvent;
-import wbs.enchants.WbsEnchantment;
+import wbs.enchants.EnchantmentDefinition;
 import wbs.utils.util.entities.selector.RadiusSelector;
 
 public class BarterContext extends ExistingLootContext {
-    public BarterContext(String key, WbsEnchantment enchantment, ConfigurationSection section, String directory) {
-        super(key, enchantment, section, directory);
+    public BarterContext(String key, EnchantmentDefinition definition, ConfigurationSection section, String directory) {
+        super(key, definition, section, directory);
     }
 
     @Override
     protected int getDefaultChance() {
-        // TODO: Figure out how to get enchantment weight in 1.20.5+
-        return enchantment.getEnchantment().getWeight();
+        return definition.getEnchantment().getWeight();
     }
 
     @EventHandler

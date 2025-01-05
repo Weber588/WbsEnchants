@@ -7,22 +7,16 @@ import org.bukkit.event.EventPriority;
 import org.bukkit.event.entity.EntityDeathEvent;
 import org.bukkit.inventory.ItemStack;
 import wbs.enchants.WbsEnchantment;
-import wbs.enchants.type.EnchantmentType;
 import wbs.enchants.type.EnchantmentTypeManager;
 
 public class CurseMercy extends WbsEnchantment {
     private static final String DEFAULT_DESCRIPTION = "A weapon curse that refuses to deal a killing blow.";
 
     public CurseMercy() {
-        super("curse/mercy", DEFAULT_DESCRIPTION);
+        super("curse/mercy", EnchantmentTypeManager.CURSE, "Curse of Mercy", DEFAULT_DESCRIPTION);
 
-        supportedItems = ItemTypeTagKeys.ENCHANTABLE_WEAPON;
-        maxLevel = 1;
-    }
-
-    @Override
-    public String getDefaultDisplayName() {
-        return "Curse of Mercy";
+        getDefinition()
+                .supportedItems(ItemTypeTagKeys.ENCHANTABLE_WEAPON);
     }
 
     @EventHandler(priority = EventPriority.LOWEST)
@@ -37,10 +31,5 @@ public class CurseMercy extends WbsEnchantment {
             event.setReviveHealth(2);
             sendActionBar("Your weapon refuses to deal the killing blow...", killer);
         }
-    }
-
-    @Override
-    public EnchantmentType getType() {
-        return EnchantmentTypeManager.CURSE;
     }
 }

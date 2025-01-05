@@ -9,6 +9,7 @@ import io.papermc.paper.plugin.lifecycle.event.LifecycleEventManager;
 import io.papermc.paper.plugin.lifecycle.event.types.LifecycleEvents;
 import io.papermc.paper.registry.RegistryKey;
 import io.papermc.paper.registry.TypedKey;
+import io.papermc.paper.registry.data.EnchantmentRegistryEntry;
 import io.papermc.paper.registry.event.RegistryEvents;
 import io.papermc.paper.registry.keys.tags.EnchantmentTagKeys;
 import io.papermc.paper.registry.keys.tags.ItemTypeTagKeys;
@@ -62,6 +63,7 @@ public class WbsEnchantsBootstrap implements PluginBootstrap {
     public static final TagKey<ItemType> ENCHANTABLE_BUNDLE = ItemTypeTagKeys.create(createKey("enchantable/bundle"));
     public static final TagKey<ItemType> ENCHANTABLE_FLINT_AND_STEEL = ItemTypeTagKeys.create(createKey("enchantable/flint_and_steel"));
     public static final TagKey<ItemType> ENCHANTABLE_BEACON = ItemTypeTagKeys.create(createKey("enchantable/beacon"));
+    public static final TagKey<ItemType> ENCHANTABLE_LEAD = ItemTypeTagKeys.create(createKey("enchantable/lead"));
 
     // TODO: Put this somewhere proper (config?)
     private static Set<CustomTag<ItemType>> getItemTags() {
@@ -124,6 +126,9 @@ public class WbsEnchantsBootstrap implements PluginBootstrap {
                 ),
                 new CustomTag<>(ENCHANTABLE_BEACON,
                         ItemType.BEACON
+                ),
+                new CustomTag<>(ENCHANTABLE_LEAD,
+                        ItemType.LEAD
                 )
         );
     }
@@ -157,6 +162,13 @@ public class WbsEnchantsBootstrap implements PluginBootstrap {
 
     @Override
     public @NotNull JavaPlugin createPlugin(@NotNull PluginProviderContext context) {
+        if (newExternalEnchants) {
+            try {
+                externalEnchantsConfig.save(externalEnchantsFile);
+            } catch (IOException ex) {
+                context.getLogger().error(ex.getMessage());
+            }
+        }
         return new WbsEnchants();
     }
 
@@ -183,64 +195,30 @@ public class WbsEnchantsBootstrap implements PluginBootstrap {
     public void bootstrap(@NotNull BootstrapContext context) {
         LifecycleEventManager<@NotNull BootstrapContext> manager = context.getLifecycleManager();
 
-        Multimap<EnchantmentType, TypedKey<Enchantment>> typeEnchantments = HashMultimap.create();
+        registerEnchantmentEvents(context, manager);
 
-        for (WbsEnchantment enchant : EnchantManager.getRegistered()) {
-            typeEnchantments.put(enchant.getType(), enchant.getTypedKey());
-        }
+        registerCustomTags(context, manager);
 
-        File enchantsFile = new File(context.getDataDirectory().toFile(), "enchantments.yml");
-        YamlConfiguration enchantsConfig;
-        if (enchantsFile.exists()) {
-            enchantsConfig = loadConfigSafely(enchantsFile, context.getLogger());
-        } else {
-            enchantsConfig = null;
-        }
-
-        // Register a new handled for the freeze lifecycle event on the enchantment registry
-        manager.registerEventHandler(RegistryEvents.ENCHANTMENT.freeze().newHandler(event -> {
-            for (WbsEnchantment enchant : EnchantManager.getRegistered()) {
-                // Read config in this stage, as prior will result in referencing non-existent tags
-                ConfigurationSection enchantSection;
-                if (enchantsConfig != null) {
-                    enchantSection = enchantsConfig.getConfigurationSection(enchant.getKey().getKey());
-                    if (enchantSection == null) {
-                        enchant.buildConfigurationSection(enchantsConfig);
-                    } else {
-                        try {
-                            enchant.configureBoostrap(enchantSection, enchantsFile.getName() + "/" + enchant.getKey().getKey());
-                        } catch (wbs.utils.exceptions.InvalidConfigurationException ex) {
-                            context.getLogger().error(ex.getMessage());
-                        }
-                    }
+        manager.registerEventHandler(LifecycleEvents.TAGS.postFlatten(RegistryKey.ENCHANTMENT).newHandler(event -> {
+            Multimap<TagKey<Enchantment>, TypedKey<Enchantment>> toAdd = HashMultimap.create();
+            for (WbsEnchantment enchant : EnchantManager.getCustomRegistered()) {
+                EnchantmentDefinition definition = enchant.getDefinition();
+                for (TagKey<Enchantment> tag : definition.injectInto()) {
+                    toAdd.put(tag, enchant.getTypedKey());
                 }
+                if (definition.primaryItems() != null && !definition.primaryItems().equals(WbsEnchantsBootstrap.ITEM_EMPTY)) {
+                    toAdd.put(EnchantmentTagKeys.IN_ENCHANTING_TABLE, enchant.getTypedKey());
+                }
+            }
 
-                event.registry().register(
-                        TypedKey.create(RegistryKey.ENCHANTMENT, enchant.getKey()),
-                        builder -> enchant.buildTo(event, builder)
-                );
+            for (TagKey<Enchantment> tag : toAdd.keys()) {
+                event.registrar().addToTag(tag, toAdd.get(tag));
             }
         }));
+    }
 
-        Set<CustomTag<Enchantment>> dynamicEnchantmentTags = new HashSet<>();
-
-        for (EnchantmentType type : EnchantmentTypeManager.getRegistered()) {
-            Collection<TypedKey<Enchantment>> enchantmentKeys = typeEnchantments.get(type);
-            TagKey<Enchantment> tagKey = type.getTagKey();
-
-            // Don't create a tag for Regular.
-            // Instead, we'll determine if an enchant is "regular" by checking all other types first.
-            if (tagKey == null) {
-                continue;
-            }
-
-            CustomTag<Enchantment> typeTag = new CustomTag<>(tagKey);
-            typeTag.typedKeys = new LinkedList<>();
-
-            typeTag.typedKeys.addAll(enchantmentKeys);
-
-            dynamicEnchantmentTags.add(typeTag);
-        }
+    private static void registerCustomTags(@NotNull BootstrapContext context, LifecycleEventManager<@NotNull BootstrapContext> manager) {
+        Set<CustomTag<Enchantment>> enchantmentTypeTags = getEnchantmentTypeTags();
 
         CustomTag<Enchantment> vanillaTag = new CustomTag<>(VANILLA);
         vanillaTag.typedKeys = new LinkedList<>();
@@ -256,6 +234,7 @@ public class WbsEnchantsBootstrap implements PluginBootstrap {
             }
         }));
 
+        Set<CustomTag<Enchantment>> dynamicEnchantmentTags = new HashSet<>(enchantmentTypeTags);
         dynamicEnchantmentTags.add(customTag);
         dynamicEnchantmentTags.add(vanillaTag);
 
@@ -263,20 +242,121 @@ public class WbsEnchantsBootstrap implements PluginBootstrap {
 
         registerCustomTags(context, RegistryKey.ITEM, WbsEnchantsBootstrap::getItemTags);
         registerCustomTags(context, RegistryKey.ENCHANTMENT, WbsEnchantsBootstrap::getEnchantmentTags);
+    }
 
-        manager.registerEventHandler(LifecycleEvents.TAGS.postFlatten(RegistryKey.ENCHANTMENT).newHandler(event -> {
-            Multimap<TagKey<Enchantment>, TypedKey<Enchantment>> toAdd = HashMultimap.create();
-            for (WbsEnchantment enchant : EnchantManager.getRegistered()) {
-                for (TagKey<Enchantment> tag : enchant.addToTags()) {
-                    toAdd.put(tag, enchant.getTypedKey());
-                }
-                if (enchant.primaryItems != null && !enchant.primaryItems.equals(WbsEnchantsBootstrap.ITEM_EMPTY)) {
-                    toAdd.put(EnchantmentTagKeys.IN_ENCHANTING_TABLE, enchant.getTypedKey());
-                }
+    private static @NotNull Set<CustomTag<Enchantment>> getEnchantmentTypeTags() {
+        Multimap<EnchantmentType, TypedKey<Enchantment>> typeEnchantments = HashMultimap.create();
+
+        for (WbsEnchantment enchant : EnchantManager.getCustomRegistered()) {
+            typeEnchantments.put(enchant.type(), enchant.getTypedKey());
+        }
+
+        Set<CustomTag<Enchantment>> enchantmentTypeTags = new HashSet<>();
+        for (EnchantmentType type : EnchantmentTypeManager.getRegistered()) {
+            Collection<TypedKey<Enchantment>> enchantmentKeys = typeEnchantments.get(type);
+            TagKey<Enchantment> tagKey = type.getTagKey();
+
+            // Don't create a tag for Regular.
+            // Instead, we'll determine if an enchant is "regular" by checking all other types first.
+            if (tagKey == null) {
+                continue;
             }
 
-            for (TagKey<Enchantment> tag : toAdd.keys()) {
-                event.registrar().addToTag(tag, toAdd.get(tag));
+            CustomTag<Enchantment> typeTag = new CustomTag<>(tagKey);
+            typeTag.typedKeys = new LinkedList<>();
+
+            typeTag.typedKeys.addAll(enchantmentKeys);
+
+            enchantmentTypeTags.add(typeTag);
+        }
+        return enchantmentTypeTags;
+    }
+
+    private void registerEnchantmentEvents(@NotNull BootstrapContext context, LifecycleEventManager<@NotNull BootstrapContext> manager) {
+        File dataDirectory = context.getDataDirectory().toFile();
+        if (!dataDirectory.exists()) {
+            dataDirectory.mkdir();
+        }
+
+        configureExternalEnchantments(context, manager);
+        registerCustomEnchantments(context, manager);
+    }
+
+    private File externalEnchantsFile;
+    private YamlConfiguration externalEnchantsConfig;
+    private boolean newExternalEnchants = false;
+
+    private void configureExternalEnchantments(@NotNull BootstrapContext context, LifecycleEventManager<@NotNull BootstrapContext> manager) {
+        String fileName = "external_enchantments.yml";
+        externalEnchantsFile = new File(context.getDataDirectory().toFile(), fileName);
+        if (!externalEnchantsFile.exists()) {
+            try {
+                externalEnchantsFile.createNewFile();
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+        }
+        externalEnchantsConfig = loadConfigSafely(externalEnchantsFile, context.getLogger());
+
+        manager.registerEventHandler(RegistryEvents.ENCHANTMENT.entryAdd().newHandler(event -> {
+            EnchantmentRegistryEntry.Builder builder = event.builder();
+
+            TypedKey<Enchantment> addedKey = event.key();
+            WbsEnchantment customEnchantment = EnchantManager.getFromKey(addedKey.key());
+            if (customEnchantment == null) {
+                // Not a custom enchantment -- check external file and add if not present.
+                String stringKey = addedKey.key().asString();
+
+                EnchantmentDefinition definition = new EnchantmentDefinition(addedKey.key(), event.builder().description());
+
+                ConfigurationSection definitionSection = externalEnchantsConfig.getConfigurationSection(stringKey);
+                if (definitionSection == null) {
+                    definition.buildConfigurationSection(externalEnchantsConfig, builder);
+                    newExternalEnchants = true;
+                } else {
+                    try {
+                        definition.configureBoostrap(definitionSection, builder, fileName + "/" + stringKey);
+
+                        definition.buildTo(event::getOrCreateTag, builder);
+                    } catch (wbs.utils.exceptions.InvalidConfigurationException ex) {
+                        context.getLogger().error(ex.getMessage());
+                    }
+                }
+
+                EnchantManager.registerExternal(definition);
+            }
+        }));
+    }
+
+    private void registerCustomEnchantments(@NotNull BootstrapContext context, LifecycleEventManager<@NotNull BootstrapContext> manager) {
+        File customEnchantsFile = new File(context.getDataDirectory().toFile(), "enchantments.yml");
+        YamlConfiguration enchantsConfig;
+        if (customEnchantsFile.exists()) {
+            enchantsConfig = loadConfigSafely(customEnchantsFile, context.getLogger());
+        } else {
+            enchantsConfig = null;
+        }
+
+        manager.registerEventHandler(RegistryEvents.ENCHANTMENT.freeze().newHandler(event -> {
+            for (WbsEnchantment enchant : EnchantManager.getCustomRegistered()) {
+                // Read config in this stage, as prior will result in referencing non-existent tags
+                if (enchantsConfig != null) {
+                    ConfigurationSection enchantSection = enchantsConfig.getConfigurationSection(enchant.key().value());
+                    if (enchantSection == null) {
+                        enchant.buildConfigurationSection(enchantsConfig);
+                    } else {
+                        try {
+                            enchant.configureBoostrap(enchantSection, customEnchantsFile.getName() + "/" + enchant.key().value());
+                        } catch (wbs.utils.exceptions.InvalidConfigurationException ex) {
+                            context.getLogger().error(ex.getMessage());
+                        }
+                    }
+                }
+
+                event.registry().register(
+                        TypedKey.create(RegistryKey.ENCHANTMENT, enchant.key()),
+                        builder -> enchant.getDefinition().buildTo(event::getOrCreateTag, builder)
+                );
             }
         }));
     }

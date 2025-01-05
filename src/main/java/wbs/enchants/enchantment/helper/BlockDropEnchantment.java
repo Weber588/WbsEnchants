@@ -14,6 +14,7 @@ import org.bukkit.scheduler.BukkitRunnable;
 import org.jetbrains.annotations.NotNull;
 import wbs.enchants.WbsEnchantment;
 import wbs.enchants.WbsEnchants;
+import wbs.enchants.type.EnchantmentType;
 import wbs.enchants.util.EventUtils;
 import wbs.utils.util.WbsItems;
 
@@ -24,11 +25,19 @@ public abstract class BlockDropEnchantment extends WbsEnchantment {
     private int timerId = -1;
     private final EventPriority dropPriority;
 
-    public BlockDropEnchantment(String key, @NotNull String description) {
-        this(key, description, EventPriority.NORMAL);
+    public BlockDropEnchantment(@NotNull String key, @NotNull String description) {
+        super(key, description);
+
+        this.dropPriority = EventPriority.NORMAL;
     }
 
-    public BlockDropEnchantment(String key, @NotNull String description, EventPriority dropPriority) {
+    public BlockDropEnchantment(@NotNull String key, EnchantmentType type, @NotNull String displayName, @NotNull String description) {
+        super(key, type, displayName, description);
+
+        this.dropPriority = EventPriority.NORMAL;
+    }
+
+    public BlockDropEnchantment(@NotNull String key, @NotNull String description, EventPriority dropPriority) {
         super(key, description);
 
         this.dropPriority = dropPriority;

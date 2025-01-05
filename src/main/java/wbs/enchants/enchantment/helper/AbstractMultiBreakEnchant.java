@@ -1,26 +1,56 @@
 package wbs.enchants.enchantment.helper;
 
-import io.papermc.paper.registry.tag.TagKey;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
-import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.util.RayTraceResult;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import wbs.enchants.EnchantmentDefinition;
 import wbs.enchants.WbsEnchantment;
 import wbs.enchants.WbsEnchantsBootstrap;
+import wbs.enchants.type.EnchantmentType;
 import wbs.enchants.util.BlockChanger;
 import wbs.enchants.util.EventUtils;
 
-import java.util.LinkedList;
-import java.util.List;
-
 public abstract class AbstractMultiBreakEnchant extends WbsEnchantment {
-    public AbstractMultiBreakEnchant(String key, @NotNull String description) {
+
+
+    public AbstractMultiBreakEnchant(@NotNull EnchantmentDefinition definition) {
+        super(definition);
+
+        configureDefinition();
+    }
+
+    public AbstractMultiBreakEnchant(String key, String description) {
         super(key, description);
+
+        configureDefinition();
+    }
+
+    public AbstractMultiBreakEnchant(String key, String displayName, String description) {
+        super(key, displayName, description);
+
+        configureDefinition();
+    }
+
+    public AbstractMultiBreakEnchant(String key, EnchantmentType type, String description) {
+        super(key, type, description);
+
+        configureDefinition();
+    }
+
+    public AbstractMultiBreakEnchant(String key, EnchantmentType type, String displayName, String description) {
+        super(key, type, displayName, description);
+
+        configureDefinition();
+    }
+
+    private void configureDefinition() {
+        getDefinition()
+                .exclusiveInject(WbsEnchantsBootstrap.EXCLUSIVE_SET_MULTIMINER);
     }
 
     @Override
@@ -28,15 +58,6 @@ public abstract class AbstractMultiBreakEnchant extends WbsEnchantment {
         super.registerEvents();
 
         EventUtils.register(BlockBreakEvent.class, this::onBreakBlock);
-    }
-
-    @Override
-    public @NotNull List<TagKey<Enchantment>> addToTags() {
-        LinkedList<TagKey<Enchantment>> tags = new LinkedList<>(super.addToTags());
-
-        tags.add(WbsEnchantsBootstrap.EXCLUSIVE_SET_MULTIMINER);
-
-        return tags;
     }
 
     public final void onBreakBlock(BlockBreakEvent event) {

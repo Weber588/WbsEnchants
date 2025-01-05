@@ -7,6 +7,7 @@ import io.papermc.paper.registry.tag.TagKey;
 import net.kyori.adventure.key.Key;
 import org.bukkit.Registry;
 import org.bukkit.enchantments.Enchantment;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.*;
 import java.util.function.Predicate;
@@ -72,5 +73,10 @@ public class EnchantmentTypeManager {
 
     public static Collection<EnchantmentType> getRegistered() {
         return Collections.unmodifiableCollection(REGISTERED_TYPES.values());
+    }
+
+    @NotNull
+    public static EnchantmentType getType(Key typeKey) {
+        return REGISTERED_TYPES.getOrDefault(typeKey, REGULAR);
     }
 }

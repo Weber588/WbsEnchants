@@ -27,13 +27,9 @@ public class CavingEnchant extends WbsEnchantment {
     public CavingEnchant() {
         super("caving", DESCRIPTION);
 
-        maxLevel = 1;
-        supportedItems = WbsEnchantsBootstrap.ENCHANTABLE_BUNDLE;
-    }
-
-    @Override
-    public String getDefaultDisplayName() {
-        return "Caving";
+        getDefinition()
+                .maxLevel(1)
+                .supportedItems(WbsEnchantsBootstrap.ENCHANTABLE_BUNDLE);
     }
 
     @EventHandler

@@ -4,16 +4,16 @@ import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.entity.EntityDeathEvent;
-import wbs.enchants.WbsEnchantment;
+import wbs.enchants.EnchantmentDefinition;
 
 public class MobDeathContext extends ExistingLootContext {
-    public MobDeathContext(String key, WbsEnchantment enchantment, ConfigurationSection section, String directory) {
-        super(key, enchantment, section, directory);
+    public MobDeathContext(String key, EnchantmentDefinition definition, ConfigurationSection section, String directory) {
+        super(key, definition, section, directory);
     }
 
     @Override
     protected int getDefaultChance() {
-        return enchantment.getEnchantment().getWeight();
+        return definition.getEnchantment().getWeight();
     }
 
     @EventHandler

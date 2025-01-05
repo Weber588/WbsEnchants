@@ -9,7 +9,6 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.inventory.ItemStack;
 import wbs.enchants.WbsEnchantment;
-import wbs.enchants.type.EnchantmentType;
 import wbs.enchants.type.EnchantmentTypeManager;
 import wbs.utils.util.WbsMath;
 
@@ -22,15 +21,11 @@ public class CurseSplintering extends WbsEnchantment {
     private static final double CHANCE_PER_LEVEL = 10;
 
     public CurseSplintering() {
-        super("curse/splintering", DEFAULT_DESCRIPTION);
+        super("curse/splintering", EnchantmentTypeManager.CURSE, "Curse of Splintering", DEFAULT_DESCRIPTION);
 
-        supportedItems = ItemTypeTagKeys.AXES;
-        maxLevel = 3;
-    }
-
-    @Override
-    public String getDefaultDisplayName() {
-        return "Curse of Splintering";
+        getDefinition()
+                .maxLevel(3)
+                .supportedItems(ItemTypeTagKeys.AXES);
     }
 
     @EventHandler
@@ -48,10 +43,5 @@ public class CurseSplintering extends WbsEnchantment {
                 }
             }
         }
-    }
-
-    @Override
-    public EnchantmentType getType() {
-        return EnchantmentTypeManager.CURSE;
     }
 }

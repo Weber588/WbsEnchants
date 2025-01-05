@@ -27,7 +27,7 @@ public class EnchantmentLevelSuggestionProvider implements SuggestionProvider<Co
         WbsEnchantment enchantment = getEnchantment(context.getLastChild());
 
         if (enchantment != null) {
-            for (int i = 1; i <= Math.max(enchantment.getMaxLevel(), 1); i++) {
+            for (int i = 1; i <= Math.max(enchantment.maxLevel(), 1); i++) {
                 builder.suggest(i);
             }
         }

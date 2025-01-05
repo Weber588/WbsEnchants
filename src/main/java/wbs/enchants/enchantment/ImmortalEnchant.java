@@ -54,13 +54,8 @@ public class ImmortalEnchant extends WbsEnchantment {
     public ImmortalEnchant() {
         super("immortal", DEFAULT_DESCRIPTION);
 
-        supportedItems = ItemTypeTagKeys.ENCHANTABLE_DURABILITY;
-        weight = 1;
-    }
-
-    @Override
-    public String getDefaultDisplayName() {
-        return "Immortal";
+        getDefinition()
+                .supportedItems(ItemTypeTagKeys.ENCHANTABLE_DURABILITY);
     }
 
     // region Item damage/break
@@ -139,7 +134,7 @@ public class ImmortalEnchant extends WbsEnchantment {
         }
 
         sendActionBar("Your " + displayName + " was saved by its "
-                + getDisplayName() + "&r enchantment!", player);
+                + displayName() + "&r enchantment!", player);
     }
 
     // endregion

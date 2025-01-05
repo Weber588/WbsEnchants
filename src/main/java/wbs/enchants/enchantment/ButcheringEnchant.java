@@ -28,12 +28,8 @@ public class ButcheringEnchant extends TargetedDamageEnchant {
     public ButcheringEnchant() {
         super("butchering", DEFAULT_DESCRIPTION);
 
-        maxLevel = 3;
-    }
-
-    @Override
-    public String getDefaultDisplayName() {
-        return "Butchering";
+        getDefinition()
+                .maxLevel(3);
     }
 
     @EventHandler

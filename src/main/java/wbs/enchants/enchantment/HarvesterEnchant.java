@@ -35,15 +35,10 @@ public class HarvesterEnchant extends WbsEnchantment {
     public HarvesterEnchant() {
         super("harvester", DEFAULT_DESCRIPTION);
 
-        supportedItems = ItemTypeTagKeys.HOES;
-        maxLevel = 2;
-
-        targetDescription = "Hoe";
-    }
-
-    @Override
-    public String getDefaultDisplayName() {
-        return "Harvester";
+        getDefinition()
+                .maxLevel(2)
+                .supportedItems(ItemTypeTagKeys.HOES)
+                .targetDescription("Hoe");
     }
 
     @EventHandler

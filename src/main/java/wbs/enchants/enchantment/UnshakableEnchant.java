@@ -15,6 +15,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.persistence.PersistentDataContainer;
 import wbs.enchants.WbsEnchantment;
 import wbs.enchants.WbsEnchants;
+import wbs.enchants.WbsEnchantsBootstrap;
 import wbs.enchants.events.LeashEvents;
 import wbs.utils.util.persistent.WbsPersistentDataType;
 
@@ -33,15 +34,9 @@ public class UnshakableEnchant extends WbsEnchantment {
     public UnshakableEnchant() {
         super("unshakable", DEFAULT_DESCRIPTION);
 
-        // TODO: supportedItems = Create new #lead tag
-        weight = 10;
-
-        targetDescription = "Lead";
-    }
-
-    @Override
-    public String getDefaultDisplayName() {
-        return "Unshakeable";
+        getDefinition()
+                .weight(10)
+                .supportedItems(WbsEnchantsBootstrap.ENCHANTABLE_LEAD);
     }
 
     @EventHandler(priority = EventPriority.LOWEST, ignoreCancelled = true)

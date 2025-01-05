@@ -29,14 +29,9 @@ public class TreeFellerEnchant extends AbstractMultiBreakEnchant {
     public TreeFellerEnchant() {
         super("tree_feller", DEFAULT_DESCRIPTION);
 
-        supportedItems = ItemTypeTagKeys.AXES;
-
-        maxLevel = 3;
-    }
-
-    @Override
-    public String getDefaultDisplayName() {
-        return "Tree Feller";
+        getDefinition()
+                .maxLevel(3)
+                .supportedItems(ItemTypeTagKeys.AXES);
     }
 
     @Override

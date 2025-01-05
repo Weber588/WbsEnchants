@@ -24,16 +24,11 @@ public class VeinMinerEnchant extends AbstractMultiBreakEnchant {
     public VeinMinerEnchant() {
         super("vein_miner", DEFAULT_DESCRIPTION);
 
-        maxLevel = 4;
-        supportedItems = ItemTypeTagKeys.PICKAXES;
-        exclusiveWith = WbsEnchantsBootstrap.EXCLUSIVE_SET_MULTIMINER;
-
-        targetDescription = "Pickaxe";
-    }
-
-    @Override
-    public String getDefaultDisplayName() {
-        return "Vein Miner";
+        getDefinition()
+                .maxLevel(4)
+                .weight(5)
+                .supportedItems(ItemTypeTagKeys.PICKAXES)
+                .exclusiveInject(WbsEnchantsBootstrap.EXCLUSIVE_SET_MULTIMINER);
     }
 
     @Override

@@ -17,13 +17,8 @@ public class HellfireEnchant extends WbsEnchantment {
     public HellfireEnchant() {
         super("hellfire", DESCRIPTION);
 
-        supportedItems = WbsEnchantsBootstrap.ENCHANTABLE_FLINT_AND_STEEL;
-
-    }
-
-    @Override
-    public String getDefaultDisplayName() {
-        return "Hellfire";
+        getDefinition()
+                .supportedItems(WbsEnchantsBootstrap.ENCHANTABLE_FLINT_AND_STEEL);
     }
 
     @EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)

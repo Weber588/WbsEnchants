@@ -24,11 +24,6 @@ public class DemetrienEnchant extends WbsEnchantment {
         super("demetrien", DESCRIPTION);
     }
 
-    @Override
-    public String getDefaultDisplayName() {
-        return "Demetrien";
-    }
-
     @EventHandler
     public void onTill(PlayerInteractEvent event) {
         Block block = event.getClickedBlock();

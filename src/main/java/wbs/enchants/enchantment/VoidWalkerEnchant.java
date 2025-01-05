@@ -28,14 +28,8 @@ public class VoidWalkerEnchant extends WbsEnchantment {
     public VoidWalkerEnchant() {
         super("void_walker", DEFAULT_DESCRIPTION);
 
-        supportedItems = ItemTypeTagKeys.ENCHANTABLE_FOOT_ARMOR;
-
-        weight = 1;
-    }
-
-    @Override
-    public String getDefaultDisplayName() {
-        return "Void Walker";
+        getDefinition()
+                .supportedItems(ItemTypeTagKeys.ENCHANTABLE_FOOT_ARMOR);
     }
 
     @EventHandler

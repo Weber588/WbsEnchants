@@ -9,7 +9,6 @@ import org.bukkit.event.block.BellRingEvent;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.scheduler.BukkitRunnable;
-import org.jetbrains.annotations.NotNull;
 import wbs.enchants.WbsEnchantment;
 import wbs.enchants.WbsEnchants;
 import wbs.enchants.enchantment.helper.BlockEnchant;
@@ -24,7 +23,8 @@ public class DivineResonanceEnchant extends WbsEnchantment implements BlockEncha
     public DivineResonanceEnchant() {
         super("divine_resonance", DEFAULT_DESCRIPTION);
 
-        weight = 1;
+        getDefinition()
+                .targetDescription("Bell");
     }
 
     @Override
@@ -32,15 +32,6 @@ public class DivineResonanceEnchant extends WbsEnchantment implements BlockEncha
         return block.getState() instanceof Bell;
     }
 
-    @Override
-    public String getDefaultDisplayName() {
-        return "Divine Resonance";
-    }
-
-    @Override
-    public @NotNull String getTargetDescription() {
-        return "Bell";
-    }
 
     @EventHandler
     public void onRing(BellRingEvent event) {

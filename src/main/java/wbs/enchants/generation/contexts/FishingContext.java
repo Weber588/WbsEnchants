@@ -8,7 +8,7 @@ import org.bukkit.entity.Item;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.player.PlayerFishEvent;
-import wbs.enchants.WbsEnchantment;
+import wbs.enchants.EnchantmentDefinition;
 import wbs.enchants.util.EnchantUtils;
 
 import java.util.List;
@@ -16,8 +16,8 @@ import java.util.List;
 public class FishingContext extends ExistingLootContext {
     public static final String KEY = "fishing";
 
-    public FishingContext(String key, WbsEnchantment enchantment, ConfigurationSection section, String directory) {
-        super(key, enchantment, section, directory);
+    public FishingContext(String key, EnchantmentDefinition definition, ConfigurationSection section, String directory) {
+        super(key, definition, section, directory);
     }
 
     @Override

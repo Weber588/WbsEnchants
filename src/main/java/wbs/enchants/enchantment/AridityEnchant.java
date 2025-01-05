@@ -9,7 +9,6 @@ import org.bukkit.event.EventPriority;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.inventory.FurnaceSmeltEvent;
 import org.bukkit.inventory.ItemStack;
-import org.jetbrains.annotations.NotNull;
 import wbs.enchants.WbsEnchantment;
 import wbs.enchants.WbsEnchants;
 import wbs.enchants.WbsEnchantsBootstrap;
@@ -28,17 +27,9 @@ public class AridityEnchant extends WbsEnchantment implements NonPersistentBlock
     public AridityEnchant() {
         super("aridity", DEFAULT_DESCRIPTION);
 
-        supportedItems = WbsEnchantsBootstrap.SPONGES;
-    }
-
-    @Override
-    public @NotNull String getTargetDescription() {
-        return "Sponge";
-    }
-
-    @Override
-    public String getDefaultDisplayName() {
-        return "Aridity";
+        getDefinition()
+                .supportedItems(WbsEnchantsBootstrap.SPONGES)
+                .targetDescription("Sponge");
     }
 
     @Override

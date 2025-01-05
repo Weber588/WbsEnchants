@@ -25,15 +25,11 @@ public class ResilienceEnchant extends WbsEnchantment implements DamageEnchant {
     public ResilienceEnchant() {
         super("resilience", DEFAULT_DESCRIPTION);
 
-        maxLevel = 2;
-        supportedItems = ItemTypeTagKeys.ENCHANTABLE_ARMOR;
-        exclusiveWith = EnchantmentTagKeys.EXCLUSIVE_SET_ARMOR;
-        weight = 5;
-    }
-
-    @Override
-    public String getDefaultDisplayName() {
-        return "Resilience";
+        getDefinition()
+                .maxLevel(2)
+                .supportedItems(ItemTypeTagKeys.ENCHANTABLE_ARMOR)
+                .exclusiveInject(EnchantmentTagKeys.EXCLUSIVE_SET_ARMOR)
+                .weight(5);
     }
 
     @Override

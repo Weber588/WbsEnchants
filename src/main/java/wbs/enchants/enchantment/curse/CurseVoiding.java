@@ -6,7 +6,6 @@ import org.bukkit.event.player.PlayerBucketFillEvent;
 import org.bukkit.inventory.ItemStack;
 import wbs.enchants.WbsEnchantment;
 import wbs.enchants.WbsEnchantsBootstrap;
-import wbs.enchants.type.EnchantmentType;
 import wbs.enchants.type.EnchantmentTypeManager;
 
 public class CurseVoiding extends WbsEnchantment {
@@ -14,15 +13,10 @@ public class CurseVoiding extends WbsEnchantment {
             "disappear into the void!";
 
     public CurseVoiding() {
-        super("curse/voiding", DEFAULT_DESCRIPTION);
+        super("curse/voiding", EnchantmentTypeManager.CURSE, "Curse of Voiding", DEFAULT_DESCRIPTION);
 
-        supportedItems = WbsEnchantsBootstrap.BUCKET;
-        maxLevel = 1;
-    }
-
-    @Override
-    public String getDefaultDisplayName() {
-        return "Curse of Voiding";
+        getDefinition()
+                .supportedItems(WbsEnchantsBootstrap.BUCKET);
     }
 
     @EventHandler
@@ -34,10 +28,5 @@ public class CurseVoiding extends WbsEnchantment {
             // Return original item, so it does... nothing
             event.setItemStack(enchantedItem);
         }
-    }
-
-    @Override
-    public EnchantmentType getType() {
-        return EnchantmentTypeManager.CURSE;
     }
 }

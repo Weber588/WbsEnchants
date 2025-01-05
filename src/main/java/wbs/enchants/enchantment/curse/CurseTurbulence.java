@@ -8,7 +8,6 @@ import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
 import wbs.enchants.WbsEnchantment;
 import wbs.enchants.WbsEnchantsBootstrap;
-import wbs.enchants.type.EnchantmentType;
 import wbs.enchants.type.EnchantmentTypeManager;
 import wbs.utils.util.WbsMath;
 
@@ -19,20 +18,19 @@ public class CurseTurbulence extends WbsEnchantment {
     private static final int CHANCE_PER_LEVEL_PER_TICK = 1;
 
     public CurseTurbulence() {
-        super("curse/turbulence", DEFAULT_DESCRIPTION);
+        super("curse/turbulence", EnchantmentTypeManager.CURSE, "Curse of Turbulence", DEFAULT_DESCRIPTION);
 
-        supportedItems = WbsEnchantsBootstrap.ELYTRA;
-        maxLevel = 2;
-    }
-
-    @Override
-    public String getDefaultDisplayName() {
-        return "Curse of Turbulence";
+        getDefinition()
+                .maxLevel(2)
+                .supportedItems(WbsEnchantsBootstrap.ELYTRA);
     }
 
     @EventHandler
     public void onMove(PlayerMoveEvent event) {
         Player player = event.getPlayer();
+        if (!player.isGliding()) {
+            return;
+        }
 
         ItemStack enchantedItem = getIfEnchanted(player, EquipmentSlot.CHEST);
         if (enchantedItem != null && enchantedItem.getType() == Material.ELYTRA) {
@@ -41,10 +39,5 @@ public class CurseTurbulence extends WbsEnchantment {
                 player.setVelocity(player.getVelocity().add(WbsMath.randomVector(level * 0.1)));
             }
         }
-    }
-
-    @Override
-    public EnchantmentType getType() {
-        return EnchantmentTypeManager.CURSE;
     }
 }

@@ -15,15 +15,10 @@ public class FrictionlessEnchant extends WbsEnchantment implements VehicleEnchan
     public FrictionlessEnchant() {
         super("frictionless", DEFAULT_DESCRIPTION);
 
-        supportedItems = WbsEnchantsBootstrap.MINECARTS;
-        maxLevel = 3;
-
-        targetDescription = "Minecart";
-    }
-
-    @Override
-    public String getDefaultDisplayName() {
-        return "Frictionless";
+        getDefinition()
+                .supportedItems(WbsEnchantsBootstrap.MINECARTS)
+                .maxLevel(3)
+                .targetDescription("Minecart");
     }
 
     @Override

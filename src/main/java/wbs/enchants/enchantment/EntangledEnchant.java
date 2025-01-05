@@ -3,6 +3,7 @@ package wbs.enchants.enchantment;
 import io.papermc.paper.registry.keys.tags.ItemTypeTagKeys;
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.NamespacedKey;
 import org.bukkit.Particle;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockState;
@@ -20,6 +21,8 @@ import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.scheduler.BukkitRunnable;
 import wbs.enchants.WbsEnchantment;
 import wbs.enchants.WbsEnchants;
+import wbs.enchants.WbsEnchantsBootstrap;
+import wbs.enchants.type.EnchantmentTypeManager;
 import wbs.utils.util.WbsEnums;
 import wbs.utils.util.particles.NormalParticleEffect;
 import wbs.utils.util.particles.WbsParticleGroup;
@@ -31,6 +34,8 @@ public class EntangledEnchant extends WbsEnchantment {
     private static final String DEFAULT_DESCRIPTION = "Crouch and punch a container (chest, barrel etc) to " +
             "\"entangle\" your tool to it. Once entangled, drops from blocks broken will go straight to that chest " +
             "anywhere in the world, so long as it has enough space for it.";
+
+    private static final NamespacedKey ENTANGLEMENT_KEY = WbsEnchantsBootstrap.createKey("entangled");
 
     private static final Map<Location, Entanglement> ENTANGLEMENTS = new HashMap<>();
     private static int timerId = -1;
@@ -73,15 +78,10 @@ public class EntangledEnchant extends WbsEnchantment {
     }
 
     public EntangledEnchant() {
-        super("entangled", DEFAULT_DESCRIPTION);
+        super("entangled", EnchantmentTypeManager.ETHEREAL, DEFAULT_DESCRIPTION);
 
-        supportedItems = ItemTypeTagKeys.ENCHANTABLE_MINING;
-        weight = 1;
-    }
-
-    @Override
-    public String getDefaultDisplayName() {
-        return "Entangled";
+        getDefinition()
+                .supportedItems(ItemTypeTagKeys.ENCHANTABLE_MINING);
     }
 
     @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
@@ -111,12 +111,12 @@ public class EntangledEnchant extends WbsEnchantment {
             }
 
             PersistentDataContainer dataContainer = meta.getPersistentDataContainer();
-            if (!dataContainer.has(getKey())) {
-                dataContainer.set(getKey(), WbsPersistentDataType.LOCATION, clicked.getLocation());
+            if (!dataContainer.has(ENTANGLEMENT_KEY)) {
+                dataContainer.set(ENTANGLEMENT_KEY, WbsPersistentDataType.LOCATION, clicked.getLocation());
 
                 sendActionBar("Tool entangled!", player);
             } else {
-                dataContainer.remove(getKey());
+                dataContainer.remove(ENTANGLEMENT_KEY);
 
                 sendActionBar("&wLink removed!", player);
             }
@@ -152,10 +152,10 @@ public class EntangledEnchant extends WbsEnchantment {
 
             Location entangledLocation = null;
             try {
-                entangledLocation = dataContainer.get(getKey(), WbsPersistentDataType.LOCATION);
+                entangledLocation = dataContainer.get(ENTANGLEMENT_KEY, WbsPersistentDataType.LOCATION);
             } catch (IllegalArgumentException ex) {
                 // Type is invalid (due to a data storage change) -- clear binding.
-                dataContainer.remove(getKey());
+                dataContainer.remove(ENTANGLEMENT_KEY);
             }
 
             if (entangledLocation == null) {
@@ -166,7 +166,7 @@ public class EntangledEnchant extends WbsEnchantment {
             Block entangledBlock = entangledLocation.getBlock();
             if (!(entangledBlock.getState() instanceof Container)) {
                 sendActionBar("&wEntangled container broken!", player);
-                dataContainer.remove(getKey());
+                dataContainer.remove(ENTANGLEMENT_KEY);
                 return;
             }
 

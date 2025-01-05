@@ -22,16 +22,11 @@ public class ExcavatorEnchant extends AbstractMultiBreakEnchant {
     public ExcavatorEnchant() {
         super("excavator", DEFAULT_DESCRIPTION);
 
-        maxLevel = 2;
-        supportedItems = ItemTypeTagKeys.SHOVELS;
-        weight = 10;
-
-        targetDescription = "Shovel";
-    }
-
-    @Override
-    public String getDefaultDisplayName() {
-        return "Excavator";
+        getDefinition()
+                .maxLevel(2)
+                .supportedItems(ItemTypeTagKeys.SHOVELS)
+                .weight(10)
+                .targetDescription("Shovel");
     }
 
     @Override

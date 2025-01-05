@@ -1,6 +1,7 @@
 package wbs.enchants.enchantment;
 
 import io.papermc.paper.registry.keys.tags.ItemTypeTagKeys;
+import org.bukkit.NamespacedKey;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Projectile;
@@ -13,6 +14,7 @@ import org.bukkit.persistence.PersistentDataType;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import wbs.enchants.WbsEnchantment;
+import wbs.enchants.WbsEnchantsBootstrap;
 import wbs.enchants.enchantment.helper.DamageEnchant;
 
 public class PinpointEnchant extends WbsEnchantment implements DamageEnchant {
@@ -20,17 +22,14 @@ public class PinpointEnchant extends WbsEnchantment implements DamageEnchant {
             "making it possible to hit the same entity with multiple arrows in quick succession, " +
             "or even at the same time.";
 
+    private static final NamespacedKey PINPOINT_KEY = WbsEnchantsBootstrap.createKey("pinpoint");
+
     public PinpointEnchant() {
         super("pinpoint", DEFAULT_DESCRIPTION);
 
-        supportedItems = ItemTypeTagKeys.ENCHANTABLE_BOW;
-
-        weight = 5;
-    }
-
-    @Override
-    public String getDefaultDisplayName() {
-        return "Pinpoint";
+        getDefinition()
+                .supportedItems(ItemTypeTagKeys.ENCHANTABLE_BOW)
+                .weight(5);
     }
 
     @Override
@@ -43,7 +42,7 @@ public class PinpointEnchant extends WbsEnchantment implements DamageEnchant {
         }
 
         PersistentDataContainer container = projectile.getPersistentDataContainer();
-        Boolean isPinpoint = container.get(getKey(), PersistentDataType.BOOLEAN);
+        Boolean isPinpoint = container.get(PINPOINT_KEY, PersistentDataType.BOOLEAN);
 
         // Unsure why "isPinpoint == true" doesn't allow null OR false to return true? Guess I need to study Java more lol
         if (isPinpoint != null && isPinpoint) {
@@ -70,7 +69,7 @@ public class PinpointEnchant extends WbsEnchantment implements DamageEnchant {
         if (isEnchantmentOn(item)) {
             PersistentDataContainer container = projectile.getPersistentDataContainer();
 
-            container.set(getKey(), PersistentDataType.BOOLEAN, true);
+            container.set(PINPOINT_KEY, PersistentDataType.BOOLEAN, true);
         }
     }
 }

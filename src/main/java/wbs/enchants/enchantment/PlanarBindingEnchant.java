@@ -52,16 +52,12 @@ public class PlanarBindingEnchant extends WbsEnchantment {
     public PlanarBindingEnchant() {
         super(STRING_KEY, DEFAULT_DESCRIPTION);
 
-        maxLevel = 3;
-        supportedItems = ItemTypeTagKeys.ENCHANTABLE_WEAPON;
-        weight = 5;
+        getDefinition()
+                .maxLevel(3)
+                .supportedItems(ItemTypeTagKeys.ENCHANTABLE_WEAPON)
+                .weight(5);
     }
 
-
-    @Override
-    public String getDefaultDisplayName() {
-        return "Planar Binding";
-    }
 
     @EventHandler
     public void onDamage(EntityDamageByEntityEvent event) {

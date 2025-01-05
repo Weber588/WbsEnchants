@@ -8,7 +8,6 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.inventory.ItemStack;
 import wbs.enchants.WbsEnchantment;
-import wbs.enchants.type.EnchantmentType;
 import wbs.enchants.type.EnchantmentTypeManager;
 import wbs.utils.util.WbsMath;
 
@@ -19,15 +18,11 @@ public class CurseTheEnd extends WbsEnchantment {
     private static DamageSource damageType;
 
     public CurseTheEnd() {
-        super("curse/the_end", DEFAULT_DESCRIPTION);
+        super("curse/the_end", EnchantmentTypeManager.CURSE, "Curse of The End", DEFAULT_DESCRIPTION);
 
-        supportedItems = ItemTypeTagKeys.ENCHANTABLE_ARMOR;
-        maxLevel = 2;
-    }
-
-    @Override
-    public String getDefaultDisplayName() {
-        return "Curse of The End";
+        getDefinition()
+                .maxLevel(2)
+                .supportedItems(ItemTypeTagKeys.ENCHANTABLE_ARMOR);
     }
 
     @EventHandler
@@ -48,10 +43,5 @@ public class CurseTheEnd extends WbsEnchantment {
                 player.damage(1, damageType);
             }
         }
-    }
-
-    @Override
-    public EnchantmentType getType() {
-        return EnchantmentTypeManager.CURSE;
     }
 }

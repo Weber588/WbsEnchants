@@ -23,12 +23,9 @@ public class StasisFieldEnchant extends WbsEnchantment implements BlockStateEnch
     public StasisFieldEnchant() {
         super("stasis_field", DESCRIPTION);
 
-        supportedItems = WbsEnchantsBootstrap.ENCHANTABLE_BEACON;
-    }
-
-    @Override
-    public String getDefaultDisplayName() {
-        return "Stasis Field";
+        getDefinition()
+                .supportedItems(WbsEnchantsBootstrap.ENCHANTABLE_BEACON)
+                .maxLevel(1);
     }
 
     @Override

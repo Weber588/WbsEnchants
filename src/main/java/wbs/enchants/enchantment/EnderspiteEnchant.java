@@ -12,7 +12,8 @@ public class EnderspiteEnchant extends TargetedDamageEnchant {
     public EnderspiteEnchant() {
         super("enderspite", DESCRIPTION);
 
-        maxLevel = 5;
+        getDefinition()
+                .maxLevel(5);
     }
 
     @Override
@@ -24,8 +25,4 @@ public class EnderspiteEnchant extends TargetedDamageEnchant {
         );
     }
 
-    @Override
-    public String getDefaultDisplayName() {
-        return "Enderspite";
-    }
 }

@@ -23,15 +23,9 @@ public class UnsinkableEnchant extends WbsEnchantment implements VehicleEnchant 
     public UnsinkableEnchant() {
         super("unsinkable", DEFAULT_DESCRIPTION);
 
-        supportedItems = ItemTypeTagKeys.BOATS;
-        weight = 10;
-
-        targetDescription = "Boat";
-    }
-
-    @Override
-    public String getDefaultDisplayName() {
-        return "Unsinkable";
+        getDefinition()
+                .weight(10)
+                .supportedItems(ItemTypeTagKeys.BOATS);
     }
 
     @Override

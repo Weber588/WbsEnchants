@@ -10,9 +10,7 @@ import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 import wbs.enchants.WbsEnchants;
-import wbs.enchants.WbsEnchantsBootstrap;
 import wbs.enchants.enchantment.helper.AbstractMultiBreakEnchant;
-import wbs.enchants.type.EnchantmentType;
 import wbs.enchants.type.EnchantmentTypeManager;
 import wbs.enchants.util.BlockChanger;
 import wbs.enchants.util.BlockQueryUtils;
@@ -26,16 +24,12 @@ public class BlastMinerEnchant extends AbstractMultiBreakEnchant {
             "increasing layers every level, for a maximum of 3x%max_level%x3 at level %max_level%.";
 
     public BlastMinerEnchant() {
-        super("blast_miner", DEFAULT_DESCRIPTION);
-        maxLevel = 3;
-        supportedItems = ItemTypeTagKeys.PICKAXES;
-        exclusiveWith = WbsEnchantsBootstrap.EXCLUSIVE_SET_MULTIMINER;
-        weight = 3;
-    }
+        super("blast_miner", EnchantmentTypeManager.PARADOXICAL, DEFAULT_DESCRIPTION);
 
-    @Override
-    public String getDefaultDisplayName() {
-        return "Blast Miner";
+        getDefinition()
+                .maxLevel(3)
+                .supportedItems(ItemTypeTagKeys.PICKAXES)
+                .weight(3);
     }
 
     @Override
@@ -91,10 +85,5 @@ public class BlastMinerEnchant extends AbstractMultiBreakEnchant {
                         false // Don't protect player (source) from taking damage
                 )
         );
-    }
-
-    @Override
-    public EnchantmentType getType() {
-        return EnchantmentTypeManager.PARADOXICAL;
     }
 }

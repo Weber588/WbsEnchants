@@ -45,13 +45,9 @@ public class SpiritheartEnchant extends WbsEnchantment {
     public SpiritheartEnchant() {
         super("spiritheart", DESCRIPTION);
 
-        maxLevel = 3;
-        supportedItems = ItemTypeTagKeys.ENCHANTABLE_CHEST_ARMOR;
-    }
-
-    @Override
-    public String getDefaultDisplayName() {
-        return "Spiritheart";
+        getDefinition()
+                .supportedItems(ItemTypeTagKeys.ENCHANTABLE_CHEST_ARMOR)
+                .maxLevel(3);
     }
 
     @Override

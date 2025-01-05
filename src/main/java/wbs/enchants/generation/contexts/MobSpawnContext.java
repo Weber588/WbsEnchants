@@ -8,20 +8,20 @@ import org.bukkit.event.entity.EntitySpawnEvent;
 import org.bukkit.inventory.EntityEquipment;
 import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
-import wbs.enchants.WbsEnchantment;
+import wbs.enchants.EnchantmentDefinition;
 
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
 public class MobSpawnContext extends ExistingLootContext {
-    public MobSpawnContext(String key, WbsEnchantment enchantment, ConfigurationSection section, String directory) {
-        super(key, enchantment, section, directory);
+    public MobSpawnContext(String key, EnchantmentDefinition definition, ConfigurationSection section, String directory) {
+        super(key, definition, section, directory);
     }
 
     @Override
     protected int getDefaultChance() {
-        int rarityWeight = enchantment.getEnchantment().getWeight();
+        int rarityWeight = definition.getEnchantment().getWeight();
         return switch (Bukkit.getWorlds().getFirst().getDifficulty()) {
             case PEACEFUL -> 0;
             case EASY -> rarityWeight / 3;

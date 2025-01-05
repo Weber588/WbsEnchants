@@ -7,7 +7,6 @@ import org.bukkit.entity.Item;
 import org.bukkit.event.block.BlockDropItemEvent;
 import wbs.enchants.WbsEnchantsBootstrap;
 import wbs.enchants.enchantment.helper.BlockDropEnchantment;
-import wbs.enchants.type.EnchantmentType;
 import wbs.enchants.type.EnchantmentTypeManager;
 import wbs.utils.util.particles.NormalParticleEffect;
 import wbs.utils.util.particles.WbsParticleGroup;
@@ -20,15 +19,11 @@ public class CurseMidas extends BlockDropEnchantment {
             .addEffect(new NormalParticleEffect().setSpeed(0.5).setAmount(8), Particle.WAX_ON);
 
     public CurseMidas() {
-        super("curse/midas", DEFAULT_DESCRIPTION);
+        super("curse/midas", EnchantmentTypeManager.CURSE, "Curse of Midas", DEFAULT_DESCRIPTION);
 
-        supportedItems = ItemTypeTagKeys.PICKAXES;
-        exclusiveWith = WbsEnchantsBootstrap.EXCLUSIVE_SET_MIDAS;
-    }
-
-    @Override
-    public String getDefaultDisplayName() {
-        return "Curse of Midas";
+        getDefinition()
+                .supportedItems(ItemTypeTagKeys.PICKAXES)
+                .exclusiveWith(WbsEnchantsBootstrap.EXCLUSIVE_SET_MIDAS);
     }
 
     @Override
@@ -51,10 +46,5 @@ public class CurseMidas extends BlockDropEnchantment {
                 EFFECT.play(item.getLocation());
             }
         }
-    }
-
-    @Override
-    public EnchantmentType getType() {
-        return EnchantmentTypeManager.CURSE;
     }
 }

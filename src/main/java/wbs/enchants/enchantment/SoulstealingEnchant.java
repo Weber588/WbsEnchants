@@ -17,7 +17,7 @@ public class SoulstealingEnchant extends WbsEnchantment {
     private static final String DEFAULT_DESCRIPTION = "Adds a " + CHANCE_PER_LEVEL + "% chance per level of killed mobs dropping its spawn egg!";
 
     // TODO: Make configurable
-    private Set<Material> blacklistedMaterials = Set.of(
+    private final Set<Material> blacklistedMaterials = Set.of(
             Material.ELDER_GUARDIAN_SPAWN_EGG,
             Material.ENDER_DRAGON_SPAWN_EGG,
             Material.WITHER_SPAWN_EGG,
@@ -29,14 +29,10 @@ public class SoulstealingEnchant extends WbsEnchantment {
     public SoulstealingEnchant() {
         super("soulstealing", DEFAULT_DESCRIPTION);
 
-        supportedItems = ItemTypeTagKeys.ENCHANTABLE_WEAPON;
-        maxLevel = 3;
+        getDefinition()
+                .supportedItems(ItemTypeTagKeys.ENCHANTABLE_WEAPON)
+                .maxLevel(3);
 
-    }
-
-    @Override
-    public String getDefaultDisplayName() {
-        return "Soulstealing";
     }
 
     @EventHandler

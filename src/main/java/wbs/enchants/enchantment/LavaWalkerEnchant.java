@@ -28,15 +28,11 @@ public class LavaWalkerEnchant extends WbsEnchantment {
     public LavaWalkerEnchant() {
         super("lava_walker", DEFAULT_DESCRIPTION);
 
-        maxLevel = 2;
-        supportedItems = ItemTypeTagKeys.ENCHANTABLE_FOOT_ARMOR;
-        // TODO: exclusiveWith = Create frost walker tag, maybe either "fluid_walkers" or "heat"/"cold"?
-        weight = 1;
-    }
+        getDefinition()
+                .maxLevel(2)
+                .supportedItems(ItemTypeTagKeys.ENCHANTABLE_FOOT_ARMOR);
 
-    @Override
-    public String getDefaultDisplayName() {
-        return "Lava Walker";
+        // TODO: exclusiveWith = Create frost walker tag, maybe either "fluid_walkers" or "heat"/"cold"?
     }
 
     @EventHandler

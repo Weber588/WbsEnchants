@@ -2,10 +2,8 @@ package wbs.enchants.enchantment.helper;
 
 import io.papermc.paper.registry.keys.tags.EnchantmentTagKeys;
 import io.papermc.paper.registry.keys.tags.ItemTypeTagKeys;
-import io.papermc.paper.registry.tag.TagKey;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.YamlConfiguration;
-import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.LivingEntity;
@@ -15,8 +13,10 @@ import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import wbs.enchants.EnchantmentDefinition;
 import wbs.enchants.WbsEnchantment;
 import wbs.enchants.WbsEnchants;
+import wbs.enchants.type.EnchantmentType;
 import wbs.enchants.util.EntityUtils;
 import wbs.utils.util.WbsEnums;
 
@@ -30,16 +30,35 @@ public abstract class TargetedDamageEnchant extends WbsEnchantment implements Da
 
     private final Set<EntityType> affectedMobTypes = new HashSet<>();
 
-    public TargetedDamageEnchant(String key, @NotNull String description) {
-        super(key, description);
-
-        supportedItems = ItemTypeTagKeys.ENCHANTABLE_WEAPON;
-        exclusiveWith = EnchantmentTagKeys.EXCLUSIVE_SET_DAMAGE;
+    public TargetedDamageEnchant(@NotNull EnchantmentDefinition definition) {
+        super(definition);
+        configureDefinition();
     }
 
-    @Override
-    public @NotNull List<TagKey<Enchantment>> addToTags() {
-        return List.of(EnchantmentTagKeys.EXCLUSIVE_SET_DAMAGE);
+    public TargetedDamageEnchant(String key, String description) {
+        super(key, description);
+        configureDefinition();
+    }
+
+    public TargetedDamageEnchant(String key, String displayName, String description) {
+        super(key, displayName, description);
+        configureDefinition();
+    }
+
+    public TargetedDamageEnchant(String key, EnchantmentType type, String description) {
+        super(key, type, description);
+        configureDefinition();
+    }
+
+    public TargetedDamageEnchant(String key, EnchantmentType type, String displayName, String description) {
+        super(key, type, displayName, description);
+        configureDefinition();
+    }
+
+    private void configureDefinition() {
+        getDefinition()
+                .supportedItems(ItemTypeTagKeys.ENCHANTABLE_WEAPON)
+                .exclusiveInject(EnchantmentTagKeys.EXCLUSIVE_SET_DAMAGE);
     }
 
     @Override

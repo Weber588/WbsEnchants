@@ -2,19 +2,16 @@ package wbs.enchants.enchantment;
 
 import io.papermc.paper.registry.keys.tags.EnchantmentTagKeys;
 import io.papermc.paper.registry.keys.tags.ItemTypeTagKeys;
-import io.papermc.paper.registry.tag.TagKey;
 import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.YamlConfiguration;
-import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Item;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.block.BlockDropItemEvent;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.Contract;
-import org.jetbrains.annotations.NotNull;
 import wbs.enchants.WbsEnchants;
 import wbs.enchants.enchantment.helper.BlockDropEnchantment;
 import wbs.utils.util.WbsEnums;
@@ -31,23 +28,10 @@ public class CrushingEnchant extends BlockDropEnchantment {
     public CrushingEnchant() {
         super("crushing", DEFAULT_DESCRIPTION, EventPriority.HIGHEST);
 
-        weight = 5;
-        supportedItems = ItemTypeTagKeys.ENCHANTABLE_MINING;
-        exclusiveWith = EnchantmentTagKeys.EXCLUSIVE_SET_MINING;
-    }
-
-    @Override
-    public @NotNull List<TagKey<Enchantment>> addToTags() {
-        LinkedList<TagKey<Enchantment>> toAdd = new LinkedList<>(super.addToTags());
-
-        toAdd.add(EnchantmentTagKeys.EXCLUSIVE_SET_MINING);
-
-        return toAdd;
-    }
-
-    @Override
-    public String getDefaultDisplayName() {
-        return "Crushing";
+        getDefinition()
+                .weight(5)
+                .supportedItems(ItemTypeTagKeys.ENCHANTABLE_MINING)
+                .exclusiveInject(EnchantmentTagKeys.EXCLUSIVE_SET_MINING);
     }
 
     @Override

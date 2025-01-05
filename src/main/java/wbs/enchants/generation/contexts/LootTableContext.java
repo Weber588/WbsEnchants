@@ -16,7 +16,7 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.loot.LootContext;
 import org.bukkit.loot.LootTable;
-import wbs.enchants.WbsEnchantment;
+import wbs.enchants.EnchantmentDefinition;
 import wbs.enchants.WbsEnchants;
 import wbs.enchants.util.EnchantUtils;
 
@@ -26,8 +26,8 @@ public class LootTableContext extends ExistingLootContext {
 
     private List<String> tables = new LinkedList<>();
 
-    public LootTableContext(String key, WbsEnchantment enchantment, ConfigurationSection section, String directory) {
-        super(key, enchantment, section, directory);
+    public LootTableContext(String key, EnchantmentDefinition definition, ConfigurationSection section, String directory) {
+        super(key, definition, section, directory);
 
         if (section.isList("tables")) {
             tables = section.getStringList("tables");
@@ -36,7 +36,7 @@ public class LootTableContext extends ExistingLootContext {
 
     @Override
     protected int getDefaultChance() {
-        return enchantment.getEnchantment().getWeight() * 3;
+        return definition.getEnchantment().getWeight() * 3;
     }
 
 
@@ -142,9 +142,9 @@ public class LootTableContext extends ExistingLootContext {
 
                     boolean hasEnchantStored = EnchantUtils.getStoredEnchantments(fakeChosen).keySet()
                             .stream()
-                            .anyMatch(check -> check.getKey().equals(enchantment.getKey()));
+                            .anyMatch(check -> check.getKey().equals(definition.key()));
 
-                    if (hasEnchantStored || enchantment.isEnchantmentOn(fakeChosen)) {
+                    if (hasEnchantStored || definition.isEnchantmentOn(fakeChosen)) {
                         state.setLootTable(null);
                         state.setItem(fakeChosen);
                         state.update();

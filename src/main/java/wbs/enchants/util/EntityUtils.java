@@ -19,7 +19,9 @@ import java.util.HashMap;
 
 public class EntityUtils {
 
-    public static Tag<EntityType> UNDEAD = Bukkit.getTag("entity_types", NamespacedKey.minecraft("undead"), EntityType.class);
+    public static Tag<EntityType> getUndead() {
+        return Bukkit.getTag("entity_types", NamespacedKey.minecraft("undead"), EntityType.class);
+    }
 
     public static boolean willCrit(LivingEntity entity) {
         return entity.getFallDistance() > 0 &&

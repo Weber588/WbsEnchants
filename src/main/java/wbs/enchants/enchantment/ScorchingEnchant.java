@@ -72,14 +72,9 @@ public class ScorchingEnchant extends WbsEnchantment {
     public ScorchingEnchant() {
         super("scorching", DEFAULT_DESCRIPTION);
 
-        supportedItems = ItemTypeTagKeys.ENCHANTABLE_MINING;
-        exclusiveWith = EnchantmentTagKeys.EXCLUSIVE_SET_MINING;
-        weight = 1;
-    }
-
-    @Override
-    public String getDefaultDisplayName() {
-        return "Scorching";
+        getDefinition()
+                .supportedItems(ItemTypeTagKeys.ENCHANTABLE_MINING)
+                .exclusiveInject(EnchantmentTagKeys.EXCLUSIVE_SET_MINING);
     }
 
     @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)

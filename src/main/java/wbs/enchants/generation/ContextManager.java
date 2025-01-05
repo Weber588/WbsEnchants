@@ -2,7 +2,7 @@ package wbs.enchants.generation;
 
 import org.bukkit.configuration.ConfigurationSection;
 import org.jetbrains.annotations.NotNull;
-import wbs.enchants.WbsEnchantment;
+import wbs.enchants.EnchantmentDefinition;
 import wbs.enchants.generation.contexts.*;
 import wbs.utils.exceptions.InvalidConfigurationException;
 
@@ -30,7 +30,7 @@ public final class ContextManager {
 
     @NotNull
     public static GenerationContext getContext(String key,
-                                               WbsEnchantment enchantment,
+                                               EnchantmentDefinition definition,
                                                ConfigurationSection section,
                                                String directory) {
         ContextConstructor registeredContext = registeredContexts.get(key);
@@ -38,11 +38,11 @@ public final class ContextManager {
             throw new InvalidConfigurationException("Invalid context key: " + key, directory);
         }
 
-        return registeredContext.from(key, enchantment, section, directory);
+        return registeredContext.from(key, definition, section, directory);
     }
 
     @FunctionalInterface
     public interface ContextConstructor {
-        GenerationContext from(String key, WbsEnchantment enchantment, ConfigurationSection section, String directory);
+        GenerationContext from(String key, EnchantmentDefinition definition, ConfigurationSection section, String directory);
     }
 }

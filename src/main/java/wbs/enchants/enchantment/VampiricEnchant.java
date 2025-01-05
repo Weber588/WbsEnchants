@@ -46,14 +46,10 @@ public class VampiricEnchant extends WbsEnchantment implements DamageEnchant {
     public VampiricEnchant() {
         super("vampiric", DEFAULT_DESCRIPTION);
 
-        maxLevel = 3;
-        supportedItems = ItemTypeTagKeys.ENCHANTABLE_WEAPON;
-        weight = 5;
-    }
-
-    @Override
-    public String getDefaultDisplayName() {
-        return "Vampiric";
+        getDefinition()
+                .maxLevel(3)
+                .weight(5)
+                .supportedItems(ItemTypeTagKeys.ENCHANTABLE_WEAPON);
     }
 
     @Override

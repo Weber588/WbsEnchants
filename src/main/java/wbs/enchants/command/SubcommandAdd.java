@@ -8,6 +8,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import wbs.enchants.EnchantmentDefinition;
 import wbs.enchants.WbsEnchantment;
 import wbs.utils.util.plugin.WbsPlugin;
 
@@ -51,7 +52,7 @@ public class SubcommandAdd extends EnchantmentSubcommand {
         return enchant(context, getEnchantment(context), level);
     }
 
-    private int enchant(CommandContext<CommandSourceStack> context, WbsEnchantment enchant, int level) {
+    private int enchant(CommandContext<CommandSourceStack> context, EnchantmentDefinition definition, int level) {
         CommandSender sender = context.getSource().getSender();
 
         if (!(sender instanceof Player player)) {
@@ -66,7 +67,7 @@ public class SubcommandAdd extends EnchantmentSubcommand {
             return 0;
         }
 
-        heldItem.addUnsafeEnchantment(enchant.getEnchantment(), level);
+        heldItem.addUnsafeEnchantment(definition.getEnchantment(), level);
 
         return Command.SINGLE_SUCCESS;
     }

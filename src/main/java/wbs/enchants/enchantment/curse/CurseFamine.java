@@ -9,22 +9,16 @@ import org.bukkit.event.EventPriority;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.inventory.ItemStack;
 import wbs.enchants.WbsEnchantment;
-import wbs.enchants.type.EnchantmentType;
 import wbs.enchants.type.EnchantmentTypeManager;
 
 public class CurseFamine extends WbsEnchantment {
     private static final String DEFAULT_DESCRIPTION = "A curse that has a chance to turn food from slain mobs rotten.";
 
     public CurseFamine() {
-        super("curse/famine", DEFAULT_DESCRIPTION);
+        super("curse/famine", EnchantmentTypeManager.CURSE, "Curse of Famine", DEFAULT_DESCRIPTION);
 
-        supportedItems = ItemTypeTagKeys.ENCHANTABLE_WEAPON;
-        maxLevel = 1;
-    }
-
-    @Override
-    public String getDefaultDisplayName() {
-        return "Curse of Cowardice";
+        getDefinition()
+                .supportedItems(ItemTypeTagKeys.ENCHANTABLE_WEAPON);
     }
 
     @EventHandler(priority = EventPriority.LOWEST)
@@ -46,10 +40,5 @@ public class CurseFamine extends WbsEnchantment {
                 event.setDamage(event.getDamage() * modifier);
             }
         }
-    }
-
-    @Override
-    public EnchantmentType getType() {
-        return EnchantmentTypeManager.CURSE;
     }
 }

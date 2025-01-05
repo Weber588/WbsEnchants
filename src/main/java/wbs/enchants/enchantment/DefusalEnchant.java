@@ -30,15 +30,11 @@ public class DefusalEnchant extends WbsEnchantment implements DamageEnchant {
     public DefusalEnchant() {
         super("defusal", DEFAULT_DESCRIPTION);
 
-        maxLevel = 3;
-        supportedItems = ItemTypeTagKeys.ENCHANTABLE_WEAPON;
-        exclusiveWith = WbsEnchantsBootstrap.EXCLUSIVE_SET_DEFUSAL;
-        weight = 5;
-    }
-
-    @Override
-    public String getDefaultDisplayName() {
-        return "Defusal";
+        getDefinition()
+                .maxLevel(3)
+                .weight(5)
+                .supportedItems(ItemTypeTagKeys.ENCHANTABLE_WEAPON)
+                .exclusiveInject(WbsEnchantsBootstrap.EXCLUSIVE_SET_DEFUSAL);
     }
 
     @Override

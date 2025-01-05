@@ -20,13 +20,9 @@ public class DisengageEnchant extends WbsEnchantment {
     public DisengageEnchant() {
         super("disengage", DESCRIPTION);
 
-        supportedItems = ItemTypeTagKeys.SWORDS;
-        maxLevel = 3;
-    }
-
-    @Override
-    public String getDefaultDisplayName() {
-        return "Disengage";
+        getDefinition()
+                .maxLevel(3)
+                .supportedItems(ItemTypeTagKeys.ENCHANTABLE_SWORD);
     }
 
     @EventHandler

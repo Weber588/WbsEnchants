@@ -21,6 +21,7 @@ public class EnchantManager {
     public static final boolean DEFAULT_USABLE_ANYWHERE = false;
 
     private static final List<WbsEnchantment> REGISTERED_ENCHANTMENTS = new LinkedList<>();
+    private static final List<EnchantmentDefinition> EXTERNAL_DEFINITIONS = new LinkedList<>();
 
     public static final EntangledEnchant ENTANGLED = new EntangledEnchant();
     public static final ExcavatorEnchant EXCAVATOR = new ExcavatorEnchant();
@@ -91,6 +92,9 @@ public class EnchantManager {
     public static void register(WbsEnchantment enchantment) {
         REGISTERED_ENCHANTMENTS.add(enchantment);
     }
+    public static void registerExternal(EnchantmentDefinition definition) {
+        EXTERNAL_DEFINITIONS.add(definition);
+    }
 
     public static void buildDatapack() {
         final String datapackZipPath = "datapack.zip";
@@ -122,15 +126,22 @@ public class EnchantManager {
         }
     }
 
-    public static List<WbsEnchantment> getRegistered() {
+    public static List<WbsEnchantment> getCustomRegistered() {
         return Collections.unmodifiableList(REGISTERED_ENCHANTMENTS);
     }
 
     public static @Nullable WbsEnchantment getFromKey(Key enchantKey) {
         return REGISTERED_ENCHANTMENTS.stream()
-                .filter(enchant -> enchant.getKey().equals(enchantKey))
+                .filter(enchant -> enchant.key().equals(enchantKey))
                 .findFirst()
                 .orElse(null);
 
+    }
+
+    public static EnchantmentDefinition getExternalDefinition(Key enchantKey) {
+        return EXTERNAL_DEFINITIONS.stream()
+                .filter(def -> def.key().equals(enchantKey))
+                .findFirst()
+                .orElse(null);
     }
 }
