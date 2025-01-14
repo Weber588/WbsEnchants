@@ -1,6 +1,5 @@
 package wbs.enchants.definition;
 
-import io.papermc.paper.registry.RegistryAccess;
 import io.papermc.paper.registry.RegistryKey;
 import io.papermc.paper.registry.TypedKey;
 import io.papermc.paper.registry.data.EnchantmentRegistryEntry;
@@ -10,25 +9,19 @@ import io.papermc.paper.registry.set.RegistrySet;
 import io.papermc.paper.registry.tag.Tag;
 import io.papermc.paper.registry.tag.TagKey;
 import net.kyori.adventure.key.Key;
-import net.kyori.adventure.key.Keyed;
 import net.kyori.adventure.text.*;
 import net.kyori.adventure.text.event.ClickEvent;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.Style;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 import org.bukkit.Bukkit;
-import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
-import org.bukkit.Registry;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.event.HandlerList;
 import org.bukkit.inventory.EquipmentSlotGroup;
-import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.ItemType;
-import org.bukkit.inventory.meta.EnchantmentStorageMeta;
-import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.plugin.PluginManager;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
@@ -49,7 +42,7 @@ import java.util.*;
 import java.util.function.Consumer;
 
 @SuppressWarnings({"UnstableApiUsage", "unused", "UnusedReturnValue"})
-public class EnchantmentDefinition implements Keyed, Comparable<EnchantmentDefinition> {
+public class EnchantmentDefinition extends EnchantmentWrapper implements Comparable<EnchantmentDefinition> {
     private static NamespacedKey parseKey(ConfigurationSection section, String key, String directory) {
         String keyString = section.getString(key);
         if (keyString != null) {
@@ -85,8 +78,6 @@ public class EnchantmentDefinition implements Keyed, Comparable<EnchantmentDefin
         return null;
     }
 
-    @NotNull
-    private final Key key;
     private boolean isEnabled = true;
     @NotNull
     private Component displayName;
@@ -116,7 +107,7 @@ public class EnchantmentDefinition implements Keyed, Comparable<EnchantmentDefin
     private EnchantmentType type;
 
     public EnchantmentDefinition(@NotNull Key key, @NotNull Component displayName) {
-        this.key = key;
+        super(key);
         this.displayName = displayName;
     }
 
@@ -136,12 +127,6 @@ public class EnchantmentDefinition implements Keyed, Comparable<EnchantmentDefin
                         .build()
         );
     }
-
-    @NotNull
-    public Key key() {
-        return key;
-    }
-
 
     public EnchantmentDefinition setEnabled(boolean enabled) {
         isEnabled = enabled;
@@ -428,50 +413,6 @@ public class EnchantmentDefinition implements Keyed, Comparable<EnchantmentDefin
         }
     }
 
-    @NotNull
-    public Enchantment getEnchantment() {
-        Enchantment enchantment = RegistryAccess.registryAccess()
-                .getRegistry(RegistryKey.ENCHANTMENT)
-                .get(this.key());
-
-        if (enchantment == null) {
-            throw new IllegalStateException("Server enchantment not found for enchantment \"" + this.key() + "\".");
-        }
-
-        return enchantment;
-    }
-
-    public boolean isEnchantmentOn(@NotNull ItemStack item) {
-        return item.containsEnchantment(getEnchantment());
-    }
-
-    public boolean tryAdd(ItemStack stack, int level) {
-        Enchantment enchantment = getEnchantment();
-        if (stack.getType() != Material.ENCHANTED_BOOK && !enchantment.canEnchantItem(stack)) {
-            return false;
-        }
-
-        Set<Enchantment> existing = new HashSet<>();
-        if (stack.getItemMeta() instanceof EnchantmentStorageMeta meta) {
-            existing = meta.getStoredEnchants().keySet();
-        } else {
-            ItemMeta meta = stack.getItemMeta();
-            if (meta != null) {
-                existing = meta.getEnchants().keySet();
-            }
-        }
-
-        for (Enchantment other : existing) {
-            if (enchantment.conflictsWith(other)) {
-                return false;
-            }
-        }
-
-        EnchantUtils.addEnchantment(this, stack, level);
-
-        return true;
-    }
-
     public int maxLevel() {
         return maxLevel;
     }
@@ -514,7 +455,7 @@ public class EnchantmentDefinition implements Keyed, Comparable<EnchantmentDefin
         return !deriveGenerationInfos().isEmpty();
     }
 
-    private @NotNull List<Component> deriveGenerationInfos() {
+    protected @NotNull List<Component> deriveGenerationInfos() {
         List<Component> methodComponents = new LinkedList<>();
 
         if (isTagged(EnchantmentTagKeys.IN_ENCHANTING_TABLE)) {
@@ -554,11 +495,6 @@ public class EnchantmentDefinition implements Keyed, Comparable<EnchantmentDefin
             methodComponents.add(context.getDescription());
         }
         return methodComponents;
-    }
-
-    public boolean isTagged(TagKey<Enchantment> tagKey) {
-        Registry<Enchantment> registry = RegistryAccess.registryAccess().getRegistry(RegistryKey.ENCHANTMENT);
-        return registry.getTag(tagKey).contains(this.getTypedKey());
     }
 
     public void buildTo(@NotNull TagProducer tagProducer,
@@ -669,10 +605,6 @@ public class EnchantmentDefinition implements Keyed, Comparable<EnchantmentDefin
                         + ":customenchants info " + key().asString()
                 )
         );
-    }
-
-    public TypedKey<Enchantment> getTypedKey() {
-        return TypedKey.create(RegistryKey.ENCHANTMENT, key());
     }
 
     @NotNull

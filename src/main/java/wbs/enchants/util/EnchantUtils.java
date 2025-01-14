@@ -13,6 +13,7 @@ import org.jetbrains.annotations.Nullable;
 import wbs.enchants.*;
 import wbs.enchants.definition.EnchantmentDefinition;
 import wbs.enchants.definition.EnchantmentExtension;
+import wbs.enchants.definition.EnchantmentWrapper;
 import wbs.enchants.type.EnchantmentTypeManager;
 import wbs.utils.util.plugin.WbsMessageBuilder;
 import wbs.utils.util.string.RomanNumerals;
@@ -45,7 +46,7 @@ public class EnchantUtils {
     public static void addEnchantment(EnchantmentExtension enchant, @NotNull ItemStack item, int level) {
         addEnchantment(enchant.getDefinition(), item, level);
     }
-    public static void addEnchantment(EnchantmentDefinition enchant, @NotNull ItemStack item, int level) {
+    public static void addEnchantment(EnchantmentWrapper enchant, @NotNull ItemStack item, int level) {
         if (item.getItemMeta() instanceof EnchantmentStorageMeta meta) {
             meta.addStoredEnchant(enchant.getEnchantment(), level, true);
             item.setItemMeta(meta);
