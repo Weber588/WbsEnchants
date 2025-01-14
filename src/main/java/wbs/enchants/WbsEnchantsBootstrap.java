@@ -27,8 +27,10 @@ import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.ItemType;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.jetbrains.annotations.NotNull;
+import wbs.enchants.definition.EnchantmentDefinition;
 import wbs.enchants.type.EnchantmentType;
 import wbs.enchants.type.EnchantmentTypeManager;
+import wbs.utils.util.WbsFileUtil;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -180,12 +182,12 @@ public class WbsEnchantsBootstrap implements PluginBootstrap {
         try {
             config.load(file);
         } catch (FileNotFoundException ex) {
-            logger.error("File not found: " + file, ex);
+            logger.error("File not found: {}", file, ex);
         } catch (IOException ex) {
-            logger.error( "Cannot load " + file, ex);
+            logger.error("Cannot load {}", file, ex);
         } catch (InvalidConfigurationException ex) {
-            logger.error( "Cannot load " + file, ex);
-            logger.error( "&cYAML parsing error in file " + file.getName() + ". See console for details.");
+            logger.error("Cannot load {}", file, ex);
+            logger.error("&cYAML parsing error in file {}. See console for details.", file.getName());
         }
 
         return config;
@@ -206,7 +208,7 @@ public class WbsEnchantsBootstrap implements PluginBootstrap {
                 for (TagKey<Enchantment> tag : definition.injectInto()) {
                     toAdd.put(tag, enchant.getTypedKey());
                 }
-                if (definition.primaryItems() != null && !definition.primaryItems().equals(WbsEnchantsBootstrap.ITEM_EMPTY)) {
+                if (definition.getPrimaryItems() != null && !definition.getPrimaryItems().isEmpty()) {
                     toAdd.put(EnchantmentTagKeys.IN_ENCHANTING_TABLE, enchant.getTypedKey());
                 }
             }
@@ -247,8 +249,8 @@ public class WbsEnchantsBootstrap implements PluginBootstrap {
     private static @NotNull Set<CustomTag<Enchantment>> getEnchantmentTypeTags() {
         Multimap<EnchantmentType, TypedKey<Enchantment>> typeEnchantments = HashMultimap.create();
 
-        for (WbsEnchantment enchant : EnchantManager.getCustomRegistered()) {
-            typeEnchantments.put(enchant.type(), enchant.getTypedKey());
+        for (EnchantmentDefinition definition : EnchantManager.getAllKnownDefinitions()) {
+            typeEnchantments.put(definition.rawType(), definition.getTypedKey());
         }
 
         Set<CustomTag<Enchantment>> enchantmentTypeTags = new HashSet<>();
@@ -288,13 +290,11 @@ public class WbsEnchantsBootstrap implements PluginBootstrap {
 
     private void configureExternalEnchantments(@NotNull BootstrapContext context, LifecycleEventManager<@NotNull BootstrapContext> manager) {
         String fileName = "external_enchantments.yml";
+
         externalEnchantsFile = new File(context.getDataDirectory().toFile(), fileName);
+        YamlConfiguration enchantsConfig;
         if (!externalEnchantsFile.exists()) {
-            try {
-                externalEnchantsFile.createNewFile();
-            } catch (IOException e) {
-                throw new RuntimeException(e);
-            }
+            WbsFileUtil.saveResource(context, WbsEnchants.class, fileName, false);
         }
         externalEnchantsConfig = loadConfigSafely(externalEnchantsFile, context.getLogger());
 
@@ -302,7 +302,7 @@ public class WbsEnchantsBootstrap implements PluginBootstrap {
             EnchantmentRegistryEntry.Builder builder = event.builder();
 
             TypedKey<Enchantment> addedKey = event.key();
-            WbsEnchantment customEnchantment = EnchantManager.getFromKey(addedKey.key());
+            WbsEnchantment customEnchantment = EnchantManager.getCustomFromKey(addedKey.key());
             if (customEnchantment == null) {
                 // Not a custom enchantment -- check external file and add if not present.
                 String stringKey = addedKey.key().asString();
@@ -310,17 +310,19 @@ public class WbsEnchantsBootstrap implements PluginBootstrap {
                 EnchantmentDefinition definition = new EnchantmentDefinition(addedKey.key(), event.builder().description());
 
                 ConfigurationSection definitionSection = externalEnchantsConfig.getConfigurationSection(stringKey);
-                if (definitionSection == null) {
-                    definition.buildConfigurationSection(externalEnchantsConfig, builder);
-                    newExternalEnchants = true;
-                } else {
-                    try {
+                try {
+                    if (definitionSection == null) {
+                        definition.buildConfigurationSection(externalEnchantsConfig, builder);
+                        newExternalEnchants = true;
+                    } else {
                         definition.configureBoostrap(definitionSection, builder, fileName + "/" + stringKey);
 
                         definition.buildTo(event::getOrCreateTag, builder);
-                    } catch (wbs.utils.exceptions.InvalidConfigurationException ex) {
-                        context.getLogger().error(ex.getMessage());
                     }
+                } catch (wbs.utils.exceptions.InvalidConfigurationException ex) {
+                    context.getLogger().warn("Failed to parse external enchantment ({}):", stringKey);
+                    context.getLogger().warn(ex.getMessage());
+                    return;
                 }
 
                 EnchantManager.registerExternal(definition);
@@ -338,8 +340,15 @@ public class WbsEnchantsBootstrap implements PluginBootstrap {
         }
 
         manager.registerEventHandler(RegistryEvents.ENCHANTMENT.freeze().newHandler(event -> {
+            List<WbsEnchantment> invalidEnchantments = new LinkedList<>();
             for (WbsEnchantment enchant : EnchantManager.getCustomRegistered()) {
-                // Read config in this stage, as prior will result in referencing non-existent tags
+
+                if (enchant.getDefinition().getSupportedItems() == null) {
+                    context.getLogger().error("Failed to load custom enchantment {} -- supportedItems is required prior to registration.", enchant.key().asString());
+                    invalidEnchantments.add(enchant);
+                    continue;
+                }
+
                 if (enchantsConfig != null) {
                     ConfigurationSection enchantSection = enchantsConfig.getConfigurationSection(enchant.key().value());
                     if (enchantSection == null) {
@@ -358,6 +367,11 @@ public class WbsEnchantsBootstrap implements PluginBootstrap {
                         builder -> enchant.getDefinition().buildTo(event::getOrCreateTag, builder)
                 );
             }
+
+            if (!invalidEnchantments.isEmpty()) {
+                invalidEnchantments.forEach(EnchantManager::unregister);
+                context.getLogger().error("Unregistered {} invalid enchantments.", invalidEnchantments.size());
+            }
         }));
     }
 
@@ -366,16 +380,16 @@ public class WbsEnchantsBootstrap implements PluginBootstrap {
                                                              Supplier<Set<CustomTag<T>>> tags) {
         LifecycleEventManager<@NotNull BootstrapContext> manager = context.getLifecycleManager();
 
-        manager.registerEventHandler(LifecycleEvents.TAGS.preFlatten(key).newHandler(event -> {
-            tags.get().forEach(tag ->
-                            tag.register(event.registrar())
-            );
-        }));
-        manager.registerEventHandler(LifecycleEvents.TAGS.postFlatten(key).newHandler(event -> {
-            tags.get().forEach(tag ->
-                    tag.register(event.registrar())
-            );
-        }));
+        manager.registerEventHandler(LifecycleEvents.TAGS.preFlatten(key).newHandler(event ->
+                tags.get().forEach(tag ->
+                        tag.register(event.registrar())
+                )
+        ));
+        manager.registerEventHandler(LifecycleEvents.TAGS.postFlatten(key).newHandler(event ->
+                tags.get().forEach(tag ->
+                        tag.register(event.registrar())
+                )
+        ));
     }
 
     private static class CustomTag<T extends Keyed> {

@@ -1,8 +1,11 @@
 package wbs.enchants.generation.conditions;
 
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.TextComponent;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Villager;
+import org.jetbrains.annotations.NotNull;
 import wbs.utils.exceptions.InvalidConfigurationException;
 import wbs.utils.util.WbsKeyed;
 
@@ -51,5 +54,10 @@ public class VillagerTypeCondition extends GenerationCondition {
                 ", key=" + key +
                 ", negated=" + negated +
                 '}';
+    }
+
+    @Override
+    public Component describe(@NotNull TextComponent listBreak) {
+        return Component.text("Villager type " + type.key());
     }
 }

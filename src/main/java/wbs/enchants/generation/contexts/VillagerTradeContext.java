@@ -1,5 +1,7 @@
 package wbs.enchants.generation.contexts;
 
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.TextComponent;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.AbstractVillager;
@@ -9,7 +11,7 @@ import org.bukkit.event.entity.VillagerAcquireTradeEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.MerchantRecipe;
 import org.bukkit.inventory.meta.EnchantmentStorageMeta;
-import wbs.enchants.EnchantmentDefinition;
+import wbs.enchants.definition.EnchantmentDefinition;
 import wbs.enchants.WbsEnchants;
 import wbs.enchants.generation.GenerationContext;
 import wbs.enchants.util.EnchantUtils;
@@ -40,6 +42,11 @@ public class VillagerTradeContext extends GenerationContext {
         // Amount of enchants (including custom ones in case they're available through trading) minus 2 for
         // Soul Speed and Swift Sneak, which may not be obtained through this method.
         return (int) (100.0 / (EnchantUtils.getAllEnchants().size() - 2));
+    }
+
+    @Override
+    protected Component describeContext(TextComponent listBreak) {
+        return Component.text("On villager trades: " + chanceToRun() + "%");
     }
 
     @EventHandler

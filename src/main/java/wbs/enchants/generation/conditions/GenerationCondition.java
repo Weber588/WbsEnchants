@@ -1,5 +1,7 @@
 package wbs.enchants.generation.conditions;
 
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.TextComponent;
 import org.bukkit.Location;
 import org.bukkit.NamespacedKey;
 import org.bukkit.block.Block;
@@ -13,6 +15,7 @@ public abstract class GenerationCondition {
     protected final NamespacedKey key;
 
     protected boolean negated = false;
+    protected Component overrideDescription;
 
     public GenerationCondition(@NotNull NamespacedKey generationKey, ConfigurationSection parentSection, String directory) {
         this.key = generationKey;
@@ -20,6 +23,7 @@ public abstract class GenerationCondition {
         ConfigurationSection section = parentSection.getConfigurationSection(generationKey.getKey());
         if (section != null) {
             this.negated = section.getBoolean("is-negated");
+            this.overrideDescription = section.getRichMessage("description");
         }
     }
 
@@ -47,4 +51,12 @@ public abstract class GenerationCondition {
     public boolean testTrigger(Player player) {
         return true;
     }
+
+    public Component getDescription(@NotNull TextComponent listBreak) {
+        if (overrideDescription != null) {
+            return overrideDescription;
+        }
+        return describe(listBreak);
+    }
+    public abstract Component describe(@NotNull TextComponent listBreak);
 }

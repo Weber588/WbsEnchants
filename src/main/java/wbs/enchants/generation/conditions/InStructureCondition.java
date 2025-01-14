@@ -1,5 +1,7 @@
 package wbs.enchants.generation.conditions;
 
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.TextComponent;
 import org.bukkit.Location;
 import org.bukkit.NamespacedKey;
 import org.bukkit.Registry;
@@ -65,6 +67,11 @@ public class InStructureCondition extends GenerationCondition {
                     }
                     return false;
                 });
+    }
+
+    @Override
+    public Component describe(@NotNull TextComponent listBreak) {
+        return Component.text("In structure " + type.key());
     }
 
     @Override

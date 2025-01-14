@@ -3,15 +3,19 @@ package wbs.enchants.generation.contexts;
 import io.papermc.paper.registry.RegistryAccess;
 import io.papermc.paper.registry.RegistryKey;
 import net.kyori.adventure.key.Key;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.JoinConfiguration;
+import net.kyori.adventure.text.TextComponent;
 import org.bukkit.NamespacedKey;
 import org.bukkit.Registry;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.world.LootGenerateEvent;
-import wbs.enchants.EnchantmentDefinition;
+import wbs.enchants.definition.EnchantmentDefinition;
 import wbs.enchants.WbsEnchants;
 import wbs.enchants.generation.GenerationContext;
+import wbs.enchants.util.EnchantUtils;
 import wbs.utils.exceptions.InvalidConfigurationException;
 
 import java.util.LinkedList;
@@ -46,6 +50,17 @@ public class LootTableReplacementContext extends GenerationContext {
         if (toReplace.isEmpty()) {
             throw new InvalidConfigurationException("No valid replacement enchantments.", directory);
         }
+    }
+
+    @Override
+    protected Component describeContext(TextComponent listBreak) {
+        List<Component> toReplace = this.toReplace.stream()
+                .map(EnchantUtils::getDisplayName)
+                .toList();
+
+        return Component.text("Replacing a below enchantment in a loot table: " + chanceToRun() + "%")
+                .append(listBreak)
+                .append(Component.join(JoinConfiguration.separator(listBreak), toReplace));
     }
 
     @Override

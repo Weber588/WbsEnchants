@@ -1,30 +1,22 @@
 package wbs.enchants.command;
 
-import com.mojang.brigadier.StringReader;
-import com.mojang.brigadier.arguments.ArgumentType;
-import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
-import com.mojang.brigadier.suggestion.Suggestions;
-import com.mojang.brigadier.suggestion.SuggestionsBuilder;
-import io.papermc.paper.command.brigadier.argument.CustomArgumentType;
+import io.papermc.paper.command.brigadier.CommandSourceStack;
 import org.jetbrains.annotations.NotNull;
 import wbs.enchants.type.EnchantmentType;
 import wbs.enchants.type.EnchantmentTypeManager;
+import wbs.utils.util.commands.brigadier.KeyedSuggestionProvider;
+import wbs.utils.util.commands.brigadier.argument.WbsWordArgumentType;
 
 import java.util.Optional;
-import java.util.concurrent.CompletableFuture;
 
-public class EnchantmentTypeArgumentType implements CustomArgumentType<EnchantmentType, String> {
+public class EnchantmentTypeArgumentType implements WbsWordArgumentType<EnchantmentType>, KeyedSuggestionProvider<EnchantmentType> {
     @Override
-    public @NotNull EnchantmentType parse(@NotNull StringReader stringReader) throws CommandSyntaxException {
-        String search = stringReader.getRemaining();
-        // Stop string reader from screaming when we don't read using cursor regularly
-        stringReader.setCursor(stringReader.getTotalLength());
-
+    public @NotNull EnchantmentType parse(@NotNull String asString) throws CommandSyntaxException {
         Optional<EnchantmentType> found = EnchantmentTypeManager.getRegistered()
                 .stream()
-                .filter(type -> type.matches(search))
+                .filter(type -> type.matches(asString))
                 .findFirst();
 
         if (found.isPresent()) {
@@ -32,24 +24,12 @@ public class EnchantmentTypeArgumentType implements CustomArgumentType<Enchantme
         } else {
             throw new CommandSyntaxException(
                     CommandSyntaxException.BUILT_IN_EXCEPTIONS.dispatcherParseException(),
-                    () -> "Type not found: " + search + ".");
+                    () -> "Type not found: " + asString + ".");
         }
     }
 
     @Override
-    public @NotNull ArgumentType<String> getNativeType() {
-        return StringArgumentType.greedyString();
-    }
-
-    @Override
-    public <S> @NotNull CompletableFuture<Suggestions> listSuggestions(@NotNull CommandContext<S> context,
-                                                                       @NotNull SuggestionsBuilder builder) {
-        for (EnchantmentType type : EnchantmentTypeManager.getRegistered()) {
-        //    if (type.getKey().getKey().toLowerCase().startsWith(context.getInput().toLowerCase())) {
-                builder.suggest(type.getKey().getKey());
-        //    }
-        }
-
-        return builder.buildFuture();
+    public Iterable<EnchantmentType> getSuggestions(CommandContext<CommandSourceStack> commandContext) {
+        return EnchantmentTypeManager.getRegistered();
     }
 }

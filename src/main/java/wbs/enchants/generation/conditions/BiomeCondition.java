@@ -3,11 +3,17 @@ package wbs.enchants.generation.conditions;
 import com.sk89q.worldedit.bukkit.BukkitAdapter;
 import com.sk89q.worldedit.math.BlockVector3;
 import com.sk89q.worldedit.world.biome.BiomeType;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.JoinConfiguration;
+import net.kyori.adventure.text.TextComponent;
+import net.kyori.adventure.text.event.ClickEvent;
+import net.kyori.adventure.text.event.HoverEvent;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.NamespacedKey;
 import org.bukkit.World;
 import org.bukkit.configuration.ConfigurationSection;
+import org.jetbrains.annotations.NotNull;
 import wbs.enchants.WbsEnchants;
 
 import java.util.LinkedList;
@@ -42,6 +48,71 @@ public class BiomeCondition extends GenerationCondition {
             WbsEnchants.getInstance().getLogger().warning("Biome condition (" + directory + ") relies on biome" +
                     " name, but WorldEdit was not found. Only vanilla (\"minecraft:\") biomes will be supported.");
         }
+    }
+
+    @Override
+    public Component describe(@NotNull TextComponent listBreak) {
+        Component matchesComponent = null;
+        Component matchesListComponent = null;
+        if (!matches.isEmpty()) {
+            matchesComponent = Component.text("Biome matches any of the below ")
+                    .append(Component.text("RegEx")
+                            .clickEvent(ClickEvent.openUrl("https://regexone.com"))
+                            .hoverEvent(HoverEvent.showText(Component.text("RegEx is a method for identifying words or phrases with a simple string. Click for more information.")))
+                    );
+
+            List<TextComponent> matchesComponents = matches.stream()
+                    .map(Component::text)
+                    .toList();
+
+            matchesListComponent = listBreak.append(Component.join(JoinConfiguration.separator(listBreak), matchesComponents));
+        }
+
+        Component humidityComponent = null;
+        if (minHumidity != Double.MIN_VALUE) {
+            if (maxHumidity != Double.MAX_VALUE) {
+                humidityComponent = Component.text("Humidity: " + minHumidity + "-" + maxHumidity);
+            } else {
+                humidityComponent = Component.text("Humidity: >" + minHumidity);
+            }
+        } else if (maxHumidity != Double.MAX_VALUE) {
+            humidityComponent = Component.text("Humidity: <" + maxHumidity);
+        }
+
+        Component tempComponent = null;
+        if (minTemp != Double.MIN_VALUE) {
+            if (maxTemp != Double.MAX_VALUE) {
+                tempComponent = Component.text("Temperature: " + minTemp + "-" + maxTemp);
+            } else {
+                tempComponent = Component.text("Temperature: >" + minTemp);
+            }
+        } else if (maxTemp != Double.MAX_VALUE) {
+            tempComponent = Component.text("Temperature: <" + maxTemp);
+        }
+        Component humidityTempComponent = null;
+        if (humidityComponent != null) {
+            humidityTempComponent = humidityComponent;
+            if (tempComponent != null) {
+                humidityTempComponent = humidityTempComponent.append(Component.text(" & ")).append(tempComponent);
+            }
+        } else if (tempComponent != null) {
+            humidityTempComponent = tempComponent;
+        }
+
+        if (matchesComponent != null) {
+            if (humidityTempComponent != null) {
+                return matchesComponent.append(Component.text(", or "))
+                        .append(humidityTempComponent)
+                        .append(matchesListComponent);
+            } else {
+                return matchesComponent
+                        .append(matchesListComponent);
+            }
+        } else if (humidityTempComponent != null) {
+            return humidityTempComponent;
+        }
+
+        throw new IllegalStateException("Biome Condition lacked required information (temp/humidity/biome match info)");
     }
 
     @Override

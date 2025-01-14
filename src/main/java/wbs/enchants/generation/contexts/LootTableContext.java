@@ -1,6 +1,10 @@
 package wbs.enchants.generation.contexts;
 
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.JoinConfiguration;
+import net.kyori.adventure.text.TextComponent;
+import net.kyori.adventure.text.event.ClickEvent;
+import net.kyori.adventure.text.event.HoverEvent;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.attribute.Attribute;
@@ -16,9 +20,10 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.loot.LootContext;
 import org.bukkit.loot.LootTable;
-import wbs.enchants.EnchantmentDefinition;
+import wbs.enchants.definition.EnchantmentDefinition;
 import wbs.enchants.WbsEnchants;
 import wbs.enchants.util.EnchantUtils;
+import wbs.utils.exceptions.InvalidConfigurationException;
 
 import java.util.*;
 
@@ -31,7 +36,27 @@ public class LootTableContext extends ExistingLootContext {
 
         if (section.isList("tables")) {
             tables = section.getStringList("tables");
+
+            if (tables.isEmpty()) {
+                throw new InvalidConfigurationException("No valid loot tables provided! Disabling context.", directory);
+            }
         }
+    }
+
+    @Override
+    protected Component describeContext(TextComponent listBreak) {
+        List<TextComponent> lootTables = tables.stream()
+                .map(Component::text)
+                .toList();
+
+        return Component.text("Loot tables matching below ")
+                .append(Component.text("RegEx")
+                        .clickEvent(ClickEvent.openUrl("https://regexone.com"))
+                        .hoverEvent(HoverEvent.showText(Component.text("RegEx is a method for identifying words or phrases with a simple string. Click for more information.")))
+                )
+                .append(Component.text(": " + chanceToRun() + "%"))
+                .append(listBreak)
+                .append(Component.join(JoinConfiguration.separator(listBreak), lootTables));
     }
 
     @Override

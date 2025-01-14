@@ -1,11 +1,14 @@
 package wbs.enchants.generation.conditions;
 
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.TextComponent;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.*;
 import org.jetbrains.annotations.NotNull;
 import wbs.utils.exceptions.InvalidConfigurationException;
 import wbs.utils.util.WbsEnums;
 
+// TODO: Convert this class to be "EntityTagCondition" to check if an entity type is in a provided tag
 public class EntityCategoryCondition extends GenerationCondition {
     public static final String KEY = "entity-category";
 
@@ -43,6 +46,11 @@ public class EntityCategoryCondition extends GenerationCondition {
         }
 
         return living.getCategory() == type;
+    }
+
+    @Override
+    public Component describe(@NotNull TextComponent listBreak) {
+        return Component.text("Entity category is " + WbsEnums.toPrettyString(type));
     }
 
     @Override

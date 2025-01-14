@@ -6,12 +6,14 @@ import com.mojang.brigadier.context.CommandContext;
 import io.papermc.paper.command.brigadier.CommandSourceStack;
 import io.papermc.paper.command.brigadier.Commands;
 import io.papermc.paper.command.brigadier.argument.ArgumentTypes;
+import io.papermc.paper.registry.RegistryKey;
+import io.papermc.paper.registry.TypedKey;
 import net.kyori.adventure.key.Key;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import wbs.enchants.EnchantManager;
-import wbs.enchants.EnchantmentDefinition;
 import wbs.enchants.WbsEnchantment;
+import wbs.enchants.definition.EnchantmentDefinition;
 import wbs.utils.util.commands.brigadier.WbsSubcommand;
 import wbs.utils.util.plugin.WbsPlugin;
 
@@ -25,8 +27,8 @@ public abstract class EnchantmentSubcommand extends WbsSubcommand {
 
     @Override
     protected void addThens(LiteralArgumentBuilder<CommandSourceStack> builder) {
-        builder.then(Commands.argument("enchantment", ArgumentTypes.key())
-                .suggests(new CustomEnchantmentSuggestionProvider(this::filter))
+        builder.then(Commands.argument("enchantment", ArgumentTypes.resourceKey(RegistryKey.ENCHANTMENT))
+                .suggests(new EnchantmentSuggestionProvider(this::filter))
                 .executes(this::execute)
                 .then(Commands.argument("level", IntegerArgumentType.integer())
                         .suggests(new EnchantmentLevelSuggestionProvider())
@@ -35,7 +37,7 @@ public abstract class EnchantmentSubcommand extends WbsSubcommand {
         );
     }
 
-    protected boolean filter(@Nullable CommandContext<?> context, WbsEnchantment enchantment) {
+    protected boolean filter(@Nullable CommandContext<?> context, EnchantmentDefinition enchantment) {
         return true;
     }
 
@@ -50,10 +52,14 @@ public abstract class EnchantmentSubcommand extends WbsSubcommand {
         return execute(context);
     }
 
-    protected EnchantmentDefinition getEnchantment(CommandContext<CommandSourceStack> context) {
-        Key enchantKey = context.getArgument("enchantment", Key.class);
+    protected Key getEnchantmentKey(CommandContext<CommandSourceStack> context) {
+        return context.getArgument("enchantment", TypedKey.class).key();
+    }
 
-        WbsEnchantment customEnchantment = EnchantManager.getFromKey(enchantKey);
+    protected EnchantmentDefinition getEnchantment(CommandContext<CommandSourceStack> context) {
+        Key enchantKey = getEnchantmentKey(context);
+
+        WbsEnchantment customEnchantment = EnchantManager.getCustomFromKey(enchantKey);
         if (customEnchantment != null) {
             return customEnchantment.getDefinition();
         } else {

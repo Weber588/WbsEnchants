@@ -1,0 +1,84 @@
+minecraft:aqua_affinity:
+  description: Increases mining speed while underwater.
+minecraft:bane_of_arthropods:
+  description: Increases damage against arthropods such as Spiders and Silverfish.
+minecraft:binding_curse:
+  description: Prevents the cursed item from being removed from an armor slot.
+minecraft:blast_protection:
+  description: Reduces damage from explosions and explosion knockback.
+minecraft:breach:
+  description: Reduces the effectiveness of armor of the mob being attacked.
+minecraft:channeling:
+  description: Allows the trident to summon lightning bolts during thunderstorms.
+minecraft:density:
+  description: Increases the amount of damage dealt per block fallen.
+minecraft:depth_strider:
+  description: Increases movement speed while underwater.
+minecraft:efficiency:
+  description: Increases mining speed of the tool.
+minecraft:feather_falling:
+  description: Reduces fall damage and ender pearl teleportation damage.
+minecraft:fire_aspect:
+  description: Causes additional fire damage when used to attack a mob.
+minecraft:fire_protection:
+  description: Reduces the effects of fire damage. Also reduces the burn time when set on fire.
+minecraft:flame:
+  description: Arrows fired from the bow will deal additional fire damage.
+minecraft:fortune:
+  description: Some blocks like coal and diamond ore may drop additional items.
+minecraft:frost_walker:
+  description: Water under the user will freeze into frosted ice.
+minecraft:impaling:
+  description: Increases damage to aquatic mobs.
+minecraft:infinity:
+  description: Allows the bow to fire normal arrows for free. You must have at least one arrow for this to work.
+minecraft:knockback:
+  description: Increases the knockback strength of the weapon.
+minecraft:looting:
+  description: Mobs will drop more loot when killed.
+minecraft:loyalty:
+  description: Allows the trident to automatically return after being thrown.
+minecraft:luck_of_the_sea:
+  description: Increases the chance of getting good loot while fishing.
+minecraft:lure:
+  description: Decreases the amount of time it takes for a fish to bite the hook.
+minecraft:mending:
+  description: Repairs the durability of armor and tools with XP.
+minecraft:multishot:
+  description: Fires additional arrows in similar directions.
+minecraft:piercing:
+  description: Allows projectiles to pierce through mobs.
+minecraft:power:
+  description: Increases the damage of arrows fired from the bow.
+minecraft:projectile_protection:
+  description: Reduces damage from projectiles such as arrows and fire balls.
+minecraft:protection:
+  description: Reduces damage from most sources.
+minecraft:punch:
+  description: Increases the knockback strength of arrows fired by the bow.
+minecraft:quick_charge:
+  description: Increases the reload speed of crossbows.
+minecraft:respiration:
+  description: Allows the user to breathe longer underwater.
+minecraft:riptide:
+  description: Using the trident while in rain or water will launch the user forward.
+minecraft:sharpness:
+  description: Increases the damage of the item.
+minecraft:silk_touch:
+  description: Allows fragile blocks such as glass to be collected.
+minecraft:smite:
+  description: Increases damage against undead mobs such as Zombies and Skeletons.
+minecraft:soul_speed:
+  description: Increases movement speed on soul blocks.
+minecraft:sweeping_edge:
+  description: Increases the damage of sweeping attacks.
+minecraft:swift_sneak:
+  description: Increases movement speed while sneaking.
+minecraft:thorns:
+  description: Causes damage to enemies when they attack you.
+minecraft:unbreaking:
+  description: Causes the tool to lose durability at a slower rate.
+minecraft:vanishing_curse:
+  description: Destroys the cursed item if you die with it in your inventory.
+minecraft:wind_burst:
+  description: Creates a powerful upward knockback effect upon executing a smash attack.

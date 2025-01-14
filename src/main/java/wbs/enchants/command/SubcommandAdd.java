@@ -8,8 +8,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import wbs.enchants.EnchantmentDefinition;
-import wbs.enchants.WbsEnchantment;
+import wbs.enchants.definition.EnchantmentDefinition;
 import wbs.utils.util.plugin.WbsPlugin;
 
 @SuppressWarnings("UnstableApiUsage")
@@ -26,14 +25,14 @@ public class SubcommandAdd extends EnchantmentSubcommand {
     }
 
     @Override
-    protected boolean filter(@Nullable CommandContext<?> context, WbsEnchantment enchantment) {
+    protected boolean filter(@Nullable CommandContext<?> context, EnchantmentDefinition definition) {
         if (context == null) {
             return true;
         }
 
         if (context.getSource() instanceof CommandSourceStack source) {
             if (source.getSender() instanceof Player player) {
-                return enchantment.getEnchantment().canEnchantItem(player.getInventory().getItemInMainHand());
+                return definition.getEnchantment().canEnchantItem(player.getInventory().getItemInMainHand());
             }
         }
 
@@ -54,6 +53,10 @@ public class SubcommandAdd extends EnchantmentSubcommand {
 
     private int enchant(CommandContext<CommandSourceStack> context, EnchantmentDefinition definition, int level) {
         CommandSender sender = context.getSource().getSender();
+        if (definition == null) {
+            plugin.sendMessage("Enchantment not found for key &h\"" + getEnchantmentKey(context) + "\".", sender);
+            return Command.SINGLE_SUCCESS;
+        }
 
         if (!(sender instanceof Player player)) {
             plugin.sendMessage("&wThis command is only usable by players.", context.getSource().getSender());

@@ -1,5 +1,7 @@
 package wbs.enchants.generation.contexts;
 
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.TextComponent;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.LivingEntity;
@@ -8,7 +10,7 @@ import org.bukkit.event.entity.EntitySpawnEvent;
 import org.bukkit.inventory.EntityEquipment;
 import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
-import wbs.enchants.EnchantmentDefinition;
+import wbs.enchants.definition.EnchantmentDefinition;
 
 import java.util.Arrays;
 import java.util.List;
@@ -28,6 +30,11 @@ public class MobSpawnContext extends ExistingLootContext {
             case NORMAL -> rarityWeight * 2 / 3;
             case HARD -> rarityWeight;
         };
+    }
+
+    @Override
+    protected Component describeContext(TextComponent listBreak) {
+        return Component.text("On spawned mob's equipment: " + chanceToRun() + "%");
     }
 
     @EventHandler

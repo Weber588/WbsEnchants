@@ -1,5 +1,8 @@
 package wbs.enchants.generation;
 
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.JoinConfiguration;
+import net.kyori.adventure.text.TextComponent;
 import org.bukkit.Location;
 import org.bukkit.block.Block;
 import org.bukkit.configuration.ConfigurationSection;
@@ -9,7 +12,7 @@ import org.bukkit.event.Listener;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import wbs.enchants.EnchantmentDefinition;
+import wbs.enchants.definition.EnchantmentDefinition;
 import wbs.enchants.generation.conditions.GenerationCondition;
 import wbs.utils.exceptions.InvalidConfigurationException;
 import wbs.utils.util.WbsEnums;
@@ -27,6 +30,7 @@ public abstract class GenerationContext implements Listener {
     protected final EnchantmentDefinition definition;
     protected final List<GenerationCondition> conditions = new LinkedList<>();
     private final double chanceToRun;
+    protected Component overrideDescription;
 
     protected final String key;
 
@@ -39,10 +43,9 @@ public abstract class GenerationContext implements Listener {
         String conditionsKey = "conditions";
         ConfigurationSection conditionsSection = section.getConfigurationSection(conditionsKey);
 
-        directory += "/" + conditionsKey;
         if (conditionsSection != null) {
             for (String conditionKey : conditionsSection.getKeys(false)) {
-                GenerationCondition condition = ConditionManager.getCondition(conditionKey, conditionsSection, directory + "/" + conditionKey);
+                GenerationCondition condition = ConditionManager.getCondition(conditionKey, conditionsSection, directory + "/conditions/" + conditionKey);
 
                 if (condition == null) {
                     continue;
@@ -53,6 +56,7 @@ public abstract class GenerationContext implements Listener {
         }
 
         chanceToRun = section.getDouble("chance", getDefaultChance());
+        this.overrideDescription = section.getRichMessage("description");
 
         String levelKey = "level";
         if (section.isInt(levelKey)) {
@@ -172,6 +176,28 @@ public abstract class GenerationContext implements Listener {
                 ", levelGenerator=" + levelGenerator +
                 '}';
     }
+
+    protected double chanceToRun() {
+        return chanceToRun;
+    }
+
+    public Component getDescription() {
+        if (overrideDescription != null) {
+            return overrideDescription;
+        }
+        Component description = describeContext(Component.text("\n  - "));
+
+        List<Component> conditionComponents = conditions.stream()
+                .map(generationCondition -> generationCondition.getDescription(Component.text("\n      > ")))
+                .toList();
+
+        TextComponent lineStart = Component.text("\n    - ");
+        Component conditionsSection = lineStart.append(Component.join(JoinConfiguration.separator(lineStart), conditionComponents));
+
+        return description.append(Component.text("\n  Conditions:")).append(conditionsSection);
+    }
+
+    protected abstract Component describeContext(TextComponent listBreak);
 
     protected record LevelGenerator(EnchantmentDefinition definition, int staticLevel, double scalingFactor, LevelMode mode) {
         public LevelGenerator(EnchantmentDefinition definition, LevelMode mode) {

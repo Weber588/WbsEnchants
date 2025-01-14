@@ -34,6 +34,8 @@ public class WbsEnchants extends WbsPlugin {
                 new SubcommandHeld(this),
                 new SubcommandAdd(this),
                 new SubcommandTagInfo(this),
+                new SubcommandGuidebook(this),
+                new SubcommandSupported(this),
                 WbsReloadSubcommand.getStatic(this, settings),
                 WbsErrorsSubcommand.getStatic(this, settings)
         ).register();

@@ -10,18 +10,27 @@ import org.bukkit.command.CommandSender;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import wbs.enchants.EnchantManager;
-import wbs.enchants.WbsEnchantment;
-import wbs.enchants.WbsEnchants;
-import wbs.enchants.type.EnchantmentType;
+import wbs.enchants.definition.EnchantmentDefinition;
+import wbs.enchants.definition.EnchantmentDefinition.DescribeOptions;
 import wbs.utils.util.commands.brigadier.WbsSubcommand;
+import wbs.utils.util.commands.brigadier.WbsSuggestionProvider;
+import wbs.utils.util.commands.brigadier.argument.WbsStringArgumentType;
 import wbs.utils.util.plugin.WbsMessageBuilder;
 import wbs.utils.util.plugin.WbsPlugin;
 
+import java.util.EnumSet;
 import java.util.List;
 import java.util.stream.Collectors;
 
 @SuppressWarnings("UnstableApiUsage")
 public class SubcommandList extends WbsSubcommand {
+    private static final EnumSet<DescribeOptions> DESCRIBE_OPTIONS = EnumSet.of(
+            DescribeOptions.TYPE,
+            DescribeOptions.DESCRIPTION,
+            DescribeOptions.MAX_LEVEL,
+            DescribeOptions.TARGET
+    );
+
     public SubcommandList(@NotNull WbsPlugin plugin) {
         super(plugin, "list");
 
@@ -31,7 +40,8 @@ public class SubcommandList extends WbsSubcommand {
     @Override
     protected void addThens(LiteralArgumentBuilder<CommandSourceStack> builder) {
         builder
-                .then(Commands.argument("type", new EnchantmentTypeArgumentType())
+                .then(Commands.argument("namespace", WbsStringArgumentType.word())
+                        .suggests(WbsSuggestionProvider.getStatic(EnchantManager.getNamespaces()))
                         .executes(this::execute)
                 );
     }
@@ -44,65 +54,50 @@ public class SubcommandList extends WbsSubcommand {
 
     private int execute(CommandContext<CommandSourceStack> context) {
         CommandSender sender = context.getSource().getSender();
-        EnchantmentType type = context.getArgument("type", EnchantmentType.class);
+        String namespace = context.getArgument("namespace", String.class);
 
-        return execute(sender, type);
+        return execute(sender, namespace);
     }
 
-    private int execute(CommandSender sender, @Nullable EnchantmentType type) {
-        List<WbsEnchantment> enchants = EnchantManager.getCustomRegistered()
-                .stream()
-                .sorted()
-                .collect(Collectors.toList());
-
-        if (enchants.isEmpty()) {
-            plugin.sendMessage("No enchantments enabled!", sender);
-            return 0;
-        }
-
-        if (type != null) {
-            enchants = enchants.stream().filter(enchant -> enchant.type() == type).collect(Collectors.toList());
-        }
-
-        if (enchants.isEmpty()) {
-            plugin.sendMessage("No enchantments of type " + type.getName() + " are enabled!", sender);
-            return 0;
-        }
-
-        enchants.sort(WbsEnchantment::compareTo);
-
-        Component opening;
-        if (type != null) {
-            opening = type.getNameComponent().append(Component.text(" enchantments:"));
+    private int execute(CommandSender sender, @Nullable String namespace) {
+        if (namespace != null) {
+            sendEnchantmentList(sender, namespace);
         } else {
-            opening = Component.text("Enchantments:");
+            for (String autoNamespace : EnchantManager.getNamespaces()) {
+                sendEnchantmentList(sender, autoNamespace);
+            }
         }
-
-        WbsMessageBuilder builder = plugin.buildMessage("").append(opening.color(plugin.getTextColour())).append("\n");
-
-        WbsEnchantment first = enchants.getFirst();
-        enchants.removeFirst();
-        appendEnchant(builder, first);
-
-        enchants.forEach(enchant -> {
-            builder.append("&r, ");
-            appendEnchant(builder, enchant);
-        });
-
-        builder.build().send(sender);
 
         return Command.SINGLE_SUCCESS;
     }
 
-    private static void appendEnchant(WbsMessageBuilder builder, WbsEnchantment enchant) {
-        builder.append(enchant.displayName())
-                .addHoverText(enchant.getHoverText().append(
-                        Component.text("\n\nClick to view full info!")
-                                .color(WbsEnchants.getInstance().getTextColour())
-                        )
-                ).addClickCommand("/" +
-                        WbsEnchants.getInstance().getName().toLowerCase()
-                                + ":customenchants info " + enchant.key().asString()
-                );
+    private void sendEnchantmentList(CommandSender sender, @NotNull String namespace) {
+        List<EnchantmentDefinition> enchants = EnchantManager.getAllKnownDefinitions()
+                .stream()
+                .filter(def -> def.key().namespace().equalsIgnoreCase(namespace))
+                .sorted()
+                .collect(Collectors.toList());
+
+        if (enchants.isEmpty()) {
+            plugin.sendMessage("No enchantments found!", sender);
+            return;
+        }
+
+        enchants.sort(EnchantmentDefinition::compareTo);
+
+        Component opening = Component.text(namespace).append(Component.text(" enchantments:\n")).color(plugin.getTextColour());
+
+        WbsMessageBuilder builder = plugin.buildMessage("").append(opening);
+
+        EnchantmentDefinition first = enchants.getFirst();
+        enchants.removeFirst();
+        builder.append(first.interactiveDisplay(DESCRIBE_OPTIONS));
+
+        enchants.forEach(enchant -> {
+            builder.append("&r, ");
+            builder.append(enchant.interactiveDisplay(DESCRIBE_OPTIONS));
+        });
+
+        builder.build().send(sender);
     }
 }

@@ -1,5 +1,7 @@
 package wbs.enchants.generation.conditions;
 
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.TextComponent;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Entity;
 import org.bukkit.event.entity.CreatureSpawnEvent;
@@ -10,7 +12,7 @@ import wbs.utils.util.WbsEnums;
 public class SpawnReasonCondition extends GenerationCondition {
     public static final String KEY = "spawn-reason";
 
-    private final CreatureSpawnEvent.SpawnReason type;
+    private final CreatureSpawnEvent.SpawnReason reason;
 
     public SpawnReasonCondition(@NotNull String key, ConfigurationSection parentSection, String directory) {
         super(key, parentSection, directory);
@@ -29,9 +31,9 @@ public class SpawnReasonCondition extends GenerationCondition {
                     WbsEnums.joiningPrettyStrings(CreatureSpawnEvent.SpawnReason.class), directory);
         }
 
-        type = WbsEnums.getEnumFromString(CreatureSpawnEvent.SpawnReason.class, reasonString);
+        reason = WbsEnums.getEnumFromString(CreatureSpawnEvent.SpawnReason.class, reasonString);
 
-        if (type == null) {
+        if (reason == null) {
             throw new InvalidConfigurationException("Invalid entity type \"" + reasonString + "\". Valid options: " +
                     WbsEnums.joiningPrettyStrings(CreatureSpawnEvent.SpawnReason.class), directory);
         }
@@ -39,15 +41,20 @@ public class SpawnReasonCondition extends GenerationCondition {
 
     @Override
     public boolean test(Entity entity) {
-        return entity.getEntitySpawnReason() == type;
+        return entity.getEntitySpawnReason() == reason;
     }
 
     @Override
     public String toString() {
         return "SpawnReasonCondition{" +
-                "type=" + type +
+                "type=" + reason +
                 ", key=" + key +
                 ", negated=" + negated +
                 '}';
+    }
+
+    @Override
+    public Component describe(@NotNull TextComponent listBreak) {
+        return Component.text("Spawn reason " + WbsEnums.toPrettyString(reason));
     }
 }

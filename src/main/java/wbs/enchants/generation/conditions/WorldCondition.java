@@ -1,5 +1,7 @@
 package wbs.enchants.generation.conditions;
 
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.TextComponent;
 import org.bukkit.Location;
 import org.bukkit.configuration.ConfigurationSection;
 import org.jetbrains.annotations.NotNull;
@@ -23,11 +25,7 @@ public class WorldCondition extends GenerationCondition {
 
     @Override
     public boolean test(Location location) {
-        if (name != null && location.getWorld().getName().equalsIgnoreCase(name)) {
-            return true;
-        }
-
-        return false;
+        return name != null && location.getWorld().getName().equalsIgnoreCase(name);
     }
 
     @Override
@@ -37,5 +35,10 @@ public class WorldCondition extends GenerationCondition {
                 ", key=" + key +
                 ", negated=" + negated +
                 '}';
+    }
+
+    @Override
+    public Component describe(@NotNull TextComponent listBreak) {
+        return Component.text("World name = " + name);
     }
 }

@@ -12,6 +12,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.world.LootGenerateEvent;
+import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.EnchantmentStorageMeta;
 import org.jetbrains.annotations.NotNull;
 import wbs.utils.util.WbsCollectionUtil;
@@ -41,10 +42,10 @@ public class LootGenerationBlocker implements Listener {
     @EventHandler(priority = EventPriority.LOWEST)
     public void onLootGenerate(LootGenerateEvent event) {
         event.getLoot().removeIf(item -> {
-            replaceNonLootEnchants(item.getEnchantments(), item::removeEnchantment, item::addEnchantment);
+            replaceNonLootEnchants(item.getEnchantments(), item, item::removeEnchantment, item::addEnchantment);
 
             item.editMeta(EnchantmentStorageMeta.class, meta -> {
-                replaceNonLootEnchants(meta.getStoredEnchants(), meta::removeStoredEnchant, (enchantment, level) -> meta.addStoredEnchant(enchantment, 1, false));
+                replaceNonLootEnchants(meta.getStoredEnchants(), item, meta::removeStoredEnchant, (enchantment, level) -> meta.addStoredEnchant(enchantment, 1, false));
             });
 
             return item.getType() == Material.ENCHANTED_BOOK &&
@@ -53,19 +54,27 @@ public class LootGenerationBlocker implements Listener {
         });
     }
 
-    private void replaceNonLootEnchants(Map<Enchantment, Integer> enchantments, Consumer<Enchantment> removeConsumer, BiConsumer<Enchantment, Integer> addConsumer) {
+    private void replaceNonLootEnchants(Map<Enchantment, Integer> enchantments, ItemStack target, Consumer<Enchantment> removeConsumer, BiConsumer<Enchantment, Integer> addConsumer) {
         enchantments.forEach((enchantment, level) -> {
             // Enchantment is not in tag to be added to random loot -- a datapack has added this using "minecraft:enchant_randomly" function
             // which does not respect that tag. Forcing it to below.
             if (!tag.contains(TypedKey.create(RegistryKey.ENCHANTMENT, enchantment.getKey()))) {
                 removeConsumer.accept(enchantment);
-                Enchantment replacement = addRandomLootEnchant();
+                Enchantment replacement = getRandomLootEnchant(target);
                 addConsumer.accept(replacement, Math.min(level, replacement.getMaxLevel()));
             }
         });
     }
 
-    private Enchantment addRandomLootEnchant() {
-        return WbsCollectionUtil.getRandomWeighted(weightedLootEnchants);
+    private Enchantment getRandomLootEnchant(ItemStack target) {
+        Map<Enchantment, Integer> compatible = new HashMap<>();
+
+        weightedLootEnchants.forEach((enchant, weight) -> {
+            if (enchant.canEnchantItem(target)) {
+                compatible.put(enchant, weight);
+            }
+        });
+
+        return WbsCollectionUtil.getRandomWeighted(compatible);
     }
 }

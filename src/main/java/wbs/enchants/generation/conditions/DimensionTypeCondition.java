@@ -1,5 +1,8 @@
 package wbs.enchants.generation.conditions;
 
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.JoinConfiguration;
+import net.kyori.adventure.text.TextComponent;
 import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.configuration.ConfigurationSection;
@@ -30,7 +33,7 @@ public class DimensionTypeCondition extends GenerationCondition {
         }
 
         if (typeStrings.isEmpty()) {
-            String single = null;
+            String single;
             if (section != null) {
                 single = section.getString("type");
                 directory = directory + "/" + KEY;
@@ -69,6 +72,21 @@ public class DimensionTypeCondition extends GenerationCondition {
     public boolean test(Location location) {
         World.Environment dimensionType = Objects.requireNonNull(location.getWorld()).getEnvironment();
         return dimensionTypes.contains(dimensionType);
+    }
+
+    @Override
+    public Component describe(@NotNull TextComponent listBreak) {
+        List<Component> matchComponents = new LinkedList<>(
+                dimensionTypes.stream().map(
+                        environment -> Component.text(WbsEnums.toPrettyString(environment)
+                        )).toList()
+        );
+
+        TextComponent lineStart = Component.text("\n    > ");
+
+        return Component.text("Dimension type is in: ")
+                .append(lineStart)
+                .append(Component.join(JoinConfiguration.separator(lineStart), matchComponents));
     }
 
     @Override

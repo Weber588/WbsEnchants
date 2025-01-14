@@ -1,7 +1,6 @@
-package wbs.enchants;
+package wbs.enchants.definition;
 
 import io.papermc.paper.registry.TypedKey;
-import io.papermc.paper.registry.tag.TagKey;
 import net.kyori.adventure.key.Key;
 import net.kyori.adventure.key.Keyed;
 import net.kyori.adventure.text.Component;
@@ -10,7 +9,6 @@ import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.ItemType;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import wbs.enchants.generation.GenerationContext;
@@ -27,7 +25,7 @@ public interface EnchantmentExtension extends Keyed {
     }
 
     @Nullable
-    default String description() {
+    default Component description() {
         return getDefinition().description();
     }
 
@@ -43,7 +41,7 @@ public interface EnchantmentExtension extends Keyed {
         return getDefinition().displayName();
     }
 
-    default Component getHoverText(@Nullable EnumSet<EnchantmentDefinition.HoverOptions> options) {
+    default Component getHoverText(@Nullable EnumSet<EnchantmentDefinition.DescribeOptions> options) {
         return getDefinition().getHoverText(options);
     }
 
@@ -57,10 +55,6 @@ public interface EnchantmentExtension extends Keyed {
 
     default int maxLevel() {
         return getDefinition().maxLevel();
-    }
-
-    default TagKey<ItemType> primaryItems() {
-        return getDefinition().primaryItems();
     }
 
     default boolean isEnchantmentOn(@NotNull ItemStack item) {
@@ -95,9 +89,5 @@ public interface EnchantmentExtension extends Keyed {
 
     default NamespacedKey getKey() {
         return new NamespacedKey(key().namespace(), key().value());
-    }
-
-    default String targetDescription() {
-        return getDefinition().targetDescription();
     }
 }

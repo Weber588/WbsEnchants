@@ -11,6 +11,8 @@ import org.bukkit.inventory.meta.EnchantmentStorageMeta;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import wbs.enchants.*;
+import wbs.enchants.definition.EnchantmentDefinition;
+import wbs.enchants.definition.EnchantmentExtension;
 import wbs.enchants.type.EnchantmentTypeManager;
 import wbs.utils.util.plugin.WbsMessageBuilder;
 import wbs.utils.util.string.RomanNumerals;
@@ -76,30 +78,30 @@ public class EnchantUtils {
         return getHoverText(enchantment, null);
     }
 
-    public static Component getHoverText(Enchantment enchantment, EnumSet<EnchantmentDefinition.HoverOptions> options) {
-        WbsEnchantment customEnchantment = getAsCustom(enchantment);
-        if (customEnchantment != null) {
-            return customEnchantment.getHoverText(options);
+    public static Component getHoverText(Enchantment enchantment, EnumSet<EnchantmentDefinition.DescribeOptions> options) {
+        EnchantmentDefinition registeredEnchant = EnchantManager.getFromKey(enchantment.key());
+        if (registeredEnchant != null) {
+            return registeredEnchant.getHoverText(options);
         }
 
         if (options == null) {
-            options = EnumSet.allOf(EnchantmentDefinition.HoverOptions.class);
+            options = EnumSet.allOf(EnchantmentDefinition.DescribeOptions.class);
         }
 
         WbsMessageBuilder builder = WbsEnchants.getInstance().buildMessage("&h&m        &h ")
                 .append(getDisplayName(enchantment))
                 .append(" &h&m        &h");
 
-        if (options.contains(EnchantmentDefinition.HoverOptions.MAX_LEVEL)) {
+        if (options.contains(EnchantmentDefinition.DescribeOptions.MAX_LEVEL)) {
             builder.append("\n&rMax level: &h" + RomanNumerals.toRoman(enchantment.getMaxLevel()) + " (" + enchantment.getMaxLevel() + ")");
         }
-        if (options.contains(EnchantmentDefinition.HoverOptions.TARGET)) {
+        if (options.contains(EnchantmentDefinition.DescribeOptions.TARGET)) {
             // TODO: Find a way to show target tag. Currently can't, since Enchantment only has getSupportedItems
             //  which is a set of supported item keys, not the tag itself.
             //  Either find a way to get that tag directly, or find a way to iterate over all item tags and
             //  find a tag that exactly matches the Enchantment.
         }
-        if (options.contains(EnchantmentDefinition.HoverOptions.DESCRIPTION)) {
+        if (options.contains(EnchantmentDefinition.DescribeOptions.DESCRIPTION)) {
             if (enchantment.key().namespace().equals("minecraft")) {
                 builder.append("\n&rDescription: &hVanilla Enchantment");
             } else {

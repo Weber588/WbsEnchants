@@ -3,7 +3,7 @@ package wbs.enchants.generation.contexts;
 import org.bukkit.Material;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.inventory.ItemStack;
-import wbs.enchants.EnchantmentDefinition;
+import wbs.enchants.definition.EnchantmentDefinition;
 import wbs.enchants.WbsEnchants;
 import wbs.enchants.generation.GenerationContext;
 import wbs.utils.util.WbsCollectionUtil;

@@ -1,10 +1,12 @@
 package wbs.enchants.generation.contexts;
 
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.TextComponent;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.entity.EntityDeathEvent;
-import wbs.enchants.EnchantmentDefinition;
+import wbs.enchants.definition.EnchantmentDefinition;
 
 public class MobDeathContext extends ExistingLootContext {
     public MobDeathContext(String key, EnchantmentDefinition definition, ConfigurationSection section, String directory) {
@@ -14,6 +16,11 @@ public class MobDeathContext extends ExistingLootContext {
     @Override
     protected int getDefaultChance() {
         return definition.getEnchantment().getWeight();
+    }
+
+    @Override
+    protected Component describeContext(TextComponent listBreak) {
+        return Component.text("On mob death: " + chanceToRun() + "%");
     }
 
     @EventHandler

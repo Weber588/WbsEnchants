@@ -11,6 +11,8 @@ import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import wbs.enchants.definition.EnchantmentDefinition;
+import wbs.enchants.definition.EnchantmentExtension;
 import wbs.enchants.enchantment.helper.*;
 import wbs.enchants.type.EnchantmentType;
 import wbs.enchants.type.EnchantmentTypeManager;
@@ -156,11 +158,7 @@ public abstract class WbsEnchantment implements Comparable<WbsEnchantment>, List
     }
 
     public int compareTo(WbsEnchantment other) {
-        int typeComparison = type().compareTo(other.type());
-        if (typeComparison != 0) {
-            return typeComparison;
-        }
-        return key().compareTo(other.key());
+        return getDefinition().compareTo(other.getDefinition());
     }
 
 

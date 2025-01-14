@@ -1,7 +1,6 @@
 package wbs.enchants.command;
 
 import com.mojang.brigadier.context.CommandContext;
-import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.mojang.brigadier.suggestion.SuggestionProvider;
 import com.mojang.brigadier.suggestion.Suggestions;
 import com.mojang.brigadier.suggestion.SuggestionsBuilder;
@@ -17,11 +16,11 @@ public class EnchantmentLevelSuggestionProvider implements SuggestionProvider<Co
     private static @Nullable WbsEnchantment getEnchantment(CommandContext<CommandSourceStack> context) {
         Key enchantKey = context.getArgument("enchantment", Key.class);
 
-        return EnchantManager.getFromKey(enchantKey);
+        return EnchantManager.getCustomFromKey(enchantKey);
     }
 
     @Override
-    public CompletableFuture<Suggestions> getSuggestions(CommandContext<CommandSourceStack> context, SuggestionsBuilder builder) throws CommandSyntaxException {
+    public CompletableFuture<Suggestions> getSuggestions(CommandContext<CommandSourceStack> context, SuggestionsBuilder builder) {
         // Need to use getLastChild to get parent that actually contains the arguments -- see PaperMC issue 11384
         // https://github.com/PaperMC/Paper/issues/11384
         WbsEnchantment enchantment = getEnchantment(context.getLastChild());

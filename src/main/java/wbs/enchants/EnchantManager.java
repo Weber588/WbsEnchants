@@ -1,7 +1,11 @@
 package wbs.enchants;
 
+import com.google.common.collect.HashMultimap;
+import com.google.common.collect.Multimap;
 import net.kyori.adventure.key.Key;
 import org.jetbrains.annotations.Nullable;
+import wbs.enchants.definition.EnchantmentDefinition;
+import wbs.enchants.definition.EnchantmentExtension;
 import wbs.enchants.enchantment.*;
 import wbs.enchants.enchantment.curse.*;
 import wbs.utils.util.WbsFileUtil;
@@ -130,7 +134,22 @@ public class EnchantManager {
         return Collections.unmodifiableList(REGISTERED_ENCHANTMENTS);
     }
 
-    public static @Nullable WbsEnchantment getFromKey(Key enchantKey) {
+    public static List<EnchantmentDefinition> getAllKnownDefinitions() {
+        List<EnchantmentDefinition> definitions = new LinkedList<>(EXTERNAL_DEFINITIONS);
+        REGISTERED_ENCHANTMENTS.stream().map(EnchantmentExtension::getDefinition).forEach(definitions::add);
+
+        return definitions;
+
+    }
+
+    public static @Nullable EnchantmentDefinition getFromKey(Key enchantKey) {
+        return getAllKnownDefinitions().stream()
+                .filter(enchant -> enchant.key().equals(enchantKey))
+                .findFirst()
+                .orElse(null);
+    }
+
+    public static @Nullable WbsEnchantment getCustomFromKey(Key enchantKey) {
         return REGISTERED_ENCHANTMENTS.stream()
                 .filter(enchant -> enchant.key().equals(enchantKey))
                 .findFirst()
@@ -143,5 +162,41 @@ public class EnchantManager {
                 .filter(def -> def.key().equals(enchantKey))
                 .findFirst()
                 .orElse(null);
+    }
+
+    public static void unregister(WbsEnchantment enchant) {
+        try {
+            enchant.getDefinition().setEnabled(false);
+            REGISTERED_ENCHANTMENTS.remove(enchant);
+        } catch (Exception ex) {
+            System.out.println("Failed to unregister custom enchantment " + enchant.key().asString() + ".");
+            ex.printStackTrace(System.out);
+        }
+    }
+
+    public static Multimap<String, EnchantmentDefinition> getDefinitionsByNamespace() {
+        Multimap<String, EnchantmentDefinition> byNamespace = HashMultimap.create();
+
+        getAllKnownDefinitions().forEach(def -> {
+            byNamespace.put(def.key().namespace(), def);
+        });
+
+        return byNamespace;
+    }
+
+    public static List<String> getNamespaces() {
+        LinkedList<String> namespaces = new LinkedList<>(getDefinitionsByNamespace().keySet());
+
+        namespaces.sort((a, b) -> {
+            if (a.equalsIgnoreCase("minecraft")) {
+                return 1;
+            } else if (a.equalsIgnoreCase(WbsEnchantsBootstrap.NAMESPACE)) {
+                return 1;
+            } else {
+                return a.compareTo(b);
+            }
+        });
+
+        return namespaces;
     }
 }

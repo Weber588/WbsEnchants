@@ -3,12 +3,14 @@ package wbs.enchants.generation.contexts;
 import io.papermc.paper.registry.RegistryAccess;
 import io.papermc.paper.registry.RegistryKey;
 import io.papermc.paper.registry.keys.tags.EnchantmentTagKeys;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.TextComponent;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Item;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.player.PlayerFishEvent;
-import wbs.enchants.EnchantmentDefinition;
+import wbs.enchants.definition.EnchantmentDefinition;
 import wbs.enchants.util.EnchantUtils;
 
 import java.util.List;
@@ -18,6 +20,11 @@ public class FishingContext extends ExistingLootContext {
 
     public FishingContext(String key, EnchantmentDefinition definition, ConfigurationSection section, String directory) {
         super(key, definition, section, directory);
+    }
+
+    @Override
+    protected Component describeContext(TextComponent listBreak) {
+        return Component.text("Fishing: " + chanceToRun() + "%");
     }
 
     @Override

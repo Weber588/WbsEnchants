@@ -2,7 +2,7 @@ package wbs.enchants.generation;
 
 import org.bukkit.configuration.ConfigurationSection;
 import org.jetbrains.annotations.NotNull;
-import wbs.enchants.EnchantmentDefinition;
+import wbs.enchants.definition.EnchantmentDefinition;
 import wbs.enchants.generation.contexts.*;
 import wbs.utils.exceptions.InvalidConfigurationException;
 

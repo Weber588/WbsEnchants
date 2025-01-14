@@ -1,5 +1,7 @@
 package wbs.enchants.generation.conditions;
 
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.TextComponent;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
@@ -49,5 +51,10 @@ public class EntityTypeCondition extends GenerationCondition {
                 ", key=" + key +
                 ", negated=" + negated +
                 '}';
+    }
+
+    @Override
+    public Component describe(@NotNull TextComponent listBreak) {
+        return Component.text("Entity type is " + WbsEnums.toPrettyString(type));
     }
 }

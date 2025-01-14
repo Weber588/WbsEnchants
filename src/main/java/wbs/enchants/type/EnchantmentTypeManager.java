@@ -7,7 +7,8 @@ import io.papermc.paper.registry.tag.TagKey;
 import net.kyori.adventure.key.Key;
 import org.bukkit.Registry;
 import org.bukkit.enchantments.Enchantment;
-import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Contract;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
 import java.util.function.Predicate;
@@ -75,8 +76,9 @@ public class EnchantmentTypeManager {
         return Collections.unmodifiableCollection(REGISTERED_TYPES.values());
     }
 
-    @NotNull
-    public static EnchantmentType getType(Key typeKey) {
-        return REGISTERED_TYPES.getOrDefault(typeKey, REGULAR);
+    @Nullable
+    @Contract("_, !null -> !null")
+    public static EnchantmentType getType(Key typeKey, EnchantmentType fallback) {
+        return REGISTERED_TYPES.getOrDefault(typeKey, fallback);
     }
 }
