@@ -3,6 +3,8 @@ package wbs.enchants;
 import com.google.common.collect.HashMultimap;
 import com.google.common.collect.Multimap;
 import net.kyori.adventure.key.Key;
+import org.bukkit.enchantments.Enchantment;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import wbs.enchants.definition.EnchantmentDefinition;
 import wbs.enchants.definition.EnchantmentExtension;
@@ -198,5 +200,10 @@ public class EnchantManager {
         });
 
         return namespaces;
+    }
+
+    @Nullable
+    public static EnchantmentDefinition getFrom(@NotNull Enchantment from) {
+        return getFromKey(from.key());
     }
 }

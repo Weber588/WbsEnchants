@@ -19,20 +19,12 @@ import wbs.utils.util.commands.brigadier.WbsSubcommand;
 import wbs.utils.util.plugin.WbsPlugin;
 import wbs.utils.util.string.RomanNumerals;
 
-import java.util.EnumSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
 @SuppressWarnings("UnstableApiUsage")
 public class SubcommandHeld extends WbsSubcommand {
-    private static final EnumSet<EnchantmentDefinition.DescribeOptions> DESCRIBE_OPTIONS = EnumSet.of(
-            EnchantmentDefinition.DescribeOptions.TYPE,
-            EnchantmentDefinition.DescribeOptions.DESCRIPTION,
-            EnchantmentDefinition.DescribeOptions.MAX_LEVEL,
-            EnchantmentDefinition.DescribeOptions.TARGET
-    );
-
     public SubcommandHeld(@NotNull WbsPlugin plugin) {
         super(plugin, "held");
 
@@ -71,7 +63,7 @@ public class SubcommandHeld extends WbsSubcommand {
             if (def == null) {
                 enchantComponents.add(ench.displayName(level).hoverEvent(HoverEvent.showText(EnchantUtils.getHoverText(ench))));
             } else {
-                enchantComponents.add(def.interactiveDisplay(DESCRIBE_OPTIONS).append(Component.text(" " + RomanNumerals.toRoman(level))));
+                enchantComponents.add(def.interactiveDisplay().append(Component.text(" " + RomanNumerals.toRoman(level))));
             }
         }
         Component lineBreak = Component.text("\n - ").color(plugin.getTextHighlightColour());

@@ -15,19 +15,11 @@ import wbs.utils.util.commands.brigadier.WbsSubcommand;
 import wbs.utils.util.plugin.WbsMessageBuilder;
 import wbs.utils.util.plugin.WbsPlugin;
 
-import java.util.EnumSet;
 import java.util.LinkedList;
 import java.util.List;
 
 @SuppressWarnings("UnstableApiUsage")
 public class SubcommandSupported extends WbsSubcommand {
-    private static final EnumSet<EnchantmentDefinition.DescribeOptions> DESCRIBE_OPTIONS = EnumSet.of(
-            EnchantmentDefinition.DescribeOptions.TYPE,
-            EnchantmentDefinition.DescribeOptions.DESCRIPTION,
-            EnchantmentDefinition.DescribeOptions.MAX_LEVEL,
-            EnchantmentDefinition.DescribeOptions.TARGET
-    );
-
     public SubcommandSupported(@NotNull WbsPlugin plugin) {
         super(plugin, "supported");
 
@@ -66,11 +58,11 @@ public class SubcommandSupported extends WbsSubcommand {
 
             EnchantmentDefinition first = enchants.getFirst();
             enchants.removeFirst();
-            builder.append(first.interactiveDisplay(DESCRIBE_OPTIONS));
+            builder.append(first.interactiveDisplay());
 
             enchants.forEach(enchant -> {
                 builder.append("&r, ");
-                builder.append(enchant.interactiveDisplay(DESCRIBE_OPTIONS));
+                builder.append(enchant.interactiveDisplay());
             });
 
             builder.build().send(sender);

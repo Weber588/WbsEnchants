@@ -11,26 +11,17 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import wbs.enchants.EnchantManager;
 import wbs.enchants.definition.EnchantmentDefinition;
-import wbs.enchants.definition.EnchantmentDefinition.DescribeOptions;
 import wbs.utils.util.commands.brigadier.WbsSubcommand;
 import wbs.utils.util.commands.brigadier.WbsSuggestionProvider;
 import wbs.utils.util.commands.brigadier.argument.WbsStringArgumentType;
 import wbs.utils.util.plugin.WbsMessageBuilder;
 import wbs.utils.util.plugin.WbsPlugin;
 
-import java.util.EnumSet;
 import java.util.List;
 import java.util.stream.Collectors;
 
 @SuppressWarnings("UnstableApiUsage")
 public class SubcommandList extends WbsSubcommand {
-    private static final EnumSet<DescribeOptions> DESCRIBE_OPTIONS = EnumSet.of(
-            DescribeOptions.TYPE,
-            DescribeOptions.DESCRIPTION,
-            DescribeOptions.MAX_LEVEL,
-            DescribeOptions.TARGET
-    );
-
     public SubcommandList(@NotNull WbsPlugin plugin) {
         super(plugin, "list");
 
@@ -91,11 +82,11 @@ public class SubcommandList extends WbsSubcommand {
 
         EnchantmentDefinition first = enchants.getFirst();
         enchants.removeFirst();
-        builder.append(first.interactiveDisplay(DESCRIBE_OPTIONS));
+        builder.append(first.interactiveDisplay());
 
         enchants.forEach(enchant -> {
             builder.append("&r, ");
-            builder.append(enchant.interactiveDisplay(DESCRIBE_OPTIONS));
+            builder.append(enchant.interactiveDisplay());
         });
 
         builder.build().send(sender);

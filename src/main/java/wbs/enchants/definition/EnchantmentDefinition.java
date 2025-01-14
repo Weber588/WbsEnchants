@@ -593,6 +593,16 @@ public class EnchantmentDefinition extends EnchantmentWrapper implements Compara
         return displayName.applyFallbackStyle(type().getColour());
     }
 
+    private static final EnumSet<DescribeOptions> DEFAULT_HOVER_OPTIONS = EnumSet.of(
+            DescribeOptions.TYPE,
+            DescribeOptions.DESCRIPTION,
+            DescribeOptions.MAX_LEVEL,
+            DescribeOptions.TARGET
+    );
+
+    public Component interactiveDisplay() {
+        return interactiveDisplay(DEFAULT_HOVER_OPTIONS);
+    }
     public Component interactiveDisplay(EnumSet<DescribeOptions> options) {
         return displayName()
                 .hoverEvent(
@@ -716,19 +726,13 @@ public class EnchantmentDefinition extends EnchantmentWrapper implements Compara
                     conflicts.sort(Comparator.comparing(org.bukkit.Keyed::getKey));
 
                     for (Enchantment conflict : conflicts) {
-                        Component conflictComponent = EnchantUtils.getDisplayName(conflict);
+                        EnchantmentDefinition conflictDef = EnchantManager.getFrom(conflict);
 
-                        if (includeEvents) {
-                            Component hoverText = EnchantUtils.getHoverText(conflict);
-                            // TODO: Check if this inherits parent's styling, if not, need to pass in default styling as param
-                            hoverText = hoverText.append(Component.text("\n\nClick to view full info!"));
-
-                            conflictsComponent = conflictsComponent
-                                    .hoverEvent(hoverText)
-                                    .clickEvent(ClickEvent.runCommand("/" +
-                                            WbsEnchants.getInstance().getName().toLowerCase()
-                                            + ":customenchants info " + key().asString()
-                                    ));
+                        Component conflictComponent;
+                        if (conflictDef == null) {
+                            conflictComponent = EnchantUtils.getDisplayName(conflict);
+                        } else {
+                            conflictComponent = conflictDef.interactiveDisplay();
                         }
 
                         conflictsComponent = conflictsComponent.append(lineStart)
