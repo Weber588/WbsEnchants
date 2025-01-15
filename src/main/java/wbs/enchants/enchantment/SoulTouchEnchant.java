@@ -77,6 +77,7 @@ public class SoulTouchEnchant extends WbsEnchantment {
             Location blockLocation = block.getLocation();
 
             block.getWorld().dropItemNaturally(blockLocation, spawnerItem);
+            event.setExpToDrop(0);
             CuboidParticleEffect effect = new CuboidParticleEffect();
 
             Location startLocation = effect.configureBlockOutline(blockLocation, blockLocation);
