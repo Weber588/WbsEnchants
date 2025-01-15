@@ -17,6 +17,7 @@ import wbs.enchants.type.EnchantmentType;
 import java.util.EnumSet;
 import java.util.List;
 
+@SuppressWarnings("unused")
 public interface EnchantmentExtension extends Keyed {
     EnchantmentDefinition getDefinition();
 
@@ -74,7 +75,7 @@ public interface EnchantmentExtension extends Keyed {
     }
 
     default EnchantmentType type() {
-        return getDefinition().type();
+        return getDefinition().getType();
     }
 
     default void configureBoostrap(ConfigurationSection section, String directory) {

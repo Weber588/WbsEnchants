@@ -5,10 +5,12 @@ import io.papermc.paper.registry.RegistryKey;
 import io.papermc.paper.registry.TypedKey;
 import io.papermc.paper.registry.tag.TagKey;
 import net.kyori.adventure.key.Key;
+import org.bukkit.NamespacedKey;
 import org.bukkit.Registry;
 import org.bukkit.enchantments.Enchantment;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.Nullable;
+import wbs.enchants.WbsEnchantsBootstrap;
 
 import java.util.*;
 import java.util.function.Predicate;
@@ -50,9 +52,9 @@ public class EnchantmentTypeManager {
         // No tag key was identified -- get all enchants not in an enchantment type key (REGULAR)
         List<Enchantment> typeTagged = new LinkedList<>();
 
-        getRegistered().forEach((otherType) -> {
-            typeTagged.addAll(getEnchantmentsInTag(registry, otherType.getTagKey()));
-        });
+        getRegistered().forEach((otherType) ->
+                typeTagged.addAll(getEnchantmentsInTag(registry, otherType.getTagKey()))
+        );
 
         return registry.stream().filter(Predicate.not(typeTagged::contains)).toList();
     }
@@ -79,6 +81,10 @@ public class EnchantmentTypeManager {
     @Nullable
     @Contract("_, !null -> !null")
     public static EnchantmentType getType(Key typeKey, EnchantmentType fallback) {
+        // Minecraft keys can't exist in this registry -- we can treat these as if they were wbsenchants ones.
+        if (typeKey.namespace().equalsIgnoreCase(NamespacedKey.MINECRAFT)) {
+            return getType(new NamespacedKey(WbsEnchantsBootstrap.NAMESPACE, typeKey.value()), fallback);
+        }
         return REGISTERED_TYPES.getOrDefault(typeKey, fallback);
     }
 }

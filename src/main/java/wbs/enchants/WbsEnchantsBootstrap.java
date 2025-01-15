@@ -203,13 +203,27 @@ public class WbsEnchantsBootstrap implements PluginBootstrap {
 
         manager.registerEventHandler(LifecycleEvents.TAGS.postFlatten(RegistryKey.ENCHANTMENT).newHandler(event -> {
             Multimap<TagKey<Enchantment>, TypedKey<Enchantment>> toAdd = HashMultimap.create();
-            for (WbsEnchantment enchant : EnchantManager.getCustomRegistered()) {
-                EnchantmentDefinition definition = enchant.getDefinition();
+
+            // Tag events (currently) run after registry events for the same type, so at when this runs, all definitions should
+            // be loaded.
+            for (EnchantmentDefinition definition : EnchantManager.getAllKnownDefinitions()) {
                 for (TagKey<Enchantment> tag : definition.injectInto()) {
-                    toAdd.put(tag, enchant.getTypedKey());
+                    toAdd.put(tag, definition.getTypedKey());
                 }
-                if (definition.getPrimaryItems() != null && !definition.getPrimaryItems().isEmpty()) {
-                    toAdd.put(EnchantmentTagKeys.IN_ENCHANTING_TABLE, enchant.getTypedKey());
+
+                // Can't derive type yet -- get raw type.
+                EnchantmentType type = definition.rawType();
+                if (type != null) {
+                    TagKey<Enchantment> typeTagKey = type.getTagKey();
+                    if (typeTagKey != null) {
+                        toAdd.put(typeTagKey, definition.getTypedKey());
+                    }
+                }
+
+                if (EnchantManager.isManaged(definition)) {
+                    if (definition.getPrimaryItems() != null && !definition.getPrimaryItems().isEmpty()) {
+                        toAdd.put(EnchantmentTagKeys.IN_ENCHANTING_TABLE, definition.getTypedKey());
+                    }
                 }
             }
 
@@ -220,13 +234,17 @@ public class WbsEnchantsBootstrap implements PluginBootstrap {
     }
 
     private static void registerCustomTags(@NotNull BootstrapContext context, LifecycleEventManager<@NotNull BootstrapContext> manager) {
-        Set<CustomTag<Enchantment>> enchantmentTypeTags = getEnchantmentTypeTags();
+        registerCustomTags(context, RegistryKey.ITEM, WbsEnchantsBootstrap::getItemTags);
+        registerCustomTags(context, RegistryKey.ENCHANTMENT, WbsEnchantsBootstrap::getEnchantmentTags);
 
         CustomTag<Enchantment> vanillaTag = new CustomTag<>(VANILLA);
         vanillaTag.typedKeys = new LinkedList<>();
         CustomTag<Enchantment> customTag = new CustomTag<>(CUSTOM);
         customTag.typedKeys = new LinkedList<>();
 
+        // Entry add registry phase occurs before tag registry events fire -- so this will populate
+        // before the events scheduled below, even though at runtime of the encompassing method, typedKeys
+        // remains empty.
         manager.registerEventHandler(RegistryEvents.ENCHANTMENT.entryAdd().newHandler(event -> {
             TypedKey<Enchantment> key = event.key();
             if (key.key().namespace().equalsIgnoreCase("minecraft")) {
@@ -236,14 +254,11 @@ public class WbsEnchantsBootstrap implements PluginBootstrap {
             }
         }));
 
-        Set<CustomTag<Enchantment>> dynamicEnchantmentTags = new HashSet<>(enchantmentTypeTags);
+        Set<CustomTag<Enchantment>> dynamicEnchantmentTags = new HashSet<>();
         dynamicEnchantmentTags.add(customTag);
         dynamicEnchantmentTags.add(vanillaTag);
 
         registerCustomTags(context, RegistryKey.ENCHANTMENT, () -> dynamicEnchantmentTags);
-
-        registerCustomTags(context, RegistryKey.ITEM, WbsEnchantsBootstrap::getItemTags);
-        registerCustomTags(context, RegistryKey.ENCHANTMENT, WbsEnchantsBootstrap::getEnchantmentTags);
     }
 
     private static @NotNull Set<CustomTag<Enchantment>> getEnchantmentTypeTags() {

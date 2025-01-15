@@ -206,4 +206,12 @@ public class EnchantManager {
     public static EnchantmentDefinition getFrom(@NotNull Enchantment from) {
         return getFromKey(from.key());
     }
+
+    public static boolean isManaged(EnchantmentDefinition definition) {
+        return getCustomFromKey(definition.key()) != null;
+    }
+
+    public static boolean isManaged(Enchantment enchantment) {
+        return getCustomFromKey(enchantment.key()) != null;
+    }
 }

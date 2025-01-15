@@ -43,6 +43,13 @@ import java.util.function.Consumer;
 
 @SuppressWarnings({"UnstableApiUsage", "unused", "UnusedReturnValue"})
 public class EnchantmentDefinition extends EnchantmentWrapper implements Comparable<EnchantmentDefinition> {
+    public static final EnumSet<DescribeOptions> DEFAULT_HOVER_OPTIONS = EnumSet.of(
+            DescribeOptions.TYPE,
+            DescribeOptions.DESCRIPTION,
+            DescribeOptions.MAX_LEVEL,
+            DescribeOptions.TARGET
+    );
+
     private static NamespacedKey parseKey(ConfigurationSection section, String key, String directory) {
         String keyString = section.getString(key);
         if (keyString != null) {
@@ -499,7 +506,7 @@ public class EnchantmentDefinition extends EnchantmentWrapper implements Compara
 
     public void buildTo(@NotNull TagProducer tagProducer,
                         EnchantmentRegistryEntry.Builder builder) {
-        builder.description(displayName)
+        builder.description(displayName())
                 .minimumCost(minimumCost)
                 .maximumCost(maximumCost)
                 .activeSlots(activeSlots)
@@ -590,15 +597,11 @@ public class EnchantmentDefinition extends EnchantmentWrapper implements Compara
     }
 
     public Component displayName() {
-        return displayName.applyFallbackStyle(type().getColour());
+        if (type != null) {
+            return displayName.applyFallbackStyle(type.getColour());
+        }
+        return displayName;
     }
-
-    private static final EnumSet<DescribeOptions> DEFAULT_HOVER_OPTIONS = EnumSet.of(
-            DescribeOptions.TYPE,
-            DescribeOptions.DESCRIPTION,
-            DescribeOptions.MAX_LEVEL,
-            DescribeOptions.TARGET
-    );
 
     public Component interactiveDisplay() {
         return interactiveDisplay(DEFAULT_HOVER_OPTIONS);
@@ -618,7 +621,7 @@ public class EnchantmentDefinition extends EnchantmentWrapper implements Compara
     }
 
     @NotNull
-    public EnchantmentType type() {
+    public EnchantmentType getType() {
         if (type == null) {
             type = EnchantmentTypeManager.getType(getEnchantment());
         }
@@ -627,7 +630,7 @@ public class EnchantmentDefinition extends EnchantmentWrapper implements Compara
 
     /**
      * @return The enchantment type, which may be null if not explicitly set -- will not mutate the value like
-     * {@link #type()} will.
+     * {@link #getType()} will.
      */
     @Nullable
     public EnchantmentType rawType() {
@@ -676,7 +679,7 @@ public class EnchantmentDefinition extends EnchantmentWrapper implements Compara
                 .append(Component.text(" (" + key().asString() + ")").color(NamedTextColor.GRAY)));
 
         if (options.contains(DescribeOptions.TYPE)) {
-            components.add(Component.text("Type: ").append(type().getNameComponent()));
+            components.add(Component.text("Type: ").append(getType().getNameComponent()));
         }
 
         if (options.contains(DescribeOptions.MAX_LEVEL)) {
@@ -749,7 +752,7 @@ public class EnchantmentDefinition extends EnchantmentWrapper implements Compara
     }
 
     public int compareTo(EnchantmentDefinition other) {
-        int typeComparison = type().compareTo(other.type());
+        int typeComparison = getType().compareTo(other.getType());
         if (typeComparison != 0) {
             return typeComparison;
         }
