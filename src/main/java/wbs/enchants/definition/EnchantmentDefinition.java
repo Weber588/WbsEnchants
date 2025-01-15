@@ -591,6 +591,25 @@ public class EnchantmentDefinition extends EnchantmentWrapper implements Compara
         return this;
     }
 
+    @SafeVarargs
+    public final EnchantmentDefinition exclusiveWith(TypedKey<Enchantment>... exclusiveWith) {
+        RegistryKeySet<@NotNull Enchantment> keySet = RegistrySet.keySet(RegistryKey.ENCHANTMENT, exclusiveWith);
+        return exclusiveWith(keySet);
+    }
+
+    public EnchantmentDefinition exclusiveWith(Collection<TypedKey<Enchantment>> exclusiveWith) {
+        RegistryKeySet<@NotNull Enchantment> keySet = RegistrySet.keySet(RegistryKey.ENCHANTMENT, exclusiveWith);
+        return exclusiveWith(keySet);
+    }
+
+    public EnchantmentDefinition exclusiveWith(EnchantmentWrapper... exclusiveWith) {
+        return exclusiveWith(Arrays.stream(exclusiveWith).map(EnchantmentWrapper::getTypedKey).toList());
+    }
+
+    public EnchantmentDefinition exclusiveWith(EnchantmentExtension... exclusiveWith) {
+        return exclusiveWith(Arrays.stream(exclusiveWith).map(EnchantmentExtension::getTypedKey).toList());
+    }
+
     public EnchantmentDefinition exclusiveWith(RegistryKeySet<@NotNull Enchantment> exclusiveWith) {
         this.exclusiveWith = new TaggableRegistryKeySet<>(exclusiveWith);
         return this;

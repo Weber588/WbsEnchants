@@ -82,6 +82,9 @@ public abstract class WbsEnchantment implements Comparable<WbsEnchantment>, List
                 if (this instanceof ShieldBlockEnchant shieldBlockEnchant) {
                     shieldBlockEnchant.registerShieldBlockEvent();
                 }
+                if (this instanceof SpongeEnchant spongeEnchant) {
+                    spongeEnchant.registrySpongeEvents();
+                }
             }
         }
     }

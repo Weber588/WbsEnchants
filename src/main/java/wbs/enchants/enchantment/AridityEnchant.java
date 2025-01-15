@@ -3,20 +3,18 @@ package wbs.enchants.enchantment;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
-import org.bukkit.event.EventHandler;
-import org.bukkit.event.EventPriority;
 import org.bukkit.event.block.BlockPlaceEvent;
-import org.bukkit.event.inventory.FurnaceSmeltEvent;
 import org.bukkit.inventory.ItemStack;
 import wbs.enchants.WbsEnchantment;
 import wbs.enchants.WbsEnchants;
 import wbs.enchants.WbsEnchantsBootstrap;
 import wbs.enchants.enchantment.helper.NonPersistentBlockEnchant;
+import wbs.enchants.enchantment.helper.SpongeEnchant;
 import wbs.enchants.util.EntityUtils;
 
-public class AridityEnchant extends WbsEnchantment implements NonPersistentBlockEnchant {
-    private static final String DEFAULT_DESCRIPTION = "A sponge enchantment that automatically returns it to your " +
-            "hand after placing, never getting wet!";
+public class AridityEnchant extends WbsEnchantment implements NonPersistentBlockEnchant, SpongeEnchant {
+    private static final String DEFAULT_DESCRIPTION = "The sponge automatically returns to your " +
+            "hand after placing, never getting wet.";
 
     public AridityEnchant() {
         super("aridity", DEFAULT_DESCRIPTION);
@@ -29,16 +27,6 @@ public class AridityEnchant extends WbsEnchantment implements NonPersistentBlock
     @Override
     public boolean canEnchant(Block block) {
         return block.getType() == Material.SPONGE || block.getType() == Material.WET_SPONGE;
-    }
-
-    @EventHandler(priority = EventPriority.LOW)
-    public void onDryFurnace(FurnaceSmeltEvent event) {
-        ItemStack source = event.getSource();
-        if (isEnchantmentOn(source)) {
-            ItemStack result = event.getResult();
-
-            result.setItemMeta(source.getItemMeta());
-        }
     }
 
     @Override
