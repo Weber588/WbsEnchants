@@ -118,21 +118,30 @@ public class EnchantmentDefinition extends EnchantmentWrapper implements Compara
         this.displayName = displayName;
     }
 
-    public final @NotNull Component description() {
-        String descKey = "enchantment." + key().namespace() + "." + key().value() + ".desc";
-        if (description == null) {
-            return Component.translatable(descKey, "N/A");
+    private Component getTranslatable(Component absoluteFallback, String... keys) {
+        if (keys.length == 0) {
+            return absoluteFallback;
         }
-        if (description instanceof TextComponent text) {
-            return Component.translatable(descKey, text.content()).mergeStyle(text);
+        return Component.translatable(keys[0], "%s", getTranslatable(absoluteFallback, Arrays.copyOfRange(keys, 1, keys.length)));
+    }
+
+    public final @NotNull Component description() {
+        String enchantKey = "enchantment." + key().namespace() + "." + key().value();
+
+        Component fallback;
+
+        if (description == null) {
+            fallback = Component.text("N/A");
+        } else {
+            fallback = description
+                    .replaceText(TextReplacementConfig.builder()
+                            .match("%max_level%")
+                            .replacement(String.valueOf(maxLevel))
+                            .build()
+                    );
         }
 
-        return description.replaceText(
-                TextReplacementConfig.builder()
-                        .match("%max_level%")
-                        .replacement(String.valueOf(maxLevel))
-                        .build()
-        );
+        return getTranslatable(fallback, enchantKey + ".desc", enchantKey + ".description");
     }
 
     public EnchantmentDefinition setEnabled(boolean enabled) {
@@ -711,13 +720,13 @@ public class EnchantmentDefinition extends EnchantmentWrapper implements Compara
 
         if (options.contains(DescribeOptions.TARGET)) {
             components.add(Component.text("Target: ").append(
-                    getTargetDescription(lineStart).style(highlight)
+                    getTargetDescription(lineStart).applyFallbackStyle(highlight)
             ));
         }
 
         if (options.contains(DescribeOptions.DESCRIPTION)) {
             components.add(Component.text("Description: ").append(
-                    description().style(highlight)));
+                    description().applyFallbackStyle(highlight)));
         }
 
         if (options.contains(DescribeOptions.GENERATION)) {

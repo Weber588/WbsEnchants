@@ -4,9 +4,11 @@ import io.papermc.paper.registry.RegistryAccess;
 import io.papermc.paper.registry.RegistryKey;
 import io.papermc.paper.registry.TypedKey;
 import io.papermc.paper.registry.set.RegistryKeySet;
+import io.papermc.paper.registry.tag.Tag;
 import io.papermc.paper.registry.tag.TagKey;
 import net.kyori.adventure.key.Key;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.JoinConfiguration;
 import net.kyori.adventure.text.TextComponent;
 import net.kyori.adventure.text.event.HoverEvent;
 import org.bukkit.Keyed;
@@ -91,31 +93,28 @@ public class TaggableRegistryKeySet<T extends Keyed> {
         return typedKeys.stream().map(registry::get).filter(Objects::nonNull).toList();
     }
 
-    public @NotNull Component getDisplay(Component listBreak, Function<@NotNull T, @NotNull Component> tToComponent) {
-        Component listDisplay = null;
-        Collection<@NotNull T> values = getValues(null);
-        if (values != null) {
-            listDisplay = Component.empty();
-            for (T value : values) {
-                Component asComponent;
-                asComponent = tToComponent.apply(value);
-                listDisplay = listDisplay.append(listBreak).append(asComponent);
+    public @NotNull Component getDisplay(Component lineStart, Function<@NotNull T, @NotNull Component> tToComponent) {
+        // For some reason functional interfaces don't allow generics :( Using anon class instead.
+        EnchantmentDefinition.TagProducer producer = new EnchantmentDefinition.TagProducer() {
+            @Override
+            public <V extends Keyed> Tag<@NotNull V> getOrCreateTag(TagKey<V> tagKey) {
+                return RegistryAccess.registryAccess().getRegistry(tagKey.registryKey()).getTag(tagKey);
             }
-        }
+        };
 
+        Collection<@NotNull T> values = getValues(producer);
+
+        List<Component> componentList = values.stream().map(tToComponent).toList();
         if (tagKey != null) {
             TextComponent display = Component.text("#" + tagKey.key().asString());
 
-            if (listDisplay != null) {
-                display = display.hoverEvent(HoverEvent.showText(listDisplay));
-            }
+            Component listComponent = Component.join(JoinConfiguration.separator(Component.text(", ")), componentList);
+            display = display.hoverEvent(HoverEvent.showText(listComponent));
 
             return display;
-        } else if (listDisplay != null) {
-            return listDisplay;
+        } else {
+            return Component.join(JoinConfiguration.separator(Component.newline().append(lineStart)), componentList);
         }
-
-        return Component.empty();
     }
 
     public void writeToConfig(ConfigurationSection section, String key) {
@@ -149,8 +148,8 @@ public class TaggableRegistryKeySet<T extends Keyed> {
             super(tagKey);
         }
 
-        public @NotNull Component getDisplay(Component listBreak) {
-            return getDisplay(listBreak, itemType -> Component.translatable(itemType.translationKey()));
+        public @NotNull Component getDisplay(Component lineStart) {
+            return getDisplay(lineStart, itemType -> Component.translatable(itemType.translationKey()));
         }
     }
 }

@@ -65,7 +65,7 @@ public class BlockTypeCondition extends GenerationCondition {
     public boolean test(Location location) {
         Material type = location.getBlock().getType();
 
-        if (exactMatches.stream().anyMatch(exactMatches::contains)) {
+        if (exactMatches.contains(type)) {
             return true;
         }
 
