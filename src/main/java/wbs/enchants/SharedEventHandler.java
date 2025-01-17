@@ -2,11 +2,14 @@ package wbs.enchants;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
+import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
+import org.bukkit.event.entity.EntityDeathEvent;
+import org.bukkit.event.player.PlayerItemConsumeEvent;
 import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.event.world.ChunkLoadEvent;
 import org.bukkit.event.world.ChunkUnloadEvent;
@@ -20,6 +23,8 @@ import wbs.enchants.enchantment.helper.MovementEnchant;
 import wbs.enchants.enchantment.helper.TickableBlockEnchant;
 import wbs.enchants.enchantment.helper.TickableEnchant;
 import wbs.enchants.events.EnchantedBlockPlaceEvent;
+import wbs.enchants.statuseffects.StatusEffectManager;
+import wbs.enchants.statuseffects.StatusEffectType;
 
 import java.util.HashSet;
 import java.util.Map;
@@ -91,6 +96,19 @@ public class SharedEventHandler implements Listener {
         tickingEnchantedBlocks.add(event.getBlock());
     }
 
+    @EventHandler
+    public void onDrinkMilk(PlayerItemConsumeEvent event) {
+        ItemStack item = event.getItem();
+        if (item.getType() == Material.MILK_BUCKET) {
+            StatusEffectManager.clearStatusEffects(event.getPlayer(), StatusEffectType.RemoveReason.MILK);
+        }
+    }
+
+    @EventHandler
+    public void onDeath(EntityDeathEvent event) {
+        StatusEffectManager.clearStatusEffects(event.getEntity(), StatusEffectType.RemoveReason.DEATH);
+    }
+
     private void startTickingEnchants() {
         new BukkitRunnable() {
             @Override
@@ -99,83 +117,88 @@ public class SharedEventHandler implements Listener {
                     cancel();
                 }
 
-                Set<TickableEnchant> toTick = new HashSet<>();
-
-                tickableEnchants.forEach(enchant -> {
-                    if (Bukkit.getCurrentTick() % enchant.getTickFrequency() == 0) {
-                        toTick.add(enchant);
-                    }
-                });
-
-                if (toTick.isEmpty()) {
-                    return;
-                }
-
-                tickingEnchantedBlocks.removeIf(block -> !block.getChunk().isLoaded());
-
-                toTick.forEach(enchant -> {
-                    if (enchant instanceof TickableBlockEnchant blockEnchant) {
-                        tickingEnchantedBlocks.forEach(blockEnchant::onTick);
-                    }
-                });
-
-                toTick.forEach(TickableEnchant::onGlobalTick);
-
                 Set<LivingEntity> allLivingEntities = new HashSet<>();
                 Bukkit.getWorlds().forEach(world -> allLivingEntities.addAll(world.getLivingEntities()));
 
-                for (LivingEntity entity : allLivingEntities) {
-                    HashSet<TickableEnchant> hasEquipped = new HashSet<>();
-                    HashSet<TickableEnchant> hasAnywhere = new HashSet<>();
-
-                    EntityEquipment equipment = entity.getEquipment();
-                    if (equipment != null) {
-                        for (EquipmentSlot slot : EquipmentSlot.values()) {
-                            if (!entity.canUseEquipmentSlot(slot)) {
-                                continue;
-                            }
-
-                            ItemStack itemStack = equipment.getItem(slot);
-
-                            if (itemStack.isEmpty()) {
-                                continue;
-                            }
-
-                            for (TickableEnchant enchant : toTick) {
-                                if (!enchant.getDefinition().isActiveInSlot(slot)) {
-                                    continue;
-                                }
-
-                                if (enchant.isEnchantmentOn(itemStack)) {
-                                    enchant.onTickEquipped(entity, itemStack, slot);
-                                    hasEquipped.add(enchant);
-                                }
-                            }
-                        }
-                    }
-
-                    if (entity instanceof InventoryHolder holder) {
-                        ItemStack[] contents = holder.getInventory().getContents();
-                        for (int slot = 0; slot < contents.length; slot++) {
-                            ItemStack itemStack = contents[slot];
-
-                            if (itemStack == null) {
-                                continue;
-                            }
-
-                            for (TickableEnchant enchant : toTick) {
-                                if (enchant.isEnchantmentOn(itemStack)) {
-                                    enchant.onTickItemStack(entity, itemStack, slot);
-                                    hasAnywhere.add(enchant);
-                                }
-                            }
-                        }
-                    }
-
-                    hasAnywhere.forEach(enchant -> enchant.onTickAny(entity));
-                    hasEquipped.forEach(enchant -> enchant.onTickEquipped(entity));
-                }
+                tickEnchants(allLivingEntities);
+                allLivingEntities.forEach(StatusEffectManager::tick);
             }
         }.runTaskTimer(plugin, 1, 1);
+    }
+
+    private void tickEnchants(Set<LivingEntity> allLivingEntities) {
+        Set<TickableEnchant> toTick = new HashSet<>();
+
+        tickableEnchants.forEach(enchant -> {
+            if (Bukkit.getCurrentTick() % enchant.getTickFrequency() == 0) {
+                toTick.add(enchant);
+            }
+        });
+
+        if (toTick.isEmpty()) {
+            return;
+        }
+
+        tickingEnchantedBlocks.removeIf(block -> !block.getChunk().isLoaded());
+
+        toTick.forEach(enchant -> {
+            if (enchant instanceof TickableBlockEnchant blockEnchant) {
+                tickingEnchantedBlocks.forEach(blockEnchant::onTick);
+            }
+        });
+
+        toTick.forEach(TickableEnchant::onGlobalTick);
+
+        for (LivingEntity entity : allLivingEntities) {
+            HashSet<TickableEnchant> hasEquipped = new HashSet<>();
+            HashSet<TickableEnchant> hasAnywhere = new HashSet<>();
+
+            EntityEquipment equipment = entity.getEquipment();
+            if (equipment != null) {
+                for (EquipmentSlot slot : EquipmentSlot.values()) {
+                    if (!entity.canUseEquipmentSlot(slot)) {
+                        continue;
+                    }
+
+                    ItemStack itemStack = equipment.getItem(slot);
+
+                    if (itemStack.isEmpty()) {
+                        continue;
+                    }
+
+                    for (TickableEnchant enchant : toTick) {
+                        if (!enchant.getDefinition().isActiveInSlot(slot)) {
+                            continue;
+                        }
+
+                        if (enchant.isEnchantmentOn(itemStack)) {
+                            enchant.onTickEquipped(entity, itemStack, slot);
+                            hasEquipped.add(enchant);
+                        }
+                    }
+                }
+            }
+
+            if (entity instanceof InventoryHolder holder) {
+                ItemStack[] contents = holder.getInventory().getContents();
+                for (int slot = 0; slot < contents.length; slot++) {
+                    ItemStack itemStack = contents[slot];
+
+                    if (itemStack == null) {
+                        continue;
+                    }
+
+                    for (TickableEnchant enchant : toTick) {
+                        if (enchant.isEnchantmentOn(itemStack)) {
+                            enchant.onTickItemStack(entity, itemStack, slot);
+                            hasAnywhere.add(enchant);
+                        }
+                    }
+                }
+            }
+
+            hasAnywhere.forEach(enchant -> enchant.onTickAny(entity));
+            hasEquipped.forEach(enchant -> enchant.onTickEquipped(entity));
+        }
     }
 }
