@@ -83,6 +83,7 @@ public class EnchantManager {
     public static final OutreachEnchant OUTREACH = new OutreachEnchant();
     public static final HydrophobicEnchant HYDROPHOBIC = new HydrophobicEnchant();
     public static final PyroclasticEnchant PYROCLASTIC = new PyroclasticEnchant();
+    public static final SurfaceMinerEnchant SURFACE_MINER = new SurfaceMinerEnchant();
 
     public static final CurseRebuking CURSE_REBUKING = new CurseRebuking();
     public static final CurseVanilla CURSE_VANILLA = new CurseVanilla();

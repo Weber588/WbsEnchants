@@ -44,7 +44,10 @@ public class WbsEnchants extends WbsPlugin {
         registerListener(new LootGenerationBlocker());
 
         settings.reload();
+
+        new SharedEventHandler(this).start();
     }
+
 
     @Override
     public void onDisable() {

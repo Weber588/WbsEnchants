@@ -21,7 +21,6 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.loot.LootContext;
 import org.bukkit.loot.LootTable;
 import wbs.enchants.definition.EnchantmentDefinition;
-import wbs.enchants.WbsEnchants;
 import wbs.enchants.util.EnchantUtils;
 import wbs.utils.exceptions.InvalidConfigurationException;
 
@@ -45,6 +44,11 @@ public class LootTableContext extends ExistingLootContext {
 
     @Override
     protected Component describeContext(TextComponent listBreak) {
+        if (tables.isEmpty()) {
+            return Component.text("In loot containers (chests, barrels, pots, etc)")
+                    .append(Component.text(": " + chanceToRun() + "%"));
+        }
+
         List<TextComponent> lootTables = tables.stream()
                 .map(Component::text)
                 .toList();
@@ -132,6 +136,8 @@ public class LootTableContext extends ExistingLootContext {
 
                 LootContext.Builder builder = new LootContext.Builder(clickedBlock.getLocation());
 
+                builder.killer(player);
+
                 AttributeInstance luckAttribute = player.getAttribute(Attribute.GENERIC_LUCK);
                 if (luckAttribute != null) {
                     builder.luck((float) luckAttribute.getValue());
@@ -148,12 +154,7 @@ public class LootTableContext extends ExistingLootContext {
 
                 List<ItemStack> contents = new LinkedList<>(Arrays.asList(fake.getContents()));
 
-                WbsEnchants.getInstance().getLogger().info("filled inventory: " + contents);
-
                 int generated = tryAddingTo(contents);
-
-                WbsEnchants.getInstance().getLogger().info("after adding: " + contents);
-                WbsEnchants.getInstance().getLogger().info("generated " + generated);
 
                 if (generated > 0) {
                     // Don't need to find a random one, because tryAddingTo shuffles anyway.
@@ -162,8 +163,6 @@ public class LootTableContext extends ExistingLootContext {
                             .findAny()
                             .orElseThrow(()
                                     -> new IllegalStateException("Enchantment generated but no non-null item present"));
-
-                    WbsEnchants.getInstance().getLogger().info("fakeChosen " + fakeChosen);
 
                     boolean hasEnchantStored = EnchantUtils.getStoredEnchantments(fakeChosen).keySet()
                             .stream()

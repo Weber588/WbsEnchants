@@ -185,16 +185,20 @@ public abstract class GenerationContext implements Listener {
         if (overrideDescription != null) {
             return overrideDescription;
         }
-        Component description = describeContext(Component.text("\n  - "));
+        Component description = describeContext(Component.text("\n   - "));
 
-        List<Component> conditionComponents = conditions.stream()
-                .map(generationCondition -> generationCondition.getDescription(Component.text("\n      > ")))
-                .toList();
+        if (!conditions.isEmpty()) {
+            List<Component> conditionComponents = conditions.stream()
+                    .map(generationCondition -> generationCondition.getDescription(Component.text("\n      > ")))
+                    .toList();
 
-        TextComponent lineStart = Component.text("\n    - ");
-        Component conditionsSection = lineStart.append(Component.join(JoinConfiguration.separator(lineStart), conditionComponents));
+            TextComponent lineStart = Component.text("\n    - ");
 
-        return description.append(Component.text("\n  Conditions:")).append(conditionsSection);
+            Component conditionsSection = lineStart.append(Component.join(JoinConfiguration.separator(lineStart), conditionComponents));
+            description = description.append(Component.text("\n  Conditions:")).append(conditionsSection);
+        }
+
+        return description;
     }
 
     protected abstract Component describeContext(TextComponent listBreak);

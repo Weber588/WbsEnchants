@@ -20,6 +20,7 @@ import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.event.HandlerList;
+import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.EquipmentSlotGroup;
 import org.bukkit.inventory.ItemType;
 import org.bukkit.plugin.PluginManager;
@@ -807,6 +808,10 @@ public class EnchantmentDefinition extends EnchantmentWrapper implements Compara
             return translatable.fallback();
         }
         return MiniMessage.miniMessage().serialize(currentDisplayName.style(Style.empty()));
+    }
+
+    public boolean isActiveInSlot(EquipmentSlot slot) {
+        return activeSlots.test(slot);
     }
 
     public interface TagProducer {

@@ -1,7 +1,6 @@
 package wbs.enchants.enchantment.helper;
 
-import org.bukkit.Material;
-import org.bukkit.NamespacedKey;
+import org.bukkit.*;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Item;
 import org.bukkit.entity.Player;
@@ -12,12 +11,16 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
 import org.jetbrains.annotations.Nullable;
+import wbs.enchants.EnchantManager;
 import wbs.enchants.WbsEnchantment;
 import wbs.enchants.WbsEnchants;
+import wbs.enchants.events.EnchantedBlockPlaceEvent;
 import wbs.enchants.util.EnchantUtils;
 import wbs.enchants.util.EventUtils;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Represents an enchantment that can go on a block in the inventory, that will persist in the chunk data, allowing it
@@ -30,6 +33,14 @@ public interface BlockEnchant extends EnchantInterface, AutoRegistrableEnchant {
         // Don't need to track world; this tag will be stored on a chunk
         String stringKey = block.getX() + "_" + block.getY() + "_" + block.getZ();
         return new NamespacedKey(WbsEnchants.getInstance(), stringKey);
+    }
+
+    static Block getBlock(NamespacedKey key, World world) {
+        String stringPosition = key.value();
+
+        String[] components = stringPosition.split("_");
+
+        return world.getBlockAt(Integer.parseInt(components[0]), Integer.parseInt(components[1]), Integer.parseInt(components[2]));
     }
 
     static PersistentDataContainer getBlockContainer(Block block) {
@@ -66,6 +77,52 @@ public interface BlockEnchant extends EnchantInterface, AutoRegistrableEnchant {
         chunkContainer.set(BLOCK_ENCHANTS_KEY, PersistentDataType.TAG_CONTAINER, enchantedBlocksContainer);
     }
 
+    static Map<Block, Map<BlockEnchant, Integer>> getBlockEnchantments(Chunk chunk) {
+        PersistentDataContainer chunkContainer = chunk.getPersistentDataContainer();
+
+        PersistentDataContainer enchantedBlocksContainer = chunkContainer.get(BLOCK_ENCHANTS_KEY, PersistentDataType.TAG_CONTAINER);
+
+        Map<Block, Map<BlockEnchant, Integer>> enchantedBlocks = new HashMap<>();
+
+        if (enchantedBlocksContainer == null) {
+            return enchantedBlocks;
+        }
+
+        enchantedBlocksContainer.getKeys().forEach(blockKey -> {
+            PersistentDataContainer blockEnchantsContainer = enchantedBlocksContainer.get(blockKey, PersistentDataType.TAG_CONTAINER);
+
+            if (blockEnchantsContainer == null) {
+                return;
+            }
+
+            Block block = getBlock(blockKey, chunk.getWorld());
+
+            Map<BlockEnchant, Integer> enchants = new HashMap<>();
+            blockEnchantsContainer.getKeys().forEach(enchantKey -> {
+                WbsEnchantment enchant = EnchantManager.getCustomFromKey(enchantKey);
+                if (enchant == null) {
+                    return;
+                }
+
+                if (!(enchant instanceof BlockEnchant blockEnchant)) {
+                    return;
+                }
+
+                enchants.put(blockEnchant, blockEnchantsContainer.get(enchantKey, PersistentDataType.INTEGER));
+            });
+
+            enchantedBlocks.put(block, enchants);
+        });
+
+        return enchantedBlocks;
+    }
+
+    private static @Nullable Integer getLevel(WbsEnchantment enchant, PersistentDataContainer blockContainer) {
+        NamespacedKey key = enchant.getKey();
+
+        return blockContainer.get(key, PersistentDataType.INTEGER);
+    }
+
     default void registerBlockEvents() {
         EventUtils.register(BlockPlaceEvent.class, this::onPlace);
         EventUtils.register(BlockDropItemEvent.class, this::onDrop);
@@ -93,6 +150,9 @@ public interface BlockEnchant extends EnchantInterface, AutoRegistrableEnchant {
 
             updateBlockContainer(block, blockContainer);
 
+            EnchantedBlockPlaceEvent enchantedEvent = new EnchantedBlockPlaceEvent(this, block);
+            Bukkit.getPluginManager().callEvent(enchantedEvent);
+
             afterPlace(event, placedItem);
         }
     }
@@ -102,9 +162,7 @@ public interface BlockEnchant extends EnchantInterface, AutoRegistrableEnchant {
         PersistentDataContainer blockContainer = getBlockContainer(block);
 
         WbsEnchantment enchant = getThisEnchantment();
-        NamespacedKey key = enchant.getKey();
-
-        return blockContainer.get(key, PersistentDataType.INTEGER);
+        return getLevel(enchant, blockContainer);
     }
 
     default void onDrop(BlockDropItemEvent event) {

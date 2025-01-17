@@ -7,14 +7,18 @@ import io.papermc.paper.registry.keys.tags.EnchantmentTagKeys;
 import io.papermc.paper.registry.tag.Tag;
 import org.bukkit.Material;
 import org.bukkit.Registry;
+import org.bukkit.block.Block;
+import org.bukkit.block.BrushableBlock;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
+import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.world.LootGenerateEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.EnchantmentStorageMeta;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import wbs.utils.util.WbsCollectionUtil;
 
 import java.util.HashMap;
@@ -54,19 +58,47 @@ public class LootGenerationBlocker implements Listener {
         });
     }
 
-    private void replaceNonLootEnchants(Map<Enchantment, Integer> enchantments, ItemStack target, Consumer<Enchantment> removeConsumer, BiConsumer<Enchantment, Integer> addConsumer) {
-        enchantments.forEach((enchantment, level) -> {
+
+    @EventHandler
+    public void onBrushBlock(PlayerInteractEvent event) {
+        ItemStack heldItem = event.getItem();
+        if (heldItem != null && heldItem.getType() == Material.BRUSH) {
+            Block clickedBlock = event.getClickedBlock();
+            if (clickedBlock != null && clickedBlock.getState() instanceof BrushableBlock state) {
+                ItemStack spawnedItem = state.getItem();
+
+                boolean changed = replaceNonLootEnchants(spawnedItem.getEnchantments(), spawnedItem, spawnedItem::removeEnchantment, spawnedItem::addEnchantment);
+
+                if (changed) {
+                    state.setItem(spawnedItem);
+                    state.update();
+                }
+            }
+        }
+    }
+
+    private boolean replaceNonLootEnchants(Map<Enchantment, Integer> enchantments, ItemStack target, Consumer<Enchantment> removeConsumer, BiConsumer<Enchantment, Integer> addConsumer) {
+        boolean anyChanges = false;
+
+        for (Map.Entry<Enchantment, Integer> entry : enchantments.entrySet()) {
+            Enchantment enchantment = entry.getKey();
+            Integer level = entry.getValue();
             // Enchantment is not in tag to be added to random loot -- a datapack has added this using "minecraft:enchant_randomly" function
             // which does not respect that tag. Forcing it to below.
             if (!tag.contains(TypedKey.create(RegistryKey.ENCHANTMENT, enchantment.getKey()))) {
+                anyChanges = true;
                 removeConsumer.accept(enchantment);
                 Enchantment replacement = getRandomLootEnchant(target);
-                addConsumer.accept(replacement, Math.min(level, replacement.getMaxLevel()));
+                if (replacement != null) {
+                    addConsumer.accept(replacement, Math.min(level, replacement.getMaxLevel()));
+                }
             }
-        });
+        }
+
+        return anyChanges;
     }
 
-    private Enchantment getRandomLootEnchant(ItemStack target) {
+    private @Nullable Enchantment getRandomLootEnchant(ItemStack target) {
         Map<Enchantment, Integer> compatible = new HashMap<>();
 
         weightedLootEnchants.forEach((enchant, weight) -> {
@@ -74,6 +106,10 @@ public class LootGenerationBlocker implements Listener {
                 compatible.put(enchant, weight);
             }
         });
+
+        if (compatible.isEmpty()) {
+            return null;
+        }
 
         return WbsCollectionUtil.getRandomWeighted(compatible);
     }

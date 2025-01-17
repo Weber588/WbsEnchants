@@ -44,6 +44,9 @@ public class EnchantsSettings extends WbsSettings {
             ConfigurationSection enchantSection = enchantsFile.getConfigurationSection(enchant.key().value());
 
             if (enchantSection == null) {
+                enchantSection = enchantsFile.getConfigurationSection(enchant.key().asString());
+            }
+            if (enchantSection == null) {
                 newEnchantAdded = true;
                 enchant.buildConfigurationSection(enchantsFile);
             } else {

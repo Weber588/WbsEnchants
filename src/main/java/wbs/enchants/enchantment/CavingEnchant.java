@@ -13,12 +13,13 @@ import org.bukkit.inventory.PlayerInventory;
 import org.bukkit.inventory.meta.BundleMeta;
 import wbs.enchants.WbsEnchantment;
 import wbs.enchants.WbsEnchantsBootstrap;
+import wbs.enchants.enchantment.helper.MovementEnchant;
 
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 
-public class CavingEnchant extends WbsEnchantment {
+public class CavingEnchant extends WbsEnchantment implements MovementEnchant {
     public static final Set<Material> PLACEABLE_TYPES = Set.of(Material.TORCH, Material.SOUL_TORCH);
     public static final int LIGHT_LEVEL_REQUIRED = 0;
     public static final String DESCRIPTION = "Torches inside bundles on your hotbar with this enchantment " +
@@ -41,20 +42,22 @@ public class CavingEnchant extends WbsEnchantment {
             return;
         }
 
-        if (to.getBlock().getLightFromBlocks() > LIGHT_LEVEL_REQUIRED) {
+    }
+
+    @Override
+    public void onChangeBlock(Player player, Block oldBlock, Block newBlock) {
+        if (newBlock.getLightFromBlocks() > LIGHT_LEVEL_REQUIRED) {
             return;
         }
-        Block block = to.getBlock();
-        if (!to.getBlock().isReplaceable()) {
+        if (!newBlock.isReplaceable()) {
             return;
         }
 
-        Block onBlock = block.getRelative(BlockFace.DOWN);
+        Block onBlock = newBlock.getRelative(BlockFace.DOWN);
         if (!onBlock.getBlockData().isFaceSturdy(BlockFace.UP, BlockSupport.CENTER)) {
             return;
         }
 
-        Player player = event.getPlayer();
         PlayerInventory inventory = player.getInventory();
         boolean placedTorch = false;
         for (int i = 0; i < 9; i++) {
@@ -80,7 +83,7 @@ public class CavingEnchant extends WbsEnchantment {
                                 bundleItem.setAmount(bundleItem.getAmount() - 1);
                             }
 
-                            block.setType(type);
+                            newBlock.setType(type);
                             placedTorch = true;
                             break;
                         }

@@ -367,6 +367,9 @@ public class WbsEnchantsBootstrap implements PluginBootstrap {
                 if (enchantsConfig != null) {
                     ConfigurationSection enchantSection = enchantsConfig.getConfigurationSection(enchant.key().value());
                     if (enchantSection == null) {
+                        enchantSection = enchantsConfig.getConfigurationSection(enchant.key().asString());
+                    }
+                    if (enchantSection == null) {
                         enchant.buildConfigurationSection(enchantsConfig);
                     } else {
                         try {
