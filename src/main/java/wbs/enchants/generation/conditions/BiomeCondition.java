@@ -1,20 +1,14 @@
 package wbs.enchants.generation.conditions;
 
-import com.sk89q.worldedit.bukkit.BukkitAdapter;
-import com.sk89q.worldedit.math.BlockVector3;
-import com.sk89q.worldedit.world.biome.BiomeType;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.JoinConfiguration;
 import net.kyori.adventure.text.TextComponent;
 import net.kyori.adventure.text.event.ClickEvent;
 import net.kyori.adventure.text.event.HoverEvent;
-import org.bukkit.Bukkit;
 import org.bukkit.Location;
-import org.bukkit.NamespacedKey;
 import org.bukkit.World;
 import org.bukkit.configuration.ConfigurationSection;
 import org.jetbrains.annotations.NotNull;
-import wbs.enchants.WbsEnchants;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -42,11 +36,6 @@ public class BiomeCondition extends GenerationCondition {
             matches = section.getStringList("matches");
         } else {
             matches.add(parentSection.getString(key));
-        }
-
-        if (!matches.isEmpty() && !Bukkit.getPluginManager().isPluginEnabled("WorldEdit")) {
-            WbsEnchants.getInstance().getLogger().warning("Biome condition (" + directory + ") relies on biome" +
-                    " name, but WorldEdit was not found. Only vanilla (\"minecraft:\") biomes will be supported.");
         }
     }
 
@@ -101,7 +90,7 @@ public class BiomeCondition extends GenerationCondition {
 
         if (matchesComponent != null) {
             if (humidityTempComponent != null) {
-                return matchesComponent.append(Component.text(", or "))
+                return matchesComponent.append(Component.text(", and "))
                         .append(humidityTempComponent)
                         .append(matchesListComponent);
             } else {
@@ -126,26 +115,19 @@ public class BiomeCondition extends GenerationCondition {
             return true;
         }
 
+        boolean inValidBiome = true;
         if (!matches.isEmpty()) {
-            String biomeKey;
-            if (Bukkit.getPluginManager().isPluginEnabled("WorldEdit")) {
-                BlockVector3 worldEditBlock = BlockVector3.at(location.getBlockX(), location.getBlockY(), location.getBlockZ());
-                BiomeType biome = BukkitAdapter.adapt(world).getBiome(worldEditBlock);
-                biomeKey = biome.getId();
-            } else {
-                NamespacedKey key = world.getBiome(location).getKey();
-                biomeKey = key.getNamespace() + ":" + key.getKey();
-            }
+            String biomeKey = world.getBiome(location).getKey().asString();
 
-            // Direct matches override
             boolean matchFound = matches.stream()
                     .anyMatch(regex -> biomeKey.matches(regex) || biomeKey.contains(regex));
-            if (matchFound) {
-                return true;
+
+            if (!matchFound) {
+                inValidBiome = false;
             }
         }
 
-        return temp <= maxTemp && temp >= minTemp &&
+        return inValidBiome && temp <= maxTemp && temp >= minTemp &&
                 humidity <= maxHumidity && humidity >= minHumidity;
     }
 
