@@ -57,15 +57,12 @@ public class WbsEnchantsBootstrap implements PluginBootstrap {
     public static final TagKey<ItemType> ENCHANTABLE_HANDHELD = ItemTypeTagKeys.create(createKey("enchantable/handheld"));
     public static final TagKey<ItemType> ENCHANTABLE_VEHICLE = ItemTypeTagKeys.create(createKey("enchantable/vehicle"));
     public static final TagKey<ItemType> ENCHANTABLE_GROUND_MINING = ItemTypeTagKeys.create(createKey("enchantable/ground_mining"));
-    public static final TagKey<ItemType> BELL = ItemTypeTagKeys.create(createKey("enchantable/bell"));
-    public static final TagKey<ItemType> ELYTRA = ItemTypeTagKeys.create(createKey("enchantable/elytra"));
-    public static final TagKey<ItemType> BUCKET = ItemTypeTagKeys.create(createKey("enchantable/bucket"));
-    public static final TagKey<ItemType> SHIELD = ItemTypeTagKeys.create(createKey("enchantable/shield"));
     public static final TagKey<ItemType> ENCHANTABLE_PROJECTILE_WEAPON = ItemTypeTagKeys.create(createKey("enchantable/projectile_weapon"));
     public static final TagKey<ItemType> ENCHANTABLE_BUNDLE = ItemTypeTagKeys.create(createKey("enchantable/bundle"));
     public static final TagKey<ItemType> ENCHANTABLE_FLINT_AND_STEEL = ItemTypeTagKeys.create(createKey("enchantable/flint_and_steel"));
     public static final TagKey<ItemType> ENCHANTABLE_BEACON = ItemTypeTagKeys.create(createKey("enchantable/beacon"));
     public static final TagKey<ItemType> ENCHANTABLE_LEAD = ItemTypeTagKeys.create(createKey("enchantable/lead"));
+    public static final TagKey<ItemType> ENCHANTABLE_SHULKER_BOX = ItemTypeTagKeys.create(createKey("enchantable/shulker_box"));
 
     // TODO: Put this somewhere proper (config?)
     private static Set<CustomTag<ItemType>> getItemTags() {
@@ -104,33 +101,28 @@ public class WbsEnchantsBootstrap implements PluginBootstrap {
                                 TagEntry.tagEntry(ItemTypeTagKeys.SHOVELS, true)
                         )
                 ),
-                new CustomTag<>(BELL,
-                        ItemType.MINECART
-                ),
-                new CustomTag<>(ELYTRA,
-                        ItemType.ELYTRA
-                ),
-                new CustomTag<>(BUCKET,
-                        ItemType.BUCKET
-                ),
-                new CustomTag<>(SHIELD,
-                        ItemType.SHIELD
+                new CustomTag<>(ENCHANTABLE_SHULKER_BOX,
+                        ItemType.SHULKER_BOX,
+                        ItemType.WHITE_SHULKER_BOX,
+                        ItemType.ORANGE_SHULKER_BOX,
+                        ItemType.MAGENTA_SHULKER_BOX,
+                        ItemType.LIGHT_BLUE_SHULKER_BOX,
+                        ItemType.YELLOW_SHULKER_BOX,
+                        ItemType.LIME_SHULKER_BOX,
+                        ItemType.PINK_SHULKER_BOX,
+                        ItemType.GRAY_SHULKER_BOX,
+                        ItemType.LIGHT_GRAY_SHULKER_BOX,
+                        ItemType.CYAN_SHULKER_BOX,
+                        ItemType.PURPLE_SHULKER_BOX,
+                        ItemType.BLUE_SHULKER_BOX,
+                        ItemType.BROWN_SHULKER_BOX,
+                        ItemType.GREEN_SHULKER_BOX,
+                        ItemType.RED_SHULKER_BOX,
+                        ItemType.BLACK_SHULKER_BOX
                 ),
                 new CustomTag<>(ENCHANTABLE_PROJECTILE_WEAPON,
                         ItemType.BOW,
                         ItemType.CROSSBOW
-                ),
-                new CustomTag<>(ENCHANTABLE_BUNDLE,
-                        ItemType.BUNDLE
-                ),
-                new CustomTag<>(ENCHANTABLE_FLINT_AND_STEEL,
-                        ItemType.FLINT_AND_STEEL
-                ),
-                new CustomTag<>(ENCHANTABLE_BEACON,
-                        ItemType.BEACON
-                ),
-                new CustomTag<>(ENCHANTABLE_LEAD,
-                        ItemType.LEAD
                 )
         );
     }

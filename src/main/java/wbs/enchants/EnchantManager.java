@@ -10,6 +10,7 @@ import wbs.enchants.definition.EnchantmentDefinition;
 import wbs.enchants.definition.EnchantmentExtension;
 import wbs.enchants.enchantment.*;
 import wbs.enchants.enchantment.curse.*;
+import wbs.enchants.enchantment.shulkerbox.*;
 import wbs.utils.util.WbsFileUtil;
 
 import java.io.File;
@@ -84,6 +85,13 @@ public class EnchantManager {
     public static final HydrophobicEnchant HYDROPHOBIC = new HydrophobicEnchant();
     public static final PyroclasticEnchant PYROCLASTIC = new PyroclasticEnchant();
     public static final SurfaceMinerEnchant SURFACE_MINER = new SurfaceMinerEnchant();
+    public static final CarryingEnchant CARRYING = new CarryingEnchant();
+    // public static final SnackingEnchant SNACKING = new SnackingEnchant();
+    public static final RefillEnchant REFILL = new RefillEnchant();
+    public static final SiphoningEnchant SIPHONING = new SiphoningEnchant();
+    public static final PlacingEnchant PLACING = new PlacingEnchant();
+    public static final DiscardingEnchant DISCARDING = new DiscardingEnchant();
+    public static final BloomingEnchant BLOOMING = new BloomingEnchant();
 
     public static final CurseRebuking CURSE_REBUKING = new CurseRebuking();
     public static final CurseVanilla CURSE_VANILLA = new CurseVanilla();

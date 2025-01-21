@@ -13,6 +13,7 @@ import wbs.enchants.WbsEnchants;
 import wbs.enchants.WbsEnchantsBootstrap;
 import wbs.enchants.enchantment.helper.BlockEnchant;
 import wbs.enchants.enchantment.helper.SpongeEnchant;
+import wbs.enchants.util.BlockQuery;
 import wbs.utils.util.entities.selector.RadiusSelector;
 
 import java.util.List;
@@ -48,21 +49,20 @@ public class HydrophobicEnchant extends WbsEnchantment implements BlockEnchant, 
         List<BlockState> toAbsorb = event.getBlocks();
 
         int spongeRange = VANILLA_SPONGE_RADIUS + (level * RADIUS_PER_LEVEL);
-        for (int x = -spongeRange; x < spongeRange; x++) {
-            for (int y = -spongeRange; y < spongeRange; y++) {
-                for (int z = -spongeRange; z < spongeRange; z++) {
-                    if (Math.abs(x) + Math.abs(y) + Math.abs(z) <= spongeRange) {
-                        Block checkBlock = sponge.getLocation().clone().add(x, y, z).getBlock();
-                        if (checkBlock.getType() == Material.WATER) {
-                            BlockState state = checkBlock.getState();
-                            state.setType(Material.AIR);
 
-                            toAbsorb.add(state);
-                        }
-                    }
-                }
-            }
-        }
+        List<Block> connectedWater = new BlockQuery()
+                .setMaxBlocks((spongeRange * 2) * (spongeRange * 2)) // Upper limit
+                .setMaxDistance(spongeRange)
+                .setDistanceMode(BlockQuery.DistanceMode.MANHATTAN)
+                .setPredicate(check -> check.getType() == Material.WATER)
+                .getVein(sponge);
+
+        connectedWater.forEach(waterBlock -> {
+            BlockState state = waterBlock.getState();
+            state.setType(Material.AIR);
+
+            toAbsorb.add(state);
+        });
 
         // Next tick, ensure players can see the changes -- view update bug it looks like
         WbsEnchants.getInstance().runSync(() -> {

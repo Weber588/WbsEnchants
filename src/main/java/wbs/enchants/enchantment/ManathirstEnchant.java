@@ -7,7 +7,6 @@ import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.Damageable;
-import wbs.enchants.EnchantManager;
 import wbs.enchants.WbsEnchantment;
 import wbs.enchants.WbsEnchantsBootstrap;
 import wbs.enchants.enchantment.helper.TickableEnchant;
@@ -65,7 +64,7 @@ public class ManathirstEnchant extends WbsEnchantment implements TickableEnchant
         }
 
         damageable.setDamage(damageable.getDamage() - 1);
-        player.setTotalExperience(Math.max(0, player.getTotalExperience() - EnchantManager.MANATHIRST.xpPerDura));
+        player.setTotalExperience(Math.max(0, player.getTotalExperience() - xpPerDura));
 
         item.setItemMeta(damageable);
     }

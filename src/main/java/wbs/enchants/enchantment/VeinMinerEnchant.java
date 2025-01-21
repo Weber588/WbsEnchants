@@ -10,7 +10,7 @@ import org.jetbrains.annotations.NotNull;
 import wbs.enchants.WbsEnchantsBootstrap;
 import wbs.enchants.enchantment.helper.AbstractMultiBreakEnchant;
 import wbs.enchants.util.BlockChanger;
-import wbs.enchants.util.BlockQueryUtils;
+import wbs.enchants.util.BlockQuery;
 import wbs.enchants.util.MaterialUtils;
 
 import java.util.List;
@@ -38,12 +38,15 @@ public class VeinMinerEnchant extends AbstractMultiBreakEnchant {
 
     @Override
     public void handleBreak(@NotNull BlockBreakEvent event, @NotNull Block broken, @NotNull Player player, @NotNull ItemStack item, int level) {
-        int blocksToBreak = level * BLOCKS_PER_LEVEL;
+        int maxBlocks = level * BLOCKS_PER_LEVEL;
 
         Material type = broken.getType();
         Predicate<Block> matching = check -> check.getType() == type;
 
-        final List<Block> veinBlocks = BlockQueryUtils.getVeinMatching(broken, blocksToBreak, matching);
+        final List<Block> veinBlocks = new BlockQuery()
+                .setPredicate(matching)
+                .setMaxBlocks(maxBlocks)
+                .getVein(broken);
 
         int toBreakPerChunk = veinBlocks.size() / 3;
 

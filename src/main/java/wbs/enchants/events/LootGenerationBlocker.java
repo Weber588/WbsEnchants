@@ -103,7 +103,10 @@ public class LootGenerationBlocker implements Listener {
 
         weightedLootEnchants.forEach((enchant, weight) -> {
             if (enchant.canEnchantItem(target)) {
-                compatible.put(enchant, weight);
+                boolean hasConflict = target.getEnchantments().keySet().stream().anyMatch(enchant::conflictsWith);
+                if (!hasConflict) {
+                    compatible.put(enchant, weight);
+                }
             }
         });
 

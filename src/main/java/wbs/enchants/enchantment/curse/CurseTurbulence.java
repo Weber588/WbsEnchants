@@ -1,5 +1,6 @@
 package wbs.enchants.enchantment.curse;
 
+import io.papermc.paper.registry.keys.ItemTypeKeys;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -7,7 +8,6 @@ import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
 import wbs.enchants.WbsEnchantment;
-import wbs.enchants.WbsEnchantsBootstrap;
 import wbs.enchants.type.EnchantmentTypeManager;
 import wbs.utils.util.WbsMath;
 
@@ -22,7 +22,7 @@ public class CurseTurbulence extends WbsEnchantment {
 
         getDefinition()
                 .maxLevel(2)
-                .supportedItems(WbsEnchantsBootstrap.ELYTRA);
+                .supportedItems(ItemTypeKeys.ELYTRA);
     }
 
     @EventHandler

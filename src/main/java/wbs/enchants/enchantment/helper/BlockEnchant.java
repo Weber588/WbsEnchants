@@ -4,6 +4,7 @@ import org.bukkit.*;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Item;
 import org.bukkit.entity.Player;
+import org.bukkit.event.EventPriority;
 import org.bukkit.event.block.BlockDropItemEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.inventory.EntityEquipment;
@@ -14,6 +15,7 @@ import org.jetbrains.annotations.Nullable;
 import wbs.enchants.EnchantManager;
 import wbs.enchants.WbsEnchantment;
 import wbs.enchants.WbsEnchants;
+import wbs.enchants.events.EnchantedBlockBreakEvent;
 import wbs.enchants.events.EnchantedBlockPlaceEvent;
 import wbs.enchants.util.EnchantUtils;
 import wbs.enchants.util.EventUtils;
@@ -73,7 +75,11 @@ public interface BlockEnchant extends EnchantInterface, AutoRegistrableEnchant {
 
         NamespacedKey blockKey = getBlockKey(block);
 
-        enchantedBlocksContainer.set(blockKey, PersistentDataType.TAG_CONTAINER, container);
+        if (container == null || container.isEmpty()) {
+            enchantedBlocksContainer.remove(blockKey);
+        } else {
+            enchantedBlocksContainer.set(blockKey, PersistentDataType.TAG_CONTAINER, container);
+        }
         chunkContainer.set(BLOCK_ENCHANTS_KEY, PersistentDataType.TAG_CONTAINER, enchantedBlocksContainer);
     }
 
@@ -97,21 +103,7 @@ public interface BlockEnchant extends EnchantInterface, AutoRegistrableEnchant {
 
             Block block = getBlock(blockKey, chunk.getWorld());
 
-            Map<BlockEnchant, Integer> enchants = new HashMap<>();
-            blockEnchantsContainer.getKeys().forEach(enchantKey -> {
-                WbsEnchantment enchant = EnchantManager.getCustomFromKey(enchantKey);
-                if (enchant == null) {
-                    return;
-                }
-
-                if (!(enchant instanceof BlockEnchant blockEnchant)) {
-                    return;
-                }
-
-                enchants.put(blockEnchant, blockEnchantsContainer.get(enchantKey, PersistentDataType.INTEGER));
-            });
-
-            enchantedBlocks.put(block, enchants);
+            enchantedBlocks.put(block, getEnchantments(block));
         });
 
         return enchantedBlocks;
@@ -123,9 +115,33 @@ public interface BlockEnchant extends EnchantInterface, AutoRegistrableEnchant {
         return blockContainer.get(key, PersistentDataType.INTEGER);
     }
 
+    static Map<BlockEnchant, Integer> getEnchantments(Block block) {
+        PersistentDataContainer blockContainer = getBlockContainer(block);
+
+        return getEnchantments(blockContainer);
+    }
+
+    static Map<BlockEnchant, Integer> getEnchantments(PersistentDataContainer blockContainer) {
+        Map<BlockEnchant, Integer> enchantments = new HashMap<>();
+        for (NamespacedKey key : blockContainer.getKeys()) {
+            WbsEnchantment enchantment = EnchantManager.getCustomFromKey(key);
+            if (enchantment instanceof BlockEnchant blockEnchant) {
+                enchantments.put(blockEnchant, blockContainer.get(key, PersistentDataType.INTEGER));
+            }
+        }
+
+        return enchantments;
+    }
+
+    static boolean isEnchanted(Block block) {
+        PersistentDataContainer blockContainer = getBlockContainer(block);
+
+        return !blockContainer.isEmpty();
+    }
+
     default void registerBlockEvents() {
-        EventUtils.register(BlockPlaceEvent.class, this::onPlace);
-        EventUtils.register(BlockDropItemEvent.class, this::onDrop);
+        EventUtils.register(BlockPlaceEvent.class, this::onPlace, EventPriority.NORMAL, true);
+        EventUtils.register(BlockDropItemEvent.class, this::onDrop, EventPriority.NORMAL, true);
     }
 
     default void onPlace(BlockPlaceEvent event) {
@@ -169,11 +185,13 @@ public interface BlockEnchant extends EnchantInterface, AutoRegistrableEnchant {
         WbsEnchantment enchant = getThisEnchantment();
         NamespacedKey key = enchant.getKey();
 
-        PersistentDataContainer blockContainer = getBlockContainer(event.getBlock());
+        Block block = event.getBlock();
+        PersistentDataContainer blockContainer = getBlockContainer(block);
 
         Integer level = blockContainer.get(key, PersistentDataType.INTEGER);
 
         blockContainer.remove(key);
+        updateBlockContainer(block, blockContainer);
 
         List<Item> items = event.getItems();
 
@@ -191,6 +209,9 @@ public interface BlockEnchant extends EnchantInterface, AutoRegistrableEnchant {
         }
 
         if (level != null) {
+            EnchantedBlockBreakEvent enchantedEvent = new EnchantedBlockBreakEvent(this, block);
+            Bukkit.getPluginManager().callEvent(enchantedEvent);
+
             EnchantUtils.addEnchantment(enchant, dropped, level);
 
             afterDrop(event, dropped);

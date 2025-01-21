@@ -1,5 +1,6 @@
 package wbs.enchants.enchantment;
 
+import io.papermc.paper.registry.keys.ItemTypeKeys;
 import org.bukkit.Particle;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
@@ -12,7 +13,6 @@ import org.bukkit.potion.PotionEffectType;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import wbs.enchants.WbsEnchantment;
-import wbs.enchants.WbsEnchantsBootstrap;
 import wbs.enchants.enchantment.helper.ShieldBlockEnchant;
 import wbs.utils.util.entities.WbsEntityUtil;
 import wbs.utils.util.particles.SphereParticleEffect;
@@ -27,7 +27,7 @@ public class FrostcreepEnchant extends WbsEnchantment implements ShieldBlockEnch
         super("frostcreep", DESCRIPTION);
 
         getDefinition()
-                .supportedItems(WbsEnchantsBootstrap.SHIELD)
+                .supportedItems(ItemTypeKeys.SHIELD)
                 .maxLevel(3);
     }
 

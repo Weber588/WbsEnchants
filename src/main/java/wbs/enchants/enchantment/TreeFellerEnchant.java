@@ -13,12 +13,14 @@ import org.bukkit.inventory.meta.Damageable;
 import org.jetbrains.annotations.NotNull;
 import wbs.enchants.enchantment.helper.AbstractMultiBreakEnchant;
 import wbs.enchants.util.BlockChanger;
-import wbs.enchants.util.BlockQueryUtils;
+import wbs.enchants.util.BlockQuery;
 import wbs.utils.util.WbsMath;
 
 import java.util.LinkedList;
 import java.util.List;
 import java.util.function.Predicate;
+
+import static wbs.enchants.util.BlockQuery.*;
 
 public class TreeFellerEnchant extends AbstractMultiBreakEnchant {
 
@@ -52,15 +54,19 @@ public class TreeFellerEnchant extends AbstractMultiBreakEnchant {
             return false;
         };
 
-        // Get amount + 1 -- if all are used, then there's too many to break.
-        final List<Block> logs = BlockQueryUtils.getVeinMatching(broken, logsToBreak + 1, isSameType, true);
+        final List<Block> logs = new BlockQuery()
+                .setPredicate(isSameType)
+                .setDiagonalMode(DiagonalMode.ALL)
+                // Get amount + 1 -- if all are used, then there's too many to break.
+                .setMaxBlocks(logsToBreak + 1)
+                .getVein(broken);
 
         if (logs.isEmpty()) {
             return;
         }
 
         // All leaves here will by definition, have distance minimum distance from a log
-        final List<Block>  initialLeaves = BlockQueryUtils.getAdjacent(logs, isNaturalLeaves);
+        final List<Block>  initialLeaves = new BlockQuery().getAdjacent(logs, isNaturalLeaves);
 
         if (initialLeaves.isEmpty()) {
             // Not a tree
@@ -72,23 +78,7 @@ public class TreeFellerEnchant extends AbstractMultiBreakEnchant {
             return;
         }
 
-        List<Block> blocksToBreak = new LinkedList<>(logs);
-
-        List<Block> currentLeaves = initialLeaves;
-        while (!currentLeaves.isEmpty()) {
-            Block first = currentLeaves.getFirst();
-            int currentDistance = ((Leaves) first.getBlockData()).getDistance();
-            blocksToBreak.addAll(currentLeaves);
-
-            // Get Leaves that are exactly 1 block further from the logs than the previous layer
-            currentLeaves = BlockQueryUtils.getAdjacent(currentLeaves, check -> {
-                if (!isNaturalLeaves.test(check)) {
-                    return false;
-                }
-
-                return (check.getBlockData() instanceof Leaves leaves) && (leaves.getDistance() == (currentDistance + 1));
-            });
-        }
+        List<Block> blocksToBreak = getBlocksToBreak(logs, initialLeaves, isNaturalLeaves);
 
         BlockChanger.prepare(blocksToBreak)
                 .setDelayTicks(1)
@@ -123,5 +113,27 @@ public class TreeFellerEnchant extends AbstractMultiBreakEnchant {
                     }
                     return result;
                 });
+    }
+
+    private static @NotNull List<Block> getBlocksToBreak(List<Block> logs, List<Block> initialLeaves, Predicate<Block> isNaturalLeaves) {
+        List<Block> blocksToBreak = new LinkedList<>(logs);
+        BlockQuery query = new BlockQuery();
+
+        List<Block> currentLeaves = initialLeaves;
+        while (!currentLeaves.isEmpty()) {
+            Block first = currentLeaves.getFirst();
+            int currentDistance = ((Leaves) first.getBlockData()).getDistance();
+            blocksToBreak.addAll(currentLeaves);
+
+            // Get Leaves that are exactly 1 block further from the logs than the previous layer
+            currentLeaves = query.getAdjacent(currentLeaves, check -> {
+                if (!isNaturalLeaves.test(check)) {
+                    return false;
+                }
+
+                return (check.getBlockData() instanceof Leaves leaves) && (leaves.getDistance() == (currentDistance + 1));
+            });
+        }
+        return blocksToBreak;
     }
 }

@@ -11,7 +11,7 @@ import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 import wbs.enchants.enchantment.helper.AbstractMultiBreakEnchant;
 import wbs.enchants.util.BlockChanger;
-import wbs.enchants.util.BlockQueryUtils;
+import wbs.enchants.util.BlockQuery;
 
 import java.util.List;
 import java.util.function.Predicate;
@@ -41,7 +41,10 @@ public class ExcavatorEnchant extends AbstractMultiBreakEnchant {
 
         BlockFace hitFace = getTargetBlockFace(player);
 
-        final List<Block> excavateBlocks = BlockQueryUtils.getSquareMatching(broken, level, hitFace, matching);
+        final List<Block> excavateBlocks = new BlockQuery()
+                .setPredicate(matching)
+                .setMaxDistance(level)
+                .getSquare(broken, hitFace);
 
         int toBreakPerChunk = excavateBlocks.size() / 3;
 

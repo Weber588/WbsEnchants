@@ -15,7 +15,7 @@ import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.Nullable;
 import wbs.enchants.WbsEnchantment;
 import wbs.enchants.util.BlockChanger;
-import wbs.enchants.util.BlockQueryUtils;
+import wbs.enchants.util.BlockQuery;
 
 import java.util.Collection;
 import java.util.List;
@@ -64,8 +64,10 @@ public class HarvesterEnchant extends WbsEnchantment {
                 }
 
                 int level = getLevel(item);
-                List<Block> cropBlocks = BlockQueryUtils.getSquareMatching(clickedBlock, level, BlockFace.DOWN,
-                                        HarvesterEnchant::isHarvestableCrop);
+                List<Block> cropBlocks = new BlockQuery()
+                        .setPredicate(HarvesterEnchant::isHarvestableCrop)
+                        .setMaxDistance(level)
+                        .getSquare(clickedBlock, BlockFace.DOWN);
 
                 harvestCrop(player, clickedBlock);
 

@@ -13,7 +13,7 @@ import wbs.enchants.WbsEnchants;
 import wbs.enchants.enchantment.helper.AbstractMultiBreakEnchant;
 import wbs.enchants.type.EnchantmentTypeManager;
 import wbs.enchants.util.BlockChanger;
-import wbs.enchants.util.BlockQueryUtils;
+import wbs.enchants.util.BlockQuery;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -60,9 +60,13 @@ public class BlastMinerEnchant extends AbstractMultiBreakEnchant {
 
         final List<Block> blocksToBreak = new LinkedList<>();
 
+        BlockQuery query = new BlockQuery()
+                .setPredicate(matching)
+                .setMaxDistance(1);
+
         Block current = broken;
         for (int i = 0; i < level && matching.test(current); i++) {
-            List<Block> toAdd = BlockQueryUtils.getSquareMatching(current, 1, face, matching);
+            List<Block> toAdd = query.getSquare(current, face);
             blocksToBreak.addAll(toAdd);
             blocksToBreak.add(current);
             current = current.getRelative(face.getOppositeFace());

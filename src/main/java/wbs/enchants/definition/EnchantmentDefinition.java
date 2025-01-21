@@ -44,6 +44,7 @@ import java.util.function.Consumer;
 
 @SuppressWarnings({"UnstableApiUsage", "unused", "UnusedReturnValue"})
 public class EnchantmentDefinition extends EnchantmentWrapper implements Comparable<EnchantmentDefinition> {
+    // Must never contain CONFLICTS as it will lead to infinite recursion.
     public static final EnumSet<DescribeOptions> DEFAULT_HOVER_OPTIONS = EnumSet.of(
             DescribeOptions.TYPE,
             DescribeOptions.DESCRIPTION,
@@ -592,6 +593,15 @@ public class EnchantmentDefinition extends EnchantmentWrapper implements Compara
         return this;
     }
 
+    public EnchantmentDefinition supportedItems(Iterable<@NotNull TypedKey<ItemType>> supportedItems) {
+        return supportedItems(RegistrySet.keySet(RegistryKey.ITEM, supportedItems));
+    }
+
+    @SafeVarargs
+    public final EnchantmentDefinition supportedItems(@NotNull TypedKey<ItemType>... supportedItems) {
+        return supportedItems(RegistrySet.keySet(RegistryKey.ITEM, supportedItems));
+    }
+
     public @Nullable TaggableRegistryKeySet<Enchantment> getExclusiveWith() {
         return exclusiveWith;
     }
@@ -633,10 +643,24 @@ public class EnchantmentDefinition extends EnchantmentWrapper implements Compara
     }
 
     public Component interactiveDisplay() {
-        return interactiveDisplay(DEFAULT_HOVER_OPTIONS);
+        return interactiveDisplay(DEFAULT_HOVER_OPTIONS, null);
+    }
+    public Component interactiveDisplay(Integer level) {
+        return interactiveDisplay(DEFAULT_HOVER_OPTIONS, level);
     }
     public Component interactiveDisplay(EnumSet<DescribeOptions> options) {
-        return displayName()
+        return interactiveDisplay(options, null);
+    }
+    public Component interactiveDisplay(@Nullable EnumSet<DescribeOptions> options, @Nullable Integer level) {
+        Component base;
+
+        if (level == null) {
+            base = displayName();
+        } else {
+            base = getEnchantment().displayName(level);
+        }
+
+        return base
                 .hoverEvent(
                         getHoverText(options).append(
                         Component.text("\n\nClick to view full info!")

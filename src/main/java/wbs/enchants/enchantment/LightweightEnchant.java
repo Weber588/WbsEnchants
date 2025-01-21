@@ -1,5 +1,6 @@
 package wbs.enchants.enchantment;
 
+import io.papermc.paper.registry.keys.ItemTypeKeys;
 import org.bukkit.EntityEffect;
 import org.bukkit.Location;
 import org.bukkit.entity.Entity;
@@ -14,7 +15,6 @@ import org.bukkit.util.Vector;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import wbs.enchants.WbsEnchantment;
-import wbs.enchants.WbsEnchantsBootstrap;
 import wbs.enchants.enchantment.helper.DamageEnchant;
 import wbs.enchants.util.DamageUtils;
 import wbs.utils.util.WbsItems;
@@ -35,7 +35,7 @@ public class LightweightEnchant extends WbsEnchantment implements DamageEnchant 
 
         getDefinition()
                 .maxLevel(MAX_LEVEL)
-                .supportedItems(WbsEnchantsBootstrap.SHIELD)
+                .supportedItems(ItemTypeKeys.SHIELD)
                 .weight(10);
     }
 
