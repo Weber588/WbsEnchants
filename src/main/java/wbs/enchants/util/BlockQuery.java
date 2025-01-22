@@ -142,10 +142,10 @@ public class BlockQuery {
 
         List<Block> nearby = new LinkedList<>();
 
-        for (int x = 0; x < maxDistance; x++) {
-            for (int y = 0; y < maxDistance; y++) {
-                for (int z = 0; z < maxDistance; z++) {
-                    Block check = central.getWorld().getBlockAt(x, y, z);
+        for (int x = -maxDistance; x < maxDistance; x++) {
+            for (int y = -maxDistance; y < maxDistance; y++) {
+                for (int z = -maxDistance; z < maxDistance; z++) {
+                    Block check = central.getLocation().add(x, y, z).getBlock();
 
                     if (isInDistance(central, check)) {
                         nearby.add(check);
