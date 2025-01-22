@@ -12,6 +12,7 @@ import java.util.Queue;
 import java.util.function.BiFunction;
 import java.util.function.Predicate;
 
+@SuppressWarnings("unused")
 public class BlockQuery {
     @NotNull
     private Predicate<Block> blockPredicate = block -> true;
@@ -278,6 +279,7 @@ public class BlockQuery {
         return blockPredicate.test(check) && distanceMode.getDistance(central, check) <= maxDistance;
     }
 
+    @SuppressWarnings("MethodDoesntCallSuperMethod")
     @Override
     public BlockQuery clone() {
         return new BlockQuery(blockPredicate, diagonalMode, maxDistance, maxBlocks, distanceMode);
