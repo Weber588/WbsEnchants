@@ -5,9 +5,11 @@ import org.bukkit.block.Block;
 import org.bukkit.block.BlockType;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.Damageable;
 import wbs.enchants.WbsEnchantment;
+import wbs.enchants.WbsEnchants;
 import wbs.enchants.enchantment.helper.TickableEnchant;
 import wbs.enchants.util.BlockQuery;
 
@@ -76,9 +78,8 @@ public class BloomingEnchant extends WbsEnchantment implements TickableEnchant {
         return 40;
     }
 
-
     @Override
-    public void onTickItemStack(LivingEntity owner, ItemStack item, int slot) {
+    public void onTickEquipped(LivingEntity owner, ItemStack item, EquipmentSlot slot) {
         if (!(owner instanceof Player player)) {
             return;
         }
@@ -101,10 +102,13 @@ public class BloomingEnchant extends WbsEnchantment implements TickableEnchant {
                 .setDistanceMode(BlockQuery.DistanceMode.MANHATTAN)
                 .getNearby(player.getLocation().getBlock());
 
+        WbsEnchants.getInstance().sendMessage("nearbyFlowers: " + nearbyFlowers.size(), owner);
+
         double totalFlowerPower = nearbyFlowers.stream()
                 .mapToDouble(block -> FLOWER_POWERS.get(block.getType().asBlockType()))
                 .sum();
 
+        WbsEnchants.getInstance().sendMessage("Flower power: " + totalFlowerPower, owner);
         int toRestore = (int) (totalFlowerPower / 7);
         damageable.setDamage(Math.max(0, damageable.getDamage() - toRestore));
 
