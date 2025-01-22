@@ -51,7 +51,7 @@ public class ManathirstEnchant extends WbsEnchantment implements TickableEnchant
             return;
         }
 
-        if (!player.isOnline() || player.getTotalExperience() < xpPerDura) {
+        if (!player.isOnline() || player.calculateTotalExperiencePoints() < xpPerDura) {
             return;
         }
 
@@ -64,7 +64,7 @@ public class ManathirstEnchant extends WbsEnchantment implements TickableEnchant
         }
 
         damageable.setDamage(damageable.getDamage() - 1);
-        player.setTotalExperience(Math.max(0, player.getTotalExperience() - xpPerDura));
+        player.setExperienceLevelAndProgress(Math.max(0, player.calculateTotalExperiencePoints() - xpPerDura));
 
         item.setItemMeta(damageable);
     }
