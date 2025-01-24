@@ -60,15 +60,19 @@ public abstract class WbsEnchantment implements Comparable<WbsEnchantment>, List
 
         // These (and similar) can theoretically be called from the implementer itself, but this makes it harder to
         // accidentally forget it.
-        // Times I've forgotten so far: 2
+        // Times I've forgotten so far: 3
         // TODO: Create a registry of auto registration that can be iterated over instead of hardcoding into this class
         if (this instanceof AutoRegistrableEnchant autoRegistrable) {
             if (autoRegistrable.autoRegister()) {
                 if (autoRegistrable instanceof DamageEnchant damageEnchant) {
                     damageEnchant.registerDamageEvent();
                 }
-                if (this instanceof VehicleEnchant vehicleEnchant) {
-                    vehicleEnchant.registerVehicleEvents();
+                if (this instanceof EntityEnchant entityEnchant) {
+                    entityEnchant.registerEntityEnchants();
+
+                    if (this instanceof VehicleEnchant vehicleEnchant) {
+                        vehicleEnchant.registerVehicleEvents();
+                    }
                 }
                 if (this instanceof BlockEnchant blockEnchant) {
                     blockEnchant.registerBlockEvents();

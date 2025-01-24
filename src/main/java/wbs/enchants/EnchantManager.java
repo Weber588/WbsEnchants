@@ -49,7 +49,7 @@ public class EnchantManager {
     public static final ImmortalEnchant IMMORTAL = new ImmortalEnchant();
     public static final DualWieldEnchant DUAL_WIELD = new DualWieldEnchant();
     public static final PinpointEnchant PINPOINT = new PinpointEnchant();
-    public static final FrictionlessEnchant FRICTIONLESS = new FrictionlessEnchant();
+    // public static final FrictionlessEnchant FRICTIONLESS = new FrictionlessEnchant();
     public static final UnshakableEnchant UNSHAKABLE = new UnshakableEnchant();
     public static final TransferenceEnchant TRANSFERENCE = new TransferenceEnchant();
     public static final UnsinkableEnchant UNSINKABLE = new UnsinkableEnchant();

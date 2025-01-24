@@ -4,70 +4,18 @@ import org.bukkit.GameMode;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import org.bukkit.entity.*;
-import org.bukkit.event.entity.EntityPlaceEvent;
 import org.bukkit.event.vehicle.VehicleDestroyEvent;
-import org.bukkit.inventory.EntityEquipment;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
-import org.jetbrains.annotations.Nullable;
 import wbs.enchants.WbsEnchantment;
 import wbs.enchants.util.EnchantUtils;
 import wbs.enchants.util.EventUtils;
 import wbs.utils.util.WbsEnums;
 
-public interface VehicleEnchant extends EnchantInterface, AutoRegistrableEnchant {
+public interface VehicleEnchant extends EntityEnchant {
     default void registerVehicleEvents() {
-        EventUtils.register(EntityPlaceEvent.class, this::onPlace);
         EventUtils.register(VehicleDestroyEvent.class, this::onBreak);
-    }
-
-    default void onPlace(EntityPlaceEvent event) {
-        if (!(event.getEntity() instanceof Vehicle)) {
-            return;
-        }
-
-        Player player = event.getPlayer();
-        if (player == null) {
-            return;
-        }
-
-        EntityEquipment equipment = player.getEquipment();
-
-        Entity entity = event.getEntity();
-
-        if (!canEnchant(entity)) {
-            return;
-        }
-
-        WbsEnchantment enchant = getThisEnchantment();
-        NamespacedKey key = enchant.getKey();
-
-        ItemStack placedItem = equipment.getItem(event.getHand());
-        if (enchant.isEnchantmentOn(placedItem)) {
-            int level = enchant.getLevel(placedItem);
-
-            PersistentDataContainer container = entity.getPersistentDataContainer();
-            container.set(key, PersistentDataType.INTEGER, level);
-
-            afterPlace(event, placedItem);
-        }
-    }
-
-    default boolean isEnchanted(Entity entity) {
-        return getLevel(entity) != null;
-    }
-
-    @Nullable
-    default Integer getLevel(Entity entity) {
-        if (!(entity instanceof Vehicle vehicle)) {
-            return null;
-        }
-        PersistentDataContainer entityContainer = vehicle.getPersistentDataContainer();
-        WbsEnchantment enchant = getThisEnchantment();
-        NamespacedKey key = enchant.getKey();
-
-        return entityContainer.get(key, PersistentDataType.INTEGER);
     }
 
     default void onBreak(VehicleDestroyEvent event) {
@@ -160,13 +108,7 @@ public interface VehicleEnchant extends EnchantInterface, AutoRegistrableEnchant
         }
     }
 
-    default void afterPlace(EntityPlaceEvent event, ItemStack placedItem) {
-
-    }
-
     default void afterDrop(VehicleDestroyEvent event, ItemStack droppedItem) {
 
     }
-
-    boolean canEnchant(Entity entity);
 }
