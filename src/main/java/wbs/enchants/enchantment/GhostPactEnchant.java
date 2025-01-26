@@ -46,12 +46,12 @@ public class GhostPactEnchant extends WbsEnchantment implements DamageEnchant {
                 int spawnCount = Math.min(1, (new Random().nextInt(level) + 1) / 2);
 
                 for (int i = 0; i < spawnCount; i++) {
-                    victim.getWorld().spawnEntity(
+                    victim.getWorld().spawn(
                             WbsEntityUtil.getMiddleLocation(victim),
-                            EntityType.VEX,
+                            Vex.class,
                             CreatureSpawnEvent.SpawnReason.ENCHANTMENT,
-                            entity -> {
-                                if (entity instanceof Vex vex) {
+                            vex -> {
+                                if (vex != null) {
                                     // Summoner is stored as Mob, which LivingEntity/Player don't extend, so worst case
                                     // the vex might turn around and hit the wearer themselves idk
                                     vex.setLimitedLifetime(true);
