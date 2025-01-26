@@ -31,7 +31,11 @@ public class BlockTypeCondition extends GenerationCondition {
             matches = Objects.requireNonNull(section).getStringList("matches");
             directory += "/matches";
         } else {
-            matches = parentSection.getStringList(key);
+            if (parentSection.isList(KEY)) {
+                matches = parentSection.getStringList(KEY);
+            } else {
+                matches = List.of(Objects.requireNonNull(parentSection.getString(KEY)));
+            }
         }
 
         for (String check : matches) {

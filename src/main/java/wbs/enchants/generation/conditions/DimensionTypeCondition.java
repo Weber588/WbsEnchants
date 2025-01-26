@@ -29,7 +29,11 @@ public class DimensionTypeCondition extends GenerationCondition {
             typeStrings = section.getStringList("type");
             directory = directory + "/" + KEY;
         } else {
-            typeStrings = parentSection.getStringList(KEY);
+            if (parentSection.isList(KEY)) {
+                typeStrings = parentSection.getStringList(KEY);
+            } else {
+                typeStrings = List.of(Objects.requireNonNull(parentSection.getString(KEY)));
+            }
         }
 
         if (typeStrings.isEmpty()) {

@@ -10,13 +10,13 @@ import org.bukkit.World;
 import org.bukkit.configuration.ConfigurationSection;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.LinkedList;
 import java.util.List;
+import java.util.Objects;
 
 public class BiomeCondition extends GenerationCondition {
     public static final String KEY = "biome";
     
-    private List<String> matches = new LinkedList<>();
+    private List<String> matches;
     private double minTemp = Double.MIN_VALUE;
     private double maxTemp = Double.MAX_VALUE;
     private double minHumidity = Double.MIN_VALUE;
@@ -35,7 +35,11 @@ public class BiomeCondition extends GenerationCondition {
 
             matches = section.getStringList("matches");
         } else {
-            matches.add(parentSection.getString(key));
+            if (parentSection.isList(KEY)) {
+                matches = parentSection.getStringList(KEY);
+            } else {
+                matches = List.of(Objects.requireNonNull(parentSection.getString(KEY)));
+            }
         }
     }
 
