@@ -22,7 +22,7 @@ import java.util.List;
 
 public class SiphoningEnchant extends ShulkerBoxEnchantment {
     private static final String DEFAULT_DESCRIPTION = "When you pick up an item, if the shulker box contains any of " +
-            "the same, the picked up item will go straight to the shulker box..";
+            "the same, the picked up item will go straight to the shulker box.";
 
     public SiphoningEnchant() {
         super("siphoning", DEFAULT_DESCRIPTION);

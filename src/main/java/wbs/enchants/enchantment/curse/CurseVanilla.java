@@ -1,17 +1,16 @@
 package wbs.enchants.enchantment.curse;
 
 import io.papermc.paper.registry.keys.tags.ItemTypeTagKeys;
-import wbs.enchants.WbsEnchantment;
 import wbs.enchants.WbsEnchantsBootstrap;
 import wbs.enchants.enchantment.helper.ConflictEnchantment;
-import wbs.enchants.type.EnchantmentTypeManager;
+import wbs.enchants.enchantment.helper.WbsCurse;
 
-public class CurseVanilla extends WbsEnchantment implements ConflictEnchantment {
+public class CurseVanilla extends WbsCurse implements ConflictEnchantment {
     private static final String DEFAULT_DESCRIPTION = "A curse that does nothing alone, but is incompatible with " +
             "all non-vanilla enchants!";
 
     public CurseVanilla() {
-        super("curse/vanilla", EnchantmentTypeManager.CURSE, "Curse of Vanilla", DEFAULT_DESCRIPTION);
+        super("vanilla",  DEFAULT_DESCRIPTION);
 
         getDefinition()
                 // TODO: Replace using this with something like just... #enchantable? Is that possible, since custom

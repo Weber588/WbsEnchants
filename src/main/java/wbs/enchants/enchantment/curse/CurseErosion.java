@@ -12,10 +12,9 @@ import org.bukkit.event.EventPriority;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.entity.CreatureSpawnEvent;
 import org.bukkit.inventory.ItemStack;
-import wbs.enchants.WbsEnchantment;
 import wbs.enchants.WbsEnchants;
 import wbs.enchants.WbsEnchantsBootstrap;
-import wbs.enchants.type.EnchantmentTypeManager;
+import wbs.enchants.enchantment.helper.WbsCurse;
 import wbs.utils.util.WbsCollectionUtil;
 import wbs.utils.util.WbsMath;
 
@@ -23,7 +22,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-public class CurseErosion extends WbsEnchantment {
+public class CurseErosion extends WbsCurse {
     private static final String DEFAULT_DESCRIPTION = "A tool curse that causes blocks to sometimes destabilise " +
             "around mined blocks!";
 
@@ -39,7 +38,7 @@ public class CurseErosion extends WbsEnchantment {
     private static final double CHANCE_PER_LEVEL = 25;
 
     public CurseErosion() {
-        super("curse/erosion", EnchantmentTypeManager.CURSE, "Curse of Erosion", DEFAULT_DESCRIPTION);
+        super("erosion", DEFAULT_DESCRIPTION);
 
         getDefinition()
                 .maxLevel(2)

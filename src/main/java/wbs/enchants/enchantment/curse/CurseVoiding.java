@@ -5,15 +5,14 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.player.PlayerBucketFillEvent;
 import org.bukkit.inventory.ItemStack;
-import wbs.enchants.WbsEnchantment;
-import wbs.enchants.type.EnchantmentTypeManager;
+import wbs.enchants.enchantment.helper.WbsCurse;
 
-public class CurseVoiding extends WbsEnchantment {
+public class CurseVoiding extends WbsCurse {
     private static final String DEFAULT_DESCRIPTION = "A bucket curse that causes any liquids picked up to simply " +
             "disappear into the void!";
 
     public CurseVoiding() {
-        super("curse/voiding", EnchantmentTypeManager.CURSE, "Curse of Voiding", DEFAULT_DESCRIPTION);
+        super("voiding", DEFAULT_DESCRIPTION);
 
         getDefinition()
                 .supportedItems(ItemTypeKeys.BUCKET);

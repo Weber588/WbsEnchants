@@ -7,18 +7,17 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.inventory.ItemStack;
-import wbs.enchants.WbsEnchantment;
-import wbs.enchants.type.EnchantmentTypeManager;
+import wbs.enchants.enchantment.helper.WbsCurse;
 import wbs.utils.util.WbsMath;
 
-public class CurseTheEnd extends WbsEnchantment {
+public class CurseTheEnd extends WbsCurse {
     private static final String DEFAULT_DESCRIPTION = "An armour curse that makes you take damage from water!";
 
     private static final int CHANCE_PER_LEVEL_PER_TICK = 1;
     private static DamageSource damageType;
 
     public CurseTheEnd() {
-        super("curse/the_end", EnchantmentTypeManager.CURSE, "Curse of The End", DEFAULT_DESCRIPTION);
+        super("the_end", DEFAULT_DESCRIPTION);
 
         getDefinition()
                 .maxLevel(2)

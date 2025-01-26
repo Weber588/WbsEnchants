@@ -105,6 +105,7 @@ public class EnchantManager {
     public static final CurseSplintering CURSE_SPLINTERING = new CurseSplintering();
     public static final CurseTheEnd CURSE_THE_END = new CurseTheEnd();
     public static final CurseMercy CURSE_MERCY = new CurseMercy();
+    public static final CurseRust CURSE_RUST = new CurseRust();
 
     public static void register(WbsEnchantment enchantment) {
         REGISTERED_ENCHANTMENTS.add(enchantment);

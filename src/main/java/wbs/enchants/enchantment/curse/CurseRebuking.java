@@ -13,18 +13,17 @@ import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import wbs.enchants.WbsEnchantment;
 import wbs.enchants.enchantment.helper.DamageEnchant;
-import wbs.enchants.type.EnchantmentTypeManager;
+import wbs.enchants.enchantment.helper.WbsCurse;
 import wbs.enchants.util.EntityUtils;
 
-public class CurseRebuking extends WbsEnchantment implements DamageEnchant {
+public class CurseRebuking extends WbsCurse implements DamageEnchant {
     public static final int PERCENT_PER_LEVEL = 20;
     private static final String DEFAULT_DESCRIPTION = "A weapon curse that causes the wielder to take " +
             PERCENT_PER_LEVEL + "% of damage dealt per level!";
 
     public CurseRebuking() {
-        super("curse/rebuking", EnchantmentTypeManager.CURSE, "Curse of Rebuking", DEFAULT_DESCRIPTION);
+        super("rebuking", DEFAULT_DESCRIPTION);
 
         getDefinition()
                 .maxLevel(2)

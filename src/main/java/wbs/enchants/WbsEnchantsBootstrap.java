@@ -11,6 +11,7 @@ import io.papermc.paper.registry.RegistryKey;
 import io.papermc.paper.registry.TypedKey;
 import io.papermc.paper.registry.data.EnchantmentRegistryEntry;
 import io.papermc.paper.registry.event.RegistryEvents;
+import io.papermc.paper.registry.keys.ItemTypeKeys;
 import io.papermc.paper.registry.keys.tags.EnchantmentTagKeys;
 import io.papermc.paper.registry.keys.tags.ItemTypeTagKeys;
 import io.papermc.paper.registry.tag.TagKey;
@@ -63,32 +64,37 @@ public class WbsEnchantsBootstrap implements PluginBootstrap {
     public static final TagKey<ItemType> ENCHANTABLE_BEACON = ItemTypeTagKeys.create(createKey("enchantable/beacon"));
     public static final TagKey<ItemType> ENCHANTABLE_LEAD = ItemTypeTagKeys.create(createKey("enchantable/lead"));
     public static final TagKey<ItemType> ENCHANTABLE_SHULKER_BOX = ItemTypeTagKeys.create(createKey("enchantable/shulker_box"));
+    public static final TagKey<ItemType> ENCHANTABLE_RUSTABLE = ItemTypeTagKeys.create(createKey("enchantable/rustable"));
+
+    public static final TagKey<ItemType> IRON_TOOLS = ItemTypeTagKeys.create(createKey("tools/iron"));
+    public static final TagKey<ItemType> IRON_ARMOR = ItemTypeTagKeys.create(createKey("armor/iron"));
+    public static final TagKey<ItemType> CHAINMAIL_ARMOR = ItemTypeTagKeys.create(createKey("armor/chainmail"));
 
     // TODO: Put this somewhere proper (config?)
     private static Set<CustomTag<ItemType>> getItemTags() {
         return Set.of(
-                new CustomTag<>(SPONGES, ItemType.SPONGE, ItemType.WET_SPONGE),
-                new CustomTag<>(MAPS, ItemType.MAP, ItemType.FILLED_MAP),
+                new CustomTag<>(SPONGES, ItemTypeKeys.SPONGE, ItemTypeKeys.WET_SPONGE),
+                new CustomTag<>(MAPS, ItemTypeKeys.MAP, ItemTypeKeys.FILLED_MAP),
                 new CustomTag<>(MINECARTS,
-                        ItemType.MINECART,
-                        ItemType.CHEST_MINECART,
-                        ItemType.COMMAND_BLOCK_MINECART,
-                        ItemType.FURNACE_MINECART,
-                        ItemType.HOPPER_MINECART,
-                        ItemType.TNT_MINECART
+                        ItemTypeKeys.MINECART,
+                        ItemTypeKeys.CHEST_MINECART,
+                        ItemTypeKeys.COMMAND_BLOCK_MINECART,
+                        ItemTypeKeys.FURNACE_MINECART,
+                        ItemTypeKeys.HOPPER_MINECART,
+                        ItemTypeKeys.TNT_MINECART
                 ),
                 new CustomTag<>(ENCHANTABLE_HANDHELD,
-                        ItemType.CRAFTING_TABLE,
-                        ItemType.ENCHANTING_TABLE,
-                        ItemType.ENDER_CHEST,
-                        ItemType.CARTOGRAPHY_TABLE,
-                        ItemType.STONECUTTER,
-                        ItemType.GRINDSTONE,
-                        ItemType.LOOM,
-                        ItemType.SMITHING_TABLE
+                        ItemTypeKeys.CRAFTING_TABLE,
+                        ItemTypeKeys.ENCHANTING_TABLE,
+                        ItemTypeKeys.ENDER_CHEST,
+                        ItemTypeKeys.CARTOGRAPHY_TABLE,
+                        ItemTypeKeys.STONECUTTER,
+                        ItemTypeKeys.GRINDSTONE,
+                        ItemTypeKeys.LOOM,
+                        ItemTypeKeys.SMITHING_TABLE
                 ),
                 new CustomTag<>(ENCHANTABLE_VEHICLE,
-                        Set.of(ItemType.MINECART),
+                        Set.of(ItemTypeKeys.MINECART),
                         Set.of(
                                 TagEntry.tagEntry(ItemTypeTagKeys.BOATS, true),
                                 TagEntry.tagEntry(ItemTypeTagKeys.CHEST_BOATS, true)
@@ -102,27 +108,57 @@ public class WbsEnchantsBootstrap implements PluginBootstrap {
                         )
                 ),
                 new CustomTag<>(ENCHANTABLE_SHULKER_BOX,
-                        ItemType.SHULKER_BOX,
-                        ItemType.WHITE_SHULKER_BOX,
-                        ItemType.ORANGE_SHULKER_BOX,
-                        ItemType.MAGENTA_SHULKER_BOX,
-                        ItemType.LIGHT_BLUE_SHULKER_BOX,
-                        ItemType.YELLOW_SHULKER_BOX,
-                        ItemType.LIME_SHULKER_BOX,
-                        ItemType.PINK_SHULKER_BOX,
-                        ItemType.GRAY_SHULKER_BOX,
-                        ItemType.LIGHT_GRAY_SHULKER_BOX,
-                        ItemType.CYAN_SHULKER_BOX,
-                        ItemType.PURPLE_SHULKER_BOX,
-                        ItemType.BLUE_SHULKER_BOX,
-                        ItemType.BROWN_SHULKER_BOX,
-                        ItemType.GREEN_SHULKER_BOX,
-                        ItemType.RED_SHULKER_BOX,
-                        ItemType.BLACK_SHULKER_BOX
+                        ItemTypeKeys.SHULKER_BOX,
+                        ItemTypeKeys.WHITE_SHULKER_BOX,
+                        ItemTypeKeys.ORANGE_SHULKER_BOX,
+                        ItemTypeKeys.MAGENTA_SHULKER_BOX,
+                        ItemTypeKeys.LIGHT_BLUE_SHULKER_BOX,
+                        ItemTypeKeys.YELLOW_SHULKER_BOX,
+                        ItemTypeKeys.LIME_SHULKER_BOX,
+                        ItemTypeKeys.PINK_SHULKER_BOX,
+                        ItemTypeKeys.GRAY_SHULKER_BOX,
+                        ItemTypeKeys.LIGHT_GRAY_SHULKER_BOX,
+                        ItemTypeKeys.CYAN_SHULKER_BOX,
+                        ItemTypeKeys.PURPLE_SHULKER_BOX,
+                        ItemTypeKeys.BLUE_SHULKER_BOX,
+                        ItemTypeKeys.BROWN_SHULKER_BOX,
+                        ItemTypeKeys.GREEN_SHULKER_BOX,
+                        ItemTypeKeys.RED_SHULKER_BOX,
+                        ItemTypeKeys.BLACK_SHULKER_BOX
                 ),
                 new CustomTag<>(ENCHANTABLE_PROJECTILE_WEAPON,
-                        ItemType.BOW,
-                        ItemType.CROSSBOW
+                        ItemTypeKeys.BOW,
+                        ItemTypeKeys.CROSSBOW
+                ),
+                new CustomTag<>(IRON_TOOLS,
+                        ItemTypeKeys.IRON_PICKAXE,
+                        ItemTypeKeys.IRON_SHOVEL,
+                        ItemTypeKeys.IRON_AXE,
+                        ItemTypeKeys.IRON_SWORD,
+                        ItemTypeKeys.IRON_HOE
+                ),
+                new CustomTag<>(IRON_ARMOR,
+                        ItemTypeKeys.IRON_HELMET,
+                        ItemTypeKeys.IRON_CHESTPLATE,
+                        ItemTypeKeys.IRON_LEGGINGS,
+                        ItemTypeKeys.IRON_BOOTS
+                ),
+                new CustomTag<>(CHAINMAIL_ARMOR,
+                        ItemTypeKeys.CHAINMAIL_HELMET,
+                        ItemTypeKeys.CHAINMAIL_CHESTPLATE,
+                        ItemTypeKeys.CHAINMAIL_LEGGINGS,
+                        ItemTypeKeys.CHAINMAIL_BOOTS
+                ),
+                new CustomTag<>(ENCHANTABLE_RUSTABLE,
+                        Set.of(
+                                ItemTypeKeys.SHEARS,
+                                ItemTypeKeys.FLINT_AND_STEEL
+                        ),
+                        Set.of(
+                                TagEntry.tagEntry(IRON_TOOLS, true),
+                                TagEntry.tagEntry(IRON_ARMOR, true),
+                                TagEntry.tagEntry(CHAINMAIL_ARMOR, true)
+                        )
                 )
         );
     }
@@ -284,7 +320,9 @@ public class WbsEnchantsBootstrap implements PluginBootstrap {
     private void registerEnchantmentEvents(@NotNull BootstrapContext context, LifecycleEventManager<@NotNull BootstrapContext> manager) {
         File dataDirectory = context.getDataDirectory().toFile();
         if (!dataDirectory.exists()) {
-            dataDirectory.mkdir();
+            if (!dataDirectory.mkdir()) {
+                context.getLogger().error("Failed to generate data directory!");
+            }
         }
 
         configureExternalEnchantments(context, manager);
@@ -404,7 +442,6 @@ public class WbsEnchantsBootstrap implements PluginBootstrap {
 
     private static class CustomTag<T extends Keyed> {
         private final TagKey<T> key;
-        private Collection<T> values;
         private Collection<TypedKey<T>> typedKeys;
         private Collection<TagEntry<T>> tagEntries;
 
@@ -429,19 +466,19 @@ public class WbsEnchantsBootstrap implements PluginBootstrap {
             this.key = key;
         }
 
+        private CustomTag(TagKey<T> key, Collection<TypedKey<T>> keys) {
+            this.key = key;
+            this.typedKeys = keys;
+        }
 
         @SafeVarargs
-        private CustomTag(TagKey<T> key, T ... values) {
-            this(key, Arrays.asList(values));
+        private CustomTag(TagKey<T> key, TypedKey<T> ... keys) {
+            this(key, Arrays.asList(keys));
         }
 
-        private CustomTag(TagKey<T> key, Collection<T> values) {
-            this(key);
-            this.values = values;
-        }
-
-        private CustomTag(TagKey<T> key, Collection<T> values, Collection<TagEntry<T>> tagEntries) {
-            this(key, values);
+        private CustomTag(TagKey<T> key, Collection<TypedKey<T>> keys, Collection<TagEntry<T>> tagEntries) {
+            this.key = key;
+            this.typedKeys = keys;
             this.tagEntries = tagEntries;
         }
 
@@ -460,19 +497,10 @@ public class WbsEnchantsBootstrap implements PluginBootstrap {
         private void register(PostFlattenTagRegistrar<T> registrar) {
             RegistryKey<T> registryKey = registrar.registryKey();
 
-            Collection<TypedKey<T>> values;
-            if (typedKeys != null) {
-                values = typedKeys;
-            } else {
-                values = this.values.stream()
-                        .map(type -> TypedKey.create(registryKey, type.key()))
-                        .toList();
-            }
-
             if (registrar.hasTag(key)) {
-                registrar.addToTag(key, values);
+                registrar.addToTag(key, typedKeys);
             } else {
-                registrar.setTag(key, values);
+                registrar.setTag(key, typedKeys);
             }
         }
     }

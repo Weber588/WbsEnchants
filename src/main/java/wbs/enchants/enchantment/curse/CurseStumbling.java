@@ -6,17 +6,16 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
-import wbs.enchants.WbsEnchantment;
 import wbs.enchants.WbsEnchantsBootstrap;
-import wbs.enchants.type.EnchantmentTypeManager;
+import wbs.enchants.enchantment.helper.WbsCurse;
 import wbs.enchants.util.EntityUtils;
 
-public class CurseStumbling extends WbsEnchantment {
+public class CurseStumbling extends WbsCurse {
     private static final String DEFAULT_DESCRIPTION = "A curse that causes increased fall damage when worn on boots; " +
             "essentially the opposite of Feather Falling.";
 
     public CurseStumbling() {
-        super("curse/stumbling", EnchantmentTypeManager.CURSE, "Curse of Stumbling", DEFAULT_DESCRIPTION);
+        super("stumbling", DEFAULT_DESCRIPTION);
 
         getDefinition()
                 .maxLevel(4)

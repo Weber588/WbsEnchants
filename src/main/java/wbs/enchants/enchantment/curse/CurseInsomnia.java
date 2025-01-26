@@ -4,15 +4,14 @@ import io.papermc.paper.registry.keys.tags.ItemTypeTagKeys;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.player.PlayerBedEnterEvent;
-import wbs.enchants.WbsEnchantment;
-import wbs.enchants.type.EnchantmentTypeManager;
+import wbs.enchants.enchantment.helper.WbsCurse;
 
-public class CurseInsomnia extends WbsEnchantment {
+public class CurseInsomnia extends WbsCurse {
     private static final String DEFAULT_DESCRIPTION = "An armour curse that prevents the player from " +
             "sleeping while worn.";
 
     public CurseInsomnia() {
-        super("curse/insomnia", EnchantmentTypeManager.CURSE, "Curse of Insomnia", DEFAULT_DESCRIPTION);
+        super("insomnia", DEFAULT_DESCRIPTION);
 
         getDefinition()
                 .supportedItems(ItemTypeTagKeys.ENCHANTABLE_HEAD_ARMOR);

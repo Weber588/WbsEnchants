@@ -6,14 +6,13 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.entity.EntityDeathEvent;
 import org.bukkit.inventory.ItemStack;
-import wbs.enchants.WbsEnchantment;
-import wbs.enchants.type.EnchantmentTypeManager;
+import wbs.enchants.enchantment.helper.WbsCurse;
 
-public class CurseMercy extends WbsEnchantment {
+public class CurseMercy extends WbsCurse {
     private static final String DEFAULT_DESCRIPTION = "A weapon curse that refuses to deal a killing blow.";
 
     public CurseMercy() {
-        super("curse/mercy", EnchantmentTypeManager.CURSE, "Curse of Mercy", DEFAULT_DESCRIPTION);
+        super("mercy",  DEFAULT_DESCRIPTION);
 
         getDefinition()
                 .supportedItems(ItemTypeTagKeys.ENCHANTABLE_WEAPON);

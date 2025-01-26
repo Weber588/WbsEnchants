@@ -1,17 +1,16 @@
 package wbs.enchants.enchantment.curse;
 
 import io.papermc.paper.registry.keys.tags.ItemTypeTagKeys;
-import wbs.enchants.WbsEnchantment;
 import wbs.enchants.WbsEnchantsBootstrap;
 import wbs.enchants.enchantment.helper.ConflictEnchantment;
-import wbs.enchants.type.EnchantmentTypeManager;
+import wbs.enchants.enchantment.helper.WbsCurse;
 
-public class CurseExotic extends WbsEnchantment implements ConflictEnchantment {
+public class CurseExotic extends WbsCurse implements ConflictEnchantment {
     private static final String DEFAULT_DESCRIPTION = "A curse that does nothing alone, but is incompatible with " +
             "all vanilla enchants";
 
     public CurseExotic() {
-        super("curse/exotic", EnchantmentTypeManager.CURSE, "Curse of the Exotic", DEFAULT_DESCRIPTION);
+        super("exotic",  "Curse of the Exotic", DEFAULT_DESCRIPTION);
 
         getDefinition()
                 .exclusiveWith(WbsEnchantsBootstrap.VANILLA)

@@ -7,15 +7,14 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.inventory.ItemStack;
-import wbs.enchants.WbsEnchantment;
-import wbs.enchants.type.EnchantmentTypeManager;
+import wbs.enchants.enchantment.helper.WbsCurse;
 
-public class CurseCowardice extends WbsEnchantment {
+public class CurseCowardice extends WbsCurse {
     private static final String DEFAULT_DESCRIPTION = "A curse that turns your weapon fearful, reducing its damage " +
             "the closer your enemies get.";
 
     public CurseCowardice() {
-        super("curse/cowardice", EnchantmentTypeManager.CURSE, "Curse of Cowardice", DEFAULT_DESCRIPTION);
+        super("cowardice",  DEFAULT_DESCRIPTION);
     }
 
     @EventHandler(priority = EventPriority.LOWEST)

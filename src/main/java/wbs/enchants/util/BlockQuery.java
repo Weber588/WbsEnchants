@@ -58,7 +58,7 @@ public class BlockQuery {
     }
 
     private List<Block> filter(List<Block> found) {
-        if (found.size() > maxBlocks) {
+        if (maxBlocks > 0 && found.size() > maxBlocks) {
             found = found.subList(0, maxBlocks - 1);
         }
 

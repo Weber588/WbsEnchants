@@ -8,20 +8,19 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.inventory.ItemStack;
-import wbs.enchants.WbsEnchantment;
-import wbs.enchants.type.EnchantmentTypeManager;
+import wbs.enchants.enchantment.helper.WbsCurse;
 import wbs.utils.util.WbsMath;
 
 import java.util.Random;
 
-public class CurseSplintering extends WbsEnchantment {
+public class CurseSplintering extends WbsCurse {
     private static final String DEFAULT_DESCRIPTION = "An axe curse that causes mined logs to sometimes splinter " +
             "into sticks!";
 
     private static final double CHANCE_PER_LEVEL = 10;
 
     public CurseSplintering() {
-        super("curse/splintering", EnchantmentTypeManager.CURSE, "Curse of Splintering", DEFAULT_DESCRIPTION);
+        super("splintering", DEFAULT_DESCRIPTION);
 
         getDefinition()
                 .maxLevel(3)
