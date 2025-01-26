@@ -1,5 +1,6 @@
 package wbs.enchants.enchantment;
 
+import io.papermc.paper.registry.keys.tags.ItemTypeTagKeys;
 import org.bukkit.Location;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EvokerFangs;
@@ -24,6 +25,10 @@ public class FangedEnchant extends WbsEnchantment implements DamageEnchant {
 
     public FangedEnchant() {
         super("fanged", EnchantmentTypeManager.ETHEREAL, DEFAULT_DESCRIPTION);
+
+        getDefinition()
+                .maxLevel(3)
+                .supportedItems(ItemTypeTagKeys.ENCHANTABLE_HEAD_ARMOR);
     }
 
     @Override
@@ -32,7 +37,7 @@ public class FangedEnchant extends WbsEnchantment implements DamageEnchant {
             return;
         }
 
-        ItemStack item = getIfEnchanted(attacker, EquipmentSlot.HAND);
+        ItemStack item = getIfEnchanted(attacker, EquipmentSlot.HEAD);
 
         if (item != null) {
             if (newCooldown(attacker, MAX_COOLDOWN_TICKS / getLevel(item))) {

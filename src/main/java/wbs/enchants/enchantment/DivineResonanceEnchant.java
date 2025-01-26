@@ -1,5 +1,6 @@
 package wbs.enchants.enchantment;
 
+import io.papermc.paper.registry.keys.ItemTypeKeys;
 import org.bukkit.Sound;
 import org.bukkit.block.Bell;
 import org.bukkit.block.Block;
@@ -24,7 +25,7 @@ public class DivineResonanceEnchant extends WbsEnchantment implements BlockEncha
         super("divine_resonance", DEFAULT_DESCRIPTION);
 
         getDefinition()
-                .targetDescription("Bell");
+                .supportedItems(ItemTypeKeys.BELL);
     }
 
     @Override

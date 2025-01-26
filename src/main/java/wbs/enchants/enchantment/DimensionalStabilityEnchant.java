@@ -1,6 +1,7 @@
 package wbs.enchants.enchantment;
 
 import io.papermc.paper.event.player.PlayerBedFailEnterEvent;
+import io.papermc.paper.registry.keys.tags.ItemTypeTagKeys;
 import org.bukkit.block.Bed;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
@@ -13,6 +14,9 @@ public class DimensionalStabilityEnchant extends WbsEnchantment implements Block
 
     public DimensionalStabilityEnchant() {
         super("dimensional_stability", DESCRIPTION);
+
+        getDefinition()
+                .supportedItems(ItemTypeTagKeys.BEDS);
     }
 
     @EventHandler
