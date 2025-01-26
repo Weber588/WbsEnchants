@@ -11,6 +11,7 @@ import io.papermc.paper.registry.RegistryKey;
 import io.papermc.paper.registry.TypedKey;
 import io.papermc.paper.registry.data.EnchantmentRegistryEntry;
 import io.papermc.paper.registry.event.RegistryEvents;
+import io.papermc.paper.registry.keys.EnchantmentKeys;
 import io.papermc.paper.registry.keys.ItemTypeKeys;
 import io.papermc.paper.registry.keys.tags.EnchantmentTagKeys;
 import io.papermc.paper.registry.keys.tags.ItemTypeTagKeys;
@@ -169,23 +170,27 @@ public class WbsEnchantsBootstrap implements PluginBootstrap {
     public static final TagKey<Enchantment> EXCLUSIVE_SET_DEFUSAL = EnchantmentTagKeys.create(createKey("exclusive_set/defusal"));
     public static final TagKey<Enchantment> EXCLUSIVE_SET_MIDAS = EnchantmentTagKeys.create(createKey("exclusive_set/midas"));
     public static final TagKey<Enchantment> EXCLUSIVE_SET_MAPS = EnchantmentTagKeys.create(createKey("exclusive_set/maps"));
+    public static final TagKey<Enchantment> EXCLUSIVE_SET_ARMOR_RETALIATION = EnchantmentTagKeys.create(createKey("exclusive_set/armor_retaliation"));
     public static final TagKey<Enchantment> VANILLA = EnchantmentTagKeys.create(createKey("vanilla"));
     public static final TagKey<Enchantment> CUSTOM = EnchantmentTagKeys.create(createKey("custom"));
 
     private static Set<CustomTag<Enchantment>> getEnchantmentTags() {
         return Set.of(
                 CustomTag.getKeyTag(EXCLUSIVE_SET_SELF_REPAIRING,
-                        TypedKey.create(RegistryKey.ENCHANTMENT, NamespacedKey.minecraft("mending"))
+                        EnchantmentKeys.MENDING
                      //   TypedKey.create(RegistryKey.ENCHANTMENT, new NamespacedKey("nova_structures", "photosynthesis"))
                 ),
                 CustomTag.getKeyTag(EXCLUSIVE_SET_FALL_DAMAGE_AFFECTING,
-                        TypedKey.create(RegistryKey.ENCHANTMENT, NamespacedKey.minecraft("feather_falling"))
+                        EnchantmentKeys.FEATHER_FALLING
                 ),
                 CustomTag.getKeyTag(EXCLUSIVE_SET_DEFUSAL,
-                        TypedKey.create(RegistryKey.ENCHANTMENT, NamespacedKey.minecraft("knockback"))
+                        EnchantmentKeys.KNOCKBACK
                 ),
                 CustomTag.getKeyTag(EXCLUSIVE_SET_MIDAS,
-                        TypedKey.create(RegistryKey.ENCHANTMENT, NamespacedKey.minecraft("silk_touch"))
+                        EnchantmentKeys.SILK_TOUCH
+                ),
+                CustomTag.getKeyTag(EXCLUSIVE_SET_ARMOR_RETALIATION,
+                        EnchantmentKeys.THORNS
                 )
         );
     }

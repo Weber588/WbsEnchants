@@ -92,6 +92,7 @@ public class EnchantManager {
     public static final PlacingEnchant PLACING = new PlacingEnchant();
     public static final DiscardingEnchant DISCARDING = new DiscardingEnchant();
     public static final BloomingEnchant BLOOMING = new BloomingEnchant();
+    public static final GhostPactEnchant GHOST_PACT = new GhostPactEnchant();
 
     public static final CurseRebuking CURSE_REBUKING = new CurseRebuking();
     public static final CurseVanilla CURSE_VANILLA = new CurseVanilla();
