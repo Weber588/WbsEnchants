@@ -94,6 +94,7 @@ public class EnchantManager {
     public static final BloomingEnchant BLOOMING = new BloomingEnchant();
     public static final GhostPactEnchant GHOST_PACT = new GhostPactEnchant();
     public static final FangedEnchant FANGED = new FangedEnchant();
+    public static final MagneticEnchant MAGNETIC = new MagneticEnchant();
 
     public static final CurseRebuking CURSE_REBUKING = new CurseRebuking();
     public static final CurseVanilla CURSE_VANILLA = new CurseVanilla();

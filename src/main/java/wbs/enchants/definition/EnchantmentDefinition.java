@@ -109,7 +109,7 @@ public class EnchantmentDefinition extends EnchantmentWrapper implements Compara
     private int anvilCost = 1;
     private EquipmentSlotGroup activeSlots = EquipmentSlotGroup.ANY;
 
-    private List<TagKey<Enchantment>> injectInto = new LinkedList<>();
+    private Set<TagKey<Enchantment>> injectInto = new HashSet<>();
 
     protected final List<@NotNull GenerationContext> generationContexts = new LinkedList<>();
     @Nullable
@@ -213,8 +213,8 @@ public class EnchantmentDefinition extends EnchantmentWrapper implements Compara
         return this;
     }
 
-    public EnchantmentDefinition setInjectInto(List<TagKey<Enchantment>> injectInto) {
-        this.injectInto = injectInto;
+    public EnchantmentDefinition setInjectInto(Collection<TagKey<Enchantment>> injectInto) {
+        this.injectInto = new HashSet<>(injectInto);
         return this;
     }
 
@@ -454,7 +454,7 @@ public class EnchantmentDefinition extends EnchantmentWrapper implements Compara
      * @return The enchantment tags this enchantment should be a part of
      */
     @NotNull
-    public List<TagKey<Enchantment>> injectInto() {
+    public Set<TagKey<Enchantment>> injectInto() {
         return injectInto;
     }
 

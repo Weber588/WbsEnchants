@@ -66,6 +66,7 @@ public class WbsEnchantsBootstrap implements PluginBootstrap {
     public static final TagKey<ItemType> ENCHANTABLE_LEAD = ItemTypeTagKeys.create(createKey("enchantable/lead"));
     public static final TagKey<ItemType> ENCHANTABLE_SHULKER_BOX = ItemTypeTagKeys.create(createKey("enchantable/shulker_box"));
     public static final TagKey<ItemType> ENCHANTABLE_RUSTABLE = ItemTypeTagKeys.create(createKey("enchantable/rustable"));
+    public static final TagKey<ItemType> ENCHANTABLE_MAGNETIC_ARMOR = ItemTypeTagKeys.create(createKey("enchantable/magnetic_armor"));
 
     public static final TagKey<ItemType> IRON_TOOLS = ItemTypeTagKeys.create(createKey("tools/iron"));
     public static final TagKey<ItemType> IRON_ARMOR = ItemTypeTagKeys.create(createKey("armor/iron"));
@@ -157,6 +158,13 @@ public class WbsEnchantsBootstrap implements PluginBootstrap {
                         ),
                         Set.of(
                                 TagEntry.tagEntry(IRON_TOOLS, true),
+                                TagEntry.tagEntry(IRON_ARMOR, true),
+                                TagEntry.tagEntry(CHAINMAIL_ARMOR, true)
+                        )
+                ),
+                new CustomTag<>(ENCHANTABLE_MAGNETIC_ARMOR,
+                        Set.of(),
+                        Set.of(
                                 TagEntry.tagEntry(IRON_ARMOR, true),
                                 TagEntry.tagEntry(CHAINMAIL_ARMOR, true)
                         )
