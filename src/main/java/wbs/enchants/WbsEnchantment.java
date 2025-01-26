@@ -9,6 +9,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.inventory.EntityEquipment;
 import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.persistence.PersistentDataHolder;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import wbs.enchants.definition.EnchantmentDefinition;
@@ -16,6 +17,7 @@ import wbs.enchants.definition.EnchantmentExtension;
 import wbs.enchants.enchantment.helper.*;
 import wbs.enchants.type.EnchantmentType;
 import wbs.enchants.type.EnchantmentTypeManager;
+import wbs.enchants.util.CooldownManager;
 import wbs.utils.util.string.WbsStrings;
 
 import java.util.Collection;
@@ -177,5 +179,18 @@ public abstract class WbsEnchantment implements Comparable<WbsEnchantment>, List
         return definition;
     }
 
+    /**
+     * Starts a new cooldown with this enchantment's key, if off cooldown according to given ticks.
+     * @param holder The holder of the cooldown
+     * @param cooldownTicks How many ticks must have passed since the cooldown started, to start a new one.
+     * @return True if a cooldown was started, false if it hasn't been long enough.
+     */
+    protected boolean newCooldown(PersistentDataHolder holder, int cooldownTicks) {
+        if (CooldownManager.getTimeSinceStart(holder, getKey()) >= cooldownTicks) {
+            CooldownManager.startCooldown(holder, getKey());
+            return true;
+        }
 
+        return false;
+    }
 }

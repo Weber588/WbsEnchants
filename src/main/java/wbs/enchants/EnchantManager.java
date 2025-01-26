@@ -93,6 +93,7 @@ public class EnchantManager {
     public static final DiscardingEnchant DISCARDING = new DiscardingEnchant();
     public static final BloomingEnchant BLOOMING = new BloomingEnchant();
     public static final GhostPactEnchant GHOST_PACT = new GhostPactEnchant();
+    public static final FangedEnchant FANGED = new FangedEnchant();
 
     public static final CurseRebuking CURSE_REBUKING = new CurseRebuking();
     public static final CurseVanilla CURSE_VANILLA = new CurseVanilla();
@@ -125,7 +126,9 @@ public class EnchantManager {
 
             try {
                 WbsFileUtil.unzip(datapackZip.getAbsolutePath(), WbsEnchants.getInstance().getDataFolder().getAbsolutePath());
-                datapackZip.delete();
+                if (!datapackZip.delete()) {
+                    throw new IOException("Failed to delete datapack zip!");
+                }
             } catch (IOException e) {
                 throw new RuntimeException("Failed to unzip datapack archive.", e);
             }
@@ -192,9 +195,7 @@ public class EnchantManager {
     public static Multimap<String, EnchantmentDefinition> getDefinitionsByNamespace() {
         Multimap<String, EnchantmentDefinition> byNamespace = HashMultimap.create();
 
-        getAllKnownDefinitions().forEach(def -> {
-            byNamespace.put(def.key().namespace(), def);
-        });
+        getAllKnownDefinitions().forEach(def -> byNamespace.put(def.key().namespace(), def));
 
         return byNamespace;
     }
