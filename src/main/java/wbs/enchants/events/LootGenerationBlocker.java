@@ -19,6 +19,8 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.EnchantmentStorageMeta;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import wbs.enchants.EnchantsSettings;
+import wbs.enchants.WbsEnchants;
 import wbs.utils.util.WbsCollectionUtil;
 
 import java.util.HashMap;
@@ -45,6 +47,11 @@ public class LootGenerationBlocker implements Listener {
 
     @EventHandler(priority = EventPriority.LOWEST)
     public void onLootGenerate(LootGenerateEvent event) {
+        EnchantsSettings settings = WbsEnchants.getInstance().settings;
+        if (!settings.forceOnlyLootEnchants()) {
+            return;
+        }
+
         event.getLoot().removeIf(item -> {
             replaceNonLootEnchants(item.getEnchantments(), item, item::removeEnchantment, item::addEnchantment);
 

@@ -6,7 +6,6 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.entity.EntityShootBowEvent;
-import org.bukkit.event.player.PlayerDropItemEvent;
 import org.bukkit.event.player.PlayerItemBreakEvent;
 import org.bukkit.event.player.PlayerItemConsumeEvent;
 import org.bukkit.inventory.Inventory;
@@ -53,17 +52,9 @@ public class RefillEnchant extends ShulkerBoxEnchantment {
         ItemStack consumed = event.getItem();
 
         Player player = event.getPlayer();
-        replaceExpendedItem(player, consumed, stack -> consumed.setAmount(stack.getAmount()));
-    }
-
-    @EventHandler
-    public void onDrop(PlayerDropItemEvent event) {
-        ItemStack dropped = event.getItemDrop().getItemStack();
-
-        Player player = event.getPlayer();
-        PlayerInventory playerInv = player.getInventory();
-
-        replaceExpendedItem(player, dropped, playerInv::addItem);
+        if (consumed.getAmount() == 1) {
+            replaceExpendedItem(player, consumed, stack -> consumed.setAmount(stack.getAmount()));
+        }
     }
 
     @EventHandler
@@ -73,7 +64,9 @@ public class RefillEnchant extends ShulkerBoxEnchantment {
         Player player = event.getPlayer();
         PlayerInventory playerInv = player.getInventory();
 
-        replaceExpendedItem(player, fired, playerInv::addItem);
+        if (fired.getAmount() == 1) {
+            replaceExpendedItem(player, fired, playerInv::addItem);
+        }
     }
 
     @EventHandler
@@ -85,7 +78,9 @@ public class RefillEnchant extends ShulkerBoxEnchantment {
 
         PlayerInventory playerInv = player.getInventory();
 
-        replaceExpendedItem(player, fired, playerInv::addItem);
+        if (fired != null && fired.getAmount() == 1) {    
+            replaceExpendedItem(player, fired, playerInv::addItem);
+        }
     }
 
     private void replaceExpendedItem(Player player, ItemStack used, Consumer<ItemStack> returnItem) {

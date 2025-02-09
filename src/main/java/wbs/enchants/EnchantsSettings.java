@@ -7,11 +7,10 @@ import wbs.enchants.type.EnchantmentTypeManager;
 import wbs.utils.util.plugin.WbsSettings;
 
 @SuppressWarnings("unused")
-public class EnchantsSettings extends WbsSettings {
+public class  EnchantsSettings extends WbsSettings {
 
     private YamlConfiguration enchantsFile;
 
-    private boolean developerMode = false;
 
     protected EnchantsSettings(WbsEnchants plugin) {
         super(plugin);
@@ -29,10 +28,17 @@ public class EnchantsSettings extends WbsSettings {
         YamlConfiguration config = loadDefaultConfig("config.yml");
 
         developerMode = config.getBoolean("developer-mode", developerMode);
+        forceOnlyLootEnchants = config.getBoolean("force-only-loot-enchants", forceOnlyLootEnchants);
     }
 
+    private boolean developerMode = false;
     public boolean isDeveloperMode() {
         return developerMode;
+    }
+
+    private boolean forceOnlyLootEnchants = false;
+    public boolean forceOnlyLootEnchants() {
+        return forceOnlyLootEnchants;
     }
 
     // TODO: Move this into the bootstrap phase
