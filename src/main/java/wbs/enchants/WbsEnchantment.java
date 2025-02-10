@@ -8,6 +8,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.Listener;
 import org.bukkit.inventory.EntityEquipment;
 import org.bukkit.inventory.EquipmentSlot;
+import org.bukkit.inventory.EquipmentSlotGroup;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.persistence.PersistentDataHolder;
 import org.jetbrains.annotations.NotNull;
@@ -20,10 +21,7 @@ import wbs.enchants.type.EnchantmentTypeManager;
 import wbs.enchants.util.CooldownManager;
 import wbs.utils.util.string.WbsStrings;
 
-import java.util.Collection;
-import java.util.Comparator;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 
 public abstract class WbsEnchantment implements Comparable<WbsEnchantment>, Listener, EnchantmentExtension {
     @NotNull
@@ -90,6 +88,12 @@ public abstract class WbsEnchantment implements Comparable<WbsEnchantment>, List
                 }
                 if (this instanceof SpongeEnchant spongeEnchant) {
                     spongeEnchant.registrySpongeEvents();
+                }
+                if (this instanceof ItemModificationEnchant itemModEnchant) {
+                    itemModEnchant.registerModificationEvents();
+                }
+                if (this instanceof FishingEnchant fishingEnchant) {
+                    fishingEnchant.registerFishingEvents();
                 }
             }
         }
@@ -164,6 +168,45 @@ public abstract class WbsEnchantment implements Comparable<WbsEnchantment>, List
                 .filter(Objects::nonNull)
                 .max(Comparator.comparingInt(this::getLevel))
                 .orElse(null);
+    }
+
+    protected int getSumLevels(LivingEntity entity, Collection<EquipmentSlot> slots) {
+        EntityEquipment equipment = entity.getEquipment();
+        if (equipment == null) {
+            return 0;
+        }
+
+        int sum = 0;
+        for (EquipmentSlot slot : slots) {
+            if (!entity.canUseEquipmentSlot(slot)) {
+                continue;
+            }
+
+            ItemStack item = equipment.getItem(slot);
+
+            sum += getLevel(item);
+        }
+
+        return sum;
+    }
+
+    protected int getSumLevelsArmour(LivingEntity entity) {
+        return getSumLevels(entity, List.of(ARMOUR_SLOTS));
+    }
+
+    private int getSumLevels(LivingEntity entity, Set<EquipmentSlotGroup> slotGroups) {
+        Set<EquipmentSlot> slots = new HashSet<>();
+        Arrays.stream(EquipmentSlot.values()).forEach(slot -> {
+            if (slotGroups.stream().anyMatch(group -> group.test(slot))) {
+                slots.add(slot);
+            }
+        });
+
+        return getSumLevels(entity, slots);
+    }
+
+    protected int getSumLevels(LivingEntity entity) {
+        return getSumLevels(entity, getDefinition().getEnchantment().getActiveSlotGroups());
     }
 
     public int compareTo(WbsEnchantment other) {

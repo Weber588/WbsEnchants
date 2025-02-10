@@ -11,6 +11,7 @@ import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import wbs.enchants.enchantment.helper.ItemModificationEnchant;
 import wbs.enchants.generation.GenerationContext;
 import wbs.enchants.type.EnchantmentType;
 
@@ -63,7 +64,15 @@ public interface EnchantmentExtension extends Keyed {
     }
 
     default boolean tryAdd(ItemStack stack, int level) {
-        return getDefinition().tryAdd(stack, level);
+        boolean added = getDefinition().tryAdd(stack, level);
+
+        if (added) {
+            if (this instanceof ItemModificationEnchant itemModEnchant) {
+                itemModEnchant.validateUpdateItem(stack);
+            }
+        }
+
+        return added;
     }
 
     default void registerGenerationContexts() {

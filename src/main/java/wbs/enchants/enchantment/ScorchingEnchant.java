@@ -2,7 +2,6 @@ package wbs.enchants.enchantment;
 
 import io.papermc.paper.registry.keys.tags.EnchantmentTagKeys;
 import io.papermc.paper.registry.keys.tags.ItemTypeTagKeys;
-import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Particle;
 import org.bukkit.block.Block;
@@ -14,14 +13,12 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockDropItemEvent;
-import org.bukkit.inventory.FurnaceRecipe;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.Recipe;
-import org.bukkit.inventory.RecipeChoice;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.scheduler.BukkitRunnable;
 import wbs.enchants.WbsEnchantment;
 import wbs.enchants.WbsEnchants;
+import wbs.enchants.util.ItemUtils;
 import wbs.utils.util.particles.NormalParticleEffect;
 import wbs.utils.util.particles.WbsParticleGroup;
 
@@ -120,29 +117,7 @@ public class ScorchingEnchant extends WbsEnchantment {
         for (Item item : event.getItems()) {
             ItemStack stack = item.getItemStack();
 
-            ItemStack result = null;
-            int escape = 0;
-            for (Iterator<Recipe> it = Bukkit.recipeIterator(); it.hasNext(); ) {
-                Recipe recipe;
-                try {
-                    escape++;
-                    recipe = it.next();
-                } catch (IllegalArgumentException ex) {
-                    if (escape < 100) {
-                        throw ex;
-                    }
-                    continue;
-                }
-
-                if (recipe instanceof FurnaceRecipe furnaceRecipe) {
-                    RecipeChoice inputChoice = furnaceRecipe.getInputChoice();
-                    if (inputChoice.test(stack)) {
-                        result = furnaceRecipe.getResult();
-                        result.setAmount(result.getAmount() * stack.getAmount());
-                        break;
-                    }
-                }
-            }
+            ItemStack result = ItemUtils.smeltItem(stack);
 
             if (result != null) {
                 item.setItemStack(result);

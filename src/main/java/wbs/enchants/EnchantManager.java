@@ -95,6 +95,10 @@ public class EnchantManager {
     public static final GhostPactEnchant GHOST_PACT = new GhostPactEnchant();
     public static final FangedEnchant FANGED = new FangedEnchant();
     public static final MagneticEnchant MAGNETIC = new MagneticEnchant();
+    public static final CastingEnchant CASTING = new CastingEnchant();
+    public static final MulticastEnchant MULTICAST = new MulticastEnchant();
+    public static final AutoReelEnchant AUTO_REEL = new AutoReelEnchant();
+    public static final HellHookEnchant HELL_HOOK = new HellHookEnchant();
 
     public static final CurseRebuking CURSE_REBUKING = new CurseRebuking();
     public static final CurseVanilla CURSE_VANILLA = new CurseVanilla();
@@ -109,6 +113,7 @@ public class EnchantManager {
     public static final CurseTheEnd CURSE_THE_END = new CurseTheEnd();
     public static final CurseMercy CURSE_MERCY = new CurseMercy();
     public static final CurseRust CURSE_RUST = new CurseRust();
+    public static final CurseRot CURSE_ROT = new CurseRot();
 
     public static void register(WbsEnchantment enchantment) {
         REGISTERED_ENCHANTMENTS.add(enchantment);

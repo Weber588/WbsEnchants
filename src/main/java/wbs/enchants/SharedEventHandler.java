@@ -18,10 +18,7 @@ import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.InventoryHolder;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.scheduler.BukkitRunnable;
-import wbs.enchants.enchantment.helper.BlockEnchant;
-import wbs.enchants.enchantment.helper.MovementEnchant;
-import wbs.enchants.enchantment.helper.TickableBlockEnchant;
-import wbs.enchants.enchantment.helper.TickableEnchant;
+import wbs.enchants.enchantment.helper.*;
 import wbs.enchants.events.EnchantedBlockBreakEvent;
 import wbs.enchants.events.EnchantedBlockPlaceEvent;
 import wbs.enchants.statuseffects.StatusEffectManager;
@@ -39,6 +36,7 @@ public class SharedEventHandler implements Listener {
     private final WbsEnchants plugin;
 
     private final Set<TickableEnchant> tickableEnchants = new HashSet<>();
+    private final Set<ItemModificationEnchant> itemModificationEnchants = new HashSet<>();
     private final Set<MovementEnchant> movementEnchants = new HashSet<>();
 
     private final Set<Block> tickingEnchantedBlocks = new HashSet<>();
@@ -58,6 +56,10 @@ public class SharedEventHandler implements Listener {
         EnchantManager.getCustomRegistered().forEach(enchantment -> {
             if (enchantment instanceof TickableEnchant tickable) {
                 tickableEnchants.add(tickable);
+            }
+
+            if (enchantment instanceof ItemModificationEnchant itemModificationEnchant) {
+                itemModificationEnchants.add(itemModificationEnchant);
             }
 
             if (enchantment instanceof MovementEnchant movementEnchant) {
@@ -127,6 +129,7 @@ public class SharedEventHandler implements Listener {
                 Bukkit.getWorlds().forEach(world -> allLivingEntities.addAll(world.getLivingEntities()));
 
                 tickEnchants(allLivingEntities);
+                tickItemModificationEnchants(allLivingEntities);
                 allLivingEntities.forEach(StatusEffectManager::tick);
             }
         }.runTaskTimer(plugin, 1, 1);
@@ -207,6 +210,44 @@ public class SharedEventHandler implements Listener {
 
             hasAnywhere.forEach(enchant -> enchant.onTickAny(entity));
             hasEquipped.forEach(enchant -> enchant.onTickEquipped(entity));
+        }
+    }
+
+    private void tickItemModificationEnchants(Set<LivingEntity> allLivingEntities) {
+        if (Bukkit.getCurrentTick() % 20 * 60 == 0) {
+            for (LivingEntity entity : allLivingEntities) {
+                EntityEquipment equipment = entity.getEquipment();
+                if (equipment != null) {
+                    for (EquipmentSlot slot : EquipmentSlot.values()) {
+                        if (!entity.canUseEquipmentSlot(slot)) {
+                            continue;
+                        }
+
+                        ItemStack itemStack = equipment.getItem(slot);
+
+                        if (itemStack.isEmpty()) {
+                            continue;
+                        }
+
+                        for (ItemModificationEnchant enchant : itemModificationEnchants) {
+                            enchant.validateUpdateItem(itemStack);
+                        }
+                    }
+                }
+
+                if (entity instanceof InventoryHolder holder) {
+                    ItemStack[] contents = holder.getInventory().getContents();
+                    for (ItemStack itemStack : contents) {
+                        if (itemStack == null) {
+                            continue;
+                        }
+
+                        for (ItemModificationEnchant enchant : itemModificationEnchants) {
+                            enchant.validateUpdateItem(itemStack);
+                        }
+                    }
+                }
+            }
         }
     }
 }
