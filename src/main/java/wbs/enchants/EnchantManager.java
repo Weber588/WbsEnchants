@@ -99,6 +99,8 @@ public class EnchantManager {
     public static final MulticastEnchant MULTICAST = new MulticastEnchant();
     public static final AutoReelEnchant AUTO_REEL = new AutoReelEnchant();
     public static final HellHookEnchant HELL_HOOK = new HellHookEnchant();
+    public static final ArcticStrikeEnchant ARCTIC_STRIKE = new ArcticStrikeEnchant();
+    public static final TemperedEnchant TEMPERED = new TemperedEnchant();
 
     public static final CurseRebuking CURSE_REBUKING = new CurseRebuking();
     public static final CurseVanilla CURSE_VANILLA = new CurseVanilla();
