@@ -11,7 +11,6 @@ import org.bukkit.persistence.PersistentDataType;
 import wbs.enchants.WbsEnchantment;
 import wbs.enchants.util.EnchantUtils;
 import wbs.enchants.util.EventUtils;
-import wbs.utils.util.WbsEnums;
 
 public interface VehicleEnchant extends EntityEnchant {
     default void registerVehicleEvents() {
@@ -24,63 +23,11 @@ public interface VehicleEnchant extends EntityEnchant {
         }
         Vehicle vehicle = event.getVehicle();
 
-        Material material;
-        if (vehicle instanceof Boat boat) {
-            if (boat instanceof ChestBoat) {
-                material = switch (boat.getBoatType()) {
-                    case OAK -> Material.OAK_CHEST_BOAT;
-                    case SPRUCE -> Material.SPRUCE_CHEST_BOAT;
-                    case BIRCH -> Material.BIRCH_CHEST_BOAT;
-                    case JUNGLE -> Material.JUNGLE_CHEST_BOAT;
-                    case ACACIA -> Material.ACACIA_CHEST_BOAT;
-                    case CHERRY -> Material.CHERRY_CHEST_BOAT;
-                    case DARK_OAK -> Material.DARK_OAK_CHEST_BOAT;
-                    case MANGROVE -> Material.MANGROVE_CHEST_BOAT;
-                    case BAMBOO -> Material.BAMBOO_CHEST_RAFT;
-                };
-            } else {
-                material = switch (boat.getBoatType()) {
-                    case OAK -> Material.OAK_BOAT;
-                    case SPRUCE -> Material.SPRUCE_BOAT;
-                    case BIRCH -> Material.BIRCH_BOAT;
-                    case JUNGLE -> Material.JUNGLE_BOAT;
-                    case ACACIA -> Material.ACACIA_BOAT;
-                    case CHERRY -> Material.CHERRY_BOAT;
-                    case DARK_OAK -> Material.DARK_OAK_BOAT;
-                    case MANGROVE -> Material.MANGROVE_BOAT;
-                    case BAMBOO -> Material.BAMBOO_RAFT;
-                };
-            }
-
-            // Somewhat hacky future-proof in case more boats get added, try getting them by name.
-            // Unsure why Boat.Type#getMaterial() doesn't return the type of boat, but rather the plank/crafting
-            // version, but probably some legacy thing.
-            //noinspection ConstantConditions
-            if (material == null) {
-                String checkString = boat.getBoatType().toString();
-                if (boat instanceof ChestBoat) {
-                    checkString += "_CHEST";
-                }
-                String boatCheck = checkString + "_BOAT";
-                String raftCheck = checkString + "_RAFT";
-
-                material = WbsEnums.getEnumFromString(Material.class, boatCheck);
-                if (material == null) {
-                    material = WbsEnums.getEnumFromString(Material.class, raftCheck);
-                }
-            }
-        } else if (vehicle instanceof Minecart minecart) {
-            material = switch (minecart.getType()) {
-                case MINECART -> Material.MINECART;
-                case CHEST_MINECART -> Material.CHEST_MINECART;
-                case FURNACE_MINECART -> Material.FURNACE_MINECART;
-                case HOPPER_MINECART -> Material.HOPPER_MINECART;
-                case TNT_MINECART-> Material.TNT_MINECART;
-                default -> null;
-            };
-        } else {
-            return;
-        }
+        Material material = switch (vehicle) {
+            case Boat boat -> boat.getBoatMaterial();
+            case Minecart minecart -> minecart.getMinecartMaterial();
+            default -> null;
+        };
 
         if (material == null) {
             return;
@@ -103,12 +50,11 @@ public interface VehicleEnchant extends EntityEnchant {
 
             vehicle.remove();
             EnchantUtils.addEnchantment(enchant, item, level);
-            vehicle.getWorld().dropItemNaturally(vehicle.getLocation(), item);
-            afterDrop(event, item);
+            afterDrop(event, vehicle.getWorld().dropItemNaturally(vehicle.getLocation(), item));
         }
     }
 
-    default void afterDrop(VehicleDestroyEvent event, ItemStack droppedItem) {
+    default void afterDrop(VehicleDestroyEvent event, Item spawnedItem) {
 
     }
 }

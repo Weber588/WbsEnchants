@@ -9,6 +9,7 @@ import net.kyori.adventure.key.Keyed;
 import org.bukkit.Material;
 import org.bukkit.Registry;
 import org.bukkit.enchantments.Enchantment;
+import org.bukkit.inventory.EquipmentSlotGroup;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.EnchantmentStorageMeta;
 import org.bukkit.inventory.meta.ItemMeta;
@@ -83,5 +84,9 @@ public class EnchantmentWrapper implements Keyed {
     public boolean isTagged(TagKey<Enchantment> tagKey) {
         Registry<Enchantment> registry = RegistryAccess.registryAccess().getRegistry(RegistryKey.ENCHANTMENT);
         return registry.getTag(tagKey).contains(this.getTypedKey());
+    }
+
+    public Set<EquipmentSlotGroup> activeSlots() {
+        return getEnchantment().getActiveSlotGroups();
     }
 }

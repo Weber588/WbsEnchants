@@ -1,6 +1,7 @@
 package wbs.enchants.util;
 
 import org.bukkit.Bukkit;
+import org.bukkit.Material;
 import org.bukkit.inventory.FurnaceRecipe;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.Recipe;
@@ -37,5 +38,10 @@ public class ItemUtils {
         }
 
         return result;
+    }
+
+    public static boolean isBlockingItem(ItemStack item) {
+        // TODO 1.21.5: Move this to check for component instead of material
+        return item .getType() == Material.SHIELD;
     }
 }

@@ -95,6 +95,9 @@ public abstract class WbsEnchantment implements Comparable<WbsEnchantment>, List
                 if (this instanceof FishingEnchant fishingEnchant) {
                     fishingEnchant.registerFishingEvents();
                 }
+                if (this instanceof BlockDropEnchantment blockDropEnchantment) {
+                    blockDropEnchantment.registerBlockDropEvents();
+                }
             }
         }
     }
@@ -161,6 +164,18 @@ public abstract class WbsEnchantment implements Comparable<WbsEnchantment>, List
         return getHighestEnchanted(entity, List.of(ARMOUR_SLOTS));
     }
 
+    public ItemStack getHighestEnchantedAnywhere(Player player) {
+        return Arrays.stream(player.getInventory().getContents())
+                .filter(Objects::nonNull)
+                .filter(this::isEnchantmentOn)
+                .max(Comparator.comparingInt(this::getLevel))
+                .orElse(null);
+    }
+
+    public ItemStack getHighestEnchanted(LivingEntity entity) {
+        return getHighestEnchanted(entity, getActiveSlots());
+    }
+
     @Nullable
     public ItemStack getHighestEnchanted(LivingEntity entity, Collection<EquipmentSlot> slots) {
         return slots.stream()
@@ -195,6 +210,14 @@ public abstract class WbsEnchantment implements Comparable<WbsEnchantment>, List
     }
 
     private int getSumLevels(LivingEntity entity, Set<EquipmentSlotGroup> slotGroups) {
+        return getSumLevels(entity, getActiveSlots(slotGroups));
+    }
+
+    public Set<EquipmentSlot> getActiveSlots() {
+        return getActiveSlots(getDefinition().activeSlots());
+    }
+
+    public Set<EquipmentSlot> getActiveSlots(Set<EquipmentSlotGroup> slotGroups) {
         Set<EquipmentSlot> slots = new HashSet<>();
         Arrays.stream(EquipmentSlot.values()).forEach(slot -> {
             if (slotGroups.stream().anyMatch(group -> group.test(slot))) {
@@ -202,7 +225,7 @@ public abstract class WbsEnchantment implements Comparable<WbsEnchantment>, List
             }
         });
 
-        return getSumLevels(entity, slots);
+        return slots;
     }
 
     protected int getSumLevels(LivingEntity entity) {

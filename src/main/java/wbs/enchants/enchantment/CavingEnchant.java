@@ -1,5 +1,6 @@
 package wbs.enchants.enchantment;
 
+import io.papermc.paper.registry.keys.ItemTypeKeys;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
@@ -12,7 +13,6 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
 import org.bukkit.inventory.meta.BundleMeta;
 import wbs.enchants.WbsEnchantment;
-import wbs.enchants.WbsEnchantsBootstrap;
 import wbs.enchants.enchantment.helper.MovementEnchant;
 
 import java.util.LinkedList;
@@ -30,7 +30,7 @@ public class CavingEnchant extends WbsEnchantment implements MovementEnchant {
 
         getDefinition()
                 .maxLevel(1)
-                .supportedItems(WbsEnchantsBootstrap.ENCHANTABLE_BUNDLE);
+                .supportedItems(ItemTypeKeys.BUNDLE);
     }
 
     @EventHandler

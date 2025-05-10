@@ -17,7 +17,7 @@ import java.util.List;
 import java.util.function.Predicate;
 
 public class ExcavatorEnchant extends AbstractMultiBreakEnchant {
-    public static final String DEFAULT_DESCRIPTION = "Mines a 3x3 square at level 1, increasing the width by 2 per level.";
+    private static final String DEFAULT_DESCRIPTION = "Mines a 3x3 square at level 1, increasing the width by 2 per level.";
 
     public ExcavatorEnchant() {
         super("excavator", DEFAULT_DESCRIPTION);

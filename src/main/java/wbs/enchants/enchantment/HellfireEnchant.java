@@ -1,5 +1,6 @@
 package wbs.enchants.enchantment;
 
+import io.papermc.paper.registry.keys.ItemTypeKeys;
 import org.bukkit.Material;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
@@ -9,7 +10,6 @@ import org.bukkit.event.block.BlockIgniteEvent;
 import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
 import wbs.enchants.WbsEnchantment;
-import wbs.enchants.WbsEnchantsBootstrap;
 
 public class HellfireEnchant extends WbsEnchantment {
     private static final String DESCRIPTION = "Makes this item produce soul fire instead of regular fire!";
@@ -18,7 +18,7 @@ public class HellfireEnchant extends WbsEnchantment {
         super("hellfire", DESCRIPTION);
 
         getDefinition()
-                .supportedItems(WbsEnchantsBootstrap.ENCHANTABLE_FLINT_AND_STEEL);
+                .supportedItems(ItemTypeKeys.FLINT_AND_STEEL);
     }
 
     @EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)

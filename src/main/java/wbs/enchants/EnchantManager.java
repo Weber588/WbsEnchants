@@ -101,6 +101,12 @@ public class EnchantManager {
     public static final HellHookEnchant HELL_HOOK = new HellHookEnchant();
     public static final ArcticStrikeEnchant ARCTIC_STRIKE = new ArcticStrikeEnchant();
     public static final TemperedEnchant TEMPERED = new TemperedEnchant();
+    public static final NihilEnchant NIHIL = new NihilEnchant();
+    public static final QuickRideEnchant QUICK_RIDE = new QuickRideEnchant();
+    public static final FleecingEnchant FLEECING = new FleecingEnchant();
+    public static final CautiousnessEnchant CAUTIOUSNESS = new CautiousnessEnchant();
+    public static final ReinforcedEnchant REINFORCED = new ReinforcedEnchant();
+    public static final ReflexiveEnchant REFLEXIVE = new ReflexiveEnchant();
 
     public static final CurseRebuking CURSE_REBUKING = new CurseRebuking();
     public static final CurseVanilla CURSE_VANILLA = new CurseVanilla();

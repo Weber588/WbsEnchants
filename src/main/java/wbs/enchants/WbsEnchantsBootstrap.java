@@ -60,13 +60,11 @@ public class WbsEnchantsBootstrap implements PluginBootstrap {
     public static final TagKey<ItemType> ENCHANTABLE_VEHICLE = ItemTypeTagKeys.create(createKey("enchantable/vehicle"));
     public static final TagKey<ItemType> ENCHANTABLE_GROUND_MINING = ItemTypeTagKeys.create(createKey("enchantable/ground_mining"));
     public static final TagKey<ItemType> ENCHANTABLE_PROJECTILE_WEAPON = ItemTypeTagKeys.create(createKey("enchantable/projectile_weapon"));
-    public static final TagKey<ItemType> ENCHANTABLE_BUNDLE = ItemTypeTagKeys.create(createKey("enchantable/bundle"));
-    public static final TagKey<ItemType> ENCHANTABLE_FLINT_AND_STEEL = ItemTypeTagKeys.create(createKey("enchantable/flint_and_steel"));
-    public static final TagKey<ItemType> ENCHANTABLE_BEACON = ItemTypeTagKeys.create(createKey("enchantable/beacon"));
-    public static final TagKey<ItemType> ENCHANTABLE_LEAD = ItemTypeTagKeys.create(createKey("enchantable/lead"));
     public static final TagKey<ItemType> ENCHANTABLE_SHULKER_BOX = ItemTypeTagKeys.create(createKey("enchantable/shulker_box"));
     public static final TagKey<ItemType> ENCHANTABLE_RUSTABLE = ItemTypeTagKeys.create(createKey("enchantable/rustable"));
     public static final TagKey<ItemType> ENCHANTABLE_MAGNETIC_ARMOR = ItemTypeTagKeys.create(createKey("enchantable/magnetic_armor"));
+    // Items that are designed to create loot -- mining tools (block drops), weapons (mob drops)
+    public static final TagKey<ItemType> ENCHANTABLE_LOOT_CREATORS = ItemTypeTagKeys.create(createKey("enchantable/loot_creators"));
 
     public static final TagKey<ItemType> IRON_TOOLS = ItemTypeTagKeys.create(createKey("tools/iron"));
     public static final TagKey<ItemType> IRON_ARMOR = ItemTypeTagKeys.create(createKey("armor/iron"));
@@ -167,6 +165,13 @@ public class WbsEnchantsBootstrap implements PluginBootstrap {
                         Set.of(
                                 TagEntry.tagEntry(IRON_ARMOR, true),
                                 TagEntry.tagEntry(CHAINMAIL_ARMOR, true)
+                        )
+                ),
+                new CustomTag<>(ENCHANTABLE_LOOT_CREATORS,
+                        Set.of(),
+                        Set.of(
+                                TagEntry.tagEntry(ItemTypeTagKeys.ENCHANTABLE_MINING, true),
+                                TagEntry.tagEntry(ItemTypeTagKeys.ENCHANTABLE_WEAPON, true)
                         )
                 )
         );

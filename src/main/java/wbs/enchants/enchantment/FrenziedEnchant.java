@@ -19,7 +19,7 @@ public class FrenziedEnchant extends WbsEnchantment implements DamageEnchant {
     private static final int BASE_DURATION = 5 * 20;
     private static final int AMPLIFIER_INCREMENT = 2;
 
-    public static final String DEFAULT_DESCRIPTION = "When you kill an enemy, you gain increased attack speed for "
+    private static final String DEFAULT_DESCRIPTION = "When you kill an enemy, you gain increased attack speed for "
             + BASE_DURATION / 20 + " seconds. If your " +
             "speed buff is already present, the speed will keep increasing every kill until the time left goes " +
             "below " + BASE_DURATION / 20 + " seconds.";

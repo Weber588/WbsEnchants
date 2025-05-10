@@ -1,5 +1,6 @@
 package wbs.enchants.enchantment;
 
+import io.papermc.paper.registry.keys.ItemTypeKeys;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
@@ -15,7 +16,6 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.persistence.PersistentDataContainer;
 import wbs.enchants.WbsEnchantment;
 import wbs.enchants.WbsEnchants;
-import wbs.enchants.WbsEnchantsBootstrap;
 import wbs.enchants.events.LeashEvents;
 import wbs.utils.util.persistent.WbsPersistentDataType;
 
@@ -36,7 +36,7 @@ public class UnshakableEnchant extends WbsEnchantment {
 
         getDefinition()
                 .weight(10)
-                .supportedItems(WbsEnchantsBootstrap.ENCHANTABLE_LEAD);
+                .supportedItems(ItemTypeKeys.LEAD);
     }
 
     @EventHandler(priority = EventPriority.LOWEST, ignoreCancelled = true)

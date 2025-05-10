@@ -1,5 +1,6 @@
 package wbs.enchants.enchantment;
 
+import io.papermc.paper.registry.keys.ItemTypeKeys;
 import org.bukkit.Bukkit;
 import org.bukkit.Chunk;
 import org.bukkit.Location;
@@ -8,7 +9,6 @@ import org.bukkit.block.Block;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.block.BlockSpreadEvent;
 import wbs.enchants.WbsEnchantment;
-import wbs.enchants.WbsEnchantsBootstrap;
 import wbs.enchants.enchantment.helper.BlockStateEnchant;
 
 import java.util.Collection;
@@ -24,7 +24,7 @@ public class StasisFieldEnchant extends WbsEnchantment implements BlockStateEnch
         super("stasis_field", DESCRIPTION);
 
         getDefinition()
-                .supportedItems(WbsEnchantsBootstrap.ENCHANTABLE_BEACON)
+                .supportedItems(ItemTypeKeys.BEACON)
                 .maxLevel(1);
     }
 

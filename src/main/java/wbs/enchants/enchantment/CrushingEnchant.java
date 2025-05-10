@@ -12,13 +12,14 @@ import org.bukkit.event.EventPriority;
 import org.bukkit.event.block.BlockDropItemEvent;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.Contract;
+import wbs.enchants.WbsEnchantment;
 import wbs.enchants.WbsEnchants;
 import wbs.enchants.enchantment.helper.BlockDropEnchantment;
 import wbs.utils.util.WbsEnums;
 
 import java.util.*;
 
-public class CrushingEnchant extends BlockDropEnchantment {
+public class CrushingEnchant extends WbsEnchantment implements BlockDropEnchantment {
     private static final String DEFAULT_DESCRIPTION = "A tool enchantment that crushes blocks into other, " +
             "more broken-down versions!";
     private static final String CRUSH_MAP_KEY = "crush-materials";
@@ -26,12 +27,17 @@ public class CrushingEnchant extends BlockDropEnchantment {
     private final Map<Material, CrushDefinition> crushingMap = new HashMap<>();
 
     public CrushingEnchant() {
-        super("crushing", DEFAULT_DESCRIPTION, EventPriority.HIGHEST);
+        super("crushing", DEFAULT_DESCRIPTION);
 
         getDefinition()
                 .weight(5)
                 .supportedItems(ItemTypeTagKeys.ENCHANTABLE_MINING)
                 .exclusiveInject(EnchantmentTagKeys.EXCLUSIVE_SET_MINING);
+    }
+
+    @Override
+    public EventPriority getDropPriority() {
+        return EventPriority.HIGHEST;
     }
 
     @Override
@@ -215,8 +221,8 @@ public class CrushingEnchant extends BlockDropEnchantment {
     }
 
     @Override
-    protected void apply(BlockDropItemEvent event, MarkedLocation marked) {
-        unmark(marked);
+    public void apply(BlockDropItemEvent event, MarkedLocation marked) {
+        BlockDropEnchantment.removePendingDrop(marked);
 
         List<Item> items = event.getItems();
         List<ItemStack> toDrop = new LinkedList<>();

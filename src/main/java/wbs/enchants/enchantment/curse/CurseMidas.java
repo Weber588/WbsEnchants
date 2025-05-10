@@ -5,13 +5,14 @@ import org.bukkit.Material;
 import org.bukkit.Particle;
 import org.bukkit.entity.Item;
 import org.bukkit.event.block.BlockDropItemEvent;
+import wbs.enchants.WbsEnchantment;
 import wbs.enchants.WbsEnchantsBootstrap;
 import wbs.enchants.enchantment.helper.BlockDropEnchantment;
 import wbs.enchants.type.EnchantmentTypeManager;
 import wbs.utils.util.particles.NormalParticleEffect;
 import wbs.utils.util.particles.WbsParticleGroup;
 
-public class CurseMidas extends BlockDropEnchantment {
+public class CurseMidas extends WbsEnchantment implements BlockDropEnchantment {
     private static final String DEFAULT_DESCRIPTION = "A pickaxe curse that causes mined metals to turn " +
             "directly into gold!";
 
@@ -27,7 +28,7 @@ public class CurseMidas extends BlockDropEnchantment {
     }
 
     @Override
-    protected void apply(BlockDropItemEvent event, MarkedLocation marked) {
+    public void apply(BlockDropItemEvent event, MarkedLocation marked) {
         // TODO: Make this configurable
         for (Item item : event.getItems()) {
             Material current = item.getItemStack().getType();

@@ -9,7 +9,7 @@ import wbs.enchants.WbsEnchantsBootstrap;
 import wbs.enchants.enchantment.helper.VehicleEnchant;
 
 public class FrictionlessEnchant extends WbsEnchantment implements VehicleEnchant {
-    public static final String DEFAULT_DESCRIPTION = "A minecart enchantment that increases its maximum speed, " +
+    private static final String DEFAULT_DESCRIPTION = "A minecart enchantment that increases its maximum speed, " +
             "but does not help it get there.";
 
     public FrictionlessEnchant() {

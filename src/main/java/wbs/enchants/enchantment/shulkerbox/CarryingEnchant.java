@@ -7,10 +7,8 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.block.BlockDispenseEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
-import org.bukkit.event.inventory.ClickType;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
-import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.InventoryHolder;
@@ -20,6 +18,7 @@ import org.jetbrains.annotations.NotNull;
 import wbs.enchants.WbsEnchantsBootstrap;
 import wbs.enchants.enchantment.helper.ShulkerBoxEnchantment;
 import wbs.enchants.util.PersistentInventoryDataType;
+import wbs.utils.util.WbsEventUtils;
 
 public class CarryingEnchant extends ShulkerBoxEnchantment {
     private static final NamespacedKey EXTRA_INVENTORY_KEY = WbsEnchantsBootstrap.createKey("extra_inventory");
@@ -105,42 +104,10 @@ public class CarryingEnchant extends ShulkerBoxEnchantment {
             return;
         }
 
-        ItemStack currentItem = event.getCurrentItem();
-        if (!holder.canContain(currentItem)) {
+        ItemStack addedItem = WbsEventUtils.getItemAddedToTopInventory(event);
+        if (!holder.box.canContain(addedItem)) {
             event.setCancelled(true);
-        }
-
-        Inventory clicked = event.getClickedInventory();
-        if (clicked == null) {
-            return;
-        }
-
-        if (clicked.getType() == InventoryType.PLAYER) {
-            if (event.getSlot() != -1) {
-                if (event.isShiftClick()) {
-                    ItemStack shiftClicked = clicked.getItem(event.getSlot());
-                    if (!holder.canContain(shiftClicked)) {
-                        event.setCancelled(true);
-                    }
-                }
-            }
-        }
-
-        if (event.getClick() == ClickType.NUMBER_KEY) {
-            ItemStack referenced = event.getView().getBottomInventory().getItem(event.getHotbarButton());
-            if (!holder.canContain(referenced)) {
-                event.setCancelled(true);
-            }
-        }
-
-        if (event.getClick() == ClickType.SWAP_OFFHAND) {
-            ItemStack referenced = event.getWhoClicked().getInventory().getItemInOffHand();
-            if (!holder.canContain(referenced)) {
-                event.setCancelled(true);
-            }
-        }
-
-        if (!event.isCancelled()) {
+        } else {
             holder.save();
         }
     }
