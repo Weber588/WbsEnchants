@@ -2,6 +2,7 @@ package wbs.enchants;
 
 import com.google.common.collect.HashMultimap;
 import com.google.common.collect.Multimap;
+import com.google.gson.Gson;
 import io.papermc.paper.plugin.bootstrap.BootstrapContext;
 import io.papermc.paper.plugin.bootstrap.PluginBootstrap;
 import io.papermc.paper.plugin.bootstrap.PluginProviderContext;
@@ -37,6 +38,7 @@ import wbs.utils.util.WbsFileUtil;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.nio.file.Path;
 import java.util.*;
 import java.util.function.Supplier;
 
@@ -53,6 +55,10 @@ public class WbsEnchantsBootstrap implements PluginBootstrap {
     public static final TagKey<Enchantment> ENCHANTMENT_EMPTY =
             TagKey.create(RegistryKey.ENCHANTMENT, new NamespacedKey(NAMESPACE, "empty"));
 
+    public static final TagKey<ItemType> IRON_TOOLS = ItemTypeTagKeys.create(createKey("tools/iron"));
+    public static final TagKey<ItemType> IRON_ARMOR = ItemTypeTagKeys.create(createKey("armor/iron"));
+    public static final TagKey<ItemType> CHAINMAIL_ARMOR = ItemTypeTagKeys.create(createKey("armor/chainmail"));
+
     public static final TagKey<ItemType> SPONGES = ItemTypeTagKeys.create(createKey("sponges"));
     public static final TagKey<ItemType> MAPS = ItemTypeTagKeys.create(createKey("maps"));
     public static final TagKey<ItemType> MINECARTS = ItemTypeTagKeys.create(createKey("minecarts"));
@@ -63,12 +69,14 @@ public class WbsEnchantsBootstrap implements PluginBootstrap {
     public static final TagKey<ItemType> ENCHANTABLE_SHULKER_BOX = ItemTypeTagKeys.create(createKey("enchantable/shulker_box"));
     public static final TagKey<ItemType> ENCHANTABLE_RUSTABLE = ItemTypeTagKeys.create(createKey("enchantable/rustable"));
     public static final TagKey<ItemType> ENCHANTABLE_MAGNETIC_ARMOR = ItemTypeTagKeys.create(createKey("enchantable/magnetic_armor"));
+
     // Items that are designed to create loot -- mining tools (block drops), weapons (mob drops)
     public static final TagKey<ItemType> ENCHANTABLE_LOOT_CREATORS = ItemTypeTagKeys.create(createKey("enchantable/loot_creators"));
 
-    public static final TagKey<ItemType> IRON_TOOLS = ItemTypeTagKeys.create(createKey("tools/iron"));
-    public static final TagKey<ItemType> IRON_ARMOR = ItemTypeTagKeys.create(createKey("armor/iron"));
-    public static final TagKey<ItemType> CHAINMAIL_ARMOR = ItemTypeTagKeys.create(createKey("armor/chainmail"));
+    public static final TagKey<ItemType> ENCHANTABLE_BUNDLE = ItemTypeTagKeys.create(createKey("enchantable/bundle"));
+    public static final TagKey<ItemType> ENCHANTABLE_BEACON = ItemTypeTagKeys.create(createKey("enchantable/beacon"));
+    public static final TagKey<ItemType> ENCHANTABLE_ELYTRA = ItemTypeTagKeys.create(createKey("enchantable/elytra"));
+    public static final TagKey<ItemType> ENCHANTABLE_BUCKET = ItemTypeTagKeys.create(createKey("enchantable/bucket"));
 
     // TODO: Put this somewhere proper (config?)
     private static Set<CustomTag<ItemType>> getItemTags() {
@@ -159,20 +167,48 @@ public class WbsEnchantsBootstrap implements PluginBootstrap {
                                 TagEntry.tagEntry(IRON_ARMOR, true),
                                 TagEntry.tagEntry(CHAINMAIL_ARMOR, true)
                         )
-                ),
+                ).priority(1),
                 new CustomTag<>(ENCHANTABLE_MAGNETIC_ARMOR,
                         Set.of(),
                         Set.of(
                                 TagEntry.tagEntry(IRON_ARMOR, true),
                                 TagEntry.tagEntry(CHAINMAIL_ARMOR, true)
                         )
-                ),
+                ).priority(1),
                 new CustomTag<>(ENCHANTABLE_LOOT_CREATORS,
                         Set.of(),
                         Set.of(
                                 TagEntry.tagEntry(ItemTypeTagKeys.ENCHANTABLE_MINING, true),
                                 TagEntry.tagEntry(ItemTypeTagKeys.ENCHANTABLE_WEAPON, true)
                         )
+                ),
+                new CustomTag<>(ENCHANTABLE_BUNDLE,
+                        Set.of(ItemTypeKeys.BUNDLE),
+                        Set.of()
+                ),
+                new CustomTag<>(ENCHANTABLE_BEACON,
+                        Set.of(ItemTypeKeys.BEACON),
+                        Set.of()
+                ),
+                new CustomTag<>(ENCHANTABLE_ELYTRA,
+                        Set.of(ItemTypeKeys.ELYTRA),
+                        Set.of()
+                ),
+                new CustomTag<>(ENCHANTABLE_BUCKET,
+                        Set.of(
+                                ItemTypeKeys.BUCKET,
+                                ItemTypeKeys.AXOLOTL_BUCKET,
+                                ItemTypeKeys.COD_BUCKET,
+                                ItemTypeKeys.LAVA_BUCKET,
+                                ItemTypeKeys.MILK_BUCKET,
+                                ItemTypeKeys.POWDER_SNOW_BUCKET,
+                                ItemTypeKeys.PUFFERFISH_BUCKET,
+                                ItemTypeKeys.SALMON_BUCKET,
+                                ItemTypeKeys.TADPOLE_BUCKET,
+                                ItemTypeKeys.TROPICAL_FISH_BUCKET,
+                                ItemTypeKeys.WATER_BUCKET
+                        ),
+                        Set.of()
                 )
         );
     }
@@ -277,6 +313,10 @@ public class WbsEnchantsBootstrap implements PluginBootstrap {
                 event.registrar().addToTag(tag, toAdd.get(tag));
             }
         }));
+    }
+
+    @SuppressWarnings("ResultOfMethodCallIgnored")
+    private static void writeJSONToFile(Path folder, NamespacedKey key, Gson gson, Object object) {
     }
 
     private static void registerCustomTags(@NotNull BootstrapContext context, LifecycleEventManager<@NotNull BootstrapContext> manager) {
@@ -447,12 +487,12 @@ public class WbsEnchantsBootstrap implements PluginBootstrap {
         LifecycleEventManager<@NotNull BootstrapContext> manager = context.getLifecycleManager();
 
         manager.registerEventHandler(LifecycleEvents.TAGS.preFlatten(key).newHandler(event ->
-                tags.get().forEach(tag ->
+                tags.get().stream().sorted(Comparator.comparingInt(CustomTag::priority)).forEach(tag ->
                         tag.register(event.registrar())
                 )
         ));
         manager.registerEventHandler(LifecycleEvents.TAGS.postFlatten(key).newHandler(event ->
-                tags.get().forEach(tag ->
+                tags.get().stream().sorted(Comparator.comparingInt(CustomTag::priority)).forEach(tag ->
                         tag.register(event.registrar())
                 )
         ));
@@ -460,6 +500,7 @@ public class WbsEnchantsBootstrap implements PluginBootstrap {
 
     private static class CustomTag<T extends Keyed> {
         private final TagKey<T> key;
+        private int priority = 0;
         private Collection<TypedKey<T>> typedKeys;
         private Collection<TagEntry<T>> tagEntries;
 
@@ -498,6 +539,15 @@ public class WbsEnchantsBootstrap implements PluginBootstrap {
             this.key = key;
             this.typedKeys = keys;
             this.tagEntries = tagEntries;
+        }
+
+        public int priority() {
+            return priority;
+        }
+
+        public CustomTag<T> priority(int priority) {
+            this.priority = priority;
+            return this;
         }
 
         private void register(PreFlattenTagRegistrar<T> registrar) {

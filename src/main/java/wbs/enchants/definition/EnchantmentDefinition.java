@@ -11,9 +11,11 @@ import io.papermc.paper.registry.tag.TagKey;
 import net.kyori.adventure.key.Key;
 import net.kyori.adventure.text.*;
 import net.kyori.adventure.text.event.ClickEvent;
+import net.kyori.adventure.text.event.HoverEvent;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.Style;
 import net.kyori.adventure.text.minimessage.MiniMessage;
+import net.kyori.adventure.text.serializer.gson.GsonComponentSerializer;
 import org.bukkit.Bukkit;
 import org.bukkit.NamespacedKey;
 import org.bukkit.configuration.ConfigurationSection;
@@ -120,11 +122,16 @@ public class EnchantmentDefinition extends EnchantmentWrapper implements Compara
         this.displayName = displayName;
     }
 
-    private Component getTranslatable(Component absoluteFallback, String... keys) {
-        if (keys.length == 0) {
+    public static Component getTranslatable(Component absoluteFallback, String... keys) {
+        return getTranslatable(absoluteFallback, new LinkedList<>(Arrays.asList(keys)));
+    }
+
+    public static Component getTranslatable(Component absoluteFallback, List<String> keys) {
+        if (keys.isEmpty()) {
             return absoluteFallback;
         }
-        return Component.translatable(keys[0], "%s", getTranslatable(absoluteFallback, Arrays.copyOfRange(keys, 1, keys.length)));
+
+        return Component.translatable(keys.removeFirst(), "%s", getTranslatable(absoluteFallback, keys));
     }
 
     public final @NotNull Component description() {
@@ -143,7 +150,25 @@ public class EnchantmentDefinition extends EnchantmentWrapper implements Compara
                     );
         }
 
-        return getTranslatable(fallback, enchantKey + ".desc", enchantKey + ".description");
+        List<String> tryKeys = new LinkedList<>();
+
+        tryKeys.add(enchantKey + ".desc");
+        tryKeys.add(enchantKey + ".description");
+
+        // Some enchantments may have their language file name registered under a different namespace to their registration --
+        // check if the .description (i.e. the display name) is a different namespace, and include those too.
+        if (getEnchantment().description() instanceof TranslatableComponent translatable) {
+            tryKeys.add(translatable.key() + ".desc");
+            tryKeys.add(translatable.key() + ".description");
+        }
+
+        Component translatable = getTranslatable(fallback, tryKeys);
+
+        if (WbsEnchants.getInstance().settings.isDeveloperMode()) {
+            translatable = translatable.hoverEvent(HoverEvent.showText(Component.text(GsonComponentSerializer.gson().serialize(translatable))));
+        }
+
+        return translatable;
     }
 
     public EnchantmentDefinition setEnabled(boolean enabled) {
@@ -237,6 +262,9 @@ public class EnchantmentDefinition extends EnchantmentWrapper implements Compara
 
         isEnabled = section.getBoolean("enabled", isEnabled);
         displayName = section.getRichMessage("display_name", displayName);
+        if (displayName instanceof TextComponent textComponent) {
+            displayName = getTranslatable(displayName, "enchantment." + key().namespace() + "." + key().value());
+        }
         description = section.getRichMessage("description");
 
         parseRegistryKeys(RegistryKey.ITEM,
@@ -636,10 +664,22 @@ public class EnchantmentDefinition extends EnchantmentWrapper implements Compara
     }
 
     public Component displayName() {
+        Component toReturn = displayName;
+
         if (type != null) {
-            return displayName.applyFallbackStyle(type.getColour());
+            toReturn = displayName.applyFallbackStyle(type.getColour());
         }
-        return displayName;
+
+        // Don't try to dynamically figure out type until registries are loaded
+        // TODO: Find a proper way of checking if we're past the bootstrap phase
+        if (WbsEnchants.getInstance() != null) {
+            toReturn = displayName.applyFallbackStyle(EnchantmentTypeManager.getType(getEnchantment()).getColour());
+        }
+
+        if (WbsEnchants.getInstance() != null && WbsEnchants.getInstance().settings.isDeveloperMode()) {
+            toReturn = toReturn.hoverEvent(HoverEvent.showText(Component.text(GsonComponentSerializer.gson().serialize(displayName))));
+        }
+        return toReturn;
     }
 
     public Component interactiveDisplay() {
@@ -658,6 +698,7 @@ public class EnchantmentDefinition extends EnchantmentWrapper implements Compara
             base = displayName();
         } else {
             base = getEnchantment().displayName(level);
+            base = base.applyFallbackStyle(EnchantmentTypeManager.getType(getEnchantment()).getColour());
         }
 
         return base

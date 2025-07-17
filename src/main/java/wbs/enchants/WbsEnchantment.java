@@ -43,9 +43,16 @@ public abstract class WbsEnchantment implements Comparable<WbsEnchantment>, List
         this(key, type, WbsStrings.capitalizeAll(key.replaceAll("_", " ")), description);
     }
     public WbsEnchantment(@NotNull String key, EnchantmentType type, @NotNull String displayName, @NotNull String description) {
-        this(new EnchantmentDefinition(WbsEnchantsBootstrap.createKey(key), Component.text(displayName))
-                .description(description)
-                .type(type));
+        this(
+                new EnchantmentDefinition(
+                        WbsEnchantsBootstrap.createKey(key),
+                        EnchantmentDefinition.getTranslatable(
+                                Component.text(displayName),
+                                "enchantment." + WbsEnchantsBootstrap.NAMESPACE + "." + key
+                        )
+                ).description(description)
+                .type(type)
+        );
     }
 
     /**

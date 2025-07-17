@@ -120,9 +120,7 @@ public class EnchantUtils {
     public static Component getDisplayName(Enchantment enchant) {
         Component displayName = enchant.description();
 
-        if (!displayName.hasStyling()) {
-            displayName = displayName.color(EnchantmentTypeManager.getType(enchant).getColour());
-        }
+        displayName = displayName.applyFallbackStyle(EnchantmentTypeManager.getType(enchant).getColour());
 
         return displayName;
     }
