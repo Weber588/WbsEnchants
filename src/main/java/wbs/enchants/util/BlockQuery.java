@@ -198,13 +198,13 @@ public class BlockQuery {
             blocks.addAll(List.of(
                     world.getBlockAt(centralX + 1, centralY - 1, centralZ + 1),
                     world.getBlockAt(centralX - 1, centralY - 1, centralZ + 1),
-                    world.getBlockAt(centralX + 1, centralY - 1, centralZ + 1),
                     world.getBlockAt(centralX + 1, centralY - 1, centralZ - 1),
+                    world.getBlockAt(centralX - 1, centralY - 1, centralZ - 1),
 
-                    world.getBlockAt(centralX + 1, centralY - 1, centralZ + 1),
-                    world.getBlockAt(centralX - 1, centralY - 1, centralZ + 1),
-                    world.getBlockAt(centralX + 1, centralY - 1, centralZ + 1),
-                    world.getBlockAt(centralX + 1, centralY - 1, centralZ - 1)
+                    world.getBlockAt(centralX + 1, centralY + 1, centralZ + 1),
+                    world.getBlockAt(centralX - 1, centralY + 1, centralZ + 1),
+                    world.getBlockAt(centralX + 1, centralY + 1, centralZ - 1),
+                    world.getBlockAt(centralX - 1, centralY + 1, centralZ - 1)
             ));
         }
 
@@ -276,7 +276,7 @@ public class BlockQuery {
     }
 
     public boolean isInDistance(Block central, Block check) {
-        return blockPredicate.test(check) && distanceMode.getDistance(central, check) <= maxDistance;
+        return blockPredicate.test(check) && (maxDistance <= 0 || distanceMode.getDistance(central, check) <= maxDistance);
     }
 
     @SuppressWarnings("MethodDoesntCallSuperMethod")

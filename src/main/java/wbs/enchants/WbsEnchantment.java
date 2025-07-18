@@ -266,4 +266,18 @@ public abstract class WbsEnchantment implements Comparable<WbsEnchantment>, List
 
         return false;
     }
+
+    protected void debug(String message) {
+        if (developerMode()) {
+            WbsEnchants.getInstance().getLogger().info("[" + key().asString() + "] " + message);
+        }
+    }
+    protected void debug(Component message) {
+        if (developerMode()) {
+            WbsEnchants.getInstance().getComponentLogger().debug(
+                    Component.text("[").append(displayName()).append(Component.text("] "))
+                            .append(message)
+            );
+        }
+    }
 }
