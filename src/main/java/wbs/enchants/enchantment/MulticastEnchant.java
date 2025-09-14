@@ -85,12 +85,22 @@ public class MulticastEnchant extends WbsEnchantment implements FishingEnchant {
         if (isEnchantmentOn(rod)) {
             int level = getLevel(rod);
 
+            FishHook originalHook = event.getHook();
             for (int i = 0; i < level; i++) {
-                Vector velocity = event.getHook().getVelocity();
+                Vector velocity = originalHook.getVelocity();
                 double length = velocity.length();
                 velocity = velocity.add(WbsMath.randomVector(length / 5)).normalize().multiply(length);
 
-                event.getPlayer().launchProjectile(FishHook.class, velocity);
+                FishHook newHook = event.getPlayer().launchProjectile(FishHook.class, velocity);
+
+                newHook.setApplyLure(originalHook.getApplyLure());
+                newHook.setMaxLureTime(originalHook.getMaxLureTime());
+                newHook.setMinLureTime(originalHook.getMinLureTime());
+                newHook.setMaxWaitTime(originalHook.getMaxWaitTime());
+                newHook.setMinWaitTime(originalHook.getMinWaitTime());
+
+                // Allow to work with hellhook
+                newHook.setVisualFire(originalHook.getVisualFire());
             }
         }
     }

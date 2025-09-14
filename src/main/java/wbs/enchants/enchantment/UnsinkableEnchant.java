@@ -20,6 +20,8 @@ import java.util.List;
 public class UnsinkableEnchant extends WbsEnchantment implements VehicleEnchant {
     private static final String DEFAULT_DESCRIPTION = "Boats with this enchantment can't stay sunk underwater!";
 
+    private static final double UPWARDS_FORCE_PER_LEVEL = 0.001;
+
     public UnsinkableEnchant() {
         super("unsinkable", DEFAULT_DESCRIPTION);
 
@@ -46,7 +48,7 @@ public class UnsinkableEnchant extends WbsEnchantment implements VehicleEnchant 
         Integer level = getLevel(boat);
         if (level != null) {
             Vector velocity = boat.getVelocity();
-            velocity.setY(Math.max(velocity.getY() + 0.005 * level, 0.4));
+            velocity.setY(Math.max(velocity.getY() + UPWARDS_FORCE_PER_LEVEL * level, 0.2));
             boat.setVelocity(velocity);
         }
     }

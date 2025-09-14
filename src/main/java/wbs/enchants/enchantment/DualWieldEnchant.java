@@ -62,7 +62,7 @@ public class DualWieldEnchant extends WbsEnchantment implements DamageEnchant {
         ItemStack offHand = equipment.getItemInOffHand();
 
         if (isEnchantmentOn(offHand)) {
-            AttributeInstance speedAttr = attacker.getAttribute(Attribute.GENERIC_ATTACK_SPEED);
+            AttributeInstance speedAttr = attacker.getAttribute(Attribute.ATTACK_SPEED);
 
             if (speedAttr == null) {
                 return;
@@ -72,9 +72,14 @@ public class DualWieldEnchant extends WbsEnchantment implements DamageEnchant {
 
             attackDelayInTicks = WbsItems.calculateAttributeModification(
                     offHand,
-                    Attribute.GENERIC_ATTACK_SPEED,
+                    Attribute.ATTACK_SPEED,
                     attackDelayInTicks
             );
+
+            double delayTicks = attackDelayInTicks;
+            if (victim instanceof LivingEntity livingVictim) {
+                delayTicks = Math.max(delayTicks, livingVictim.getMaximumNoDamageTicks());
+            }
 
             int taskId = new BukkitRunnable() {
                 @Override
@@ -122,7 +127,7 @@ public class DualWieldEnchant extends WbsEnchantment implements DamageEnchant {
                     attacker.swingOffHand();
                     DUAL_SWING_TASKS.remove(attacker.getUniqueId());
                 }
-            }.runTaskLater(WbsEnchants.getInstance(), (long) attackDelayInTicks).getTaskId();
+            }.runTaskLater(WbsEnchants.getInstance(), (long) delayTicks).getTaskId();
 
             DUAL_SWING_TASKS.put(attacker.getUniqueId(), taskId);
         }

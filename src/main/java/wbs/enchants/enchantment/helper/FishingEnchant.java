@@ -30,7 +30,7 @@ public interface FishingEnchant extends EnchantInterface, AutoRegistrableEnchant
     );
 
     default void registerFishingEvents() {
-        EventUtils.register(PlayerFishEvent.class, this::onFishEvent, EventPriority.LOWEST, true);
+        EventUtils.register(PlayerFishEvent.class, this::onFishEvent, EventPriority.HIGH, true);
         EventUtils.register(ProjectileHitEvent.class, this::onHookHit, EventPriority.MONITOR, true);
     }
 
@@ -111,11 +111,10 @@ public interface FishingEnchant extends EnchantInterface, AutoRegistrableEnchant
 
             if (handle != null) {
                 Object nmsItem = item.getClass().getMethod("unwrap", ItemStack.class).invoke(null, item);
-                Object interactionHand = reflectiveGet(Class.forName("org.bukkit.craftbukkit.CraftEquipmentSlot"), "getHand", hand);
 
-                reflectiveGet(handle, "retrieve", interactionHand, nmsItem);
+                reflectiveGet(handle, "retrieve", nmsItem);
             }
-        } catch (NoSuchMethodException | InvocationTargetException | IllegalAccessException | ClassNotFoundException e) {
+        } catch (NoSuchMethodException | InvocationTargetException | IllegalAccessException e) {
             throw new RuntimeException("Failed to invoke retrieve via reflection.", e);
         } finally {
             if (suppressEvent) {

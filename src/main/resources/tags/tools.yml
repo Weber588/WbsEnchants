@@ -1,0 +1,25 @@
+
+
+# If no namespace is provided, the plugin default will be used.
+tools/iron:
+  registry: ITEM_TYPE
+  # Optional -- the name of the section will be used if this isn't present.
+  tag-key: tools/iron
+  # Default namespace in "include" is always minecraft:
+  include:
+    - iron_pickaxe
+    - iron_shovel
+    - iron_axe
+    - iron_sword
+    - iron_hoe
+
+# If no namespace is provided, the plugin default will be used.
+tools/gold:
+  registry: ITEM_TYPE
+  # Default namespace in "include" is always minecraft:
+  include:
+    - gold_pickaxe
+    - gold_shovel
+    - gold_axe
+    - gold_sword
+    - gold_hoe

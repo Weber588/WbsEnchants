@@ -7,6 +7,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.block.BlockDropItemEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
+import org.bukkit.event.world.ChunkLoadEvent;
 import org.bukkit.inventory.EntityEquipment;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.persistence.PersistentDataContainer;
@@ -142,6 +143,17 @@ public interface BlockEnchant extends EnchantInterface, AutoRegistrableEnchant {
     default void registerBlockEvents() {
         EventUtils.register(BlockPlaceEvent.class, this::onPlace, EventPriority.NORMAL, true);
         EventUtils.register(BlockDropItemEvent.class, this::onDrop, EventPriority.NORMAL, true);
+        EventUtils.register(ChunkLoadEvent.class, this::onLoad, EventPriority.NORMAL, true);
+    }
+
+    default void onLoad(ChunkLoadEvent event) {
+        Map<Block, Map<BlockEnchant, Integer>> blockEnchantments = getBlockEnchantments(event.getChunk());
+
+        blockEnchantments.forEach((block, enchants) -> {
+            if (enchants.containsKey(this)) {
+                onLoad(event, block, enchants.get(this));
+            }
+        });
     }
 
     default void onPlace(BlockPlaceEvent event) {
@@ -198,7 +210,7 @@ public interface BlockEnchant extends EnchantInterface, AutoRegistrableEnchant {
         ItemStack dropped = null;
         Material material = event.getBlockState().getBlockData().getPlacementMaterial();
         for (Item item : items) {
-            if (item.getItemStack().getType() == material) {
+            if (item.getItemStack().getType() == material && item.getItemStack().getAmount() == 1) {
                 dropped = item.getItemStack();
                 break;
             }
@@ -223,6 +235,10 @@ public interface BlockEnchant extends EnchantInterface, AutoRegistrableEnchant {
     }
 
     default void afterDrop(BlockDropItemEvent event, ItemStack droppedItem) {
+
+    }
+
+    default void onLoad(ChunkLoadEvent event, Block block, int level) {
 
     }
 

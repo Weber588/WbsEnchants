@@ -35,7 +35,7 @@ public abstract class AbstractBlockSubcommand extends WbsSubcommand {
             return 0;
         }
 
-        AttributeInstance reachAttribute = player.getAttribute(Attribute.PLAYER_BLOCK_INTERACTION_RANGE);
+        AttributeInstance reachAttribute = player.getAttribute(Attribute.BLOCK_INTERACTION_RANGE);
         int range = 5;
         if (reachAttribute != null) {
             range = (int) Math.ceil(reachAttribute.getValue());

@@ -1,6 +1,8 @@
 package wbs.enchants.enchantment;
 
+import io.papermc.paper.registry.data.EnchantmentRegistryEntry;
 import io.papermc.paper.registry.keys.tags.ItemTypeTagKeys;
+import net.kyori.adventure.text.Component;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import org.bukkit.Tag;
@@ -34,7 +36,6 @@ import wbs.enchants.WbsEnchants;
 import wbs.enchants.util.DamageUtils;
 import wbs.enchants.util.EntityUtils;
 import wbs.enchants.util.MaterialUtils;
-import wbs.utils.util.WbsEnums;
 import wbs.utils.util.string.WbsStringify;
 
 import java.time.Duration;
@@ -55,7 +56,9 @@ public class ImmortalEnchant extends WbsEnchantment {
         super("immortal", DEFAULT_DESCRIPTION);
 
         getDefinition()
-                .supportedItems(ItemTypeTagKeys.ENCHANTABLE_DURABILITY);
+                .supportedItems(ItemTypeTagKeys.ENCHANTABLE_DURABILITY)
+                .minimumCost(EnchantmentRegistryEntry.EnchantmentCost.of(5, 8))
+                .maximumCost(EnchantmentRegistryEntry.EnchantmentCost.of(55, 8));
     }
 
     // region Item damage/break
@@ -128,20 +131,23 @@ public class ImmortalEnchant extends WbsEnchantment {
     }
 
     private void notifyImmortal(@NotNull Player player, @Nullable ItemStack item) {
-        String displayName = "item";
+        Component displayName = Component.text("Your item");
         if (item != null) {
-            displayName = WbsEnums.toPrettyString(item.getType());
+            displayName = item.effectiveName();
         }
 
-        sendActionBar("Your " + displayName + " was saved by its "
-                + displayName() + "&r enchantment!", player);
+        sendActionBar(displayName
+                        .append(Component.text(" was saved by its "))
+                        .append(displayName())
+                        .append(Component.text(" enchantment!")),
+                player);
     }
 
     // endregion
 
     // region Durability-causing events
 
-    @EventHandler(ignoreCancelled = true)
+    @EventHandler(ignoreCancelled = true, priority = EventPriority.HIGHEST)
     public void onBreakBlock(BlockBreakEvent event) {
         Player player = event.getPlayer();
         ItemStack item = player.getInventory().getItemInMainHand();
@@ -185,7 +191,7 @@ public class ImmortalEnchant extends WbsEnchantment {
         }
     }
 
-    @EventHandler(ignoreCancelled = true)
+    @EventHandler(ignoreCancelled = true, priority = EventPriority.HIGHEST)
     public void onCatchFish(PlayerFishEvent event) {
         if (event.getState() != PlayerFishEvent.State.FISHING) {
             return;
@@ -212,7 +218,7 @@ public class ImmortalEnchant extends WbsEnchantment {
     /**
      * Used to catch random events from a right click on a block that uses durability
      */
-    @EventHandler(ignoreCancelled = true)
+    @EventHandler(ignoreCancelled = true, priority = EventPriority.HIGHEST)
     public void useItem(PlayerInteractEvent event) {
         Block block = event.getClickedBlock();
         if (block == null) {
@@ -247,7 +253,7 @@ public class ImmortalEnchant extends WbsEnchantment {
         }
     }
 
-    @EventHandler(ignoreCancelled = true)
+    @EventHandler(ignoreCancelled = true, priority = EventPriority.HIGHEST)
     public void onShoot(EntityShootBowEvent event) {
         ItemStack item = event.getBow();
         if (item == null) {
@@ -323,7 +329,7 @@ public class ImmortalEnchant extends WbsEnchantment {
 
             if (trueAge < ITEM_DESPAWN_AGE) {
                 event.setCancelled(true);
-                itemEntity.setTicksLived(0);
+                itemEntity.setTicksLived(1);
 
                 container.set(TRUE_AGE_KEY, PersistentDataType.INTEGER, trueAge);
             }

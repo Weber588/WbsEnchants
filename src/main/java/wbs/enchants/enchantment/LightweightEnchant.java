@@ -26,9 +26,8 @@ public class LightweightEnchant extends WbsEnchantment implements DamageEnchant 
         return 30.0 / level;
     }
 
-    private static final String DEFAULT_DESCRIPTION = "While holding a Lightweight shield in your offhand, you have a "
-            + getAutoblockChance(1) + "% chance per level of automatically blocking an attack, " +
-            "if you could block it with the shield.";
+    private static final String DEFAULT_DESCRIPTION = "Shield has a  a "
+            + getAutoblockChance(1) + "% chance per level of automatically blocking an attack.";
 
     public LightweightEnchant() {
         super("lightweight", DEFAULT_DESCRIPTION);

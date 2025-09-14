@@ -442,7 +442,7 @@ public class WbsEnchantsBootstrap implements PluginBootstrap {
             enchantsConfig = null;
         }
 
-        manager.registerEventHandler(RegistryEvents.ENCHANTMENT.freeze().newHandler(event -> {
+        manager.registerEventHandler(RegistryEvents.ENCHANTMENT.compose().newHandler(event -> {
             List<WbsEnchantment> invalidEnchantments = new LinkedList<>();
             for (WbsEnchantment enchant : EnchantManager.getCustomRegistered()) {
 
@@ -504,7 +504,7 @@ public class WbsEnchantsBootstrap implements PluginBootstrap {
         private Collection<TypedKey<T>> typedKeys;
         private Collection<TagEntry<T>> tagEntries;
 
-        private static CustomTag<Enchantment> getKeyTag(TagKey<Enchantment> key, WbsEnchantment ... enchants) {
+        private static CustomTag<Enchantment> getKeyTag(TagKey<Enchantment> key, WbsEnchantment... enchants) {
             CustomTag<Enchantment> tag = new CustomTag<>(key);
 
             tag.typedKeys = Arrays.stream(enchants).map(WbsEnchantment::getTypedKey).toList();
@@ -513,7 +513,7 @@ public class WbsEnchantsBootstrap implements PluginBootstrap {
         }
 
         @SafeVarargs
-        private static <T extends Keyed> CustomTag<T> getKeyTag(TagKey<T> key, TypedKey<T> ... keys) {
+        private static <T extends Keyed> CustomTag<T> getKeyTag(TagKey<T> key, TypedKey<T>... keys) {
             CustomTag<T> tag = new CustomTag<>(key);
 
             tag.typedKeys = List.of(keys);
@@ -531,7 +531,7 @@ public class WbsEnchantsBootstrap implements PluginBootstrap {
         }
 
         @SafeVarargs
-        private CustomTag(TagKey<T> key, TypedKey<T> ... keys) {
+        private CustomTag(TagKey<T> key, TypedKey<T>... keys) {
             this(key, Arrays.asList(keys));
         }
 

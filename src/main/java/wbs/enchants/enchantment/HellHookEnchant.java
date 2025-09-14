@@ -1,6 +1,7 @@
 package wbs.enchants.enchantment;
 
 import io.papermc.paper.registry.keys.ItemTypeKeys;
+import net.kyori.adventure.util.TriState;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.FishHook;
 import org.bukkit.entity.Item;
@@ -39,7 +40,7 @@ public class HellHookEnchant extends WbsEnchantment implements FishingEnchant {
         FishHook hook = event.getHook();
         switch (event.getState()) {
             case FISHING -> {
-                hook.setVisualFire(true);
+                hook.setVisualFire(TriState.TRUE);
                 hook.setFireTicks(hook.getMaxFireTicks());
             }
             case CAUGHT_FISH -> {

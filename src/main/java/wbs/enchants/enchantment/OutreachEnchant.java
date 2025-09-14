@@ -1,11 +1,14 @@
 package wbs.enchants.enchantment;
 
-import io.papermc.paper.registry.keys.tags.ItemTypeTagKeys;
+import io.papermc.paper.registry.data.EnchantmentRegistryEntry;
 import org.bukkit.block.Beacon;
-import org.bukkit.event.block.BlockDropItemEvent;
+import org.bukkit.block.Block;
 import org.bukkit.event.block.BlockPlaceEvent;
+import org.bukkit.event.world.ChunkLoadEvent;
 import org.bukkit.inventory.ItemStack;
 import wbs.enchants.WbsEnchantment;
+import wbs.enchants.WbsEnchants;
+import wbs.enchants.WbsEnchantsBootstrap;
 import wbs.enchants.enchantment.helper.BlockStateEnchant;
 
 public class OutreachEnchant extends WbsEnchantment implements BlockStateEnchant<Beacon> {
@@ -17,8 +20,10 @@ public class OutreachEnchant extends WbsEnchantment implements BlockStateEnchant
         super("outreach", DESCRIPTION);
 
         getDefinition()
-                .supportedItems(ItemTypeTagKeys.ENCHANTABLE_WEAPON)
-                .maxLevel(3);
+                .supportedItems(WbsEnchantsBootstrap.ENCHANTABLE_BEACON)
+                .maxLevel(3)
+                .minimumCost(EnchantmentRegistryEntry.EnchantmentCost.of(5, 8))
+                .maximumCost(EnchantmentRegistryEntry.EnchantmentCost.of(55, 8));
     }
 
     @Override
@@ -28,20 +33,46 @@ public class OutreachEnchant extends WbsEnchantment implements BlockStateEnchant
 
     @Override
     public void afterPlace(BlockPlaceEvent event, ItemStack placedItem) {
-        if (!(event.getBlock().getState() instanceof Beacon beacon)) {
+        if (!(event.getBlock().getState() instanceof Beacon)) {
             return;
         }
 
-        beacon.update();
+        startBeaconTimer(event.getBlock());
     }
 
     @Override
-    public void editStateOnPlace(BlockPlaceEvent event, Beacon beacon, ItemStack placedItem) {
-        beacon.setEffectRange(beacon.getEffectRange() * (PERCENT_PER_LEVEL + 100) / 100 * getLevel(placedItem));
+    public void onLoad(ChunkLoadEvent event, Block block, int level) {
+        if (!(block.getState() instanceof Beacon)) {
+            return;
+        }
+
+        startBeaconTimer(block);
     }
 
-    @Override
-    public void afterDrop(BlockDropItemEvent event, Beacon beacon, ItemStack droppedItem) {
+    private void startBeaconTimer(Block block) {
+        WbsEnchants.getInstance().runTimer(task -> {
+            if (!block.getChunk().isLoaded()) {
+                task.cancel();
+                return;
+            }
 
+            if (!(block.getState() instanceof Beacon currentBeacon)) {
+                task.cancel();
+                return;
+            }
+
+            Integer currentLevel = getLevel(block);
+            if (currentLevel == null) {
+                task.cancel();
+                return;
+            }
+
+            int tier = currentBeacon.getTier();
+            int defaultRange = 10 * tier + 10;
+
+            currentBeacon.setEffectRange((double) defaultRange * (PERCENT_PER_LEVEL + 100) / 100 * currentLevel);
+
+            currentBeacon.update();
+        }, 20, 20);
     }
 }

@@ -1,6 +1,7 @@
 package wbs.enchants;
 
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.util.Ticks;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.LivingEntity;
@@ -115,6 +116,10 @@ public abstract class WbsEnchantment implements Comparable<WbsEnchantment>, List
 
     public void sendActionBar(String message, Player player) {
         WbsEnchants.getInstance().sendActionBar(message, player);
+    }
+
+    public void sendActionBar(Component message, Player player) {
+        WbsEnchants.getInstance().buildMessageNoPrefix("").append(message).build().sendActionBar(player);
     }
 
     /**
@@ -259,7 +264,7 @@ public abstract class WbsEnchantment implements Comparable<WbsEnchantment>, List
      * @return True if a cooldown was started, false if it hasn't been long enough.
      */
     protected boolean newCooldown(PersistentDataHolder holder, int cooldownTicks) {
-        if (CooldownManager.getTimeSinceStart(holder, getKey()) >= cooldownTicks) {
+        if (CooldownManager.getMillisSinceStart(holder, getKey()) >= cooldownTicks * Ticks.SINGLE_TICK_DURATION_MS) {
             CooldownManager.startCooldown(holder, getKey());
             return true;
         }

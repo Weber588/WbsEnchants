@@ -70,13 +70,13 @@ public class FleecingEnchant extends WbsEnchantment {
 
         public ShearEntityEvent(PlayerShearEntityEvent event) {
             setDrops = event::setDrops;
-            drops = event.getDrops();
+            drops = new LinkedList<>(event.getDrops());
             tool = event.getItem();
         }
 
         public ShearEntityEvent(BlockShearEntityEvent event) {
             setDrops = event::setDrops;
-            drops = event.getDrops();
+            drops = new LinkedList<>(event.getDrops());
             tool = event.getTool();
         }
 

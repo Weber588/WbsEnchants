@@ -6,6 +6,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Particle;
 import org.bukkit.World;
+import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.block.Action;
@@ -16,6 +17,7 @@ import org.bukkit.map.*;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.scheduler.BukkitRunnable;
+import org.bukkit.util.Vector;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import wbs.enchants.WbsEnchantment;
@@ -76,6 +78,13 @@ public class TransferenceEnchant extends WbsEnchantment {
             return;
         }
 
+        World playerWorld = player.getWorld();
+
+        // If player is underground/can't go straight up. Not perfect on diagonals, but good enough
+        if (!playerWorld.hasCeiling() && player.getLocation().getY() < playerWorld.getHighestBlockYAt(player.getLocation())) {
+            return;
+        }
+
         if (isEnchantmentOn(item)) {
             if (!(item.getItemMeta() instanceof MapMeta meta)) {
                 return;
@@ -86,8 +95,8 @@ public class TransferenceEnchant extends WbsEnchantment {
                 return;
             }
 
-            World world = mapView.getWorld();
-            if (world == null) {
+            World mapWorld = mapView.getWorld();
+            if (mapWorld == null) {
                 return;
             }
 
@@ -99,7 +108,7 @@ public class TransferenceEnchant extends WbsEnchantment {
                 case FARTHEST -> 16;
             };
 
-            MapView temp = Bukkit.createMap(world);
+            MapView temp = Bukkit.createMap(mapWorld);
             MockCanvas canvas = new MockCanvas(temp, meta);
 
             mapView.getRenderers().forEach(mapRenderer -> mapRenderer.render(temp, canvas, player));
@@ -121,23 +130,42 @@ public class TransferenceEnchant extends WbsEnchantment {
                 xOffset -= worldWidth / 2;
                 zOffset -= worldWidth / 2;
 
-                location = new Location(world,
+                location = new Location(mapWorld,
                         mapView.getCenterX() + xOffset,
                         0,
                         mapView.getCenterZ() + zOffset);
 
-                location = world.getHighestBlockAt(location).getLocation();
-            } while ((location == null || location.getY() <= world.getMinHeight()) && attempts <= MAX_ATTEMPTS);
+                location = mapWorld.getHighestBlockAt(location).getLocation();
+
+                if (mapWorld.hasCeiling()) {
+                    Block safeBlock = WbsEntityUtil.getSafeLocation(player, location, mapWorld.getLogicalHeight(), new Vector(0, -1, 0));
+                    if (safeBlock == null) {
+                        location = null;
+                    } else {
+                        location = safeBlock.getLocation();
+                    }
+                }
+            } while ((location == null || location.getY() <= mapWorld.getMinHeight()) && attempts <= MAX_ATTEMPTS);
 
             if (attempts >= MAX_ATTEMPTS) {
                 // Nothing found, try middle location as a last resort (also allows better targeting in the end)
-                location = new Location(world,
+                location = new Location(mapWorld,
                         mapView.getCenterX(),
                         0,
                         mapView.getCenterZ());
 
-                location = world.getHighestBlockAt(location).getLocation();
-                if (location.getY() <= world.getMinHeight()) {
+                location = mapWorld.getHighestBlockAt(location).getLocation();
+
+                if (mapWorld.hasCeiling()) {
+                    Block safeBlock = WbsEntityUtil.getSafeLocation(player, location, mapWorld.getLogicalHeight(), new Vector(0, -1, 0));
+                    if (safeBlock == null) {
+                        location = null;
+                    } else {
+                        location = safeBlock.getLocation();
+                    }
+                }
+
+                if (location == null || location.getY() <= mapWorld.getMinHeight()) {
                     WIFF_EFFECT.play(WbsEntityUtil.getMiddleLocation(player));
                     sendActionBar("The map found nowhere to put you...", player);
                     return;
@@ -148,6 +176,12 @@ public class TransferenceEnchant extends WbsEnchantment {
 
             player.addPotionEffect(new PotionEffect(PotionEffectType.LEVITATION, floatTicks, 2));
             player.addPotionEffect(new PotionEffect(PotionEffectType.BLINDNESS, floatTicks * 2, 0));
+
+            Block safeBlock = WbsEntityUtil.getSafeLocation(player, location.clone().add(0, 15, 0), mapWorld.getLogicalHeight(), new Vector(0, -1, 0));
+            if (safeBlock != null) {
+                location = safeBlock.getLocation();
+            }
+
             Location finalLocation = location.add(0, 15, 0);
 
             RingParticleEffect liftingEffect = new RingParticleEffect();

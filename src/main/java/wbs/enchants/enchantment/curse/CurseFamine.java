@@ -29,7 +29,7 @@ public class CurseFamine extends WbsCurse {
         ItemStack enchantedItem = getIfEnchanted(attacker);
         if (enchantedItem != null) {
 
-            AttributeInstance reachAttribute = attacker.getAttribute(Attribute.PLAYER_ENTITY_INTERACTION_RANGE);
+            AttributeInstance reachAttribute = attacker.getAttribute(Attribute.ENTITY_INTERACTION_RANGE);
             if (reachAttribute != null) {
                 double reach = reachAttribute.getValue();
 

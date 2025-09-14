@@ -1,5 +1,6 @@
 package wbs.enchants.enchantment;
 
+import io.papermc.paper.registry.data.EnchantmentRegistryEntry;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.*;
@@ -29,7 +30,9 @@ public class ButcheringEnchant extends TargetedDamageEnchant {
         super("butchering", DEFAULT_DESCRIPTION);
 
         getDefinition()
-                .maxLevel(3);
+                .maxLevel(3)
+                .minimumCost(EnchantmentRegistryEntry.EnchantmentCost.of(5, 6))
+                .maximumCost(EnchantmentRegistryEntry.EnchantmentCost.of(25, 6));
     }
 
     @EventHandler

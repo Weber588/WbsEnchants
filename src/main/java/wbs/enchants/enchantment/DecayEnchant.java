@@ -1,5 +1,6 @@
 package wbs.enchants.enchantment;
 
+import io.papermc.paper.registry.data.EnchantmentRegistryEntry;
 import io.papermc.paper.registry.keys.tags.ItemTypeTagKeys;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
@@ -26,7 +27,9 @@ public class DecayEnchant extends TargetedDamageEnchant {
         getDefinition()
                 .maxLevel(5)
                 .weight(5)
-                .supportedItems(ItemTypeTagKeys.HOES);
+                .supportedItems(ItemTypeTagKeys.HOES)
+                .minimumCost(EnchantmentRegistryEntry.EnchantmentCost.of(5, 6))
+                .maximumCost(EnchantmentRegistryEntry.EnchantmentCost.of(25, 6));
     }
 
     @EventHandler

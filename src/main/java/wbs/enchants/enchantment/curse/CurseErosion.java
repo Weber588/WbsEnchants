@@ -5,6 +5,8 @@ import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
+import org.bukkit.block.BlockState;
+import org.bukkit.block.data.BlockData;
 import org.bukkit.entity.FallingBlock;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -35,7 +37,7 @@ public class CurseErosion extends WbsCurse {
             BlockFace.WEST
     );
 
-    private static final double CHANCE_PER_LEVEL = 25;
+    private static final double CHANCE_PER_LEVEL = 33;
 
     public CurseErosion() {
         super("erosion", DEFAULT_DESCRIPTION);
@@ -80,10 +82,14 @@ public class CurseErosion extends WbsCurse {
                 continue;
             }
 
-            world.spawn(location, FallingBlock.class, CreatureSpawnEvent.SpawnReason.ENCHANTMENT, (fallingBlock) -> {
-                fallingBlock.setBlockData(block.getBlockData());
-                fallingBlock.setBlockState(block.getState());
-                block.setType(Material.AIR);
+            BlockData blockData = block.getBlockData();
+            BlockState state = block.getState();
+
+            block.setType(Material.AIR);
+
+            world.spawn(location.add(0.5, 0, 0.5), FallingBlock.class, CreatureSpawnEvent.SpawnReason.ENCHANTMENT, (fallingBlock) -> {
+                fallingBlock.setBlockData(blockData);
+                fallingBlock.setBlockState(state);
             });
         }
     }

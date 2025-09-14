@@ -65,6 +65,7 @@ public class SubcommandList extends WbsSubcommand {
     private void sendEnchantmentList(CommandSender sender, @NotNull String namespace) {
         List<EnchantmentDefinition> enchants = EnchantManager.getAllKnownDefinitions()
                 .stream()
+                // TODO: Add a "show-in-commands" field on enchantment def, so admins can manually hide util/backend enchants like "Illegal enchantment" or "I AM ERROR"
                 .filter(def -> def.key().namespace().equalsIgnoreCase(namespace))
                 .sorted()
                 .collect(Collectors.toList());

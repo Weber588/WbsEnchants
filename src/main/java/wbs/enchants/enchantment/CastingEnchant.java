@@ -1,5 +1,6 @@
 package wbs.enchants.enchantment;
 
+import io.papermc.paper.registry.data.EnchantmentRegistryEntry;
 import io.papermc.paper.registry.keys.ItemTypeKeys;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.player.PlayerFishEvent;
@@ -18,7 +19,9 @@ public class CastingEnchant extends WbsEnchantment {
 
         getDefinition()
                 .maxLevel(3)
-                .supportedItems(ItemTypeKeys.FISHING_ROD);
+                .supportedItems(ItemTypeKeys.FISHING_ROD)
+                .minimumCost(EnchantmentRegistryEntry.EnchantmentCost.of(5, 6))
+                .maximumCost(EnchantmentRegistryEntry.EnchantmentCost.of(25, 6));
     }
 
     @EventHandler

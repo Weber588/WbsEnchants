@@ -1,5 +1,6 @@
 package wbs.enchants.enchantment;
 
+import io.papermc.paper.registry.data.EnchantmentRegistryEntry;
 import io.papermc.paper.registry.keys.tags.ItemTypeTagKeys;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
@@ -38,7 +39,9 @@ public class HarvesterEnchant extends WbsEnchantment {
         getDefinition()
                 .maxLevel(2)
                 .supportedItems(ItemTypeTagKeys.HOES)
-                .targetDescription("Hoe");
+                .targetDescription("Hoe")
+                .minimumCost(EnchantmentRegistryEntry.EnchantmentCost.of(5, 8))
+                .maximumCost(EnchantmentRegistryEntry.EnchantmentCost.of(55, 8));
     }
 
     @EventHandler

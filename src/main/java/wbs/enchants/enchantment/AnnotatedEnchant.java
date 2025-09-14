@@ -1,5 +1,6 @@
 package wbs.enchants.enchantment;
 
+import io.papermc.paper.registry.data.EnchantmentRegistryEntry;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.server.MapInitializeEvent;
 import wbs.enchants.WbsEnchantment;
@@ -17,7 +18,9 @@ public class AnnotatedEnchant extends WbsEnchantment {
                 .exclusiveWith(WbsEnchantsBootstrap.EXCLUSIVE_SET_MAPS)
                 .addInjectInto(WbsEnchantsBootstrap.EXCLUSIVE_SET_MAPS)
                 .weight(5)
-                .targetDescription("Map");
+                .targetDescription("Map")
+                .minimumCost(EnchantmentRegistryEntry.EnchantmentCost.of(3, 6))
+                .maximumCost(EnchantmentRegistryEntry.EnchantmentCost.of(9, 6));
     }
 
     @EventHandler

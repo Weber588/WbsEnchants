@@ -5,9 +5,11 @@ import org.bukkit.entity.minecart.RideableMinecart;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.entity.EntityDismountEvent;
 import org.bukkit.event.entity.EntityPlaceEvent;
+import org.bukkit.event.vehicle.VehicleDamageEvent;
 import org.bukkit.event.vehicle.VehicleDestroyEvent;
 import org.bukkit.inventory.ItemStack;
 import wbs.enchants.WbsEnchantment;
+import wbs.enchants.WbsEnchants;
 import wbs.enchants.WbsEnchantsBootstrap;
 import wbs.enchants.enchantment.helper.VehicleEnchant;
 import wbs.enchants.util.EntityUtils;
@@ -36,11 +38,14 @@ public class QuickRideEnchant extends WbsEnchantment implements VehicleEnchant {
 
     @EventHandler
     public void onExitVehicle(EntityDismountEvent event) {
+        if (!isEnchanted(event.getDismounted())) {
+            return;
+        }
         if (event.getEntity() instanceof Player player) {
             Entity dismounted = event.getDismounted();
 
-            if (isEnchanted(dismounted) && dismounted instanceof Damageable damageable) {
-                player.damage(damageable.getHealth() + 1, dismounted);
+            if (isEnchanted(dismounted)) {
+                WbsEnchants.getInstance().runSync(() -> player.attack(dismounted));
             }
         }
     }
@@ -50,6 +55,16 @@ public class QuickRideEnchant extends WbsEnchantment implements VehicleEnchant {
         if (event.getAttacker() instanceof Player player) {
             spawnedItem.remove();
             EntityUtils.giveSafely(player, spawnedItem.getItemStack());
+        }
+    }
+
+    @EventHandler
+    public void onDamage(VehicleDamageEvent event) {
+        if (!isEnchanted(event.getVehicle())) {
+            return;
+        }
+        if (event.getAttacker() instanceof Player && event.getVehicle().getPassengers().isEmpty()) {
+            event.setDamage(100);
         }
     }
 

@@ -1,5 +1,6 @@
 package wbs.enchants.enchantment;
 
+import io.papermc.paper.registry.data.EnchantmentRegistryEntry;
 import io.papermc.paper.registry.keys.ItemTypeKeys;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -30,7 +31,9 @@ public class CavingEnchant extends WbsEnchantment implements MovementEnchant {
 
         getDefinition()
                 .maxLevel(1)
-                .supportedItems(ItemTypeKeys.BUNDLE);
+                .supportedItems(ItemTypeKeys.BUNDLE)
+                .minimumCost(EnchantmentRegistryEntry.EnchantmentCost.of(5, 6))
+                .maximumCost(EnchantmentRegistryEntry.EnchantmentCost.of(25, 6));
     }
 
     @EventHandler

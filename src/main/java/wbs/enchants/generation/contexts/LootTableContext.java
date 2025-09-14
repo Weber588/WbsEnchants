@@ -138,7 +138,7 @@ public class LootTableContext extends ExistingLootContext {
 
                 builder.killer(player);
 
-                AttributeInstance luckAttribute = player.getAttribute(Attribute.GENERIC_LUCK);
+                AttributeInstance luckAttribute = player.getAttribute(Attribute.LUCK);
                 if (luckAttribute != null) {
                     builder.luck((float) luckAttribute.getValue());
                 }

@@ -1,10 +1,16 @@
 package wbs.enchants.enchantment;
 
 import io.papermc.paper.registry.keys.tags.ItemTypeTagKeys;
+import org.bukkit.Bukkit;
+import org.bukkit.NamespacedKey;
 import org.bukkit.entity.*;
+import org.bukkit.event.EventHandler;
 import org.bukkit.event.entity.CreatureSpawnEvent;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
+import org.bukkit.event.entity.EntityDamageEvent;
+import org.bukkit.event.entity.EntityTargetLivingEntityEvent;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.persistence.PersistentDataContainer;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import wbs.enchants.WbsEnchantment;
@@ -13,13 +19,18 @@ import wbs.enchants.enchantment.helper.DamageEnchant;
 import wbs.enchants.type.EnchantmentTypeManager;
 import wbs.utils.util.WbsMath;
 import wbs.utils.util.entities.WbsEntityUtil;
+import wbs.utils.util.persistent.WbsPersistentDataType;
 
 import java.util.Random;
+import java.util.UUID;
 
 public class GhostPactEnchant extends WbsEnchantment implements DamageEnchant {
+    private static final NamespacedKey SUMMONER_KEY = WbsEnchantsBootstrap.createKey("ghost_pact_summoner");
+    private static final NamespacedKey TARGET_KEY = WbsEnchantsBootstrap.createKey("ghost_pact_target");
+
     private static final double CHANCE_PER_HIT = 5;
 
-    private static final String DEFAULT_DESCRIPTION = "When you take more than 2 hearts of damage in a single hit, you " +
+    private static final String DEFAULT_DESCRIPTION = "When taking damage, you " +
             "have a chance of summoning your own Vex to engage your attacker!";
 
     public GhostPactEnchant() {
@@ -42,8 +53,8 @@ public class GhostPactEnchant extends WbsEnchantment implements DamageEnchant {
         if (item != null) {
             int level = getLevel(item);
 
-            if (WbsMath.chance(CHANCE_PER_HIT)) {
-                int spawnCount = Math.min(1, (new Random().nextInt(level) + 1) / 2);
+            if (WbsMath.chance(CHANCE_PER_HIT * level)) {
+                int spawnCount = Math.max(1, (new Random().nextInt(level) + 1) * 2 / 3);
 
                 for (int i = 0; i < spawnCount; i++) {
                     Vex vex = victim.getWorld().spawn(
@@ -56,10 +67,55 @@ public class GhostPactEnchant extends WbsEnchantment implements DamageEnchant {
                     // Summoner is stored as Mob, which LivingEntity/Player don't extend, so worst case
                     // the vex might turn around and hit the wearer themselves idk
                     vex.setLimitedLifetime(true);
-                    vex.setLimitedLifetimeTicks(100);
+                    vex.setLimitedLifetimeTicks(200);
                     vex.setTarget(attacker);
-                    
+                    if (livingVictim instanceof Mob mob) {
+                        vex.setSummoner(mob);
+                    }
+
+                    PersistentDataContainer vexContainer = vex.getPersistentDataContainer();
+
+                    vexContainer.set(SUMMONER_KEY, WbsPersistentDataType.UUID, livingVictim.getUniqueId());
+                    vexContainer.set(TARGET_KEY, WbsPersistentDataType.UUID, attacker.getUniqueId());
+
                     vex.setCharging(true);
+                }
+            }
+        }
+    }
+
+    @EventHandler
+    public void targetEvent(EntityTargetLivingEntityEvent event) {
+        Entity entity = event.getEntity();
+        PersistentDataContainer container = entity.getPersistentDataContainer();
+
+        UUID summonerUUID = container.get(SUMMONER_KEY, WbsPersistentDataType.UUID);
+        UUID targetUUID = container.get(TARGET_KEY, WbsPersistentDataType.UUID);
+
+        Entity preferredTarget = null;
+        if (targetUUID != null) {
+            preferredTarget = Bukkit.getEntity(targetUUID);
+            if (preferredTarget == null || !preferredTarget.isValid() || preferredTarget.isDead()) {
+                preferredTarget = null;
+            }
+        }
+
+        if (preferredTarget != null) {
+            event.setTarget(preferredTarget);
+        } else {
+            LivingEntity target = event.getTarget();
+            if (target != null) {
+                if (target.getUniqueId().equals(summonerUUID)) {
+                    event.setTarget(null);
+
+                    Entity summoner = Bukkit.getEntity(summonerUUID);
+                    if (summoner != null && summoner.isValid() && !summoner.isDead()) {
+                        EntityDamageEvent lastDamageCause = summoner.getLastDamageCause();
+                        if (lastDamageCause != null) {
+                            Entity lastAttacker = lastDamageCause.getDamageSource().getCausingEntity();
+                            event.setTarget(lastAttacker);
+                        }
+                    }
                 }
             }
         }
