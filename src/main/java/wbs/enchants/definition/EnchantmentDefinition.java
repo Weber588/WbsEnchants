@@ -3,6 +3,7 @@ package wbs.enchants.definition;
 import io.papermc.paper.registry.RegistryKey;
 import io.papermc.paper.registry.TypedKey;
 import io.papermc.paper.registry.data.EnchantmentRegistryEntry;
+import io.papermc.paper.registry.data.PaperEnchantmentRegistryEntry;
 import io.papermc.paper.registry.keys.tags.EnchantmentTagKeys;
 import io.papermc.paper.registry.set.RegistryKeySet;
 import io.papermc.paper.registry.set.RegistrySet;
@@ -16,6 +17,7 @@ import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.Style;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 import net.kyori.adventure.text.serializer.gson.GsonComponentSerializer;
+import net.minecraft.core.component.DataComponentMap;
 import org.bukkit.Bukkit;
 import org.bukkit.NamespacedKey;
 import org.bukkit.configuration.ConfigurationSection;
@@ -41,6 +43,7 @@ import wbs.enchants.util.EnchantUtils;
 import wbs.utils.exceptions.InvalidConfigurationException;
 import wbs.utils.util.string.RomanNumerals;
 
+import java.lang.reflect.Field;
 import java.util.*;
 import java.util.function.Consumer;
 
@@ -110,6 +113,9 @@ public class EnchantmentDefinition extends EnchantmentWrapper implements Compara
     private EnchantmentRegistryEntry.EnchantmentCost maximumCost = EnchantmentRegistryEntry.EnchantmentCost.of(25, 8);
     private int anvilCost = 1;
     private EquipmentSlotGroup activeSlots = EquipmentSlotGroup.ANY;
+
+    @NotNull
+    private final DataComponentMap.Builder effects = DataComponentMap.builder();
 
     private Set<TagKey<Enchantment>> injectInto = new HashSet<>();
 
@@ -225,6 +231,10 @@ public class EnchantmentDefinition extends EnchantmentWrapper implements Compara
     public EnchantmentDefinition activeSlots(EquipmentSlotGroup activeSlots) {
         this.activeSlots = activeSlots;
         return this;
+    }
+
+    public DataComponentMap.Builder effects() {
+        return effects;
     }
 
     public EnchantmentDefinition addInjectInto(List<TagKey<Enchantment>> injectInto) {
@@ -376,6 +386,19 @@ public class EnchantmentDefinition extends EnchantmentWrapper implements Compara
             anvilCost = fallback.anvilCost();
             maxLevel = fallback.maxLevel();
             weight = fallback.weight();
+
+            if (fallback instanceof PaperEnchantmentRegistryEntry.PaperBuilder paperFallback) {
+                try {
+                    Field effectsField = PaperEnchantmentRegistryEntry.class.getDeclaredField("effects");
+                    effectsField.setAccessible(true);
+                    DataComponentMap effects = (DataComponentMap) effectsField.get(paperFallback);
+                    if (!effects.equals(DataComponentMap.EMPTY)) {
+                        this.effects.addAll(effects);
+                    }
+                } catch (NoSuchFieldException | IllegalAccessException e) {
+                    throw new RuntimeException(e);
+                }
+            }
         }
     }
 
@@ -545,6 +568,21 @@ public class EnchantmentDefinition extends EnchantmentWrapper implements Compara
 
     public void buildTo(@NotNull TagProducer tagProducer,
                         EnchantmentRegistryEntry.Builder builder) {
+        // NMS start
+        if (builder instanceof PaperEnchantmentRegistryEntry.PaperBuilder paperBuilder) {
+            try {
+                Field effectsField = PaperEnchantmentRegistryEntry.class.getDeclaredField("effects");
+                effectsField.setAccessible(true);
+                DataComponentMap effects = (DataComponentMap) effectsField.get(paperBuilder);
+                if (effects.equals(DataComponentMap.EMPTY)) {
+                    effectsField.set(paperBuilder, this.effects.build());
+                }
+            } catch (NoSuchFieldException | IllegalAccessException e) {
+                throw new RuntimeException(e);
+            }
+        }
+        // NMS end
+
         builder.description(displayName())
                 .minimumCost(minimumCost)
                 .maximumCost(maximumCost)

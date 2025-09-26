@@ -109,6 +109,10 @@ public class EnchantManager {
     public static final ReflexiveEnchant REFLEXIVE = new ReflexiveEnchant();
     public static final DemetrienEnchant DEMETRIEN = new DemetrienEnchant();
     public static final ThrowingEnchant THROWING = new ThrowingEnchant();
+    public static final GallopingEnchant GALLOPING = new GallopingEnchant();
+    public static final LeapingEnchant LEAPING = new LeapingEnchant();
+    public static final CavalrousEnchant CAVALROUS = new CavalrousEnchant();
+    public static final FungalHeartEnchant FUNGAL_HEART = new FungalHeartEnchant();
 
     public static final CurseRebuking CURSE_REBUKING = new CurseRebuking();
     public static final CurseVanilla CURSE_VANILLA = new CurseVanilla();

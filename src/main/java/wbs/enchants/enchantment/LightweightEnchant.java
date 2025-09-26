@@ -1,7 +1,6 @@
 package wbs.enchants.enchantment;
 
 import io.papermc.paper.registry.keys.ItemTypeKeys;
-import org.bukkit.EntityEffect;
 import org.bukkit.Location;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
@@ -37,6 +36,8 @@ public class LightweightEnchant extends WbsEnchantment implements DamageEnchant 
                 .supportedItems(ItemTypeKeys.SHIELD)
                 .weight(10);
     }
+
+
 
     @Override
     public void handleAttack(@NotNull EntityDamageByEntityEvent event, @NotNull LivingEntity attacker, @NotNull Entity victim, @Nullable Projectile projectile) {
@@ -94,7 +95,7 @@ public class LightweightEnchant extends WbsEnchantment implements DamageEnchant 
                 event.setCancelled(true);
 
                 playerVictim.swingOffHand();
-                playerVictim.playEffect(EntityEffect.SHIELD_BLOCK);
+            //    playerVictim.playEffect(EntityEffect.SHIELD_BLOCK);
 
                 int noDamageTicks = playerVictim.getMaximumNoDamageTicks() / ((maxLevel() + 1) - level);
                 playerVictim.setNoDamageTicks(noDamageTicks);

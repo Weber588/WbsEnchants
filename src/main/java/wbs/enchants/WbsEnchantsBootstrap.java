@@ -77,6 +77,7 @@ public class WbsEnchantsBootstrap implements PluginBootstrap {
     public static final TagKey<ItemType> ENCHANTABLE_BEACON = ItemTypeTagKeys.create(createKey("enchantable/beacon"));
     public static final TagKey<ItemType> ENCHANTABLE_ELYTRA = ItemTypeTagKeys.create(createKey("enchantable/elytra"));
     public static final TagKey<ItemType> ENCHANTABLE_BUCKET = ItemTypeTagKeys.create(createKey("enchantable/bucket"));
+    public static final TagKey<ItemType> ENCHANTABLE_HORSE_ARMOR = ItemTypeTagKeys.create(createKey("enchantable/horse_armor"));
 
     // TODO: Put this somewhere proper (config?)
     private static Set<CustomTag<ItemType>> getItemTags() {
@@ -207,6 +208,15 @@ public class WbsEnchantsBootstrap implements PluginBootstrap {
                                 ItemTypeKeys.TADPOLE_BUCKET,
                                 ItemTypeKeys.TROPICAL_FISH_BUCKET,
                                 ItemTypeKeys.WATER_BUCKET
+                        ),
+                        Set.of()
+                ),
+                new CustomTag<>(ENCHANTABLE_HORSE_ARMOR,
+                        Set.of(
+                                ItemTypeKeys.LEATHER_HORSE_ARMOR,
+                                ItemTypeKeys.IRON_HORSE_ARMOR,
+                                ItemTypeKeys.GOLDEN_HORSE_ARMOR,
+                                ItemTypeKeys.DIAMOND_HORSE_ARMOR
                         ),
                         Set.of()
                 )

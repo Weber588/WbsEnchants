@@ -12,7 +12,7 @@ import wbs.utils.util.WbsEnums;
 public class EntityCategoryCondition extends GenerationCondition {
     public static final String KEY = "entity-category";
 
-    private final EntityCategory type;
+    private final SpawnCategory type;
 
     public EntityCategoryCondition(@NotNull String key, ConfigurationSection parentSection, String directory) {
         super(key, parentSection, directory);
@@ -27,15 +27,15 @@ public class EntityCategoryCondition extends GenerationCondition {
         }
 
         if (typeString == null) {
-            throw new InvalidConfigurationException("Specify an entity category: " +
+            throw new InvalidConfigurationException("Specify a spawn category: " +
                     WbsEnums.joiningPrettyStrings(EntityCategory.class), directory);
         }
 
-        type = WbsEnums.getEnumFromString(EntityCategory.class, typeString);
+        type = WbsEnums.getEnumFromString(SpawnCategory.class, typeString);
 
         if (type == null) {
-            throw new InvalidConfigurationException("Invalid entity type \"" + typeString + "\". Valid options: " +
-                    WbsEnums.joiningPrettyStrings(EntityCategory.class), directory);
+            throw new InvalidConfigurationException("Invalid spawn category \"" + typeString + "\". Valid options: " +
+                    WbsEnums.joiningPrettyStrings(SpawnCategory.class), directory);
         }
     }
 
@@ -45,7 +45,7 @@ public class EntityCategoryCondition extends GenerationCondition {
             return false;
         }
 
-        return living.getCategory() == type;
+        return living.getSpawnCategory() == type;
     }
 
     @Override
