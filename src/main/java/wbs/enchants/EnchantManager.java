@@ -108,6 +108,7 @@ public class EnchantManager {
     public static final ReinforcedEnchant REINFORCED = new ReinforcedEnchant();
     public static final ReflexiveEnchant REFLEXIVE = new ReflexiveEnchant();
     public static final DemetrienEnchant DEMETRIEN = new DemetrienEnchant();
+    public static final ThrowingEnchant THROWING = new ThrowingEnchant();
 
     public static final CurseRebuking CURSE_REBUKING = new CurseRebuking();
     public static final CurseVanilla CURSE_VANILLA = new CurseVanilla();

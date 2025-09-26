@@ -68,15 +68,15 @@ public class DualWieldEnchant extends WbsEnchantment implements DamageEnchant {
                 return;
             }
 
-            double attackDelayInTicks = Math.max(1, 20.0 / speedAttr.getValue());
+            double attackDelayInTicks;
 
             attackDelayInTicks = WbsItems.calculateAttributeModification(
                     offHand,
                     Attribute.ATTACK_SPEED,
-                    attackDelayInTicks
+                    speedAttr.getBaseValue()
             );
 
-            double delayTicks = attackDelayInTicks;
+            int delayTicks = Math.max(1, (int) Math.round(20.0 / attackDelayInTicks));
             if (victim instanceof LivingEntity livingVictim) {
                 delayTicks = Math.max(delayTicks, livingVictim.getMaximumNoDamageTicks());
             }
