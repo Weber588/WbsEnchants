@@ -230,6 +230,8 @@ public class WbsEnchantsBootstrap implements PluginBootstrap {
     public static final TagKey<Enchantment> EXCLUSIVE_SET_MIDAS = EnchantmentTagKeys.create(createKey("exclusive_set/midas"));
     public static final TagKey<Enchantment> EXCLUSIVE_SET_MAPS = EnchantmentTagKeys.create(createKey("exclusive_set/maps"));
     public static final TagKey<Enchantment> EXCLUSIVE_SET_ARMOR_RETALIATION = EnchantmentTagKeys.create(createKey("exclusive_set/armor_retaliation"));
+    public static final TagKey<Enchantment> EXCLUSIVE_SET_KNOCKBACK = EnchantmentTagKeys.create(createKey("exclusive_set/knockback"));
+
     public static final TagKey<Enchantment> VANILLA = EnchantmentTagKeys.create(createKey("vanilla"));
     public static final TagKey<Enchantment> CUSTOM = EnchantmentTagKeys.create(createKey("custom"));
 
@@ -250,6 +252,9 @@ public class WbsEnchantsBootstrap implements PluginBootstrap {
                 ),
                 CustomTag.getKeyTag(EXCLUSIVE_SET_ARMOR_RETALIATION,
                         EnchantmentKeys.THORNS
+                ),
+                CustomTag.getKeyTag(EXCLUSIVE_SET_KNOCKBACK,
+                        EnchantmentKeys.KNOCKBACK
                 )
         );
     }

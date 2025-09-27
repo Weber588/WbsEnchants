@@ -1,10 +1,12 @@
 package wbs.enchants;
 
 import org.bukkit.Bukkit;
+import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.entity.LivingEntity;
+import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
@@ -149,7 +151,7 @@ public class SharedEventHandler implements Listener {
         }
 
         tickingEnchantedBlocks.removeIf(block ->
-                !block.getChunk().isLoaded() || !BlockEnchant.isEnchanted(block)
+                !block.getChunk().isLoaded() || !BlockEnchant.hasBlockEnchants(block)
         );
 
         tickableEnchants.forEach(enchant -> {
@@ -161,6 +163,10 @@ public class SharedEventHandler implements Listener {
         tickableEnchants.forEach(TickableEnchant::onGlobalTick);
 
         for (LivingEntity entity : allLivingEntities) {
+            if (entity instanceof Player player && player.getGameMode() == GameMode.SPECTATOR) {
+                continue;
+            }
+
             HashSet<TickableEnchant> hasEquipped = new HashSet<>();
             HashSet<TickableEnchant> hasAnywhere = new HashSet<>();
 

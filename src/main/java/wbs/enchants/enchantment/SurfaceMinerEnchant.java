@@ -13,7 +13,7 @@ import wbs.enchants.enchantment.helper.TickableEnchant;
 import wbs.utils.util.entities.WbsEntityUtil;
 
 public class SurfaceMinerEnchant extends WbsEnchantment implements TickableEnchant {
-    private static final String DEFAULT_DESCRIPTION = "You have Haste while you can see the sky.";
+    private static final String DEFAULT_DESCRIPTION = "Grants Haste while you can see the sky.";
 
     public SurfaceMinerEnchant() {
         super("surface_miner", DEFAULT_DESCRIPTION);

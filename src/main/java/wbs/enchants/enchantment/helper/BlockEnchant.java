@@ -134,7 +134,7 @@ public interface BlockEnchant extends EnchantInterface, AutoRegistrableEnchant {
         return enchantments;
     }
 
-    static boolean isEnchanted(Block block) {
+    static boolean hasBlockEnchants(Block block) {
         PersistentDataContainer blockContainer = getBlockContainer(block);
 
         return !blockContainer.isEmpty();
@@ -191,6 +191,10 @@ public interface BlockEnchant extends EnchantInterface, AutoRegistrableEnchant {
 
         WbsEnchantment enchant = getThisEnchantment();
         return getLevel(enchant, blockContainer);
+    }
+
+    default boolean isEnchanted(Block block) {
+        return getLevel(block) != null;
     }
 
     default void onDrop(BlockDropItemEvent event) {

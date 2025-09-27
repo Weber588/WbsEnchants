@@ -113,6 +113,15 @@ public class EnchantManager {
     public static final LeapingEnchant LEAPING = new LeapingEnchant();
     public static final CavalrousEnchant CAVALROUS = new CavalrousEnchant();
     public static final FungalHeartEnchant FUNGAL_HEART = new FungalHeartEnchant();
+    public static final AbyssMinerEnchant ABYSS_MINER = new AbyssMinerEnchant();
+    public static final AethereanEnchant AETHEREAN = new AethereanEnchant();
+    public static final BuoyancyEnchant BUOYANCY = new BuoyancyEnchant();
+    public static final AnnotatedEnchant ANNOTATED = new AnnotatedEnchant();
+    public static final HavenEnchant HAVEN = new HavenEnchant();
+    public static final SnaringEnchant SNARING = new SnaringEnchant();
+    public static final HeavingEnchant HEAVING = new HeavingEnchant();
+    public static final WhirlingEnchant WHIRLING = new WhirlingEnchant();
+    public static final HoveringEnchant HOVERING = new HoveringEnchant();
 
     public static final CurseRebuking CURSE_REBUKING = new CurseRebuking();
     public static final CurseVanilla CURSE_VANILLA = new CurseVanilla();

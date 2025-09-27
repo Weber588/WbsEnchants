@@ -1,6 +1,5 @@
 package wbs.enchants.enchantment.shulkerbox;
 
-import org.bukkit.Axis;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
@@ -16,19 +15,18 @@ import org.bukkit.inventory.EntityEquipment;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.ItemType;
-import org.bukkit.util.Vector;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import wbs.enchants.EnchantManager;
 import wbs.enchants.WbsEnchants;
 import wbs.enchants.enchantment.helper.ShulkerBoxEnchantment;
+import wbs.enchants.util.BlockUtils;
 import wbs.utils.util.WbsCollectionUtil;
 import wbs.utils.util.entities.WbsEntityUtil;
 
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Objects;
-import java.util.Set;
 
 public class PlacingEnchant extends ShulkerBoxEnchantment {
     private static final String DEFAULT_DESCRIPTION = "Placing the shulker box will instead place a random item from " +
@@ -72,9 +70,9 @@ public class PlacingEnchant extends ShulkerBoxEnchantment {
             List<@NotNull ItemStack> placeable = new LinkedList<>();
             for (ItemStack check : inventory) {
                 if (check != null) {
-                    Material plcaeable = getBlockMaterial(check);
-                    if (plcaeable != null) {
-                        if (block.canPlace(plcaeable.createBlockData())) {
+                    Material placeableMaterial = getBlockMaterial(check);
+                    if (placeableMaterial != null) {
+                        if (block.canPlace(placeableMaterial.createBlockData())) {
                             placeable.add(check);
                         }
                     }
@@ -94,14 +92,14 @@ public class PlacingEnchant extends ShulkerBoxEnchantment {
                     BlockFace placedFace = event.getBlockAgainst().getFace(block);
                     if (newData instanceof Directional directional) {
                         directional.setFacing(
-                                getClosest(
+                                BlockUtils.getClosestFace(
                                         WbsEntityUtil.getFacingVector(player),
                                         directional.getFaces()
                                 ).getOppositeFace()
                         );
                     } else if (newData instanceof Orientable orientable) {
                         if (placedFace != null) {
-                            orientable.setAxis(fromFace(placedFace));
+                            orientable.setAxis(BlockUtils.axisFromFace(placedFace));
                         }
                     }
                     block.setBlockData(newData);
@@ -116,38 +114,6 @@ public class PlacingEnchant extends ShulkerBoxEnchantment {
                 wrapper.save();
             }
         }
-    }
-
-    @NotNull
-    private BlockFace getClosest(@NotNull Vector facing, @NotNull Set<@NotNull BlockFace> options) {
-        if (options.isEmpty()) {
-            throw new IllegalArgumentException("Facing options cannot be empty");
-        }
-
-        BlockFace closest = BlockFace.UP;
-        double smallestAngle = 180;
-        for (BlockFace option : options) {
-            double angle = facing.angle(option.getDirection());
-
-            if (angle < smallestAngle) {
-                smallestAngle = angle;
-                closest = option;
-            }
-        }
-
-        return closest;
-    }
-
-    private Axis fromFace(BlockFace face) {
-        return switch (face) {
-            case NORTH -> Axis.Z;
-            case EAST -> Axis.X;
-            case SOUTH -> Axis.Z;
-            case WEST -> Axis.X;
-            case UP -> Axis.Y;
-            case DOWN -> Axis.Y;
-            default -> throw new IllegalArgumentException("BlockFace %s is not axis aligned.".formatted(face.toString()));
-        };
     }
 
     @Nullable

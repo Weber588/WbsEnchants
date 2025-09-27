@@ -40,6 +40,10 @@ public interface BlockStateEnchant<T extends BlockState> extends BlockEnchant {
         }
     }
 
+    default boolean isEnchanted(T t) {
+        return BlockEnchant.super.isEnchanted(t.getBlock());
+    }
+
     default void editStateOnPlace(BlockPlaceEvent event, T t, ItemStack placedItem) {
 
     }
