@@ -15,8 +15,6 @@ import wbs.utils.util.plugin.WbsPlugin;
 public class SubcommandClear extends EnchantmentSubcommand {
     public SubcommandClear(@NotNull WbsPlugin plugin) {
         super(plugin, "clear");
-
-
     }
 
     @Override

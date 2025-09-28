@@ -122,6 +122,10 @@ public class EnchantManager {
     public static final HeavingEnchant HEAVING = new HeavingEnchant();
     public static final WhirlingEnchant WHIRLING = new WhirlingEnchant();
     public static final HoveringEnchant HOVERING = new HoveringEnchant();
+    public static final RerollingEnchant REROLLING = new RerollingEnchant();
+    public static final AmbitiousnessEnchant AMBITIOUSNESS = new AmbitiousnessEnchant();
+    public static final RecallEnchant RECALL = new RecallEnchant();
+    public static final AncientCryEnchant ANCIENT_CRY = new AncientCryEnchant();
 
     public static final CurseRebuking CURSE_REBUKING = new CurseRebuking();
     public static final CurseVanilla CURSE_VANILLA = new CurseVanilla();
@@ -137,6 +141,7 @@ public class EnchantManager {
     public static final CurseMercy CURSE_MERCY = new CurseMercy();
     public static final CurseRust CURSE_RUST = new CurseRust();
     public static final CurseRot CURSE_ROT = new CurseRot();
+    public static final CurseHypoxia CURSE_HYPOXIA = new CurseHypoxia();
 
     public static void register(WbsEnchantment enchantment) {
         REGISTERED_ENCHANTMENTS.add(enchantment);

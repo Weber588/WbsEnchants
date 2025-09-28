@@ -16,7 +16,7 @@ public class ManathirstEnchant extends WbsEnchantment implements TickableEnchant
             "slowly drain your XP bar to repair itself. Items are repaired slower than mending, " +
             "but will continuously self-repair so long as you have XP, even if you haven't gained any recently!";
 
-    private int xpPerDura = 3;
+    private int xpPerDura = 2;
 
     public ManathirstEnchant() {
         super("manathirst", DEFAULT_DESCRIPTION);

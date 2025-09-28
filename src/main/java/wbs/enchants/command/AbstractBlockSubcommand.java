@@ -2,9 +2,13 @@ package wbs.enchants.command;
 
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.context.CommandContext;
+import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import io.papermc.paper.command.brigadier.CommandSourceStack;
 import io.papermc.paper.command.brigadier.Commands;
 import io.papermc.paper.command.brigadier.argument.ArgumentTypes;
+import io.papermc.paper.command.brigadier.argument.resolvers.BlockPositionResolver;
+import io.papermc.paper.math.BlockPosition;
+import org.bukkit.World;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.attribute.AttributeInstance;
 import org.bukkit.block.Block;
@@ -14,6 +18,7 @@ import org.jetbrains.annotations.NotNull;
 import wbs.utils.util.commands.brigadier.WbsSubcommand;
 import wbs.utils.util.plugin.WbsPlugin;
 
+@SuppressWarnings("UnstableApiUsage")
 public abstract class AbstractBlockSubcommand extends WbsSubcommand {
     public AbstractBlockSubcommand(@NotNull WbsPlugin plugin, @NotNull String label) {
         super(plugin, label);
@@ -44,10 +49,11 @@ public abstract class AbstractBlockSubcommand extends WbsSubcommand {
         return executeOnBlock(player, player.getTargetBlock(null, range));
     }
 
-    protected int executeWithBlock(CommandContext<CommandSourceStack> context) {
-        Block block = context.getArgument("block", Block.class);
+    protected int executeWithBlock(CommandContext<CommandSourceStack> context) throws CommandSyntaxException {
+        BlockPosition block = context.getArgument("block", BlockPositionResolver.class).resolve(context.getSource());
 
-        return executeOnBlock(context.getSource().getSender(), block);
+        World world = context.getSource().getLocation().getWorld();
+        return executeOnBlock(context.getSource().getSender(), block.toLocation(world).getBlock());
     }
 
     protected abstract int executeOnBlock(CommandSender sender, Block block);

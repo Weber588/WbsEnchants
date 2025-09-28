@@ -77,7 +77,7 @@ public class SubcommandList extends WbsSubcommand {
 
         enchants.sort(EnchantmentDefinition::compareTo);
 
-        Component opening = Component.text(namespace).append(Component.text(" enchantments:\n")).color(plugin.getTextColour());
+        Component opening = Component.text(namespace).append(Component.text(" enchantments (" + enchants.size() + "):\n")).color(plugin.getTextColour());
 
         WbsMessageBuilder builder = plugin.buildMessage("").append(opening);
 
