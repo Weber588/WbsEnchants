@@ -126,6 +126,8 @@ public class EnchantManager {
     public static final AmbitiousnessEnchant AMBITIOUSNESS = new AmbitiousnessEnchant();
     public static final RecallEnchant RECALL = new RecallEnchant();
     public static final AncientCryEnchant ANCIENT_CRY = new AncientCryEnchant();
+    public static final BreathtakingEnchant BREATHTAKING = new BreathtakingEnchant();
+    public static final PlatformerEnchant PLATFORMER = new PlatformerEnchant();
 
     public static final CurseRebuking CURSE_REBUKING = new CurseRebuking();
     public static final CurseVanilla CURSE_VANILLA = new CurseVanilla();

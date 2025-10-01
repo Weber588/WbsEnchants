@@ -7,7 +7,7 @@ import wbs.enchants.enchantment.helper.WbsCurse;
 
 public class CurseExotic extends WbsCurse implements ConflictEnchantment {
     private static final String DEFAULT_DESCRIPTION = "A curse that does nothing alone, but is incompatible with " +
-            "all vanilla enchants";
+            "all vanilla enchantments.";
 
     public CurseExotic() {
         super("exotic",  "Curse of the Exotic", DEFAULT_DESCRIPTION);

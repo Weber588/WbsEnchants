@@ -15,7 +15,7 @@ import java.util.Random;
 
 public class CurseSplintering extends WbsCurse {
     private static final String DEFAULT_DESCRIPTION = "An axe curse that causes mined logs to sometimes splinter " +
-            "into sticks!";
+            "into sticks.";
 
     private static final double CHANCE_PER_LEVEL = 10;
 

@@ -12,7 +12,7 @@ import wbs.enchants.util.EntityUtils;
 
 public class CurseStumbling extends WbsCurse {
     private static final String DEFAULT_DESCRIPTION = "A curse that causes increased fall damage when worn on boots; " +
-            "essentially the opposite of Feather Falling.";
+            "the opposite of Feather Falling.";
 
     public CurseStumbling() {
         super("stumbling", DEFAULT_DESCRIPTION);

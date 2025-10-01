@@ -1,5 +1,6 @@
 package wbs.enchants.enchantment.shulkerbox;
 
+import io.papermc.paper.datacomponent.DataComponentTypes;
 import org.bukkit.Bukkit;
 import org.bukkit.NamespacedKey;
 import org.bukkit.entity.LivingEntity;
@@ -19,6 +20,7 @@ import java.util.LinkedList;
 import java.util.List;
 
 // TODO: Could this be adapted to also be a bundle enchant?
+@SuppressWarnings("UnstableApiUsage")
 public class SnackingEnchant extends ShulkerBoxEnchantment implements TickableEnchant {
     private static final int MAX_COOLDOWN_TICKS = 20 * 120;
 
@@ -66,9 +68,7 @@ public class SnackingEnchant extends ShulkerBoxEnchantment implements TickableEn
         List<AbstractMap.SimpleEntry<ItemStack, Integer>> edibleItemsInSlots = new LinkedList<>();
         int shulkerSlot = 0;
         for (ItemStack stack : inventory) {
-            // Doesn't work for unmodified items -- ItemMeta is dead, basically. Will update to data component API when
-            // we can update to 1.21.4
-            if (stack != null && stack.getItemMeta().hasFood()) {
+            if (stack != null && stack.hasData(DataComponentTypes.FOOD)) {
                 edibleItemsInSlots.add(new AbstractMap.SimpleEntry<>(stack, shulkerSlot));
             }
             shulkerSlot++;
@@ -87,7 +87,7 @@ public class SnackingEnchant extends ShulkerBoxEnchantment implements TickableEn
                 // Only remove 1 eaten
                 ItemStack toEatSingle = new ItemStack(toEat.getKey());
                 toEatSingle.setAmount(1);
-                inventory.remove(toEatSingle);
+                inventory.removeItem(toEatSingle);
 
                 // If the slot is now free, replace that same slot with the remaining item.
                 ItemStack leftOverStack = inventory.getItem(toEat.getValue());

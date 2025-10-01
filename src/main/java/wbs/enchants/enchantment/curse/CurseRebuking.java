@@ -20,7 +20,7 @@ import wbs.enchants.util.EntityUtils;
 public class CurseRebuking extends WbsCurse implements DamageEnchant {
     public static final int PERCENT_PER_LEVEL = 20;
     private static final String DEFAULT_DESCRIPTION = "A weapon curse that causes the wielder to take " +
-            PERCENT_PER_LEVEL + "% of damage dealt per level!";
+            PERCENT_PER_LEVEL + "% of damage dealt per level.";
 
     public CurseRebuking() {
         super("rebuking", DEFAULT_DESCRIPTION);

@@ -14,7 +14,7 @@ import wbs.utils.util.particles.WbsParticleGroup;
 
 public class CurseMidas extends WbsEnchantment implements BlockDropEnchantment {
     private static final String DEFAULT_DESCRIPTION = "A pickaxe curse that causes mined metals to turn " +
-            "directly into gold!";
+            "into gold.";
 
     private static final WbsParticleGroup EFFECT = new WbsParticleGroup()
             .addEffect(new NormalParticleEffect().setSpeed(0.5).setAmount(8), Particle.WAX_ON);

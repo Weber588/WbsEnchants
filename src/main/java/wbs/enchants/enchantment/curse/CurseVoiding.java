@@ -8,8 +8,7 @@ import org.bukkit.inventory.ItemStack;
 import wbs.enchants.enchantment.helper.WbsCurse;
 
 public class CurseVoiding extends WbsCurse {
-    private static final String DEFAULT_DESCRIPTION = "A bucket curse that causes any liquids picked up to simply " +
-            "disappear into the void!";
+    private static final String DEFAULT_DESCRIPTION = "A bucket curse that causes any liquids picked up to be deleted.";
 
     public CurseVoiding() {
         super("voiding", DEFAULT_DESCRIPTION);

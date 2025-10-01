@@ -1,14 +1,14 @@
 # This will appear before many messages from the plugin.
 message-prefix: '&9[&3CE&9]'
-
 # Use a minecraft colour code here to pick the message colour
 message-colour: 'b'
-
 # The highlight colour (to complement the above colour)
 highlight-colour: '7'
-
 # Errors will be this colour.
 error-colour: 'c'
-
 # Error highlights
 error-highlight: '8'
+
+# Should we disable the item repair cost penalty when repairing in an anvil?
+# If true, items repaired with its repair material will incur no penalty or cost increase.
+disable-anvil-repair-penalty: false

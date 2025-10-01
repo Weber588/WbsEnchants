@@ -10,7 +10,7 @@ import wbs.enchants.enchantment.helper.WbsCurse;
 
 public class CurseRot extends WbsCurse {
     private static final double MODIFIER_PER_LEVEL = 1.2;
-    private static final String DEFAULT_DESCRIPTION = "When worn, regeneration is " + MODIFIER_PER_LEVEL + "x slower per level.";
+    private static final String DEFAULT_DESCRIPTION = "Regeneration is " + MODIFIER_PER_LEVEL + "x slower per level.";
 
     public CurseRot() {
         super("rot", DEFAULT_DESCRIPTION);

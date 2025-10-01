@@ -1,16 +1,24 @@
 package wbs.enchants.util;
 
+import io.papermc.paper.datacomponent.DataComponentTypes;
+import io.papermc.paper.registry.RegistryKey;
+import io.papermc.paper.registry.TypedKey;
 import org.bukkit.Bukkit;
-import org.bukkit.Material;
-import org.bukkit.inventory.FurnaceRecipe;
-import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.Recipe;
-import org.bukkit.inventory.RecipeChoice;
+import org.bukkit.inventory.*;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Iterator;
+import java.util.Objects;
 
+@SuppressWarnings("UnstableApiUsage")
 public class ItemUtils {
+    public static TypedKey<ItemType> getTypedKey(ItemStack item) {
+        if (item == null) {
+            return null;
+        }
+        return TypedKey.create(RegistryKey.ITEM, Objects.requireNonNull(item.getType().asItemType()).key());
+    }
+
     @Nullable
     public static ItemStack smeltItem(ItemStack stack) {
         ItemStack result = null;
@@ -41,7 +49,6 @@ public class ItemUtils {
     }
 
     public static boolean isBlockingItem(ItemStack item) {
-        // TODO 1.21.5: Move this to check for component instead of material
-        return item .getType() == Material.SHIELD;
+        return item.hasData(DataComponentTypes.BLOCKS_ATTACKS);
     }
 }

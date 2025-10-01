@@ -25,8 +25,8 @@ import java.util.List;
 import java.util.Set;
 
 public class CurseErosion extends WbsCurse {
-    private static final String DEFAULT_DESCRIPTION = "A tool curse that causes blocks to sometimes destabilise " +
-            "around mined blocks!";
+    private static final String DEFAULT_DESCRIPTION = "A tool curse that causes blocks to sometimes fall " +
+            "around mined blocks.";
 
     private static final List<BlockFace> POSSIBLE_OFFSETS = List.of(
             BlockFace.UP,

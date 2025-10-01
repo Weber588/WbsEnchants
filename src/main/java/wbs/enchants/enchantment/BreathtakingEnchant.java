@@ -1,5 +1,6 @@
 package wbs.enchants.enchantment;
 
+import io.papermc.paper.registry.keys.ItemTypeKeys;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Projectile;
@@ -15,6 +16,9 @@ public class BreathtakingEnchant extends WbsEnchantment implements DamageEnchant
 
     public BreathtakingEnchant() {
         super("breathtaking", DEFAULT_DESCRIPTION);
+
+        getDefinition()
+                .supportedItems(ItemTypeKeys.TRIDENT);
     }
 
     @Override

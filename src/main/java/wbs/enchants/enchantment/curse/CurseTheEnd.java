@@ -11,7 +11,7 @@ import wbs.enchants.enchantment.helper.WbsCurse;
 import wbs.utils.util.WbsMath;
 
 public class CurseTheEnd extends WbsCurse {
-    private static final String DEFAULT_DESCRIPTION = "An armour curse that makes you take damage from water!";
+    private static final String DEFAULT_DESCRIPTION = "An armour curse that makes you take damage from water.";
 
     private static final int CHANCE_PER_LEVEL_PER_TICK = 1;
     private static DamageSource damageType;

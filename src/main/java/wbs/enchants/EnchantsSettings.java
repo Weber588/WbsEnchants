@@ -11,7 +11,6 @@ public class  EnchantsSettings extends WbsSettings {
 
     private YamlConfiguration enchantsFile;
 
-
     protected EnchantsSettings(WbsEnchants plugin) {
         super(plugin);
     }
@@ -29,11 +28,17 @@ public class  EnchantsSettings extends WbsSettings {
 
         developerMode = config.getBoolean("developer-mode", developerMode);
         forceOnlyLootEnchants = config.getBoolean("force-only-loot-enchants", forceOnlyLootEnchants);
+        disableAnvilRepairPenalty = config.getBoolean("disable-anvil-repair-penalty", disableAnvilRepairPenalty);
     }
 
     private boolean developerMode = false;
     public boolean isDeveloperMode() {
         return developerMode;
+    }
+
+    private boolean disableAnvilRepairPenalty = false;
+    public boolean disableAnvilRepairPenalty() {
+        return disableAnvilRepairPenalty;
     }
 
     private boolean forceOnlyLootEnchants = false;

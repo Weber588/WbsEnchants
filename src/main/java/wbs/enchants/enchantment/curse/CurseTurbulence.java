@@ -35,7 +35,7 @@ public class CurseTurbulence extends WbsCurse {
         if (enchantedItem != null && enchantedItem.getType() == Material.ELYTRA) {
             int level = getLevel(enchantedItem);
             if (WbsMath.chance(level * CHANCE_PER_LEVEL_PER_TICK)) {
-                player.setVelocity(player.getVelocity().add(WbsMath.randomVector(level * 0.1)));
+                player.setVelocity(player.getVelocity().add(WbsMath.randomVector(level * 0.3)));
             }
         }
     }
