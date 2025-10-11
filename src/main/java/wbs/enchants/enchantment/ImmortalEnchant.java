@@ -33,6 +33,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import wbs.enchants.WbsEnchantment;
 import wbs.enchants.WbsEnchants;
+import wbs.enchants.WbsEnchantsBootstrap;
 import wbs.enchants.util.DamageUtils;
 import wbs.enchants.util.EntityUtils;
 import wbs.enchants.util.MaterialUtils;
@@ -42,7 +43,7 @@ import java.time.Duration;
 import java.util.Objects;
 
 public class ImmortalEnchant extends WbsEnchantment {
-    private static final NamespacedKey TRUE_AGE_KEY = new NamespacedKey("wbsenchants", "true_age");
+    private static final NamespacedKey TRUE_AGE_KEY =   WbsEnchantsBootstrap.createKey("true_age");
 
     private static final int ITEM_DESPAWN_AGE = 60 * 60 * 20;
     private static final int PICKUP_DELAY = 5 * 20;

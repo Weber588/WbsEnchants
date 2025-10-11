@@ -9,6 +9,7 @@ import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
+import wbs.enchants.WbsEnchantsBootstrap;
 
 public abstract class GenerationCondition {
     @NotNull
@@ -28,7 +29,7 @@ public abstract class GenerationCondition {
     }
 
     protected GenerationCondition(@NotNull String key, ConfigurationSection parentSection, String directory) {
-        this(new NamespacedKey("wbsenchants", key), parentSection, directory);
+        this(WbsEnchantsBootstrap.createKey(key), parentSection, directory);
     }
 
     public boolean isNegated() {
@@ -59,4 +60,5 @@ public abstract class GenerationCondition {
         return describe(listBreak);
     }
     public abstract Component describe(@NotNull TextComponent listBreak);
+    public void postRegistryValidate() {}
 }

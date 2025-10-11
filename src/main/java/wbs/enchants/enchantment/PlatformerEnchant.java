@@ -25,6 +25,7 @@ public class PlatformerEnchant extends WbsEnchantment {
 
         getDefinition()
                 .supportedItems(ItemTypeTagKeys.ENCHANTABLE_FOOT_ARMOR)
+                .setEnabled(false)
                 .description(Component.text(DEFAULT_DESCRIPTION)
                         .appendNewline()
                         .append(Component.text("Warning: Highly affected by ping/lag. Not recommended on high latency connections.")

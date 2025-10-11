@@ -65,9 +65,8 @@ public class LootTableContext extends ExistingLootContext {
 
     @Override
     protected int getDefaultChance() {
-        return definition.getEnchantment().getWeight() * 3;
+        return definition.weight() * 3;
     }
-
 
     private boolean canAddTo(LootTable table) {
         if (tables.isEmpty()) {

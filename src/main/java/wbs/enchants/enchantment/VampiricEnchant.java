@@ -21,6 +21,7 @@ import org.bukkit.potion.PotionEffectType;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import wbs.enchants.WbsEnchantment;
+import wbs.enchants.WbsEnchantsBootstrap;
 import wbs.enchants.enchantment.helper.DamageEnchant;
 import wbs.utils.util.WbsMath;
 import wbs.utils.util.entities.WbsEntityUtil;
@@ -38,7 +39,7 @@ public class VampiricEnchant extends WbsEnchantment implements DamageEnchant {
             + DURATION_PER_LEVEL / 20 + " seconds (per level).";
 
     // TODO: Check if this causes issues when the game runs slower? Should it be based on Bukkit.getCurrentTick()?
-    private static final NamespacedKey EXPIRE_TIME_KEY = new NamespacedKey("wbsenchants", "vampiric_expire_time");
+    private static final NamespacedKey EXPIRE_TIME_KEY = WbsEnchantsBootstrap.createKey("vampiric_expire_time");
 
     private static final WbsParticleGroup EFFECT = new WbsParticleGroup()
             .addEffect(new NormalParticleEffect().setXYZ(0.25).setY(0.5).setSpeed(0).setAmount(15), Particle.DAMAGE_INDICATOR);

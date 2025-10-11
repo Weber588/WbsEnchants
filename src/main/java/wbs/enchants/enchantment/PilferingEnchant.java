@@ -12,6 +12,7 @@ import org.bukkit.persistence.PersistentDataType;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import wbs.enchants.WbsEnchantment;
+import wbs.enchants.WbsEnchantsBootstrap;
 import wbs.enchants.enchantment.helper.DamageEnchant;
 import wbs.utils.util.WbsMath;
 
@@ -23,7 +24,7 @@ public class PilferingEnchant extends WbsEnchantment implements DamageEnchant {
             "down villagers to steal their trades without paying!";
     private static final int DROP_CHANCE_PER_LEVEL = 5;
 
-    private static final NamespacedKey TIMES_HIT = new NamespacedKey("wbsenchants", "times_pilfered");
+    private static final NamespacedKey TIMES_HIT = WbsEnchantsBootstrap.createKey("times_pilfered");
 
     public PilferingEnchant() {
         super("pilfering", DEFAULT_DESCRIPTION);

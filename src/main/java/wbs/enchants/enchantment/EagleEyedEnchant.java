@@ -16,7 +16,6 @@ import wbs.enchants.enchantment.helper.DamageEnchant;
 
 public class EagleEyedEnchant extends WbsEnchantment implements DamageEnchant {
     private static final @NotNull String DEFAULT_DESCRIPTION = "When hit by a projectile, the shooter glows.";
-    public static final PotionEffect POTION_EFFECT = new PotionEffect(PotionEffectType.GLOWING, Ticks.TICKS_PER_SECOND * 5, 0);
 
     public EagleEyedEnchant() {
         super("eagle_eyed", DEFAULT_DESCRIPTION);
@@ -36,7 +35,7 @@ public class EagleEyedEnchant extends WbsEnchantment implements DamageEnchant {
         }
 
         if (getSumLevels(playerVictim) > 0) {
-            playerVictim.sendPotionEffectChange(attacker, POTION_EFFECT);
+            playerVictim.sendPotionEffectChange(attacker, new PotionEffect(PotionEffectType.GLOWING, Ticks.TICKS_PER_SECOND * 5, 0));
         }
     }
 }

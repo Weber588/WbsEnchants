@@ -16,6 +16,7 @@ import org.jetbrains.annotations.Nullable;
 import wbs.enchants.EnchantManager;
 import wbs.enchants.WbsEnchantment;
 import wbs.enchants.WbsEnchants;
+import wbs.enchants.WbsEnchantsBootstrap;
 import wbs.enchants.events.EnchantedBlockBreakEvent;
 import wbs.enchants.events.EnchantedBlockPlaceEvent;
 import wbs.enchants.util.EnchantUtils;
@@ -30,7 +31,7 @@ import java.util.Map;
  * to be placed and picked up while retaining the enchantment.
  */
 public interface BlockEnchant extends EnchantInterface, AutoRegistrableEnchant {
-    NamespacedKey BLOCK_ENCHANTS_KEY = new NamespacedKey("wbsenchants", "block_enchants");
+    NamespacedKey BLOCK_ENCHANTS_KEY = WbsEnchantsBootstrap.createKey("block_enchants");
 
     static NamespacedKey getBlockKey(Block block) {
         // Don't need to track world; this tag will be stored on a chunk

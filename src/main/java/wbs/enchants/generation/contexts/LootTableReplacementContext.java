@@ -12,8 +12,9 @@ import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.world.LootGenerateEvent;
-import wbs.enchants.definition.EnchantmentDefinition;
+import org.jetbrains.annotations.NotNull;
 import wbs.enchants.WbsEnchants;
+import wbs.enchants.definition.EnchantmentDefinition;
 import wbs.enchants.generation.GenerationContext;
 import wbs.enchants.util.EnchantUtils;
 import wbs.utils.exceptions.InvalidConfigurationException;
@@ -21,14 +22,13 @@ import wbs.utils.exceptions.InvalidConfigurationException;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 public class LootTableReplacementContext extends GenerationContext {
-    public final List<Enchantment> toReplace = new LinkedList<>();
+    public final List<Key> toReplace = new LinkedList<>();
 
     public LootTableReplacementContext(String key, EnchantmentDefinition definition, ConfigurationSection section, String directory) {
         super(key, definition, section, directory);
-
-        Registry<Enchantment> registry = RegistryAccess.registryAccess().getRegistry(RegistryKey.ENCHANTMENT);
 
         List<String> replaceStrings = section.getStringList("to-replace");
         replaceStrings.forEach(string -> {
@@ -38,13 +38,7 @@ public class LootTableReplacementContext extends GenerationContext {
                 return;
             }
 
-            Enchantment found = registry.get(check);
-            if (found == null) {
-                WbsEnchants.getInstance().settings.logError("Invalid enchantment key: " + key, directory + "/to-replace");
-                return;
-            }
-
-            toReplace.add(found);
+            toReplace.add(check);
         });
 
         if (toReplace.isEmpty()) {
@@ -54,7 +48,10 @@ public class LootTableReplacementContext extends GenerationContext {
 
     @Override
     protected Component describeContext(TextComponent listBreak) {
+        Registry<@NotNull Enchantment> registry = RegistryAccess.registryAccess().getRegistry(RegistryKey.ENCHANTMENT);
         List<Component> toReplace = this.toReplace.stream()
+                .map(registry::get)
+                .filter(Objects::nonNull)
                 .map(EnchantUtils::getDisplayName)
                 .toList();
 
@@ -65,7 +62,12 @@ public class LootTableReplacementContext extends GenerationContext {
 
     @Override
     public void writeToSection(ConfigurationSection section) {
-        section.set("to-replace", toReplace.stream().map(Enchantment::key).map(Key::asString).toList());
+        Registry<@NotNull Enchantment> registry = RegistryAccess.registryAccess().getRegistry(RegistryKey.ENCHANTMENT);
+        section.set("to-replace", toReplace.stream().map(registry::get)
+                .filter(Objects::nonNull)
+                .map(Enchantment::key)
+                .map(Key::asString)
+                .toList());
     }
 
     @Override
@@ -76,11 +78,12 @@ public class LootTableReplacementContext extends GenerationContext {
     @EventHandler
     public void onLootTableGenerate(LootGenerateEvent event) {
         if (shouldRun()) {
+            Registry<@NotNull Enchantment> registry = RegistryAccess.registryAccess().getRegistry(RegistryKey.ENCHANTMENT);
             event.getLoot().forEach(item -> {
                 Map<Enchantment, Integer> enchantments = item.getEnchantments();
 
                 boolean replacedAny = false;
-                for (Enchantment ench : toReplace) {
+                for (Enchantment ench : toReplace.stream().map(registry::get).toList()) {
                     if (enchantments.containsKey(ench)) {
                         item.removeEnchantment(ench);
                         replacedAny = true;

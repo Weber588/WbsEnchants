@@ -3,7 +3,6 @@ package wbs.enchants.enchantment;
 import io.papermc.paper.registry.keys.tags.ItemTypeTagKeys;
 import org.bukkit.NamespacedKey;
 import org.bukkit.Particle;
-import org.bukkit.Sound;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
@@ -17,8 +16,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
 import wbs.enchants.WbsEnchantment;
-import wbs.utils.util.WbsSound;
-import wbs.utils.util.WbsSoundGroup;
+import wbs.enchants.WbsEnchantsBootstrap;
 import wbs.utils.util.entities.WbsEntityUtil;
 import wbs.utils.util.particles.RingParticleEffect;
 import wbs.utils.util.particles.WbsParticleEffect;
@@ -32,19 +30,13 @@ public class PlanarBindingEnchant extends WbsEnchantment {
 
     public static final String STRING_KEY = "planar_binding";
 
-    public static final NamespacedKey TIME_KEY = new NamespacedKey("wbsenchants",  STRING_KEY + "/expire_time");
-    public static final NamespacedKey LEVEL_KEY = new NamespacedKey("wbsenchants", STRING_KEY + "/binding_level");
+    public static final NamespacedKey TIME_KEY = WbsEnchantsBootstrap.createKey(STRING_KEY + "/expire_time");
+    public static final NamespacedKey LEVEL_KEY = WbsEnchantsBootstrap.createKey(STRING_KEY + "/binding_level");
 
     private static final WbsParticleEffect RING_EFFECT = new RingParticleEffect().setRadius(0.75).setAmount(20);
     private static final WbsParticleGroup EFFECT = new WbsParticleGroup()
             .addEffect(RING_EFFECT, Particle.WITCH)
             .addEffect(RING_EFFECT, Particle.REVERSE_PORTAL);
-
-    private static final WbsSoundGroup SOUND = new WbsSoundGroup();
-
-    static {
-        SOUND.addSound(new WbsSound(Sound.BLOCK_BEACON_DEACTIVATE, 2f, 0.75f));
-    }
 
     private static final String DEFAULT_DESCRIPTION = "After hitting a mob, it is unable to teleport for " +
             TIME_PER_LEVEL + " seconds (per level).";

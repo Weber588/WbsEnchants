@@ -6,6 +6,7 @@ import io.papermc.paper.event.packet.PlayerChunkLoadEvent;
 import io.papermc.paper.registry.RegistryAccess;
 import io.papermc.paper.registry.RegistryKey;
 import io.papermc.paper.registry.data.EnchantmentRegistryEntry;
+import net.kyori.adventure.key.Key;
 import net.kyori.adventure.util.Ticks;
 import org.bukkit.*;
 import org.bukkit.entity.LivingEntity;
@@ -13,7 +14,6 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.generator.structure.GeneratedStructure;
 import org.bukkit.generator.structure.Structure;
-import org.bukkit.generator.structure.StructureType;
 import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.EquipmentSlotGroup;
 import org.bukkit.inventory.ItemStack;
@@ -21,6 +21,7 @@ import org.bukkit.inventory.meta.MapMeta;
 import org.bukkit.map.MapCursor;
 import org.bukkit.map.MapView;
 import org.bukkit.persistence.PersistentDataType;
+import org.jetbrains.annotations.NotNull;
 import wbs.enchants.WbsEnchantment;
 import wbs.enchants.WbsEnchants;
 import wbs.enchants.WbsEnchantsBootstrap;
@@ -34,52 +35,52 @@ public class AnnotatedEnchant extends WbsEnchantment implements TickableEnchant 
     private static final NamespacedKey LAST_UPDATED = WbsEnchantsBootstrap.createKey("last_updated_annotated");
 
 
-    private static final HashMap<NamespacedKey, MapCursor.Type> STRUCTURE_CURSORS = new HashMap<>();
-    private static final HashMap<String, MapCursor.Type> STRUCTURE_CURSOR_GUESSES = new HashMap<>();
-    public static final MapCursor.Type DEFAULT_CURSOR = MapCursor.Type.PLAYER_OFF_LIMITS;
+    private static final HashMap<Key, Key> STRUCTURE_CURSORS = new HashMap<>();
+    private static final HashMap<String, Key> STRUCTURE_CURSOR_GUESSES = new HashMap<>();
+    public static final Key DEFAULT_CURSOR = NamespacedKey.minecraft("player_off_limits");
 
 
     static {
         // TODO: Make this configurable
 
         // Direct
-        STRUCTURE_CURSORS.put(StructureType.BURIED_TREASURE.getKey(), MapCursor.Type.RED_X);
-        STRUCTURE_CURSORS.put(StructureType.WOODLAND_MANSION.getKey(), MapCursor.Type.MANSION);
-        STRUCTURE_CURSORS.put(StructureType.OCEAN_MONUMENT.getKey(), MapCursor.Type.MONUMENT);
-        STRUCTURE_CURSORS.put(StructureType.SWAMP_HUT.getKey(), MapCursor.Type.SWAMP_HUT);
-        STRUCTURE_CURSORS.put(StructureType.JUNGLE_TEMPLE.getKey(), MapCursor.Type.JUNGLE_TEMPLE);
-        STRUCTURE_CURSORS.put(NamespacedKey.minecraft("trial_chamber"), MapCursor.Type.TRIAL_CHAMBERS);
-        STRUCTURE_CURSORS.put(NamespacedKey.minecraft("village_desert"), MapCursor.Type.VILLAGE_DESERT);
-        STRUCTURE_CURSORS.put(NamespacedKey.minecraft("village_plains"), MapCursor.Type.VILLAGE_PLAINS);
-        STRUCTURE_CURSORS.put(NamespacedKey.minecraft("village_savanna"), MapCursor.Type.VILLAGE_SAVANNA);
-        STRUCTURE_CURSORS.put(NamespacedKey.minecraft("village_snowy"), MapCursor.Type.VILLAGE_SNOWY);
-        STRUCTURE_CURSORS.put(NamespacedKey.minecraft("village_taiga"), MapCursor.Type.VILLAGE_TAIGA);
+        STRUCTURE_CURSORS.put(NamespacedKey.minecraft("buried_treasure"), NamespacedKey.minecraft("red_x"));
+        STRUCTURE_CURSORS.put(NamespacedKey.minecraft("woodland_mansion"), NamespacedKey.minecraft("mansion"));
+        STRUCTURE_CURSORS.put(NamespacedKey.minecraft("ocean_monument"), NamespacedKey.minecraft("monument"));
+        STRUCTURE_CURSORS.put(NamespacedKey.minecraft("swamp_hut"), NamespacedKey.minecraft("swamp_hut"));
+        STRUCTURE_CURSORS.put(NamespacedKey.minecraft("jungle_temple"), NamespacedKey.minecraft("jungle_temple"));
+        STRUCTURE_CURSORS.put(NamespacedKey.minecraft("trial_chamber"), NamespacedKey.minecraft("trial_chambers"));
+        STRUCTURE_CURSORS.put(NamespacedKey.minecraft("village_desert"), NamespacedKey.minecraft("village_desert"));
+        STRUCTURE_CURSORS.put(NamespacedKey.minecraft("village_plains"), NamespacedKey.minecraft("village_plains"));
+        STRUCTURE_CURSORS.put(NamespacedKey.minecraft("village_savanna"), NamespacedKey.minecraft("village_savanna"));
+        STRUCTURE_CURSORS.put(NamespacedKey.minecraft("village_snowy"), NamespacedKey.minecraft("village_snowy"));
+        STRUCTURE_CURSORS.put(NamespacedKey.minecraft("village_taiga"), NamespacedKey.minecraft("village_taiga"));
 
         // Adaptations
         // Above ground
-        STRUCTURE_CURSORS.put(StructureType.DESERT_PYRAMID.getKey(), MapCursor.Type.BANNER_YELLOW);
-        STRUCTURE_CURSORS.put(StructureType.END_CITY.getKey(), MapCursor.Type.BANNER_PURPLE);
-        STRUCTURE_CURSORS.put(NamespacedKey.minecraft("pillager_outpost"), MapCursor.Type.BANNER_RED);
+        STRUCTURE_CURSORS.put(NamespacedKey.minecraft("desert_pyramid"), NamespacedKey.minecraft("banner_yellow"));
+        STRUCTURE_CURSORS.put(NamespacedKey.minecraft("end_city"), NamespacedKey.minecraft("banner_purple"));
+        STRUCTURE_CURSORS.put(NamespacedKey.minecraft("pillager_outpost"), NamespacedKey.minecraft("banner_red"));
         // Below ground
-        STRUCTURE_CURSORS.put(StructureType.MINESHAFT.getKey(), MapCursor.Type.RED_X);
-        STRUCTURE_CURSORS.put(NamespacedKey.minecraft("mineshaft_mesa"), MapCursor.Type.RED_X);
-        STRUCTURE_CURSORS.put(NamespacedKey.minecraft("ancient_city"), MapCursor.Type.RED_X);
-        STRUCTURE_CURSORS.put(NamespacedKey.minecraft("trail_ruins"), MapCursor.Type.RED_X);
-        STRUCTURE_CURSORS.put(NamespacedKey.minecraft("stronghold"), MapCursor.Type.RED_X);
+        STRUCTURE_CURSORS.put(NamespacedKey.minecraft("mineshaft"), NamespacedKey.minecraft("red_x"));
+        STRUCTURE_CURSORS.put(NamespacedKey.minecraft("mineshaft_mesa"), NamespacedKey.minecraft("red_x"));
+        STRUCTURE_CURSORS.put(NamespacedKey.minecraft("ancient_city"), NamespacedKey.minecraft("red_x"));
+        STRUCTURE_CURSORS.put(NamespacedKey.minecraft("trail_ruins"), NamespacedKey.minecraft("red_x"));
+        STRUCTURE_CURSORS.put(NamespacedKey.minecraft("stronghold"), NamespacedKey.minecraft("red_x"));
         // Ocean
-        STRUCTURE_CURSORS.put(NamespacedKey.minecraft("ocean_ruin_cold"), MapCursor.Type.BANNER_BLUE);
-        STRUCTURE_CURSORS.put(NamespacedKey.minecraft("ocean_ruin_warm"), MapCursor.Type.BANNER_LIGHT_BLUE);
+        STRUCTURE_CURSORS.put(NamespacedKey.minecraft("ocean_ruin_cold"), NamespacedKey.minecraft("banner_blue"));
+        STRUCTURE_CURSORS.put(NamespacedKey.minecraft("ocean_ruin_warm"), NamespacedKey.minecraft("banner_light_blue"));
 
 
-        STRUCTURE_CURSOR_GUESSES.put("village", MapCursor.Type.VILLAGE_PLAINS);
-        STRUCTURE_CURSOR_GUESSES.put("mineshaft", MapCursor.Type.RED_X);
-        STRUCTURE_CURSOR_GUESSES.put("underground", MapCursor.Type.RED_X);
-        STRUCTURE_CURSOR_GUESSES.put("dungeon", MapCursor.Type.RED_X);
-        STRUCTURE_CURSOR_GUESSES.put("portal", MapCursor.Type.BANNER_PURPLE);
-        STRUCTURE_CURSOR_GUESSES.put("ocean", MapCursor.Type.BANNER_LIGHT_BLUE);
-        STRUCTURE_CURSOR_GUESSES.put("water", MapCursor.Type.BANNER_LIGHT_BLUE);
-        STRUCTURE_CURSOR_GUESSES.put("fortress", MapCursor.Type.BANNER_RED);
-        STRUCTURE_CURSOR_GUESSES.put("bastion", MapCursor.Type.BANNER_BLACK);
+        STRUCTURE_CURSOR_GUESSES.put("village", NamespacedKey.minecraft("village_plains"));
+        STRUCTURE_CURSOR_GUESSES.put("mineshaft", NamespacedKey.minecraft("red_x"));
+        STRUCTURE_CURSOR_GUESSES.put("underground", NamespacedKey.minecraft("red_x"));
+        STRUCTURE_CURSOR_GUESSES.put("dungeon", NamespacedKey.minecraft("red_x"));
+        STRUCTURE_CURSOR_GUESSES.put("portal", NamespacedKey.minecraft("banner_purple"));
+        STRUCTURE_CURSOR_GUESSES.put("ocean", NamespacedKey.minecraft("banner_light_blue"));
+        STRUCTURE_CURSOR_GUESSES.put("water", NamespacedKey.minecraft("banner_light_blue"));
+        STRUCTURE_CURSOR_GUESSES.put("fortress", NamespacedKey.minecraft("banner_red"));
+        STRUCTURE_CURSOR_GUESSES.put("bastion", NamespacedKey.minecraft("banner_black"));
     }
 
     private static final long UPDATE_FREQUENCY = Ticks.SINGLE_TICK_DURATION_MS * Ticks.TICKS_PER_SECOND * 60;
@@ -263,19 +264,26 @@ public class AnnotatedEnchant extends WbsEnchantment implements TickableEnchant 
                 continue;
             }
 
-            MapCursor.Type cursorType = STRUCTURE_CURSORS.get(key);
-            if (cursorType == null) {
+            Key cursorTypeKey = STRUCTURE_CURSORS.get(key);
+            if (cursorTypeKey == null) {
                 for (String substring : STRUCTURE_CURSOR_GUESSES.keySet()) {
                     if (key.asMinimalString().contains(substring)) {
-                        cursorType = STRUCTURE_CURSOR_GUESSES.get(substring);
+                        cursorTypeKey = STRUCTURE_CURSOR_GUESSES.get(substring);
                         break;
                     }
                 }
             }
 
             // TODO: Make default type configurable
+            if (cursorTypeKey == null) {
+                cursorTypeKey = DEFAULT_CURSOR;
+            }
+
+            Registry<MapCursor.@NotNull Type> decorationRegistry = RegistryAccess.registryAccess().getRegistry(RegistryKey.MAP_DECORATION_TYPE);
+            MapCursor.Type cursorType = decorationRegistry.get(cursorTypeKey);
+
             if (cursorType == null) {
-                cursorType = DEFAULT_CURSOR;
+                cursorType = decorationRegistry.stream().findFirst().orElseThrow();
             }
 
             MapDecorations.DecorationEntry decorationEntry = MapDecorations.decorationEntry(

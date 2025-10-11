@@ -1,22 +1,19 @@
 package wbs.enchants.generation.conditions;
 
+import net.kyori.adventure.key.Key;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TextComponent;
 import org.bukkit.Location;
 import org.bukkit.NamespacedKey;
-import org.bukkit.Registry;
 import org.bukkit.configuration.ConfigurationSection;
-import org.bukkit.generator.structure.StructureType;
 import org.jetbrains.annotations.NotNull;
 import wbs.utils.exceptions.InvalidConfigurationException;
-
-import java.util.stream.Collectors;
 
 public class InStructureCondition extends GenerationCondition {
     public static final String KEY = "in-structure";
 
     @NotNull
-    private final StructureType type;
+    private final Key structureTypeKey;
 
     public InStructureCondition(@NotNull String key, ConfigurationSection parentSection, String directory) {
         super(key, parentSection, directory);
@@ -31,11 +28,7 @@ public class InStructureCondition extends GenerationCondition {
         }
 
         if (typeString == null) {
-            throw new InvalidConfigurationException("Specify a structure type: " +
-                    Registry.STRUCTURE_TYPE.stream()
-                            .map(structure -> structure.getKey().toString())
-                            .collect(Collectors.joining(", ")),
-                    directory);
+            throw new InvalidConfigurationException("Structure type is a required field.", directory);
         }
 
         NamespacedKey structureKey = NamespacedKey.fromString(typeString);
@@ -44,16 +37,7 @@ public class InStructureCondition extends GenerationCondition {
             structureKey = NamespacedKey.minecraft(typeString);
         }
 
-        StructureType check = Registry.STRUCTURE_TYPE.get(structureKey);
-        if (check != null) {
-            type = check;
-        } else {
-            throw new InvalidConfigurationException("Specify a structure type: " +
-                    Registry.STRUCTURE_TYPE.stream()
-                            .map(structure -> structure.getKey().toString())
-                            .collect(Collectors.joining(", ")),
-                    directory);
-        }
+        structureTypeKey = structureKey;
     }
 
     @Override
@@ -62,7 +46,7 @@ public class InStructureCondition extends GenerationCondition {
                 .getStructures()
                 .stream()
                 .anyMatch(generated -> {
-                    if (generated.getStructure().getStructureType() == type) {
+                    if (generated.getStructure().getStructureType().key().equals(structureTypeKey)) {
                         return generated.getBoundingBox().contains(location.toVector());
                     }
                     return false;
@@ -71,13 +55,13 @@ public class InStructureCondition extends GenerationCondition {
 
     @Override
     public Component describe(@NotNull TextComponent listBreak) {
-        return Component.text("In structure " + type.key());
+        return Component.text("In structure " + structureTypeKey.asString());
     }
 
     @Override
     public String toString() {
         return "InStructureCondition{" +
-                "type=" + type +
+                "type=" + structureTypeKey.asString() +
                 ", key=" + key +
                 ", negated=" + negated +
                 '}';

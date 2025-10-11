@@ -2,7 +2,6 @@ package wbs.enchants;
 
 import com.google.common.collect.HashMultimap;
 import com.google.common.collect.Multimap;
-import com.google.gson.Gson;
 import io.papermc.paper.plugin.bootstrap.BootstrapContext;
 import io.papermc.paper.plugin.bootstrap.PluginBootstrap;
 import io.papermc.paper.plugin.bootstrap.PluginProviderContext;
@@ -10,7 +9,6 @@ import io.papermc.paper.plugin.lifecycle.event.LifecycleEventManager;
 import io.papermc.paper.plugin.lifecycle.event.types.LifecycleEvents;
 import io.papermc.paper.registry.RegistryKey;
 import io.papermc.paper.registry.TypedKey;
-import io.papermc.paper.registry.data.EnchantmentRegistryEntry;
 import io.papermc.paper.registry.event.RegistryEvents;
 import io.papermc.paper.registry.keys.EnchantmentKeys;
 import io.papermc.paper.registry.keys.ItemTypeKeys;
@@ -20,11 +18,8 @@ import io.papermc.paper.registry.tag.TagKey;
 import io.papermc.paper.tag.PostFlattenTagRegistrar;
 import io.papermc.paper.tag.PreFlattenTagRegistrar;
 import io.papermc.paper.tag.TagEntry;
-import net.kyori.adventure.text.logger.slf4j.ComponentLogger;
 import org.bukkit.Keyed;
 import org.bukkit.NamespacedKey;
-import org.bukkit.configuration.ConfigurationSection;
-import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.ItemType;
@@ -33,12 +28,9 @@ import org.jetbrains.annotations.NotNull;
 import wbs.enchants.definition.EnchantmentDefinition;
 import wbs.enchants.type.EnchantmentType;
 import wbs.enchants.type.EnchantmentTypeManager;
-import wbs.utils.util.WbsFileUtil;
 
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.nio.file.Path;
 import java.util.*;
 import java.util.function.Supplier;
 
@@ -272,30 +264,13 @@ public class WbsEnchantsBootstrap implements PluginBootstrap {
         return new WbsEnchants();
     }
 
-
-    protected YamlConfiguration loadConfigSafely(File file, ComponentLogger logger) {
-        Objects.requireNonNull(file, "File cannot be null");
-        YamlConfiguration config = new YamlConfiguration();
-
-        try {
-            config.load(file);
-        } catch (FileNotFoundException ex) {
-            logger.error("File not found: {}", file, ex);
-        } catch (IOException ex) {
-            logger.error("Cannot load {}", file, ex);
-        } catch (InvalidConfigurationException ex) {
-            logger.error("Cannot load {}", file, ex);
-            logger.error("&cYAML parsing error in file {}. See console for details.", file.getName());
-        }
-
-        return config;
-    }
-
     @Override
     public void bootstrap(@NotNull BootstrapContext context) {
         LifecycleEventManager<@NotNull BootstrapContext> manager = context.getLifecycleManager();
 
-        registerEnchantmentEvents(context, manager);
+        EnchantsBootstrapSettings settings = new EnchantsBootstrapSettings(context);
+
+        settings.reload();
 
         registerCustomTags(context, manager);
 
@@ -329,10 +304,6 @@ public class WbsEnchantsBootstrap implements PluginBootstrap {
                 event.registrar().addToTag(tag, toAdd.get(tag));
             }
         }));
-    }
-
-    @SuppressWarnings("ResultOfMethodCallIgnored")
-    private static void writeJSONToFile(Path folder, NamespacedKey key, Gson gson, Object object) {
     }
 
     private static void registerCustomTags(@NotNull BootstrapContext context, LifecycleEventManager<@NotNull BootstrapContext> manager) {
@@ -391,111 +362,10 @@ public class WbsEnchantsBootstrap implements PluginBootstrap {
         return enchantmentTypeTags;
     }
 
-    private void registerEnchantmentEvents(@NotNull BootstrapContext context, LifecycleEventManager<@NotNull BootstrapContext> manager) {
-        File dataDirectory = context.getDataDirectory().toFile();
-        if (!dataDirectory.exists()) {
-            if (!dataDirectory.mkdir()) {
-                context.getLogger().error("Failed to generate data directory!");
-            }
-        }
-
-        configureExternalEnchantments(context, manager);
-        registerCustomEnchantments(context, manager);
-    }
-
     private File externalEnchantsFile;
     private YamlConfiguration externalEnchantsConfig;
     private boolean newExternalEnchants = false;
 
-    private void configureExternalEnchantments(@NotNull BootstrapContext context, LifecycleEventManager<@NotNull BootstrapContext> manager) {
-        String fileName = "external_enchantments.yml";
-
-        externalEnchantsFile = new File(context.getDataDirectory().toFile(), fileName);
-        YamlConfiguration enchantsConfig;
-        if (!externalEnchantsFile.exists()) {
-            WbsFileUtil.saveResource(context, WbsEnchants.class, fileName, false);
-        }
-        externalEnchantsConfig = loadConfigSafely(externalEnchantsFile, context.getLogger());
-
-        manager.registerEventHandler(RegistryEvents.ENCHANTMENT.entryAdd().newHandler(event -> {
-            EnchantmentRegistryEntry.Builder builder = event.builder();
-
-            TypedKey<Enchantment> addedKey = event.key();
-            WbsEnchantment customEnchantment = EnchantManager.getCustomFromKey(addedKey.key());
-            if (customEnchantment == null) {
-                // Not a custom enchantment -- check external file and add if not present.
-                String stringKey = addedKey.key().asString();
-
-                EnchantmentDefinition definition = new EnchantmentDefinition(addedKey.key(), event.builder().description());
-
-                ConfigurationSection definitionSection = externalEnchantsConfig.getConfigurationSection(stringKey);
-                try {
-                    if (definitionSection == null) {
-                        definition.buildConfigurationSection(externalEnchantsConfig, builder);
-                        newExternalEnchants = true;
-                    } else {
-                        definition.configureBoostrap(definitionSection, builder, fileName + "/" + stringKey);
-
-                        definition.buildTo(event::getOrCreateTag, builder);
-                    }
-                } catch (wbs.utils.exceptions.InvalidConfigurationException ex) {
-                    context.getLogger().warn("Failed to parse external enchantment ({}):", stringKey);
-                    context.getLogger().warn(ex.getMessage());
-                    return;
-                }
-
-                EnchantManager.registerExternal(definition);
-            }
-        }));
-    }
-
-    private void registerCustomEnchantments(@NotNull BootstrapContext context, LifecycleEventManager<@NotNull BootstrapContext> manager) {
-        File customEnchantsFile = new File(context.getDataDirectory().toFile(), "enchantments.yml");
-        YamlConfiguration enchantsConfig;
-        if (customEnchantsFile.exists()) {
-            enchantsConfig = loadConfigSafely(customEnchantsFile, context.getLogger());
-        } else {
-            enchantsConfig = null;
-        }
-
-        manager.registerEventHandler(RegistryEvents.ENCHANTMENT.compose().newHandler(event -> {
-            List<WbsEnchantment> invalidEnchantments = new LinkedList<>();
-            for (WbsEnchantment enchant : EnchantManager.getCustomRegistered()) {
-
-                if (enchant.getDefinition().getSupportedItems() == null) {
-                    context.getLogger().error("Failed to load custom enchantment {} -- supportedItems is required prior to registration.", enchant.key().asString());
-                    invalidEnchantments.add(enchant);
-                    continue;
-                }
-
-                if (enchantsConfig != null) {
-                    ConfigurationSection enchantSection = enchantsConfig.getConfigurationSection(enchant.key().value());
-                    if (enchantSection == null) {
-                        enchantSection = enchantsConfig.getConfigurationSection(enchant.key().asString());
-                    }
-                    if (enchantSection == null) {
-                        enchant.buildConfigurationSection(enchantsConfig);
-                    } else {
-                        try {
-                            enchant.configureBoostrap(enchantSection, customEnchantsFile.getName() + "/" + enchant.key().value());
-                        } catch (wbs.utils.exceptions.InvalidConfigurationException ex) {
-                            context.getLogger().error(ex.getMessage());
-                        }
-                    }
-                }
-
-                event.registry().register(
-                        TypedKey.create(RegistryKey.ENCHANTMENT, enchant.key()),
-                        builder -> enchant.getDefinition().buildTo(event::getOrCreateTag, builder)
-                );
-            }
-
-            if (!invalidEnchantments.isEmpty()) {
-                invalidEnchantments.forEach(EnchantManager::unregister);
-                context.getLogger().error("Unregistered {} invalid enchantments.", invalidEnchantments.size());
-            }
-        }));
-    }
 
     private static <T extends Keyed> void registerCustomTags(@NotNull BootstrapContext context,
                                                              RegistryKey<T> key,

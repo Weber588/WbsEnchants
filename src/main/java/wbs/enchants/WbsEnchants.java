@@ -73,6 +73,11 @@ public class WbsEnchants extends WbsPlugin {
         new SharedEventHandler(this).start();
 
         buildResourcePack();
+
+        EnchantManager.getCustomRegistered().forEach(definition -> {
+            definition.registerGenerationContexts();
+            definition.registerEvents();
+        });
     }
 
     private void buildResourcePack() {

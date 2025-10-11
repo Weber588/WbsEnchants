@@ -2,7 +2,6 @@ package wbs.enchants.generation.contexts;
 
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TextComponent;
-import org.bukkit.Bukkit;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.event.EventHandler;
@@ -23,13 +22,7 @@ public class MobSpawnContext extends ExistingLootContext {
 
     @Override
     protected int getDefaultChance() {
-        int rarityWeight = definition.getEnchantment().getWeight();
-        return switch (Bukkit.getWorlds().getFirst().getDifficulty()) {
-            case PEACEFUL -> 0;
-            case EASY -> rarityWeight / 3;
-            case NORMAL -> rarityWeight * 2 / 3;
-            case HARD -> rarityWeight;
-        };
+        return definition.weight() * 2 / 3;
     }
 
     @Override

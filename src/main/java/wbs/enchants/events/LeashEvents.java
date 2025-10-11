@@ -12,10 +12,11 @@ import org.bukkit.event.entity.PlayerLeashEntityEvent;
 import org.bukkit.inventory.EntityEquipment;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.persistence.PersistentDataContainer;
+import wbs.enchants.WbsEnchantsBootstrap;
 import wbs.utils.util.persistent.WbsPersistentDataType;
 
 public class LeashEvents implements Listener {
-    public static final NamespacedKey LEASH_ITEM_KEY = new NamespacedKey("wbsenchants", "leash_item");
+    public static final NamespacedKey LEASH_ITEM_KEY = WbsEnchantsBootstrap.createKey("leash_item");
 
     @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
     public void onLeash(PlayerLeashEntityEvent event) {

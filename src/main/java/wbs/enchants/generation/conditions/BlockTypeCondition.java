@@ -1,9 +1,19 @@
 package wbs.enchants.generation.conditions;
 
+import io.papermc.paper.registry.RegistryAccess;
+import io.papermc.paper.registry.RegistryKey;
+import io.papermc.paper.registry.TypedKey;
+import io.papermc.paper.registry.tag.Tag;
+import io.papermc.paper.registry.tag.TagKey;
+import net.kyori.adventure.key.Key;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.JoinConfiguration;
 import net.kyori.adventure.text.TextComponent;
-import org.bukkit.*;
+import org.bukkit.Location;
+import org.bukkit.Material;
+import org.bukkit.NamespacedKey;
+import org.bukkit.Registry;
+import org.bukkit.block.BlockType;
 import org.bukkit.configuration.ConfigurationSection;
 import org.jetbrains.annotations.NotNull;
 import wbs.enchants.WbsEnchants;
@@ -14,11 +24,12 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Objects;
 
+@SuppressWarnings("UnstableApiUsage")
 public class BlockTypeCondition extends GenerationCondition {
     public static final String KEY = "block-type";
 
     private final List<Material> exactMatches = new LinkedList<>();
-    private final List<Tag<Material>> tagMatches = new LinkedList<>();
+    private final List<Key> tagMatches = new LinkedList<>();
     private final List<String> tagStrings = new LinkedList<>();
 
     public BlockTypeCondition(@NotNull String key, ConfigurationSection parentSection, String directory) {
@@ -47,17 +58,8 @@ public class BlockTypeCondition extends GenerationCondition {
             NamespacedKey tagKey = NamespacedKey.fromString(check);
             if (tagKey == null) {
                 tagKey = NamespacedKey.minecraft(check);
-            }
-
-            Tag<Material> tag = Bukkit.getTag("blocks", tagKey, Material.class);
-
-            if (tag != null) {
-                tagMatches.add(tag);
+                tagMatches.add(tagKey);
                 tagStrings.add(check);
-            }
-
-            if (tag == null && found == null) {
-                WbsEnchants.getInstance().settings.logError("Material/block tag not found: \"" + check + "\"", directory);
             }
         }
         if (exactMatches.isEmpty() && tagMatches.isEmpty()) {
@@ -73,8 +75,19 @@ public class BlockTypeCondition extends GenerationCondition {
             return true;
         }
 
-        for (Tag<Material> tag : tagMatches) {
-            if (tag.isTagged(type)) {
+        RegistryKey<BlockType> registryKey = RegistryKey.BLOCK;
+        Registry<@NotNull BlockType> registry = RegistryAccess.registryAccess().getRegistry(registryKey);
+        for (Key key : tagMatches) {
+            TagKey<BlockType> tagKey = TagKey.create(registryKey, key);
+
+            if (!registry.hasTag(tagKey)) {
+                WbsEnchants.getInstance().getLogger().severe("An invalid tag was present at runtime! Please report this -- " +
+                        key.asString());
+                continue;
+            }
+
+            Tag<@NotNull BlockType> tag = registry.getTag(tagKey);
+            if (tag.contains(TypedKey.create(registryKey, type.asBlockType().key()))) {
                 return true;
             }
         }

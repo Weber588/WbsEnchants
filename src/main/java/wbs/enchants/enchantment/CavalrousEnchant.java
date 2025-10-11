@@ -19,7 +19,6 @@ import java.util.List;
 
 public class CavalrousEnchant extends WbsEnchantment implements TickableEnchant {
     private static final @NotNull String DEFAULT_DESCRIPTION = "Greatly increases the health of horses, and applies regeneration.";
-    public static final PotionEffect REGEN_EFFECT = new PotionEffect(PotionEffectType.REGENERATION, 50, 0, true, false);
 
     public CavalrousEnchant() {
         super("cavalrous", DEFAULT_DESCRIPTION);
@@ -46,6 +45,6 @@ public class CavalrousEnchant extends WbsEnchantment implements TickableEnchant 
 
     @Override
     public void onTickEquipped(LivingEntity owner) {
-        owner.addPotionEffect(REGEN_EFFECT);
+        owner.addPotionEffect(new PotionEffect(PotionEffectType.REGENERATION, 50, 0, true, false));
     }
 }

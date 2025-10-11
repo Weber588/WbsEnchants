@@ -92,6 +92,7 @@ public class EnchantmentDefinition extends EnchantmentWrapper implements Compara
         return null;
     }
 
+    // TODO: Move this to WbsEnchantment
     private boolean isEnabled = true;
     @NotNull
     private Component displayName;
@@ -119,6 +120,8 @@ public class EnchantmentDefinition extends EnchantmentWrapper implements Compara
 
     private Set<TagKey<Enchantment>> injectInto = new HashSet<>();
 
+    // TODO: Move these out of the definition -- they don't actually form a part of the definition.
+    //  They should also probably be moved into their own config folder -- separate file, or folder for multiple?
     protected final List<@NotNull GenerationContext> generationContexts = new LinkedList<>();
     @Nullable
     private EnchantmentType type;
@@ -211,6 +214,10 @@ public class EnchantmentDefinition extends EnchantmentWrapper implements Compara
     public EnchantmentDefinition weight(int weight) {
         this.weight = weight;
         return this;
+    }
+
+    public int weight() {
+        return weight;
     }
 
     public EnchantmentDefinition minimumCost(@NotNull EnchantmentRegistryEntry.EnchantmentCost minimumCost) {

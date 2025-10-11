@@ -60,7 +60,10 @@ public abstract class WbsEnchantment implements Comparable<WbsEnchantment>, List
      * @return Whether this enchantment is under development, and should override user configuration.
      */
     public boolean developerMode() {
-        return WbsEnchants.getInstance().settings.isDeveloperMode();
+        if (WbsEnchants.getInstance() != null) {
+            return WbsEnchants.getInstance().settings.isDeveloperMode();
+        }
+        return false;
     }
 
     public void registerEvents() {
