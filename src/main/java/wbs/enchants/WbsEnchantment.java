@@ -1,8 +1,8 @@
 package wbs.enchants;
 
 import net.kyori.adventure.text.Component;
-import net.kyori.adventure.util.Ticks;
 import org.bukkit.Bukkit;
+import org.bukkit.NamespacedKey;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
@@ -267,12 +267,7 @@ public abstract class WbsEnchantment implements Comparable<WbsEnchantment>, List
      * @return True if a cooldown was started, false if it hasn't been long enough.
      */
     protected boolean newCooldown(PersistentDataHolder holder, int cooldownTicks) {
-        if (CooldownManager.getMillisSinceStart(holder, getKey()) >= cooldownTicks * Ticks.SINGLE_TICK_DURATION_MS) {
-            CooldownManager.startCooldown(holder, getKey());
-            return true;
-        }
-
-        return false;
+        return CooldownManager.newCooldown(holder, cooldownTicks, new NamespacedKey(getKey().namespace(), getKey().getKey()));
     }
 
     protected void debug(String message) {

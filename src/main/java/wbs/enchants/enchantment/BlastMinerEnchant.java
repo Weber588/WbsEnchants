@@ -14,6 +14,7 @@ import wbs.enchants.enchantment.helper.AbstractMultiBreakEnchant;
 import wbs.enchants.type.EnchantmentTypeManager;
 import wbs.enchants.util.BlockChanger;
 import wbs.enchants.util.BlockQuery;
+import wbs.enchants.util.MaterialUtils;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -40,6 +41,13 @@ public class BlastMinerEnchant extends AbstractMultiBreakEnchant {
             return true;
         }
         if (Tag.BASE_STONE_NETHER.isTagged(type)) {
+            return true;
+        }
+
+        if (MaterialUtils.isOre(block)) {
+            return false;
+        }
+        if (Tag.OVERWORLD_CARVER_REPLACEABLES.isTagged(type) && Tag.MINEABLE_PICKAXE.isTagged(type)) {
             return true;
         }
 

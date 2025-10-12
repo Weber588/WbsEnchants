@@ -1,6 +1,5 @@
 package wbs.enchants.enchantment;
 
-import io.papermc.paper.registry.data.EnchantmentRegistryEntry;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
@@ -23,8 +22,8 @@ public class AridityEnchant extends WbsEnchantment implements NonPersistentBlock
         getDefinition()
                 .supportedItems(WbsEnchantsBootstrap.SPONGES)
                 .targetDescription("Sponge")
-                .minimumCost(EnchantmentRegistryEntry.EnchantmentCost.of(5, 8))
-                .maximumCost(EnchantmentRegistryEntry.EnchantmentCost.of(55, 8));
+                .minimumCost(5, 8)
+                .maximumCost(55, 8);
     }
 
     @Override

@@ -1,6 +1,5 @@
 package wbs.enchants.enchantment;
 
-import io.papermc.paper.registry.data.EnchantmentRegistryEntry;
 import org.bukkit.Bukkit;
 import org.bukkit.Chunk;
 import org.bukkit.Location;
@@ -42,8 +41,8 @@ public class HavenEnchant extends WbsEnchantment implements BlockStateEnchant<Be
 
         getDefinition()
                 .supportedItems(WbsEnchantsBootstrap.ENCHANTABLE_BEACON)
-                .minimumCost(EnchantmentRegistryEntry.EnchantmentCost.of(5, 8))
-                .maximumCost(EnchantmentRegistryEntry.EnchantmentCost.of(55, 8));
+                .minimumCost(5, 8)
+                .maximumCost(55, 8);
     }
 
     @Override

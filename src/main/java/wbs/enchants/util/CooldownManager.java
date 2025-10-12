@@ -1,5 +1,6 @@
 package wbs.enchants.util;
 
+import net.kyori.adventure.util.Ticks;
 import org.bukkit.NamespacedKey;
 import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataHolder;
@@ -36,5 +37,22 @@ public class CooldownManager {
         }
 
         return Long.MAX_VALUE;
+    }
+
+
+    /**
+     * Starts a new cooldown with this enchantment's key, if off cooldown according to given ticks.
+     * @param holder The holder of the cooldown
+     * @param cooldownTicks How many ticks must have passed since the cooldown started, to start a new one.
+     * @param key The key to use for the cooldown.
+     * @return True if a cooldown was started, false if it hasn't been long enough.
+     */
+    public static boolean newCooldown(PersistentDataHolder holder, int cooldownTicks, NamespacedKey key) {
+        if (CooldownManager.getMillisSinceStart(holder, key) >= cooldownTicks * Ticks.SINGLE_TICK_DURATION_MS) {
+            CooldownManager.startCooldown(holder, key);
+            return true;
+        }
+
+        return false;
     }
 }

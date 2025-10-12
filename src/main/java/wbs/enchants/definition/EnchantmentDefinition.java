@@ -225,8 +225,18 @@ public class EnchantmentDefinition extends EnchantmentWrapper implements Compara
         return this;
     }
 
+    public EnchantmentDefinition minimumCost(int baseCost, int additionalPerLevelCost) {
+        this.minimumCost = EnchantmentRegistryEntry.EnchantmentCost.of(baseCost, additionalPerLevelCost);
+        return this;
+    }
+
     public EnchantmentDefinition maximumCost(@NotNull EnchantmentRegistryEntry.EnchantmentCost maximumCost) {
         this.maximumCost = maximumCost;
+        return this;
+    }
+
+    public EnchantmentDefinition maximumCost(int baseCost, int additionalPerLevelCost) {
+        this.maximumCost = EnchantmentRegistryEntry.EnchantmentCost.of(baseCost, additionalPerLevelCost);
         return this;
     }
 

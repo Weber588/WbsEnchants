@@ -1,6 +1,5 @@
 package wbs.enchants.enchantment;
 
-import io.papermc.paper.registry.data.EnchantmentRegistryEntry;
 import org.bukkit.block.Beacon;
 import org.bukkit.block.Block;
 import org.bukkit.event.block.BlockPlaceEvent;
@@ -22,8 +21,8 @@ public class OutreachEnchant extends WbsEnchantment implements BlockStateEnchant
         getDefinition()
                 .supportedItems(WbsEnchantsBootstrap.ENCHANTABLE_BEACON)
                 .maxLevel(3)
-                .minimumCost(EnchantmentRegistryEntry.EnchantmentCost.of(5, 8))
-                .maximumCost(EnchantmentRegistryEntry.EnchantmentCost.of(55, 8));
+                .minimumCost(5, 8)
+                .maximumCost(55, 8);
     }
 
     @Override

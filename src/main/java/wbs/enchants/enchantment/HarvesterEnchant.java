@@ -40,8 +40,8 @@ public class HarvesterEnchant extends WbsEnchantment {
                 .maxLevel(2)
                 .supportedItems(ItemTypeTagKeys.HOES)
                 .targetDescription("Hoe")
-                .minimumCost(EnchantmentRegistryEntry.EnchantmentCost.of(5, 8))
-                .maximumCost(EnchantmentRegistryEntry.EnchantmentCost.of(55, 8));
+                .minimumCost(5, 8)
+                .maximumCost(55, 8);
     }
 
     @EventHandler

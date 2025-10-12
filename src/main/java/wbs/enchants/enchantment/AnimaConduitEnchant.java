@@ -1,7 +1,6 @@
 package wbs.enchants.enchantment;
 
 import com.destroystokyo.paper.event.player.PlayerPickupExperienceEvent;
-import io.papermc.paper.registry.data.EnchantmentRegistryEntry;
 import io.papermc.paper.registry.keys.tags.ItemTypeTagKeys;
 import org.bukkit.Particle;
 import org.bukkit.entity.Player;
@@ -35,8 +34,8 @@ public class AnimaConduitEnchant extends WbsEnchantment {
         getDefinition()
                 .maxLevel(4)
                 .supportedItems(ItemTypeTagKeys.ENCHANTABLE_CHEST_ARMOR)
-                .minimumCost(EnchantmentRegistryEntry.EnchantmentCost.of(3, 6))
-                .maximumCost(EnchantmentRegistryEntry.EnchantmentCost.of(10, 6));
+                .minimumCost(3, 6)
+                .maximumCost(10, 6);
     }
 
     @EventHandler

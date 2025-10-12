@@ -13,7 +13,6 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import wbs.enchants.WbsEnchantment;
 import wbs.enchants.WbsEnchantsBootstrap;
-import wbs.utils.util.WbsEnums;
 import wbs.utils.util.string.WbsStrings;
 
 import java.util.LinkedList;
@@ -76,15 +75,7 @@ public class ShulkerBoxEnchantment extends WbsEnchantment implements BlockEnchan
 
     public record ShulkerBoxWrapper(@NotNull ShulkerBox box, @NotNull ItemStack item) {
         public Component displayName() {
-            // TODO: CHange to effectiveName() in 1.21.4
-            ItemMeta meta = item().getItemMeta();
-            if (meta.hasDisplayName()) {
-                return meta.displayName();
-            } else if (meta.hasItemName()) {
-                return meta.itemName();
-            } else {
-                return Component.translatable(item().getType().translationKey(), WbsEnums.toPrettyString(item().getType()));
-            }
+            return item.effectiveName();
         }
 
         public void save() {

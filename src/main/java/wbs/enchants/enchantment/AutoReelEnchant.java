@@ -1,6 +1,5 @@
 package wbs.enchants.enchantment;
 
-import io.papermc.paper.registry.data.EnchantmentRegistryEntry;
 import io.papermc.paper.registry.keys.ItemTypeKeys;
 import org.bukkit.event.player.PlayerFishEvent;
 import org.bukkit.inventory.EquipmentSlot;
@@ -17,8 +16,8 @@ public class AutoReelEnchant extends WbsEnchantment implements FishingEnchant {
 
         getDefinition()
                 .supportedItems(ItemTypeKeys.FISHING_ROD)
-                .minimumCost(EnchantmentRegistryEntry.EnchantmentCost.of(10, 10))
-                .maximumCost(EnchantmentRegistryEntry.EnchantmentCost.of(55, 10));
+                .minimumCost(10, 10)
+                .maximumCost(55, 10);
     }
 
     @Override

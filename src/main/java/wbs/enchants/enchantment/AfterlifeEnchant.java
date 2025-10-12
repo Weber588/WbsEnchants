@@ -1,6 +1,5 @@
 package wbs.enchants.enchantment;
 
-import io.papermc.paper.registry.data.EnchantmentRegistryEntry;
 import io.papermc.paper.registry.keys.tags.ItemTypeTagKeys;
 import net.kyori.adventure.text.Component;
 import org.bukkit.entity.Player;
@@ -21,8 +20,8 @@ public class AfterlifeEnchant extends WbsEnchantment {
         getDefinition()
                 .maxLevel(1)
                 .supportedItems(ItemTypeTagKeys.ENCHANTABLE_DURABILITY)
-                .minimumCost(EnchantmentRegistryEntry.EnchantmentCost.of(5, 8))
-                .maximumCost(EnchantmentRegistryEntry.EnchantmentCost.of(55, 8));
+                .minimumCost(5, 8)
+                .maximumCost(55, 8);
     }
 
     @EventHandler

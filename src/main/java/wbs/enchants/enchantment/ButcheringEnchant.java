@@ -31,8 +31,8 @@ public class ButcheringEnchant extends TargetedDamageEnchant {
 
         getDefinition()
                 .maxLevel(3)
-                .minimumCost(EnchantmentRegistryEntry.EnchantmentCost.of(5, 6))
-                .maximumCost(EnchantmentRegistryEntry.EnchantmentCost.of(25, 6));
+                .minimumCost(5, 6)
+                .maximumCost(25, 6);
     }
 
     @EventHandler

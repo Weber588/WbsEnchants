@@ -5,7 +5,6 @@ import io.papermc.paper.datacomponent.item.MapDecorations;
 import io.papermc.paper.event.packet.PlayerChunkLoadEvent;
 import io.papermc.paper.registry.RegistryAccess;
 import io.papermc.paper.registry.RegistryKey;
-import io.papermc.paper.registry.data.EnchantmentRegistryEntry;
 import net.kyori.adventure.key.Key;
 import net.kyori.adventure.util.Ticks;
 import org.bukkit.*;
@@ -96,8 +95,8 @@ public class AnnotatedEnchant extends WbsEnchantment implements TickableEnchant 
                 .activeSlots(EquipmentSlotGroup.HAND)
                 .weight(5)
                 .targetDescription("Map")
-                .minimumCost(EnchantmentRegistryEntry.EnchantmentCost.of(3, 6))
-                .maximumCost(EnchantmentRegistryEntry.EnchantmentCost.of(9, 6));
+                .minimumCost(3, 6)
+                .maximumCost(9, 6);
     }
 
     @Override

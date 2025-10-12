@@ -1,15 +1,11 @@
 package wbs.enchants.enchantment;
 
-import io.papermc.paper.registry.data.EnchantmentRegistryEntry;
 import io.papermc.paper.registry.keys.ItemTypeKeys;
-import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.block.BlockSupport;
 import org.bukkit.entity.Player;
-import org.bukkit.event.EventHandler;
-import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
 import org.bukkit.inventory.meta.BundleMeta;
@@ -32,27 +28,20 @@ public class CavingEnchant extends WbsEnchantment implements MovementEnchant {
         getDefinition()
                 .maxLevel(1)
                 .supportedItems(ItemTypeKeys.BUNDLE)
-                .minimumCost(EnchantmentRegistryEntry.EnchantmentCost.of(5, 6))
-                .maximumCost(EnchantmentRegistryEntry.EnchantmentCost.of(25, 6));
-    }
-
-    @EventHandler
-    public void onMove(PlayerMoveEvent event) {
-        Location from = event.getFrom();
-        Location to = event.getTo();
-
-        if (from.getBlock().equals(to.getBlock())) {
-            return;
-        }
-
+                .minimumCost(5, 6)
+                .maximumCost(25, 6);
     }
 
     @Override
     public void onChangeBlock(Player player, Block oldBlock, Block newBlock) {
+        // TODO: Make it configurable if this only works when sky light = 0 (i.e. only caves/indoors), or if it works outside
         if (newBlock.getLightFromBlocks() > LIGHT_LEVEL_REQUIRED) {
             return;
         }
         if (!newBlock.isReplaceable()) {
+            return;
+        }
+        if (player.isInWater()) {
             return;
         }
 
@@ -63,6 +52,7 @@ public class CavingEnchant extends WbsEnchantment implements MovementEnchant {
 
         PlayerInventory inventory = player.getInventory();
         boolean placedTorch = false;
+        // TODO: Make it configurable if it needs to be in the hotbar, a hand, or anywhere in the inv
         for (int i = 0; i < 9; i++) {
             if (placedTorch) {
                 break;

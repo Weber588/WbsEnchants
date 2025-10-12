@@ -1,6 +1,5 @@
 package wbs.enchants.enchantment;
 
-import io.papermc.paper.registry.data.EnchantmentRegistryEntry;
 import io.papermc.paper.registry.keys.tags.ItemTypeTagKeys;
 import org.bukkit.Particle;
 import org.bukkit.entity.Entity;
@@ -26,8 +25,8 @@ public class ArcticStrikeEnchant extends WbsEnchantment implements DamageEnchant
         getDefinition()
                 .maxLevel(3)
                 .supportedItems(ItemTypeTagKeys.ENCHANTABLE_WEAPON)
-                .minimumCost(EnchantmentRegistryEntry.EnchantmentCost.of(5, 6))
-                .maximumCost(EnchantmentRegistryEntry.EnchantmentCost.of(25, 6));
+                .minimumCost(5, 6)
+                .maximumCost(25, 6);
     }
 
     @Override
