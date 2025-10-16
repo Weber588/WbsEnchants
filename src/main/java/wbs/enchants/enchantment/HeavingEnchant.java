@@ -38,7 +38,7 @@ public class HeavingEnchant extends WbsEnchantment {
 
         if (item != null && isEnchantmentOn(item)) {
             int level = getLevel(item);
-            double multiplier = Math.max(1, level * 0.75);
+            double multiplier = Math.max(1, level * 0.375);
 
             event.setKnockback(new Vector(0, event.getKnockback().length() * multiplier, 0));
         }
