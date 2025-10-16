@@ -16,6 +16,7 @@ import wbs.utils.util.commands.brigadier.WbsCommand;
 import wbs.utils.util.commands.brigadier.WbsErrorsSubcommand;
 import wbs.utils.util.commands.brigadier.WbsReloadSubcommand;
 import wbs.utils.util.plugin.WbsPlugin;
+import wbs.utils.util.string.RomanNumerals;
 
 import java.io.File;
 import java.io.FileWriter;
@@ -94,8 +95,13 @@ public class WbsEnchants extends WbsPlugin {
             }
         }
 
+        // Fix roman numerals over level 10, up to 255 (max level for enchants)
+        for (int level = 1; level < 256; level++) {
+            lang.put("enchantment.level." + level, RomanNumerals.toRoman(level));
+        }
+
         writeToJSONFile(gson, lang, "resourcepack/assets/" + getName().toLowerCase() + "/lang/en_us");
-        saveResource("resourcepack/pack.mcmeta", false);
+        saveResource("resourcepack/pack.mcmeta", getSettings().isDeveloperMode());
 
         try {
             WbsFileUtil.zipFolder(
