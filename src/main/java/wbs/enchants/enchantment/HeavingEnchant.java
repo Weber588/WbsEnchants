@@ -4,6 +4,7 @@ import com.destroystokyo.paper.event.entity.EntityKnockbackByEntityEvent;
 import io.papermc.paper.event.entity.EntityKnockbackEvent;
 import io.papermc.paper.registry.keys.tags.ItemTypeTagKeys;
 import org.bukkit.entity.LivingEntity;
+import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.util.Vector;
@@ -39,8 +40,14 @@ public class HeavingEnchant extends WbsEnchantment {
         if (item != null && isEnchantmentOn(item)) {
             int level = getLevel(item);
             double multiplier = Math.max(1, level * 0.375);
+            double baseSpeed = event.getKnockback().length();
+            if (attacker instanceof Player player && player.isSprinting()) {
+                // Counteract the effects of sprinting -- it shouldn't affect upwards.
+                baseSpeed -= 0.5;
+            }
+            double speed = Math.max(baseSpeed, 0) * multiplier;
 
-            event.setKnockback(new Vector(0, event.getKnockback().length() * multiplier, 0));
+            event.setKnockback(new Vector(0, speed, 0));
         }
     }
 }
