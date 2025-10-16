@@ -3,6 +3,7 @@ package wbs.enchants.command;
 import com.mojang.brigadier.Command;
 import com.mojang.brigadier.context.CommandContext;
 import io.papermc.paper.command.brigadier.CommandSourceStack;
+import org.bukkit.Material;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
@@ -32,7 +33,11 @@ public class SubcommandAdd extends EnchantmentSubcommand {
 
         if (context.getSource() instanceof CommandSourceStack source) {
             if (source.getSender() instanceof Player player) {
-                return definition.getEnchantment().canEnchantItem(player.getInventory().getItemInMainHand());
+                ItemStack item = player.getInventory().getItemInMainHand();
+                if (item.getType() == Material.BOOK) {
+                    return true;
+                }
+                return definition.getEnchantment().canEnchantItem(item);
             }
         }
 
@@ -68,6 +73,10 @@ public class SubcommandAdd extends EnchantmentSubcommand {
         if (heldItem.isEmpty()) {
             plugin.sendMessage("&wHold an item to enchant!", context.getSource().getSender());
             return 0;
+        }
+
+        if (heldItem.getType() == Material.BOOK) {
+            heldItem.setType(Material.ENCHANTED_BOOK);
         }
 
         heldItem.addUnsafeEnchantment(definition.getEnchantment(), level);

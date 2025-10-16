@@ -129,6 +129,7 @@ public class EnchantManager {
     public static final BreathtakingEnchant BREATHTAKING = new BreathtakingEnchant();
     public static final PlatformerEnchant PLATFORMER = new PlatformerEnchant();
     public static final VenturingEnchant VENTURING = new VenturingEnchant();
+    public static final HaulingEnchant HAULING = new HaulingEnchant();
 
     public static final CurseRebuking CURSE_REBUKING = new CurseRebuking();
     public static final CurseVanilla CURSE_VANILLA = new CurseVanilla();
