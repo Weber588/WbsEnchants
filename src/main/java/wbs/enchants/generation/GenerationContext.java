@@ -115,7 +115,7 @@ public abstract class GenerationContext implements Listener {
             return true;
         }
         return conditions.isEmpty() || conditions.stream()
-                .anyMatch(condition -> condition.isNegated() ^ condition.test(entity));
+                .allMatch(condition -> condition.isNegated() ^ condition.test(entity));
     }
 
     @Contract("null -> true")
@@ -124,7 +124,7 @@ public abstract class GenerationContext implements Listener {
             return true;
         }
         return conditions.isEmpty() || conditions.stream()
-                .anyMatch(condition -> condition.isNegated() ^ condition.test(block));
+                .allMatch(condition -> condition.isNegated() ^ condition.test(block));
     }
 
     @Contract("null -> true")
@@ -133,7 +133,7 @@ public abstract class GenerationContext implements Listener {
             return true;
         }
         return conditions.isEmpty() || conditions.stream()
-                .anyMatch(condition -> condition.isNegated() ^ condition.test(location));
+                .allMatch(condition -> condition.isNegated() ^ condition.test(location));
     }
 
     @Contract("null -> true")
@@ -142,7 +142,7 @@ public abstract class GenerationContext implements Listener {
             return true;
         }
         return conditions.isEmpty() || conditions.stream()
-                .anyMatch(condition -> condition.isNegated() ^ condition.testTrigger(player));
+                .allMatch(condition -> condition.isNegated() ^ condition.testTrigger(player));
     }
 
     protected boolean shouldRun() {

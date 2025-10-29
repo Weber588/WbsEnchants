@@ -43,13 +43,13 @@ public class SubcommandHeld extends WbsSubcommand {
         ItemStack heldItem = player.getInventory().getItemInMainHand();
 
         if (heldItem.isEmpty()) {
-            plugin.sendMessage("Hold an item to view its enchants!.", sender);
+            plugin.sendMessage("Hold an item to view its enchants!", sender);
             return Command.SINGLE_SUCCESS;
         }
 
         Map<Enchantment, Integer> enchantments = heldItem.getEnchantments();
         if (enchantments.isEmpty()) {
-            plugin.sendMessage("Your held item does not have any enchantments!.", sender);
+            plugin.sendMessage("Your held item does not have any enchantments!", sender);
             return Command.SINGLE_SUCCESS;
         }
 

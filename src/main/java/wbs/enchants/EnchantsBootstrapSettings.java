@@ -49,7 +49,7 @@ public class EnchantsBootstrapSettings extends WbsBootstrapSettings<WbsEnchants>
 
     private File externalEnchantsFile;
     private YamlConfiguration externalEnchantsConfig;
-    private boolean newExternalEnchants = false;
+    public boolean newExternalEnchants = false;
 
     private void configureExternalEnchantments() {
         BootstrapContext context = getContext();

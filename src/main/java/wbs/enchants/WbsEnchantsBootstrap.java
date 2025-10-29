@@ -33,10 +33,12 @@ import java.io.File;
 import java.io.IOException;
 import java.util.*;
 import java.util.function.Supplier;
+import java.util.stream.Collectors;
 
 @SuppressWarnings({"UnstableApiUsage", "unused"})
 public class WbsEnchantsBootstrap implements PluginBootstrap {
     public static final String NAMESPACE = "wbsenchants";
+    private EnchantsBootstrapSettings settings;
 
     public static NamespacedKey createKey(String value) {
         return new NamespacedKey(NAMESPACE, value);
@@ -72,8 +74,8 @@ public class WbsEnchantsBootstrap implements PluginBootstrap {
     public static final TagKey<ItemType> ENCHANTABLE_HORSE_ARMOR = ItemTypeTagKeys.create(createKey("enchantable/horse_armor"));
 
     // TODO: Put this somewhere proper (config?)
-    private static Set<CustomTag<ItemType>> getItemTags() {
-        return Set.of(
+    private static List<CustomTag<ItemType>> getItemTags() {
+        return List.of(
                 new CustomTag<>(SPONGES, ItemTypeKeys.SPONGE, ItemTypeKeys.WET_SPONGE),
                 new CustomTag<>(MAPS, ItemTypeKeys.MAP, ItemTypeKeys.FILLED_MAP),
                 new CustomTag<>(MINECARTS,
@@ -254,7 +256,8 @@ public class WbsEnchantsBootstrap implements PluginBootstrap {
 
     @Override
     public @NotNull JavaPlugin createPlugin(@NotNull PluginProviderContext context) {
-        if (newExternalEnchants) {
+        boolean newExternalEnchants = false;
+        if (settings.newExternalEnchants) {
             try {
                 externalEnchantsConfig.save(externalEnchantsFile);
             } catch (IOException ex) {
@@ -268,8 +271,7 @@ public class WbsEnchantsBootstrap implements PluginBootstrap {
     public void bootstrap(@NotNull BootstrapContext context) {
         LifecycleEventManager<@NotNull BootstrapContext> manager = context.getLifecycleManager();
 
-        EnchantsBootstrapSettings settings = new EnchantsBootstrapSettings(context);
-
+        settings = new EnchantsBootstrapSettings(context);
         settings.reload();
 
         registerCustomTags(context, manager);
@@ -364,31 +366,37 @@ public class WbsEnchantsBootstrap implements PluginBootstrap {
 
     private File externalEnchantsFile;
     private YamlConfiguration externalEnchantsConfig;
-    private boolean newExternalEnchants = false;
 
 
     private static <T extends Keyed> void registerCustomTags(@NotNull BootstrapContext context,
                                                              RegistryKey<T> key,
-                                                             Supplier<Set<CustomTag<T>>> tags) {
+                                                             Supplier<Collection<CustomTag<T>>> tags) {
         LifecycleEventManager<@NotNull BootstrapContext> manager = context.getLifecycleManager();
 
-        manager.registerEventHandler(LifecycleEvents.TAGS.preFlatten(key).newHandler(event ->
-                tags.get().stream().sorted(Comparator.comparingInt(CustomTag::priority)).forEach(tag ->
-                        tag.register(event.registrar())
-                )
-        ));
-        manager.registerEventHandler(LifecycleEvents.TAGS.postFlatten(key).newHandler(event ->
-                tags.get().stream().sorted(Comparator.comparingInt(CustomTag::priority)).forEach(tag ->
-                        tag.register(event.registrar())
-                )
-        ));
+        for (int priority : tags.get().stream().map(CustomTag::priority).collect(Collectors.toSet())) {
+            List<CustomTag<T>> prioritisedTags = tags.get().stream().filter(tag -> tag.priority() == priority).toList();
+            manager.registerEventHandler(LifecycleEvents.TAGS.preFlatten(key).newHandler(event -> {
+                System.out.println("Pre-flatten priority " + priority + ": ");
+                prioritisedTags.forEach(tag ->
+                                tag.register(event.registrar())
+                );
+            }).priority(priority));
+            manager.registerEventHandler(LifecycleEvents.TAGS.postFlatten(key).newHandler(event -> {
+                System.out.println("Post-flatten priority " + priority + ": ");
+                prioritisedTags.forEach(tag ->
+                                tag.register(event.registrar())
+                );
+            }).priority(priority));
+        }
     }
 
     private static class CustomTag<T extends Keyed> {
         private final TagKey<T> key;
         private int priority = 0;
-        private Collection<TypedKey<T>> typedKeys;
-        private Collection<TagEntry<T>> tagEntries;
+        @NotNull
+        private Collection<TypedKey<T>> typedKeys = new LinkedList<>();
+        @NotNull
+        private Collection<TagEntry<T>> tagEntries = new LinkedList<>();
 
         private static CustomTag<Enchantment> getKeyTag(TagKey<Enchantment> key, WbsEnchantment... enchants) {
             CustomTag<Enchantment> tag = new CustomTag<>(key);
@@ -411,7 +419,7 @@ public class WbsEnchantsBootstrap implements PluginBootstrap {
             this.key = key;
         }
 
-        private CustomTag(TagKey<T> key, Collection<TypedKey<T>> keys) {
+        private CustomTag(TagKey<T> key, @NotNull Collection<TypedKey<T>> keys) {
             this.key = key;
             this.typedKeys = keys;
         }
@@ -421,7 +429,7 @@ public class WbsEnchantsBootstrap implements PluginBootstrap {
             this(key, Arrays.asList(keys));
         }
 
-        private CustomTag(TagKey<T> key, Collection<TypedKey<T>> keys, Collection<TagEntry<T>> tagEntries) {
+        private CustomTag(TagKey<T> key, @NotNull Collection<TypedKey<T>> keys, @NotNull Collection<TagEntry<T>> tagEntries) {
             this.key = key;
             this.typedKeys = keys;
             this.tagEntries = tagEntries;
@@ -437,23 +445,25 @@ public class WbsEnchantsBootstrap implements PluginBootstrap {
         }
 
         private void register(PreFlattenTagRegistrar<T> registrar) {
-            if (tagEntries == null || tagEntries.isEmpty()) {
+            if (tagEntries.isEmpty()) {
                 return;
             }
 
             if (registrar.hasTag(key)) {
+                System.out.println("Pre-flatten register (add) " + key.key().asString());
                 registrar.addToTag(key, tagEntries);
             } else {
+                System.out.println("Pre-flatten register (set) " + key.key().asString());
                 registrar.setTag(key, tagEntries);
             }
         }
 
         private void register(PostFlattenTagRegistrar<T> registrar) {
-            RegistryKey<T> registryKey = registrar.registryKey();
-
             if (registrar.hasTag(key)) {
+                System.out.println("Post-flatten register (add) " + key.key().asString());
                 registrar.addToTag(key, typedKeys);
             } else {
+                System.out.println("Post-flatten register (set) " + key.key().asString());
                 registrar.setTag(key, typedKeys);
             }
         }
