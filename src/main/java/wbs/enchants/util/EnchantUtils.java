@@ -47,11 +47,16 @@ public class EnchantUtils {
         addEnchantment(enchant.getDefinition(), item, level);
     }
     public static void addEnchantment(EnchantmentWrapper enchant, @NotNull ItemStack item, int level) {
+        Enchantment enchantment = enchant.getEnchantment();
+        addEnchantment(enchantment, item, level);
+    }
+
+    public static void addEnchantment(Enchantment enchantment, @NotNull ItemStack item, int level) {
         if (item.getItemMeta() instanceof EnchantmentStorageMeta meta) {
-            meta.addStoredEnchant(enchant.getEnchantment(), level, true);
+            meta.addStoredEnchant(enchantment, level, true);
             item.setItemMeta(meta);
         } else {
-            item.addUnsafeEnchantment(enchant.getEnchantment(), level);
+            item.addUnsafeEnchantment(enchantment, level);
         }
     }
 

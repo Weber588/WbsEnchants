@@ -21,9 +21,16 @@ import java.util.List;
 @SuppressWarnings("UnstableApiUsage")
 @NullMarked
 public class EnchantsBootstrapSettings extends WbsBootstrapSettings<WbsEnchants> {
+    @SuppressWarnings("NotNullFieldNotInitialized")
+    private static EnchantsBootstrapSettings INSTANCE;
+    public static EnchantsBootstrapSettings getInstance() {
+        return INSTANCE;
+    }
 
     public EnchantsBootstrapSettings(BootstrapContext context) {
         super(context, WbsEnchants.class);
+
+        INSTANCE = this;
     }
 
     @Override

@@ -1,26 +1,22 @@
 package wbs.enchants.enchantment;
 
+import io.papermc.paper.block.TileStateInventoryHolder;
 import io.papermc.paper.registry.keys.ItemTypeKeys;
 import org.bukkit.Location;
-import org.bukkit.block.Block;
 import org.bukkit.block.EnchantingTable;
-import org.bukkit.enchantments.Enchantment;
 import org.bukkit.event.EventHandler;
-import org.bukkit.event.EventPriority;
-import org.bukkit.event.enchantment.EnchantItemEvent;
-import org.bukkit.event.enchantment.PrepareItemEnchantEvent;
 import org.bukkit.event.inventory.InventoryClickEvent;
+import org.bukkit.event.inventory.InventoryOpenEvent;
 import org.bukkit.inventory.EnchantingInventory;
+import org.bukkit.inventory.view.EnchantmentView;
 import org.jetbrains.annotations.NotNull;
-import wbs.enchants.EnchantManager;
 import wbs.enchants.WbsEnchantment;
+import wbs.enchants.WbsEnchantsBootstrap;
 import wbs.enchants.enchantment.helper.BlockStateEnchant;
 
-import java.util.HashSet;
-import java.util.Map;
 import java.util.Random;
-import java.util.Set;
 
+@SuppressWarnings("UnstableApiUsage")
 public class RerollingEnchant extends WbsEnchantment implements BlockStateEnchant<EnchantingTable> {
     private static final @NotNull String DEFAULT_DESCRIPTION = "Makes the enchanting table re-roll enchantments when you close the inventory.";
 
@@ -29,7 +25,7 @@ public class RerollingEnchant extends WbsEnchantment implements BlockStateEnchan
 
         getDefinition()
                 .supportedItems(ItemTypeKeys.ENCHANTING_TABLE)
-                .exclusiveWith(EnchantManager.HANDHELD);
+                .exclusiveInject(WbsEnchantsBootstrap.EXCLUSIVE_SET_ENCHANTING_TABLE);
     }
 
     @Override
@@ -37,14 +33,21 @@ public class RerollingEnchant extends WbsEnchantment implements BlockStateEnchan
         return EnchantingTable.class;
     }
 
-
-    @EventHandler(priority = EventPriority.LOWEST)
-    public void onPrepEnchant(PrepareItemEnchantEvent event) {
-        if (!isEnchanted(event.getEnchantBlock())) {
+    @EventHandler
+    public void onOpenEnchantingTable(InventoryOpenEvent event) {
+        if (!(event.getView() instanceof EnchantmentView view)) {
             return;
         }
 
-        event.getView().setEnchantmentSeed(new Random(event.getEnchanter().getEnchantmentSeed()).nextInt());
+        if (!(event.getInventory().getHolder() instanceof TileStateInventoryHolder holder)) {
+            return;
+        }
+
+        if (!isEnchanted(holder.getBlock())) {
+            return;
+        }
+
+        view.setEnchantmentSeed(new Random().nextInt());
     }
 
     @EventHandler
@@ -62,31 +65,8 @@ public class RerollingEnchant extends WbsEnchantment implements BlockStateEnchan
             return;
         }
 
-        event.getWhoClicked().setEnchantmentSeed(new Random(event.getWhoClicked().getEnchantmentSeed()).nextInt());
-    }
-
-    @EventHandler
-    public void onEnchant(EnchantItemEvent event) {
-        Block block = event.getEnchantBlock();
-
-        if (!isEnchanted(block)) {
-            return;
-        }
-
-        Enchantment enchantmentHint = event.getEnchantmentHint();
-        int levelHint = event.getLevelHint();
-
-        event.getItem().addEnchantment(enchantmentHint, levelHint);
-        Set<Enchantment> remove = new HashSet<>();
-        Map<Enchantment, Integer> enchantsToAdd = event.getEnchantsToAdd();
-        for (Enchantment enchantment : enchantsToAdd.keySet()) {
-            if (enchantment.conflictsWith(enchantmentHint)) {
-                remove.add(enchantment);
-            }
-        }
-
-        for (Enchantment enchantment : remove) {
-            enchantsToAdd.remove(enchantment);
+        if (event.getView() instanceof EnchantmentView view) {
+            view.setEnchantmentSeed(new Random().nextInt());
         }
     }
 }

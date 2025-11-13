@@ -62,7 +62,7 @@ public class WbsEnchantsBootstrap implements PluginBootstrap {
     public static final TagKey<ItemType> ENCHANTABLE_PROJECTILE_WEAPON = ItemTypeTagKeys.create(createKey("enchantable/projectile_weapon"));
     public static final TagKey<ItemType> ENCHANTABLE_SHULKER_BOX = ItemTypeTagKeys.create(createKey("enchantable/shulker_box"));
     public static final TagKey<ItemType> ENCHANTABLE_RUSTABLE = ItemTypeTagKeys.create(createKey("enchantable/rustable"));
-    public static final TagKey<ItemType> ENCHANTABLE_MAGNETIC_ARMOR = ItemTypeTagKeys.create(createKey("enchantable/magnetic_armor"));
+    public static final TagKey<ItemType> ENCHANTABLE_MAGNETIC = ItemTypeTagKeys.create(createKey("enchantable/magnetic"));
 
     // Items that are designed to create loot -- mining tools (block drops), weapons (mob drops)
     public static final TagKey<ItemType> ENCHANTABLE_LOOT_CREATORS = ItemTypeTagKeys.create(createKey("enchantable/loot_creators"));
@@ -155,19 +155,58 @@ public class WbsEnchantsBootstrap implements PluginBootstrap {
                 new CustomTag<>(ENCHANTABLE_RUSTABLE,
                         Set.of(
                                 ItemTypeKeys.SHEARS,
-                                ItemTypeKeys.FLINT_AND_STEEL
+                                ItemTypeKeys.FLINT_AND_STEEL,
+                                ItemTypeKeys.IRON_HELMET,
+                                ItemTypeKeys.IRON_CHESTPLATE,
+                                ItemTypeKeys.IRON_LEGGINGS,
+                                ItemTypeKeys.IRON_BOOTS,
+                                ItemTypeKeys.CHAINMAIL_HELMET,
+                                ItemTypeKeys.CHAINMAIL_CHESTPLATE,
+                                ItemTypeKeys.CHAINMAIL_LEGGINGS,
+                                ItemTypeKeys.CHAINMAIL_BOOTS,
+                                ItemTypeKeys.IRON_PICKAXE,
+                                ItemTypeKeys.IRON_SHOVEL,
+                                ItemTypeKeys.IRON_AXE,
+                                ItemTypeKeys.IRON_SWORD,
+                                ItemTypeKeys.IRON_HOE
                         ),
                         Set.of(
+                                /*
                                 TagEntry.tagEntry(IRON_TOOLS, true),
                                 TagEntry.tagEntry(IRON_ARMOR, true),
                                 TagEntry.tagEntry(CHAINMAIL_ARMOR, true)
+                                 */
                         )
                 ).priority(1),
-                new CustomTag<>(ENCHANTABLE_MAGNETIC_ARMOR,
-                        Set.of(),
+                new CustomTag<>(ENCHANTABLE_MAGNETIC,
                         Set.of(
+                                ItemTypeKeys.IRON_HELMET,
+                                ItemTypeKeys.IRON_CHESTPLATE,
+                                ItemTypeKeys.IRON_LEGGINGS,
+                                ItemTypeKeys.IRON_BOOTS,
+                                ItemTypeKeys.CHAINMAIL_HELMET,
+                                ItemTypeKeys.CHAINMAIL_CHESTPLATE,
+                                ItemTypeKeys.CHAINMAIL_LEGGINGS,
+                                ItemTypeKeys.CHAINMAIL_BOOTS,
+                                ItemTypeKeys.NETHERITE_HELMET,
+                                ItemTypeKeys.NETHERITE_CHESTPLATE,
+                                ItemTypeKeys.NETHERITE_LEGGINGS,
+                                ItemTypeKeys.NETHERITE_BOOTS,
+                                ItemTypeKeys.IRON_PICKAXE,
+                                ItemTypeKeys.IRON_SHOVEL,
+                                ItemTypeKeys.IRON_AXE,
+                                ItemTypeKeys.IRON_SWORD,
+                                ItemTypeKeys.IRON_HOE,
+                                ItemTypeKeys.NETHERITE_PICKAXE,
+                                ItemTypeKeys.NETHERITE_SHOVEL,
+                                ItemTypeKeys.NETHERITE_AXE,
+                                ItemTypeKeys.NETHERITE_SWORD,
+                                ItemTypeKeys.NETHERITE_HOE
+                        ),
+                        Set.of(/*
                                 TagEntry.tagEntry(IRON_ARMOR, true),
                                 TagEntry.tagEntry(CHAINMAIL_ARMOR, true)
+                                */
                         )
                 ).priority(1),
                 new CustomTag<>(ENCHANTABLE_LOOT_CREATORS,
@@ -226,6 +265,7 @@ public class WbsEnchantsBootstrap implements PluginBootstrap {
     public static final TagKey<Enchantment> EXCLUSIVE_SET_ARMOR_RETALIATION = EnchantmentTagKeys.create(createKey("exclusive_set/armor_retaliation"));
     public static final TagKey<Enchantment> EXCLUSIVE_SET_KNOCKBACK = EnchantmentTagKeys.create(createKey("exclusive_set/knockback"));
     public static final TagKey<Enchantment> EXCLUSIVE_SET_HORNS = EnchantmentTagKeys.create(createKey("exclusive_set/horns"));
+    public static final TagKey<Enchantment> EXCLUSIVE_SET_ENCHANTING_TABLE = EnchantmentTagKeys.create(createKey("exclusive_set/enchanting_table"));
 
     public static final TagKey<Enchantment> VANILLA = EnchantmentTagKeys.create(createKey("vanilla"));
     public static final TagKey<Enchantment> CUSTOM = EnchantmentTagKeys.create(createKey("custom"));
@@ -250,7 +290,12 @@ public class WbsEnchantsBootstrap implements PluginBootstrap {
                 ),
                 CustomTag.getKeyTag(EXCLUSIVE_SET_KNOCKBACK,
                         EnchantmentKeys.KNOCKBACK
-                )
+                ),
+                CustomTag.getKeyTag(EXCLUSIVE_SET_KNOCKBACK,
+                        EnchantmentKeys.KNOCKBACK
+                ),
+                CustomTag.getKeyTag(EXCLUSIVE_SET_HORNS),
+                CustomTag.getKeyTag(EXCLUSIVE_SET_ENCHANTING_TABLE)
         );
     }
 
@@ -376,13 +421,11 @@ public class WbsEnchantsBootstrap implements PluginBootstrap {
         for (int priority : tags.get().stream().map(CustomTag::priority).collect(Collectors.toSet())) {
             List<CustomTag<T>> prioritisedTags = tags.get().stream().filter(tag -> tag.priority() == priority).toList();
             manager.registerEventHandler(LifecycleEvents.TAGS.preFlatten(key).newHandler(event -> {
-                System.out.println("Pre-flatten priority " + priority + ": ");
                 prioritisedTags.forEach(tag ->
                                 tag.register(event.registrar())
                 );
             }).priority(priority));
             manager.registerEventHandler(LifecycleEvents.TAGS.postFlatten(key).newHandler(event -> {
-                System.out.println("Post-flatten priority " + priority + ": ");
                 prioritisedTags.forEach(tag ->
                                 tag.register(event.registrar())
                 );
@@ -406,6 +449,13 @@ public class WbsEnchantsBootstrap implements PluginBootstrap {
             return tag;
         }
 
+        private static <T extends Keyed> CustomTag<T> getKeyTag(TagKey<T> key) {
+            CustomTag<T> tag = new CustomTag<>(key);
+
+            tag.typedKeys = List.of();
+
+            return tag;
+        }
         @SafeVarargs
         private static <T extends Keyed> CustomTag<T> getKeyTag(TagKey<T> key, TypedKey<T>... keys) {
             CustomTag<T> tag = new CustomTag<>(key);
@@ -450,20 +500,16 @@ public class WbsEnchantsBootstrap implements PluginBootstrap {
             }
 
             if (registrar.hasTag(key)) {
-                System.out.println("Pre-flatten register (add) " + key.key().asString());
                 registrar.addToTag(key, tagEntries);
             } else {
-                System.out.println("Pre-flatten register (set) " + key.key().asString());
                 registrar.setTag(key, tagEntries);
             }
         }
 
         private void register(PostFlattenTagRegistrar<T> registrar) {
             if (registrar.hasTag(key)) {
-                System.out.println("Post-flatten register (add) " + key.key().asString());
                 registrar.addToTag(key, typedKeys);
             } else {
-                System.out.println("Post-flatten register (set) " + key.key().asString());
                 registrar.setTag(key, typedKeys);
             }
         }

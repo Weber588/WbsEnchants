@@ -7,10 +7,7 @@ import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer;
 import org.bukkit.Bukkit;
 import org.bukkit.event.HandlerList;
 import wbs.enchants.command.*;
-import wbs.enchants.events.AnvilEvents;
-import wbs.enchants.events.LeashEvents;
-import wbs.enchants.events.LootGenerationBlocker;
-import wbs.enchants.events.MapEvents;
+import wbs.enchants.events.*;
 import wbs.utils.util.WbsFileUtil;
 import wbs.utils.util.commands.brigadier.WbsCommand;
 import wbs.utils.util.commands.brigadier.WbsErrorsSubcommand;
@@ -68,6 +65,7 @@ public class WbsEnchants extends WbsPlugin {
         registerListener(new MapEvents());
         registerListener(new AnvilEvents());
         registerListener(new LootGenerationBlocker());
+        registerListener(new EnchantingTableEvents());
 
         settings.reload();
 

@@ -30,7 +30,8 @@ public class HandheldEnchant extends WbsEnchantment implements BlockEnchant {
         super("handheld", DEFAULT_DESCRIPTION);
 
         getDefinition()
-                .supportedItems(WbsEnchantsBootstrap.ENCHANTABLE_HANDHELD);
+                .supportedItems(WbsEnchantsBootstrap.ENCHANTABLE_HANDHELD)
+                .addInjectInto(WbsEnchantsBootstrap.EXCLUSIVE_SET_ENCHANTING_TABLE);
 
         loadFunctionalities();
     }

@@ -63,6 +63,7 @@ public class SubcommandInfo extends EnchantmentSubcommand {
                 .color(plugin.getTextColour());
 
         builder.append(mergedDescription)
+                .append("\n" + plugin.prefix + " " + plugin.getColour() + line)
                         .send(sender);
 
         plugin.sendMessage(line, sender);

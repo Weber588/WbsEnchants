@@ -109,6 +109,9 @@ public abstract class WbsEnchantment implements Comparable<WbsEnchantment>, List
                 if (this instanceof BlockDropEnchantment blockDropEnchantment) {
                     blockDropEnchantment.registerBlockDropEvents();
                 }
+                if (this instanceof ShearingEnchant shearingEnchant) {
+                    shearingEnchant.registerShearEvents();
+                }
             }
         }
     }

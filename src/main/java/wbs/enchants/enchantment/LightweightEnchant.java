@@ -2,6 +2,7 @@ package wbs.enchants.enchantment;
 
 import io.papermc.paper.registry.keys.ItemTypeKeys;
 import org.bukkit.Location;
+import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
@@ -20,24 +21,29 @@ import wbs.utils.util.WbsItems;
 import wbs.utils.util.WbsMath;
 
 public class LightweightEnchant extends WbsEnchantment implements DamageEnchant {
-    public static final int MAX_LEVEL = 3;
-    public static double getAutoblockChance(int level) {
-        return 30.0 / level;
+    public double getAutoblockChance(int level) {
+        return level * blockChance / maxLevel();
     }
 
-    private static final String DEFAULT_DESCRIPTION = "Shield has a  a "
-            + getAutoblockChance(1) + "% chance per level of automatically blocking an attack.";
+    private double blockChance = 10;
+
+    private static final String DEFAULT_DESCRIPTION = "Shield has a small chance per level of automatically blocking an attack.";
 
     public LightweightEnchant() {
         super("lightweight", DEFAULT_DESCRIPTION);
 
         getDefinition()
-                .maxLevel(MAX_LEVEL)
+                .maxLevel(3)
                 .supportedItems(ItemTypeKeys.SHIELD)
                 .weight(10);
     }
 
+    @Override
+    public void configure(ConfigurationSection section, String directory) {
+        super.configure(section, directory);
 
+        blockChance = section.getDouble("max-block-chance", blockChance);
+    }
 
     @Override
     public void handleAttack(@NotNull EntityDamageByEntityEvent event, @NotNull LivingEntity attacker, @NotNull Entity victim, @Nullable Projectile projectile) {
@@ -74,7 +80,7 @@ public class LightweightEnchant extends WbsEnchantment implements DamageEnchant 
 
         if (isEnchantmentOn(offhandItem)) {
             int level = getLevel(offhandItem);
-            if (WbsMath.chance(getAutoblockChance(maxLevel()) * level)) {
+            if (WbsMath.chance(getAutoblockChance(level))) {
                 // Check if player would be able to block
 
                 Vector facingDirection = playerVictim.getEyeLocation().getDirection();
@@ -87,6 +93,10 @@ public class LightweightEnchant extends WbsEnchantment implements DamageEnchant 
                 double angleToAttacker = vectorToAttacker.angle(facingDirection);
 
                 if (angleToAttacker > Math.PI / 2) {
+                    return;
+                }
+
+                if (playerVictim.getActiveItemUsedTime() > 0) {
                     return;
                 }
 

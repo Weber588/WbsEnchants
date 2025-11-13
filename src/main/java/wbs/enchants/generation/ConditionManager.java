@@ -17,6 +17,7 @@ public final class ConditionManager {
     static {
         registerContext(BiomeCondition.KEY, BiomeCondition::new);
         registerContext(VillagerTypeCondition.KEY, VillagerTypeCondition::new);
+        registerContext(VillagerProfessionCondition.KEY, VillagerProfessionCondition::new);
         registerContext(VillagerLevelCondition.KEY, VillagerLevelCondition::new);
         registerContext(EntityTypeCondition.KEY, EntityTypeCondition::new);
         registerContext(EntityCategoryCondition.KEY, EntityCategoryCondition::new);

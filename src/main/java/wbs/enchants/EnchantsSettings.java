@@ -1,5 +1,6 @@
 package wbs.enchants;
 
+import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.YamlConfiguration;
 import wbs.enchants.type.EnchantmentType;
 import wbs.enchants.type.EnchantmentTypeManager;
@@ -25,6 +26,13 @@ public class EnchantsSettings extends WbsSettings {
         developerMode = config.getBoolean("developer-mode", developerMode);
         forceOnlyLootEnchants = config.getBoolean("force-only-loot-enchants", forceOnlyLootEnchants);
         disableAnvilRepairPenalty = config.getBoolean("disable-anvil-repair-penalty", disableAnvilRepairPenalty);
+
+        ConfigurationSection enchantabilitySection = config.getConfigurationSection("custom-enchantability");
+
+        if (enchantabilitySection != null) {
+            addEnchantability = enchantabilitySection.getBoolean("add-enchantable-for-primary-items", addEnchantability);
+            defaultEnchantability = enchantabilitySection.getInt("default-enchantability", defaultEnchantability);
+        }
     }
 
     private boolean developerMode = false;
@@ -40,5 +48,15 @@ public class EnchantsSettings extends WbsSettings {
     private boolean forceOnlyLootEnchants = false;
     public boolean forceOnlyLootEnchants() {
         return forceOnlyLootEnchants;
+    }
+
+    private boolean addEnchantability = true;
+    public boolean addEnchantability() {
+        return addEnchantability;
+    }
+
+    private int defaultEnchantability = 15;
+    public int defaultEnchantability() {
+        return defaultEnchantability;
     }
 }

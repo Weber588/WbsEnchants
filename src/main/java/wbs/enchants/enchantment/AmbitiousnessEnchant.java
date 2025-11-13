@@ -1,16 +1,20 @@
 package wbs.enchants.enchantment;
 
+import io.papermc.paper.block.TileStateInventoryHolder;
 import io.papermc.paper.registry.keys.ItemTypeKeys;
 import org.bukkit.block.Block;
 import org.bukkit.block.EnchantingTable;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.enchantments.EnchantmentOffer;
+import org.bukkit.entity.HumanEntity;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.enchantment.EnchantItemEvent;
 import org.bukkit.event.enchantment.PrepareItemEnchantEvent;
+import org.bukkit.event.inventory.InventoryOpenEvent;
+import org.bukkit.inventory.view.EnchantmentView;
 import org.jetbrains.annotations.NotNull;
-import wbs.enchants.EnchantManager;
 import wbs.enchants.WbsEnchantment;
+import wbs.enchants.WbsEnchantsBootstrap;
 import wbs.enchants.enchantment.helper.BlockStateEnchant;
 import wbs.utils.util.WbsMath;
 
@@ -19,6 +23,7 @@ import java.util.Map;
 import java.util.Random;
 import java.util.Set;
 
+@SuppressWarnings("UnstableApiUsage")
 public class AmbitiousnessEnchant extends WbsEnchantment implements BlockStateEnchant<EnchantingTable> {
     private static final @NotNull String DEFAULT_DESCRIPTION = "Increases the maximum enchanting level.";
     public static final int DEFAULT_MAX_BOOKSHELVES = 15;
@@ -30,12 +35,31 @@ public class AmbitiousnessEnchant extends WbsEnchantment implements BlockStateEn
         getDefinition()
                 .maxLevel(2)
                 .supportedItems(ItemTypeKeys.ENCHANTING_TABLE)
-                .exclusiveWith(EnchantManager.HANDHELD);
+                .exclusiveInject(WbsEnchantsBootstrap.EXCLUSIVE_SET_ENCHANTING_TABLE);
     }
 
     @Override
     public Class<EnchantingTable> getStateClass() {
         return EnchantingTable.class;
+    }
+
+    @EventHandler
+    public void onOpenEnchantingTable(InventoryOpenEvent event) {
+        if (!(event.getView() instanceof EnchantmentView view)) {
+            return;
+        }
+
+        if (!(event.getInventory().getHolder() instanceof TileStateInventoryHolder holder)) {
+            return;
+        }
+
+        if (!isEnchanted(holder.getBlock())) {
+            return;
+        }
+
+        HumanEntity player = event.getPlayer();
+        // Add hashcode so enchants on tables of this enchantment won't just be a copy of vanilla enchants but better levels.
+        view.setEnchantmentSeed(new Random(player.getEnchantmentSeed() + hashCode()).nextInt());
     }
 
     @EventHandler
@@ -96,7 +120,7 @@ public class AmbitiousnessEnchant extends WbsEnchantment implements BlockStateEn
         return new int[]{
                 Math.max(base / 3, 1),
                 base * 2 / 3 + 1,
-                (int) Math.max(base, modifiedPower * 2)
+                (int) Math.min(Math.max(base, modifiedPower * 2), 30 + level * 10)
         };
     }
 }

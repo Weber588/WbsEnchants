@@ -1,0 +1,2772 @@
+wbsenchants:entangled:
+  enabled: true
+  type: regular
+  aliases: []
+  display_name: Entangled
+  description: Crouch and punch a container (chest, barrel etc) to "entangle" your
+    tool to it. Once entangled, drops from blocks broken will go straight to that
+    chest anywhere in the world, so long as it has enough space for it.
+  supported_items: minecraft:enchantable/mining
+  minimum_cost:
+    base_cost: 5
+    additional_per_level_cost: 8
+  maximum_cost:
+    base_cost: 25
+    additional_per_level_cost: 8
+  anvil_cost: 0
+  max_level: 1
+  weight: 1
+  generation:
+    loot-table:
+      description: 5% chance to appear in End City loot
+      chance: 5
+      add-chance: 100
+      tables:
+        - .*end_city.*
+  inject_into: []
+wbsenchants:excavator:
+  enabled: true
+  aliases: []
+  display_name: Excavator
+  description: Mines a 3x3 square at level 1, increasing the width by 2 per level.
+  primary_items: minecraft:shovels
+  supported_items: minecraft:shovels
+  minimum_cost:
+    base_cost: 55
+    additional_per_level_cost: 15
+  maximum_cost:
+    base_cost: 85
+    additional_per_level_cost: 15
+  anvil_cost: 0
+  max_level: 2
+  weight: 1
+  generation:
+    loot-table:
+      description: 15% chance to appear in Buried Treasure
+      chance: 15
+      add-chance: 100
+      tables:
+        - .*buried_treasure.*
+  exclusive_with: wbsenchants:exclusive_set/multiminer
+  inject_into:
+    - wbsenchants:exclusive_set/multiminer
+wbsenchants:harvester:
+  enabled: true
+  aliases: []
+  display_name: Harvester
+  description: When you break or right click a crop, a 3x3 area is harvested and replanted
+    automatically. Width increases by 2 per level.
+  supported_items: minecraft:hoes
+  primary_items: minecraft:hoes
+  minimum_cost:
+    base_cost: 25
+    additional_per_level_cost: 8
+  maximum_cost:
+    base_cost: 40
+    additional_per_level_cost: 8
+  anvil_cost: 0
+  max_level: 2
+  weight: 1
+  generation:
+    loot-table:
+      description: 1% chance to appear in Village loot chests
+      chance: 1
+      add-chance: 100
+      tables:
+        - .*village.*
+  inject_into:
+    - minecraft:tradeable
+    - minecraft:on_random_loot
+wbsenchants:vampiric:
+  enabled: true
+  aliases: []
+  display_name: Vampiric
+  description: When you damage a mob, you have a 20% chance per level to gain 33.0%
+    of the damage dealt, that expires after 10 seconds (per level).
+  supported_items: minecraft:enchantable/weapon
+  minimum_cost:
+    base_cost: 5
+    additional_per_level_cost: 8
+  maximum_cost:
+    base_cost: 25
+    additional_per_level_cost: 8
+  anvil_cost: 0
+  max_level: 3
+  weight: 5
+  generation:
+    death:
+      description: 1% chance to drop when a player dies
+      # The chance to try adding at all.
+      chance: 1
+      # The chance that, if the above chance was met, this item should be added if no
+      # valid items were already in the drops.
+      # 100 = Always add if no existing drops were enchantable with this
+      # 0 = Only add if one of the drops was enchantable
+      add-chance: 0
+      level:
+        mode: WEIGHTED_SMALL
+      conditions:
+        entity-type: player
+  inject_into: []
+wbsenchants:vein_miner:
+  enabled: true
+  aliases: []
+  display_name: Vein Miner
+  description: When mining an ore, if there are other ores of the same type adjacent
+    type, they'll be mined too (up to 6 blocks per level).
+  supported_items: minecraft:pickaxes
+  minimum_cost:
+    base_cost: 5
+    additional_per_level_cost: 8
+  maximum_cost:
+    base_cost: 25
+    additional_per_level_cost: 8
+  exclusive_with: wbsenchants:exclusive_set/multiminer
+  anvil_cost: 0
+  max_level: 4
+  weight: 1
+  generation:
+    loot-table:
+      description: 5% chance to appear in Mineshaft loot
+      chance: 5
+      add-chance: 100
+      tables:
+        - .*mineshaft.*
+  inject_into:
+    - wbsenchants:exclusive_set/multiminer
+wbsenchants:blast_miner:
+  enabled: true
+  aliases: []
+  display_name: Blast Miner
+  description: Mines a 3x1x3 square when you mine a stone-type block, increasing layers
+    every level, for a maximum of 3x%max_level%x3 at level %max_level%.
+  supported_items: minecraft:pickaxes
+  minimum_cost:
+    base_cost: 5
+    additional_per_level_cost: 8
+  maximum_cost:
+    base_cost: 25
+    additional_per_level_cost: 8
+  exclusive_with: wbsenchants:exclusive_set/multiminer
+  anvil_cost: 0
+  max_level: 3
+  weight: 5
+  generation:
+    loot-table:
+      description: 3% chance to appear in Mineshaft loot
+      chance: 3
+      add-chance: 100
+      tables:
+        - .*mineshaft.*
+  inject_into:
+    - wbsenchants:exclusive_set/multiminer
+wbsenchants:void_walker:
+  enabled: false
+  aliases: []
+  display_name: Void Walker
+  description: When you fall into the void, you're immediately teleported to the top
+    of the world - get that bucket clutch ready!
+  supported_items: minecraft:enchantable/foot_armor
+  minimum_cost:
+    base_cost: 5
+    additional_per_level_cost: 8
+  maximum_cost:
+    base_cost: 25
+    additional_per_level_cost: 8
+  anvil_cost: 0
+  max_level: 1
+  weight: 1
+  generation:
+    loot-table:
+      description: 1% chance to appear in End City loot
+      chance: 1
+      add-chance: 100
+      tables:
+        - .*end_city.*
+  inject_into: []
+wbsenchants:planar_binding:
+  enabled: true
+  aliases: []
+  display_name: Planar Binding
+  description: After hitting a mob, it is unable to teleport for 3 seconds (per level).
+  supported_items: minecraft:enchantable/weapon
+  minimum_cost:
+    base_cost: 5
+    additional_per_level_cost: 8
+  maximum_cost:
+    base_cost: 25
+    additional_per_level_cost: 8
+  anvil_cost: 0
+  max_level: 3
+  weight: 5
+  generation:
+    loot-table:
+      description: 1% chance to appear in End City loot
+      chance: 1
+      add-chance: 100
+      tables:
+        - .*end_city.*
+  inject_into: []
+wbsenchants:disarming:
+  enabled: true
+  aliases: []
+  display_name: Disarming
+  description: When you critically hit a mob, you have a 10% chance of disarming it
+    (per level). Disarming a non-player will force it to drop the item it's holding,
+    and disarming a player will slightly rearrange their hotbar to force them to reselect
+    their weapon.
+  supported_items: minecraft:enchantable/weapon
+  minimum_cost:
+    base_cost: 5
+    additional_per_level_cost: 8
+  maximum_cost:
+    base_cost: 25
+    additional_per_level_cost: 8
+  anvil_cost: 0
+  max_level: 3
+  weight: 1
+  generation:
+    loot-table:
+      description: 0.05% chance to appear in Overworld surface loot chests
+      chance: 0.05
+      add-chance: 100
+      conditions:
+        dimension-type: Normal
+        height:
+          min: 64
+  inject_into: []
+wbsenchants:frenzied:
+  enabled: true
+  aliases: []
+  display_name: Frenzied
+  description: When you kill an enemy, you gain increased attack speed for 5 seconds.
+    If your speed buff is already present, the speed will keep increasing every kill
+    until the time left goes below 5 seconds.
+  supported_items: minecraft:enchantable/weapon
+  minimum_cost:
+    base_cost: 5
+    additional_per_level_cost: 8
+  maximum_cost:
+    base_cost: 25
+    additional_per_level_cost: 8
+  anvil_cost: 0
+  max_level: 1
+  weight: 5
+  inject_into:
+    - minecraft:on_traded_equipment
+wbsenchants:lightweight:
+  enabled: true
+  aliases: []
+  display_name: Lightweight
+  description: While holding a Lightweight shield in your offhand, you have a 30.0%
+    chance per level of automatically blocking an attack, if you could block it with
+    the shield.
+  supported_items:
+    - minecraft:shield
+  primary_items:
+    - minecraft:shield
+  minimum_cost:
+    base_cost: 10
+    additional_per_level_cost: 15
+  maximum_cost:
+    base_cost: 60
+    additional_per_level_cost: 15
+  anvil_cost: 0
+  max_level: 3
+  weight: 3
+  generation:
+    loot-table:
+      description: 1% chance to appear in Overworld surface loot chests
+      chance: 1
+      add-chance: 100
+      conditions:
+        dimension-type: Normal
+        height:
+          min: 64
+  inject_into:
+    - minecraft:tradeable
+    - minecraft:on_traded_equipment
+wbsenchants:hellborne:
+  enabled: true
+  aliases: []
+  display_name: Hellborne
+  description: You have strength and immunity to fire tick damage, with strength level
+    relating to the level of the enchantment while you're on fire.
+  supported_items: minecraft:enchantable/chest_armor
+  minimum_cost:
+    base_cost: 5
+    additional_per_level_cost: 8
+  maximum_cost:
+    base_cost: 25
+    additional_per_level_cost: 8
+  anvil_cost: 0
+  max_level: 2
+  weight: 1
+  generation:
+    loot-table:
+      description: 1% chance to appear in Nether Fortress loot
+      chance: 1
+      add-chance: 100
+      tables:
+        - .*nether_bridge.*
+        - .*nether_fortress.*
+  inject_into: []
+wbsenchants:decay:
+  enabled: true
+  aliases: []
+  display_name: Decay
+  description: Has a chance to drop bonemeal when breaking compostable blocks, and
+    does increased damage against living mobs (especially illagers).
+  supported_items: minecraft:hoes
+  primary_items: minecraft:hoes
+  minimum_cost:
+    base_cost: 10
+    additional_per_level_cost: 10
+  maximum_cost:
+    base_cost: 60
+    additional_per_level_cost: 15
+  exclusive_with: minecraft:exclusive_set/damage
+  anvil_cost: 0
+  max_level: 5
+  weight: 1
+  affected-mobs:
+    - ILLUSIONER
+    - PILLAGER
+    - VINDICATOR
+    - EVOKER
+  generation:
+    loot-table:
+      description: 1% chance to appear in Village loot chests
+      chance: 1
+      add-chance: 100
+      tables:
+        - .*village.*
+  inject_into:
+    - minecraft:tradeable
+    - minecraft:exclusive_set/damage
+wbsenchants:scorching:
+  enabled: true
+  aliases: []
+  display_name: Scorching
+  description: Smelts blocks you mine - simple!
+  supported_items: minecraft:enchantable/mining
+  minimum_cost:
+    base_cost: 5
+    additional_per_level_cost: 8
+  maximum_cost:
+    base_cost: 25
+    additional_per_level_cost: 8
+  exclusive_with: minecraft:exclusive_set/mining
+  anvil_cost: 0
+  max_level: 1
+  weight: 1
+  inject_into:
+    - minecraft:tradeable
+    - minecraft:on_random_loot
+    - minecraft:exclusive_set/mining
+wbsenchants:frostburn:
+  enabled: true
+  aliases: []
+  display_name: Frostburn
+  description: Does increased damage against water- and cold-vulnerable mobs, like
+    endermen and blazes, but less damage against heat-vulnerable mobs, like strays.
+    Has a small chance to slow enemies.
+  supported_items: minecraft:swords
+  primary_items: minecraft:enchantable/weapon
+  minimum_cost:
+    base_cost: 8
+    additional_per_level_cost: 12
+  maximum_cost:
+    base_cost: 25
+    additional_per_level_cost: 2
+  exclusive_with: minecraft:exclusive_set/damage
+  anvil_cost: 0
+  max_level: 3
+  weight: 1
+  affected-mobs:
+    - BLAZE
+    - STRIDER
+    - MAGMA_CUBE
+    - HUSK
+    - ENDERMAN
+  inject_into:
+    - minecraft:tradeable
+    - minecraft:on_random_loot
+    - minecraft:exclusive_set/damage
+wbsenchants:ender_shot:
+  enabled: true
+  aliases: []
+  display_name: Ender Shot
+  description: Fired arrows travel instantly in a straight line to its target.
+  supported_items: minecraft:enchantable/bow
+  minimum_cost:
+    base_cost: 5
+    additional_per_level_cost: 8
+  maximum_cost:
+    base_cost: 25
+    additional_per_level_cost: 8
+  anvil_cost: 0
+  max_level: 1
+  weight: 1
+  generation:
+    loot-table:
+      description: 1% chance to appear in End City loot
+      chance: 1
+      add-chance: 100
+      tables:
+        - .*end_city_treasure.*
+  inject_into: []
+wbsenchants:immortal:
+  enabled: true
+  aliases: []
+  display_name: Immortal
+  description: Instead of breaking, items with this enchantment will simply stop working,
+    or unequip itself. When dropped, the item takes 1 hour to despawn, and cannot
+    be destroyed except for the void.
+  supported_items: minecraft:enchantable/durability
+  minimum_cost:
+    base_cost: 5
+    additional_per_level_cost: 8
+  maximum_cost:
+    base_cost: 25
+    additional_per_level_cost: 8
+  anvil_cost: 0
+  max_level: 1
+  weight: 1
+  inject_into: []
+wbsenchants:dual_wield:
+  enabled: true
+  aliases: []
+  display_name: Dual Wield
+  description: When an item with this enchantment is in your offhand, it swings automatically
+    after attacking!
+  supported_items: minecraft:enchantable/sword
+  minimum_cost:
+    base_cost: 5
+    additional_per_level_cost: 8
+  maximum_cost:
+    base_cost: 25
+    additional_per_level_cost: 8
+  anvil_cost: 0
+  max_level: 1
+  weight: 1
+  inject_into:
+    - minecraft:on_mob_spawn_equipment
+wbsenchants:pinpoint:
+  enabled: true
+  aliases: []
+  display_name: Pinpoint
+  description: Arrows like needles mean the damage is highly localised, making it
+    possible to hit the same entity with multiple arrows in quick succession, or even
+    at the same time.
+  supported_items: minecraft:enchantable/bow
+  minimum_cost:
+    base_cost: 5
+    additional_per_level_cost: 8
+  maximum_cost:
+    base_cost: 25
+    additional_per_level_cost: 8
+  anvil_cost: 0
+  max_level: 1
+  weight: 5
+  generation:
+    spawn:
+      description: 5% chance to spawn on Skeleton's bows.
+      conditions:
+        entity-type: skeleton
+        spawn-reason:
+          reason: NATURAL
+  inject_into: []
+wbsenchants:frictionless:
+  enabled: false
+  aliases: []
+  display_name: Frictionless
+  description: A minecart enchantment that increases its maximum speed, but does not
+    help it get there.
+  supported_items: wbsenchants:minecarts
+  minimum_cost:
+    base_cost: 5
+    additional_per_level_cost: 8
+  maximum_cost:
+    base_cost: 25
+    additional_per_level_cost: 8
+  anvil_cost: 0
+  max_level: 3
+  weight: 1
+  generation:
+    loot-table:
+      description: 1% chance to appear in Mineshaft loot
+      chance: 1
+      add-chance: 100
+      tables:
+        - .*mineshaft.*
+wbsenchants:unshakable:
+  enabled: true
+  aliases: []
+  display_name: Unshakeable
+  description: A lead enchantment that allows you to leash hostile mobs!
+  supported_items:
+    - minecraft:lead
+  minimum_cost:
+    base_cost: 5
+    additional_per_level_cost: 8
+  maximum_cost:
+    base_cost: 25
+    additional_per_level_cost: 8
+  anvil_cost: 0
+  max_level: 1
+  weight: 1
+  inject_into:
+    - minecraft:on_random_loot
+wbsenchants:transference:
+  enabled: true
+  aliases: []
+  display_name: Transference
+  description: A map enchantment that, when right clicked, will take you to a random
+    point on the map!
+  supported_items: wbsenchants:maps
+  minimum_cost:
+    base_cost: 5
+    additional_per_level_cost: 8
+  maximum_cost:
+    base_cost: 25
+    additional_per_level_cost: 8
+  anvil_cost: 0
+  max_level: 1
+  weight: 5
+  inject_into:
+    - minecraft:tradeable
+wbsenchants:unsinkable:
+  enabled: true
+  aliases: []
+  display_name: Unsinkable
+  description: Boats with this enchantment can't stay sunk underwater!
+  supported_items: minecraft:boats
+  minimum_cost:
+    base_cost: 5
+    additional_per_level_cost: 8
+  maximum_cost:
+    base_cost: 25
+    additional_per_level_cost: 8
+  anvil_cost: 0
+  max_level: 1
+  weight: 5
+  generation:
+    loot-table:
+      description: 1% chance to appear in Shipwreck loot
+      chance: 1
+      add-chance: 100
+      tables:
+        - .*shipwreck.*
+  inject_into:
+    - minecraft:tradeable
+wbsenchants:defusal:
+  enabled: true
+  aliases: []
+  display_name: Defusal
+  description: When hitting a creeper that's preparing to explode, you have a 25%
+    chance per level to defuse it, instantly restarting its fuse time to zero. After
+    a successful defusal, the creeper's time to explode increases by 100% for each
+    level above level 1.
+  supported_items: minecraft:swords
+  primary_items: minecraft:enchantable/weapon
+  minimum_cost:
+    base_cost: 5
+    additional_per_level_cost: 8
+  maximum_cost:
+    base_cost: 15
+    additional_per_level_cost: 8
+  exclusive_with: wbsenchants:exclusive_set/defusal
+  anvil_cost: 0
+  max_level: 3
+  weight: 1
+  inject_into:
+    - minecraft:tradeable
+    - minecraft:on_random_loot
+    - wbsenchants:exclusive_set/defusal
+wbsenchants:pilfering:
+  enabled: true
+  aliases: []
+  display_name: Pilfering
+  description: Devised by the illagers, this enchantment allows you to shake down
+    villagers to steal their trades without paying!
+  supported_items: minecraft:enchantable/weapon
+  minimum_cost:
+    base_cost: 5
+    additional_per_level_cost: 8
+  maximum_cost:
+    base_cost: 25
+    additional_per_level_cost: 8
+  anvil_cost: 0
+  max_level: 3
+  weight: 5
+  generation:
+    death:
+      description: 1% chance to drop when a Pillager dies
+      # The chance to try adding at all.
+      chance: 1
+      # The chance that, if the above chance was met, this item should be added if no
+      # valid items were already in the drops.
+      # 100 = Always add if no existing drops were enchantable with this
+      # 0 = Only add if one of the drops was enchantable
+      add-chance: 100
+      level:
+        mode: WEIGHTED_SMALL
+      conditions:
+        entity-type: pillager
+    loot-table:
+      description: 10% chance to appear in Pillager Outpost loot
+      chance: 10
+      add-chance: 100
+      level:
+        mode: WEIGHTED_LARGE
+      tables:
+        - minecraft:chests/pillager_outpost
+  inject_into: []
+wbsenchants:resilience:
+  enabled: true
+  aliases: []
+  display_name: Resilience
+  description: When you take damage, instead of the regular 0.5 seconds of invulnerability
+    after taking damage, you're invulnerable for an additional 0.15 seconds per level
+  supported_items: minecraft:enchantable/armor
+  primary_items:
+    - minecraft:book
+  minimum_cost:
+    base_cost: 40
+    additional_per_level_cost: 15
+  maximum_cost:
+    base_cost: 50
+    additional_per_level_cost: 25
+  exclusive_with: minecraft:exclusive_set/armor
+  anvil_cost: 1
+  max_level: 2
+  weight: 1
+  inject_into:
+    - minecraft:tradeable
+    - minecraft:on_random_loot
+    - minecraft:double_trade_price
+    - minecraft:exclusive_set/armor
+wbsenchants:manathirst:
+  enabled: true
+  aliases: []
+  display_name: Manathirst
+  description: An alternative to mending, items with this enchantment will slowly
+    drain your XP bar to repair itself. Items are repaired slower than mending, but
+    will continuously self-repair so long as you have XP, even if you haven't gained
+    any recently!
+  supported_items: minecraft:enchantable/durability
+  minimum_cost:
+    base_cost: 5
+    additional_per_level_cost: 8
+  maximum_cost:
+    base_cost: 25
+    additional_per_level_cost: 8
+  exclusive_with: wbsenchants:exclusive_set/self_repairing
+  anvil_cost: 0
+  max_level: 1
+  weight: 1
+  xp-per-durability: 3
+  inject_into:
+    - minecraft:tradeable
+    - minecraft:double_trade_price
+    - wbsenchants:exclusive_set/self_repairing
+  generation:
+    loot-replace:
+      description: 40% chance to appear anywhere Mending appears in chests
+      chance: 40
+      level: 1
+      to-replace:
+        - minecraft:mending
+wbsenchants:shulkenforced:
+  enabled: true
+  aliases: []
+  display_name: Shulkenforced
+  description: Vehicles with this enchantment are imbued with the power of shulkers,
+    granting them resistance to gravity!
+  supported_items: wbsenchants:enchantable/vehicle
+  minimum_cost:
+    base_cost: 5
+    additional_per_level_cost: 8
+  maximum_cost:
+    base_cost: 25
+    additional_per_level_cost: 8
+  anvil_cost: 0
+  max_level: 1
+  weight: 5
+  generation:
+    loot-table:
+      description: 3% chance to appear in End City loot
+      chance: 3
+      add-chance: 100
+      level:
+        mode: WEIGHTED_LARGE
+      tables:
+        - .*end_city.*
+  exclusive_with: minecraft:exclusive_set/mining
+  inject_into:
+    - minecraft:exclusive_set/mining
+wbsenchants:divine_resonance:
+  enabled: true
+  aliases: []
+  display_name: Divine Resonance
+  description: When the enchanted bell rings, all hostile mobs in the radius will
+    glow, not just raiders!
+  supported_items:
+    - minecraft:bell
+  minimum_cost:
+    base_cost: 5
+    additional_per_level_cost: 8
+  maximum_cost:
+    base_cost: 25
+    additional_per_level_cost: 8
+  anvil_cost: 0
+  max_level: 1
+  weight: 1
+  generation:
+    loot-table:
+      description: 1% chance to appear in Village loot
+      chance: 1
+      add-chance: 100
+      tables:
+        - .*village.*
+  inject_into:
+    - minecraft:tradeable
+    - minecraft:on_traded_equipment
+wbsenchants:aridity:
+  enabled: true
+  aliases: []
+  display_name: Aridity
+  description: A sponge enchantment that automatically returns it to your hand after
+    placing, with a 25% chance per level of auto-drying immediately.
+  supported_items: wbsenchants:sponges
+  minimum_cost:
+    base_cost: 5
+    additional_per_level_cost: 8
+  maximum_cost:
+    base_cost: 25
+    additional_per_level_cost: 8
+  anvil_cost: 0
+  max_level: 1
+  weight: 1
+  generation:
+    loot-table:
+      description: Chance to appear in Suspicious Sand in warm, non-humid biomes
+      # With brushable blocks, this guarantees that it's available IN THE POOL,
+      # not that it'll always result in the item.
+      chance: 35
+      add-chance: 100
+      level:
+        mode: RANDOM
+      conditions:
+        biome:
+          min-temp: 1.7
+          max-humidity: 0.7
+        block-type:
+          - suspicious_sand
+  inject_into: []
+wbsenchants:lava_walker:
+  enabled: true
+  aliases: []
+  display_name: Lava Walker
+  description: Frost walker... but for lava!
+  supported_items: minecraft:enchantable/foot_armor
+  minimum_cost:
+    base_cost: 5
+    additional_per_level_cost: 8
+  maximum_cost:
+    base_cost: 25
+    additional_per_level_cost: 8
+  anvil_cost: 0
+  max_level: 2
+  weight: 1
+  generation:
+    loot-table:
+      description: 0.1% chance to appear in nether loot chests
+      chance: 0.1
+      add-chance: 100
+      conditions:
+        dimension-type: Nether
+  inject_into: []
+wbsenchants:wicked:
+  enabled: true
+  aliases: []
+  display_name: Wicked
+  description: This enchantment greatly increases attack damage for every curse on
+    the same item!
+  supported_items: minecraft:enchantable/weapon
+  minimum_cost:
+    base_cost: 5
+    additional_per_level_cost: 8
+  maximum_cost:
+    base_cost: 25
+    additional_per_level_cost: 8
+  anvil_cost: 0
+  max_level: 1
+  weight: 1
+  generation:
+    loot-table:
+      description: 5% chance to appear in Pillager Outposts
+      chance: 5
+      add-chance: 100
+      level:
+        mode: WEIGHTED_LARGE
+      tables:
+        - minecraft:chests/pillager_outpost
+  inject_into: []
+wbsenchants:crushing:
+  enabled: true
+  aliases: []
+  display_name: Crushing
+  description: A tool enchantment that crushes blocks into other, more broken-down
+    versions!
+  supported_items: minecraft:enchantable/mining
+  minimum_cost:
+    base_cost: 5
+    additional_per_level_cost: 8
+  maximum_cost:
+    base_cost: 25
+    additional_per_level_cost: 8
+  exclusive_with: minecraft:exclusive_set/mining
+  anvil_cost: 0
+  max_level: 1
+  weight: 5
+  crush-materials:
+    DEEPSLATE_TILES: CRACKED_DEEPSLATE_TILES
+    BONE_BLOCK:
+      to: BONE_MEAL
+      minAmount: 9
+      maxAmount: 9
+    RAW_COPPER_BLOCK:
+      to: RAW_COPPER
+      minAmount: 7
+      maxAmount: 9
+    QUARTZ_BRICKS:
+      to: QUARTZ
+      minAmount: 3
+      maxAmount: 4
+    COPPER_BLOCK:
+      to: COPPER_INGOT
+      minAmount: 9
+      maxAmount: 9
+    SMOOTH_QUARTZ:
+      to: QUARTZ
+      minAmount: 3
+      maxAmount: 4
+    CUT_RED_SANDSTONE: RED_SAND
+    QUARTZ_PILLAR:
+      to: QUARTZ
+      minAmount: 3
+      maxAmount: 4
+    RED_SANDSTONE: RED_SAND
+    NETHER_WART_BLOCK:
+      to: NETHER_WART
+      minAmount: 3
+      maxAmount: 9
+    SANDSTONE: SAND
+    NETHER_BRICKS:
+      to: NETHER_BRICK
+      minAmount: 3
+      maxAmount: 4
+    DEEPSLATE_BRICKS: CRACKED_DEEPSLATE_BRICKS
+    CHISELED_SANDSTONE: SAND
+    MAGENTA_CONCRETE: MAGENTA_CONCRETE_POWDER
+    COAL_BLOCK:
+      to: COAL
+      minAmount: 9
+      maxAmount: 9
+    AMETHYST_BLOCK:
+      to: AMETHYST_SHARD
+      minAmount: 1
+      maxAmount: 3
+    COBBLESTONE: GRAVEL
+    CUT_SANDSTONE: SAND
+    DARK_PRISMARINE: PRISMARINE
+    BRICKS:
+      to: BRICK
+      minAmount: 3
+      maxAmount: 4
+    LIGHT_GRAY_CONCRETE: LIGHT_GRAY_CONCRETE_POWDER
+    QUARTZ_BLOCK:
+      to: QUARTZ
+      minAmount: 3
+      maxAmount: 4
+    GOLD_BLOCK:
+      to: GOLD_INGOT
+      minAmount: 9
+      maxAmount: 9
+    PRISMARINE:
+      to: PRISMARINE_SHARD
+      minAmount: 3
+      maxAmount: 4
+    BLUE_CONCRETE: BLUE_CONCRETE_POWDER
+    PURPLE_CONCRETE: PURPLE_CONCRETE_POWDER
+    NETHERITE_BLOCK:
+      to: NETHERITE_INGOT
+      minAmount: 9
+      maxAmount: 9
+    GREEN_CONCRETE: GREEN_CONCRETE_POWDER
+    PRISMARINE_BRICKS: PRISMARINE
+    HAY_BLOCK:
+      to: WHEAT
+      minAmount: 8
+      maxAmount: 9
+    LIME_CONCRETE: LIME_CONCRETE_POWDER
+    WHITE_CONCRETE: WHITE_CONCRETE_POWDER
+    SMOOTH_RED_SANDSTONE: RED_SAND
+    RAW_IRON_BLOCK:
+      to: RAW_IRON
+      minAmount: 7
+      maxAmount: 9
+    RED_CONCRETE: RED_CONCRETE_POWDER
+    STONE: COBBLESTONE
+    SMOOTH_SANDSTONE: SAND
+    GRAVEL: SAND
+    STONE_BRICKS: CRACKED_STONE_BRICKS
+    YELLOW_CONCRETE: YELLOW_CONCRETE_POWDER
+    DIAMOND_BLOCK:
+      to: DIAMOND
+      minAmount: 9
+      maxAmount: 9
+    IRON_BLOCK:
+      to: IRON_INGOT
+      minAmount: 9
+      maxAmount: 9
+    POLISHED_BLACKSTONE_BRICKS: CRACKED_POLISHED_BLACKSTONE_BRICKS
+    BLACK_CONCRETE: BLACK_CONCRETE_POWDER
+    CYAN_CONCRETE: CYAN_CONCRETE_POWDER
+    SEA_LANTERN:
+      to: PRISMARINE_CRYSTALS
+      minAmount: 2
+      maxAmount: 5
+    GRAY_CONCRETE: GRAY_CONCRETE_POWDER
+    ORANGE_CONCRETE: ORANGE_CONCRETE_POWDER
+    CHISELED_RED_SANDSTONE: RED_SAND
+    LIGHT_BLUE_CONCRETE: LIGHT_BLUE_CONCRETE_POWDER
+    PINK_CONCRETE: PINK_CONCRETE_POWDER
+    EMERALD_BLOCK:
+      to: EMERALD
+      minAmount: 9
+      maxAmount: 9
+    RAW_GOLD_BLOCK:
+      to: RAW_GOLD
+      minAmount: 7
+      maxAmount: 9
+  generation:
+    loot-table:
+      description: Chance to appear in suspicious blocks in ruins
+      # With brushable blocks, this guarantees that it's available IN THE POOL,
+      # not that it'll always result in the item.
+      chance: 100
+      add-chance: 100
+      level:
+        mode: RANDOM
+      conditions:
+        block-type:
+          - suspicious_sand
+          - suspicious_gravel
+      tables:
+        - .*ruins.*
+  inject_into:
+    - minecraft:exclusive_set/mining
+wbsenchants:handheld:
+  enabled: true
+  aliases: []
+  display_name: Handheld
+  description: An enchantment for a variety of utility blocks that allow them to be
+    used directly from your hand, no placing required!
+  supported_items: wbsenchants:enchantable/handheld
+  primary_items:
+    - minecraft:book
+  minimum_cost:
+    base_cost: 5
+    additional_per_level_cost: 8
+  maximum_cost:
+    base_cost: 25
+    additional_per_level_cost: 8
+  anvil_cost: 0
+  max_level: 1
+  weight: 1
+  generation:
+    loot-table:
+      description: 2% chance to appear in Village loot
+      chance: 2
+      add-chance: 25
+      tables:
+        - .*village.*
+  inject_into:
+    - minecraft:on_random_loot
+    - minecraft:tradeable
+wbsenchants:hogsbane:
+  enabled: true
+  aliases: []
+  display_name: Hogsbane
+  description: A damage enchantment that does extra damage to pig-like mobs, such
+    as pigs, hoglins, piglins, and variants!
+  supported_items: minecraft:enchantable/weapon
+  minimum_cost:
+    base_cost: 5
+    additional_per_level_cost: 8
+  maximum_cost:
+    base_cost: 25
+    additional_per_level_cost: 8
+  exclusive_with: minecraft:exclusive_set/damage
+  anvil_cost: 0
+  max_level: 5
+  weight: 1
+  affected-mobs:
+    - PIG
+    - ZOGLIN
+    - PIGLIN_BRUTE
+    - PIGLIN
+    - ZOMBIFIED_PIGLIN
+    - HOGLIN
+  generation:
+    loot-table:
+      description: 10% chance to appear in Ruined Portal chests
+      chance: 10
+      add-chance: 25
+      tables:
+        - .*ruined_portal.*
+        - .*chests/portal/.*
+  inject_into:
+    - minecraft:exclusive_set/damage
+wbsenchants:butchering:
+  enabled: true
+  aliases: []
+  display_name: Butchering
+  description: A damage enchant that deals extra damage to animals, and causes extra
+    food to drop!
+  supported_items: minecraft:enchantable/weapon
+  primary_items: minecraft:axes
+  minimum_cost:
+    base_cost: 5
+    additional_per_level_cost: 8
+  maximum_cost:
+    base_cost: 25
+    additional_per_level_cost: 8
+  exclusive_with: minecraft:exclusive_set/damage
+  anvil_cost: 0
+  max_level: 3
+  weight: 1
+  affected-mobs:
+    - DONKEY
+    - FROG
+    - PANDA
+    - STRIDER
+    - ZOMBIE_HORSE
+    - MULE
+    - MOOSHROOM
+    - LLAMA
+    - RABBIT
+    - TRADER_LLAMA
+    - HORSE
+    - PARROT
+    - PIG
+    - SHEEP
+    - SNIFFER
+    - CHICKEN
+    - WOLF
+    - SKELETON_HORSE
+    - TURTLE
+    - ARMADILLO
+    - COW
+    - OCELOT
+    - BEE
+    - CAT
+    - AXOLOTL
+    - GOAT
+    - FOX
+    - HOGLIN
+    - POLAR_BEAR
+    - CAMEL
+  food-percent-increase-per-level: 15
+  generation:
+    loot-table:
+      description: 1% chance to appear in Village loot
+      chance: 1
+      add-chance: 100
+      level:
+        mode: WEIGHTED_LARGE
+      tables:
+        - .*village.*
+  inject_into:
+    - minecraft:tradeable
+    - minecraft:on_traded_equipment
+    - minecraft:on_random_loot
+    - minecraft:exclusive_set/damage
+wbsenchants:soul_touch:
+  enabled: true
+  aliases: []
+  display_name: Soul Touch
+  description: Allows your tool to pick up spawners!
+  supported_items: minecraft:pickaxes
+  minimum_cost:
+    base_cost: 5
+    additional_per_level_cost: 8
+  maximum_cost:
+    base_cost: 25
+    additional_per_level_cost: 8
+  exclusive_with: minecraft:exclusive_set/mining
+  anvil_cost: 0
+  max_level: 1
+  weight: 1
+  generation:
+    loot-table:
+      description: 5% chance to appear in Ancient City loot
+      chance: 5
+      add-chance: 100
+      level:
+        mode: WEIGHTED_LARGE
+      tables:
+        - .*ancient_city.*
+  inject_into: []
+wbsenchants:soulstealing:
+  enabled: true
+  aliases: []
+  display_name: Soulstealing
+  description: Adds a 0.1% chance per level of killed mobs dropping its spawn egg!
+  supported_items: minecraft:enchantable/weapon
+  minimum_cost:
+    base_cost: 5
+    additional_per_level_cost: 8
+  maximum_cost:
+    base_cost: 25
+    additional_per_level_cost: 8
+  anvil_cost: 0
+  max_level: 3
+  weight: 1
+  generation:
+    loot-table:
+      description: 5% chance to appear in Ancient City loot
+      chance: 5
+      add-chance: 100
+      level:
+        mode: WEIGHTED_LARGE
+      tables:
+        - .*ancient_city.*
+  inject_into: []
+wbsenchants:stuttershot:
+  enabled: true
+  aliases: []
+  display_name: Stuttershot
+  description: A ranged weapon enchantment that gives a 10% chance to shoot again
+    immediately after firing!
+  supported_items: wbsenchants:enchantable/projectile_weapon
+  minimum_cost:
+    base_cost: 5
+    additional_per_level_cost: 8
+  maximum_cost:
+    base_cost: 25
+    additional_per_level_cost: 8
+  anvil_cost: 0
+  max_level: 3
+  weight: 1
+  inject_into:
+    - minecraft:on_random_loot
+    - minecraft:tradeable
+wbsenchants:echoing:
+  enabled: true
+  aliases: []
+  display_name: Echoing
+  description: When a projectile hits a block, if it can be picked up, it'll immediately
+    return to your inventory!
+  supported_items: wbsenchants:enchantable/projectile_weapon
+  minimum_cost:
+    base_cost: 5
+    additional_per_level_cost: 8
+  maximum_cost:
+    base_cost: 25
+    additional_per_level_cost: 8
+  anvil_cost: 0
+  max_level: 1
+  weight: 1
+  generation:
+    loot-table:
+      description: 10% chance to appear in Ancient City loot
+      chance: 10
+      add-chance: 100
+      tables:
+        - .*ancient_city.*
+  inject_into: []
+wbsenchants:dimensional_stability:
+  enabled: true
+  aliases: []
+  display_name: Dimensional Stability
+  supported_items: minecraft:beds
+  description: Prevents the enchanted bed from exploding.
+  minimum_cost:
+    base_cost: 5
+    additional_per_level_cost: 8
+  maximum_cost:
+    base_cost: 25
+    additional_per_level_cost: 8
+  anvil_cost: 0
+  max_level: 1
+  weight: 1
+  inject_into:
+    - minecraft:on_random_loot
+    - minecraft:tradeable
+wbsenchants:anima_conduit:
+  enabled: true
+  aliases: []
+  display_name: Anima Conduit
+  description: Adds a small chance to regain health upon picking up XP.
+  supported_items: minecraft:enchantable/chest_armor
+  minimum_cost:
+    base_cost: 5
+    additional_per_level_cost: 8
+  maximum_cost:
+    base_cost: 25
+    additional_per_level_cost: 8
+  anvil_cost: 0
+  max_level: 4
+  weight: 1
+  generation:
+    loot-table:
+      description: 5% chance to appear in Stronghold loot
+      chance: 5
+      add-chance: 100
+      level:
+        mode: WEIGHTED_SMALL
+      tables:
+        - .*stronghold.*
+  inject_into:
+    - minecraft:on_random_loot
+wbsenchants:curse/rebuking:
+  enabled: true
+  aliases: []
+  display_name: Curse of Rebuking
+  description: A weapon curse that causes the wielder to take 20% of damage dealt
+    per level!
+  supported_items: minecraft:enchantable/weapon
+  minimum_cost:
+    base_cost: 5
+    additional_per_level_cost: 8
+  maximum_cost:
+    base_cost: 25
+    additional_per_level_cost: 8
+  anvil_cost: 0
+  max_level: 2
+  weight: 1
+  inject_into:
+    - minecraft:on_random_loot
+wbsenchants:curse/vanilla:
+  enabled: true
+  aliases: []
+  display_name: Curse of Vanilla
+  description: A curse that does nothing alone, but is incompatible with all non-vanilla
+    enchants!
+  supported_items: minecraft:enchantable/vanishing
+  minimum_cost:
+    base_cost: 5
+    additional_per_level_cost: 8
+  maximum_cost:
+    base_cost: 25
+    additional_per_level_cost: 8
+  exclusive_with: wbsenchants:custom
+  anvil_cost: 0
+  max_level: 1
+  weight: 1
+  inject_into:
+    - minecraft:on_random_loot
+wbsenchants:curse/exotic:
+  enabled: true
+  aliases: []
+  display_name: Curse of the Exotic
+  description: A curse that does nothing alone, but is incompatible with all vanilla
+    enchants
+  supported_items: minecraft:enchantable/vanishing
+  minimum_cost:
+    base_cost: 5
+    additional_per_level_cost: 8
+  maximum_cost:
+    base_cost: 25
+    additional_per_level_cost: 8
+  exclusive_with: wbsenchants:vanilla
+  anvil_cost: 0
+  max_level: 1
+  weight: 1
+  inject_into:
+    - minecraft:on_random_loot
+wbsenchants:curse/stumbling:
+  enabled: true
+  aliases: []
+  display_name: Curse of Stumbling
+  description: A curse that causes increased fall damage when worn on boots; essentially
+    the opposite of Feather Falling.
+  supported_items: minecraft:enchantable/foot_armor
+  minimum_cost:
+    base_cost: 5
+    additional_per_level_cost: 8
+  maximum_cost:
+    base_cost: 25
+    additional_per_level_cost: 8
+  exclusive_with: wbsenchants:exclusive_set/fall_damage_affecting
+  anvil_cost: 0
+  max_level: 4
+  weight: 10
+  generation:
+    loot-table:
+      chance: 5
+      add-chance: 0
+      level:
+        mode: WEIGHTED_SMALL
+      tables:
+        - .*ancient_city.*
+  inject_into:
+    - wbsenchants:exclusive_set/fall_damage_affecting
+wbsenchants:curse/insomnia:
+  enabled: true
+  aliases: []
+  display_name: Curse of Insomnia
+  description: An armour curse that prevents the player from sleeping while worn.
+  supported_items: minecraft:enchantable/head_armor
+  minimum_cost:
+    base_cost: 5
+    additional_per_level_cost: 8
+  maximum_cost:
+    base_cost: 25
+    additional_per_level_cost: 8
+  anvil_cost: 0
+  max_level: 1
+  weight: 1
+  inject_into:
+    - minecraft:on_random_loot
+wbsenchants:curse/midas:
+  enabled: true
+  aliases: []
+  display_name: Curse of Midas
+  description: A pickaxe curse that causes mined metals to turn directly into gold!
+  supported_items: minecraft:pickaxes
+  minimum_cost:
+    base_cost: 5
+    additional_per_level_cost: 8
+  maximum_cost:
+    base_cost: 25
+    additional_per_level_cost: 8
+  exclusive_with: wbsenchants:exclusive_set/midas
+  anvil_cost: 0
+  max_level: 1
+  weight: 1
+  generation:
+    loot-table:
+      description: 5% chance to appear in Bastion loot
+      chance: 5
+      add-chance: 100
+      level:
+        mode: WEIGHTED_SMALL
+      tables:
+        - .*bastion.*
+  inject_into: []
+wbsenchants:curse/turbulence:
+  enabled: true
+  aliases: []
+  display_name: Curse of Turbulence
+  description: An elytra curse that causes turbulence while flying, making it harder
+    to stay on track!
+  supported_items: wbsenchants:enchantable/elytra
+  minimum_cost:
+    base_cost: 5
+    additional_per_level_cost: 8
+  maximum_cost:
+    base_cost: 25
+    additional_per_level_cost: 8
+  anvil_cost: 0
+  max_level: 2
+  weight: 1
+  inject_into: []
+wbsenchants:curse/voiding:
+  enabled: true
+  aliases: []
+  display_name: Curse of Voiding
+  description: A bucket curse that causes any liquids picked up to simply disappear
+    into the void!
+  supported_items: wbsenchants:enchantable/bucket
+  minimum_cost:
+    base_cost: 5
+    additional_per_level_cost: 8
+  maximum_cost:
+    base_cost: 25
+    additional_per_level_cost: 8
+  anvil_cost: 0
+  max_level: 1
+  weight: 1
+  inject_into:
+    - minecraft:on_random_loot
+wbsenchants:curse/erosion:
+  enabled: true
+  aliases: []
+  display_name: Curse of Erosion
+  description: A tool curse that causes blocks to sometimes destabilise around mined
+    blocks!
+  supported_items: wbsenchants:enchantable/ground_mining
+  minimum_cost:
+    base_cost: 5
+    additional_per_level_cost: 8
+  maximum_cost:
+    base_cost: 25
+    additional_per_level_cost: 8
+  anvil_cost: 0
+  max_level: 2
+  weight: 1
+  inject_into:
+    - minecraft:on_random_loot
+wbsenchants:curse/splintering:
+  enabled: true
+  aliases: []
+  display_name: Curse of Splintering
+  description: An axe curse that causes mined logs to sometimes splinter into sticks!
+  supported_items: minecraft:axes
+  minimum_cost:
+    base_cost: 5
+    additional_per_level_cost: 8
+  maximum_cost:
+    base_cost: 25
+    additional_per_level_cost: 8
+  anvil_cost: 0
+  max_level: 3
+  weight: 1
+  inject_into:
+    - minecraft:on_random_loot
+wbsenchants:curse/the_end:
+  enabled: true
+  aliases: []
+  display_name: Curse of The End
+  description: An armour curse that makes you take damage from water!
+  supported_items: minecraft:enchantable/armor
+  minimum_cost:
+    base_cost: 5
+    additional_per_level_cost: 8
+  maximum_cost:
+    base_cost: 25
+    additional_per_level_cost: 8
+  anvil_cost: 0
+  max_level: 2
+  weight: 1
+  generation:
+    loot-table:
+      description: 1% chance to appear on loot in The End
+      chance: 1
+      add-chance: 3
+      conditions:
+        dimension-type: The_End
+  inject_into: []
+wbsenchants:curse/mercy:
+  enabled: true
+  aliases: []
+  display_name: Curse of Mercy
+  description: A weapon curse that refuses to deal a killing blow.
+  supported_items: minecraft:enchantable/weapon
+  minimum_cost:
+    base_cost: 5
+    additional_per_level_cost: 8
+  maximum_cost:
+    base_cost: 25
+    additional_per_level_cost: 8
+  anvil_cost: 0
+  max_level: 1
+  weight: 1
+  inject_into:
+    - minecraft:on_random_loot
+wbsenchants:tree_feller:
+  enabled: true
+  aliases: []
+  display_name: Tree Feller
+  description: When breaking a log, the entire tree will be cut down, but use up hunger
+    in exchange for each block broken.
+  supported_items: minecraft:axes
+  primary_items: minecraft:axes
+  minimum_cost:
+    base_cost: 15
+    additional_per_level_cost: 5
+  maximum_cost:
+    base_cost: 65
+    additional_per_level_cost: 5
+  anvil_cost: 0
+  max_level: 3
+  weight: 1
+  exclusive_with: wbsenchants:exclusive_set/multiminer
+  inject_into:
+    - wbsenchants:exclusive_set/multiminer
+wbsenchants:spiritheart:
+  enabled: true
+  aliases: []
+  display_name: Spiritheart
+  description: You have 2 absorption hearts per level that reset at midnight.
+  supported_items: minecraft:enchantable/chest_armor
+  minimum_cost:
+    base_cost: 5
+    additional_per_level_cost: 8
+  maximum_cost:
+    base_cost: 25
+    additional_per_level_cost: 8
+  anvil_cost: 0
+  max_level: 3
+  weight: 1
+  inject_into:
+    - minecraft:tradeable
+    - minecraft:double_trade_price
+wbsenchants:afterlife:
+  enabled: true
+  aliases: []
+  display_name: Afterlife
+  description: When this item breaks, this enchantment is removed and the item is
+    restored to full health.
+  supported_items: minecraft:enchantable/durability
+  minimum_cost:
+    base_cost: 5
+    additional_per_level_cost: 8
+  maximum_cost:
+    base_cost: 25
+    additional_per_level_cost: 8
+  anvil_cost: 0
+  max_level: 1
+  weight: 1
+  generation:
+    loot-table:
+      description: 1% chance to appear on loot above y=100
+      chance: 1
+      add-chance: 100
+      conditions:
+        dimension-type: Normal
+        height:
+          min: 100
+  inject_into: []
+wbsenchants:caving:
+  enabled: true
+  aliases: []
+  display_name: Caving
+  description: Torches inside bundles on your hotbar with this enchantment will automatically
+    place themselves on the ground when you walk into the dark!
+  supported_items: wbsenchants:enchantable/bundle
+  light-level-required: 3
+  minimum_cost:
+    base_cost: 5
+    additional_per_level_cost: 8
+  maximum_cost:
+    base_cost: 25
+    additional_per_level_cost: 8
+  anvil_cost: 0
+  max_level: 1
+  weight: 1
+  generation:
+    loot-table:
+      description: 3% chance to appear on loot below y=60
+      chance: 3
+      add-chance: 100
+      conditions:
+        dimension-type: Normal
+        height:
+          max: 60
+  inject_into: []
+wbsenchants:earthbound:
+  enabled: true
+  aliases: []
+  display_name: Earthbound
+  description: You are immune to Levitation, but can't have Feather Falling.
+  supported_items: minecraft:enchantable/foot_armor
+  minimum_cost:
+    base_cost: 5
+    additional_per_level_cost: 8
+  maximum_cost:
+    base_cost: 25
+    additional_per_level_cost: 8
+  exclusive_with: wbsenchants:exclusive_set/fall_damage_affecting
+  anvil_cost: 0
+  max_level: 1
+  weight: 1
+  generation:
+    loot-table:
+      description: 1% chance to appear on loot in The End
+      chance: 1
+      add-chance: 100
+      conditions:
+        dimension-type: The End
+  inject_into:
+    - wbsenchants:exclusive_set/fall_damage_affecting
+wbsenchants:disengage:
+  enabled: true
+  aliases: []
+  display_name: Disengage
+  description: After killing a mob, you cannot take damage for 0.5 seconds per level.
+  supported_items: minecraft:swords
+  minimum_cost:
+    base_cost: 25
+    additional_per_level_cost: 12
+  maximum_cost:
+    base_cost: 30
+    additional_per_level_cost: 15
+  anvil_cost: 0
+  max_level: 3
+  weight: 1
+  inject_into:
+    - minecraft:on_traded_equipment
+wbsenchants:enderspite:
+  enabled: true
+  aliases: []
+  display_name: Enderspite
+  description: A targeted damage enchantment that affects ender mobs more strongly!
+  supported_items: minecraft:enchantable/weapon
+  minimum_cost:
+    base_cost: 5
+    additional_per_level_cost: 8
+  maximum_cost:
+    base_cost: 25
+    additional_per_level_cost: 8
+  exclusive_with: minecraft:exclusive_set/damage
+  anvil_cost: 0
+  max_level: 5
+  weight: 1
+  affected-mobs:
+    - ENDER_DRAGON
+    - ENDERMAN
+    - ENDERMITE
+    - SHULKER
+    - PHANTOM
+  generation:
+    loot-table:
+      description: 5% chance to appear on Stronghold loot
+      chance: 5
+      add-chance: 100
+      tables:
+        - .*stronghold.*
+  inject_into:
+    - minecraft:exclusive_set/damage
+wbsenchants:frostcreep:
+  enabled: true
+  aliases: []
+  display_name: Frostcreep
+  description: When you block an attack with your shield, your attackers weapon will
+    become cold, unable to attack for 0.4 seconds per level.
+  supported_items:
+    - minecraft:shield
+  primary_items:
+    - minecraft:shield
+  minimum_cost:
+    base_cost: 15
+    additional_per_level_cost: 8
+  maximum_cost:
+    base_cost: 30
+    additional_per_level_cost: 8
+  anvil_cost: 0
+  max_level: 3
+  weight: 1
+  inject_into:
+    - minecraft:tradeable
+    - minecraft:on_random_loot
+wbsenchants:outreach:
+  enabled: true
+  aliases: []
+  display_name: Outreach
+  description: A beacon enchant that increases its radius by 20% per level.
+  supported_items: wbsenchants:enchantable/beacon
+  primary_items:
+    - book
+  minimum_cost:
+    base_cost: 50
+    additional_per_level_cost: 5
+  maximum_cost:
+    base_cost: 60
+    additional_per_level_cost: 5
+  anvil_cost: 0
+  max_level: 3
+  weight: 1
+  inject_into: []
+wbsenchants:hydrophobic:
+  enabled: true
+  description: Increases the radius of drying by 2 blocks per level.
+  supported_items: wbsenchants:sponges
+  minimum_cost:
+    base_cost: 5
+    additional_per_level_cost: 8
+  maximum_cost:
+    base_cost: 25
+    additional_per_level_cost: 8
+  anvil_cost: 1
+  max_level: 3
+  weight: 1
+  inject_into:
+    - minecraft:on_random_loot
+    - minecraft:tradeable
+wbsenchants:pyroclastic:
+  enabled: true
+  description: The sponge absorbs lava instead of water.
+  supported_items: wbsenchants:sponges
+  exclusive_with:
+    - wbsenchants:hydrophobic
+  minimum_cost:
+    base_cost: 5
+    additional_per_level_cost: 8
+  maximum_cost:
+    base_cost: 25
+    additional_per_level_cost: 8
+  anvil_cost: 1
+  max_level: 1
+  weight: 1
+  inject_into: []
+wbsenchants:surface_miner:
+  enabled: true
+  description: You have Haste while you can see the sky.
+  supported_items: minecraft:pickaxes
+  minimum_cost:
+    base_cost: 5
+    additional_per_level_cost: 8
+  maximum_cost:
+    base_cost: 25
+    additional_per_level_cost: 8
+  anvil_cost: 1
+  max_level: 3
+  weight: 1
+  inject_into:
+    - minecraft:on_traded_equipment
+wbsenchants:shulker/carrying:
+  enabled: true
+  description: Allows you to open the shulker box from your hand by right clicking,and
+    gains an extra 9 inventory slots per level above the first.
+  supported_items: wbsenchants:enchantable/shulker_box
+  minimum_cost:
+    base_cost: 5
+    additional_per_level_cost: 8
+  maximum_cost:
+    base_cost: 25
+    additional_per_level_cost: 8
+  anvil_cost: 1
+  max_level: 4
+  weight: 1
+  inject_into: []
+  generation:
+    loot-table:
+      description: 2% chance to appear in End City loot
+      chance: 2
+      add-chance: 100
+      tables:
+        - .*end_city.*
+wbsenchants:shulker/refill:
+  enabled: true
+  description: When you use the last item of a stack in your inventory, if an item
+    of the same type is in the shulker box, it will be immediately placed into your
+    hand.
+  supported_items: wbsenchants:enchantable/shulker_box
+  minimum_cost:
+    base_cost: 5
+    additional_per_level_cost: 8
+  maximum_cost:
+    base_cost: 25
+    additional_per_level_cost: 8
+  anvil_cost: 1
+  max_level: 1
+  weight: 1
+  inject_into: []
+  generation:
+    loot-table:
+      description: 2% chance to appear in End City loot
+      chance: 2
+      add-chance: 100
+      tables:
+        - .*end_city.*
+wbsenchants:shulker/siphoning:
+  enabled: true
+  description: When you pick up an item, if the shulker box contains any of the same,
+    the picked up item will go straight to the shulker box.
+  supported_items: wbsenchants:enchantable/shulker_box
+  minimum_cost:
+    base_cost: 5
+    additional_per_level_cost: 8
+  maximum_cost:
+    base_cost: 25
+    additional_per_level_cost: 8
+  anvil_cost: 1
+  max_level: 1
+  weight: 1
+  inject_into: []
+  generation:
+    loot-table:
+      description: 2% chance to appear in End City loot
+      chance: 2
+      add-chance: 100
+      tables:
+        - .*end_city.*
+wbsenchants:shulker/placing:
+  enabled: true
+  description: Placing the shulker box will instead place a random item from inside,
+    if any are available. Sneak to place actual shulker box.
+  supported_items: wbsenchants:enchantable/shulker_box
+  exclusive_with:
+    - wbsenchants:shulker/carrying
+  minimum_cost:
+    base_cost: 5
+    additional_per_level_cost: 8
+  maximum_cost:
+    base_cost: 25
+    additional_per_level_cost: 8
+  anvil_cost: 1
+  max_level: 1
+  weight: 1
+  inject_into: []
+  generation:
+    loot-table:
+      description: 2% chance to appear in End City loot
+      chance: 2
+      add-chance: 100
+      tables:
+        - .*end_city.*
+wbsenchants:discarding:
+  enabled: true
+  description: Deletes any items picked up/transferred in, but not ones that you put
+    in directly.
+  supported_items:
+    - minecraft:hopper
+    - minecraft:hopper_minecart
+  exclusive_with:
+    - wbsenchants:shulker/carrying
+  minimum_cost:
+    base_cost: 5
+    additional_per_level_cost: 8
+  maximum_cost:
+    base_cost: 25
+    additional_per_level_cost: 8
+  anvil_cost: 1
+  max_level: 1
+  weight: 1
+  inject_into:
+    - minecraft:tradeable
+wbsenchants:blooming:
+  enabled: true
+  description: The item passively regains durability when near flowers, with speed
+    depending on how many types are around. Rarer types repair faster!
+  supported_items: minecraft:enchantable/durability
+  primary_items: minecraft:enchantable/mining
+  exclusive_with: wbsenchants:exclusive_set/self_repairing
+  # The first flower of each type will have its power multiplied by this value. Set to 1 for no benefit to variety.
+  unique-flower-multiplier: 2
+  # How many durability points each flower type is worth, twice per second
+  flower-powers:
+    # Specific flowers are processed first
+    pitcher_plant: 0.8
+    wither_rose: 0.6
+    potted_wither_rose: 0.3
+    torchflower: 0.5
+    potted_torchflower: 0.25
+    spore_blossom: 0.3
+    chorus_flower: 0.2
+    closed_eyeblossom: 0.15
+    open_eyeblossom: 0.15
+    cactus_flower: 0.15
+    flowering_azalea: 0.1
+    pink_petals: 0.1
+    wildflowers: 0.1
+    flowering_azalea_leaves: 0.02
+    cherry_leaves: 0.01
+    mangrove_propagule: 0.0 # In the #minecraft:flowers tag, but shouldn't count for blooming.
+    # Tags are only checked if a flower isn't listed above.
+    "#minecraft:small_flowers": 0.1
+    "#minecraft:flowers": 0.12 # Order specific, so this affects any flower not in the small_flowers tag
+    "#minecraft:flower_pots": 0.05
+  minimum_cost:
+    base_cost: 5
+    additional_per_level_cost: 8
+  maximum_cost:
+    base_cost: 25
+    additional_per_level_cost: 8
+  anvil_cost: 1
+  max_level: 1
+  weight: 1
+  inject_into:
+    - minecraft:tradeable
+    - wbsenchants:exclusive_set/self_repairing
+wbsenchants:curse/rust:
+  enabled: true
+  description: The item will break more quickly.
+  supported_items: wbsenchants:enchantable/rustable
+  minimum_cost:
+    base_cost: 5
+    additional_per_level_cost: 8
+  maximum_cost:
+    base_cost: 25
+    additional_per_level_cost: 8
+  anvil_cost: 1
+  max_level: 1
+  weight: 1
+  inject_into:
+    - minecraft:on_traded_equipment
+    - minecraft:on_random_loot
+wbsenchants:ghost_pact:
+  enabled: true
+  description: When you take more than 2 hearts of damage in a single hit, you have
+    a chance of summoning your own Vex to engage your attacker!
+  supported_items: minecraft:enchantable/armor
+  exclusive_with: wbsenchants:exclusive_set/armor_retaliation
+  minimum_cost:
+    base_cost: 5
+    additional_per_level_cost: 8
+  maximum_cost:
+    base_cost: 25
+    additional_per_level_cost: 8
+  anvil_cost: 1
+  max_level: 4
+  weight: 1
+  inject_into:
+    - wbsenchants:exclusive_set/armor_retaliation
+  generation:
+    loot-table:
+      description: 5% chance to appear in Woodland Mansion loot
+      chance: 5
+      add-chance: 100
+      tables:
+        - .*woodland_mansion.*
+wbsenchants:fanged:
+  enabled: true
+  description: After dealing damage, evoker fangs appear at the hit entity. Cooldown
+    reduces with level.
+  supported_items: minecraft:enchantable/head_armor
+  minimum_cost:
+    base_cost: 5
+    additional_per_level_cost: 8
+  maximum_cost:
+    base_cost: 25
+    additional_per_level_cost: 8
+  anvil_cost: 1
+  max_level: 3
+  weight: 1
+  inject_into: []
+  generation:
+    loot-table:
+      description: 5% chance to appear in Woodland Mansion loot
+      chance: 5
+      add-chance: 100
+      tables:
+        - .*woodland_mansion.*
+wbsenchants:magnetic:
+  enabled: true
+  description: Your item pickup radius is extended.
+  supported_items: wbsenchants:enchantable/magnetic
+  minimum_cost:
+    base_cost: 5
+    additional_per_level_cost: 8
+  maximum_cost:
+    base_cost: 25
+    additional_per_level_cost: 8
+  anvil_cost: 1
+  max_level: 1
+  weight: 1
+  inject_into:
+    - minecraft:on_random_loot
+    - minecraft:on_traded_equipment
+wbsenchants:casting:
+  enabled: true
+  description: The hook is cast much further.
+  primary_items:
+    - minecraft:fishing_rod
+  supported_items:
+    - minecraft:fishing_rod
+  minimum_cost:
+    base_cost: 5
+    additional_per_level_cost: 8
+  maximum_cost:
+    base_cost: 25
+    additional_per_level_cost: 8
+  anvil_cost: 1
+  max_level: 1
+  weight: 1
+  inject_into: []
+wbsenchants:curse/rot:
+  enabled: true
+  description: When worn, regeneration is 1.2x slower per level.
+  supported_items: minecraft:enchantable/armor
+  minimum_cost:
+    base_cost: 5
+    additional_per_level_cost: 8
+  maximum_cost:
+    base_cost: 25
+    additional_per_level_cost: 8
+  anvil_cost: 1
+  max_level: 3
+  weight: 1
+  inject_into:
+    - minecraft:on_random_loot
+wbsenchants:multicast:
+  enabled: true
+  description: Casts an additional hook per level.
+  primary_items:
+    - minecraft:fishing_rod
+  supported_items:
+    - minecraft:fishing_rod
+  minimum_cost:
+    base_cost: 5
+    additional_per_level_cost: 8
+  maximum_cost:
+    base_cost: 25
+    additional_per_level_cost: 8
+  anvil_cost: 1
+  max_level: 2
+  weight: 1
+  inject_into:
+    - minecraft:on_random_loot
+    - minecraft:tradeable
+wbsenchants:auto_reel:
+  enabled: true
+  description: Automatically reels in the fishing rod for you!
+  supported_items:
+    - minecraft:fishing_rod
+  primary_items:
+    - minecraft:fishing_rod
+  minimum_cost:
+    base_cost: 5
+    additional_per_level_cost: 8
+  maximum_cost:
+    base_cost: 25
+    additional_per_level_cost: 8
+  anvil_cost: 1
+  max_level: 1
+  weight: 1
+  inject_into:
+    - minecraft:on_random_loot
+    - minecraft:tradeable
+wbsenchants:hell_hook:
+  enabled: true
+  description: Sets your fishing rod hook on fire, burning entities and cooking anything
+    you fish up.
+  supported_items:
+    - minecraft:fishing_rod
+  minimum_cost:
+    base_cost: 5
+    additional_per_level_cost: 8
+  maximum_cost:
+    base_cost: 25
+    additional_per_level_cost: 8
+  anvil_cost: 1
+  max_level: 3
+  weight: 1
+  inject_into: []
+  generation:
+    loot-table:
+      description: 2% chance to appear in nether loot chests
+      chance: 2
+      add-chance: 100
+      conditions:
+        dimension-type: Nether
+wbsenchants:arctic_strike:
+  enabled: true
+  description: Gradually freezes hit mobs.
+  supported_items: minecraft:enchantable/weapon
+  minimum_cost:
+    base_cost: 5
+    additional_per_level_cost: 8
+  maximum_cost:
+    base_cost: 25
+    additional_per_level_cost: 8
+  anvil_cost: 1
+  max_level: 3
+  weight: 1
+  inject_into: []
+  generation:
+    loot-table:
+      description: 3% change to appear in cold biome loot
+      chance: 3
+      add-chance: 100
+      conditions:
+        biome:
+          max-temp: 0.7
+wbsenchants:tempered:
+  enabled: true
+  description: Makes the anvil break more slowly.
+  supported_items: minecraft:anvil
+  minimum_cost:
+    base_cost: 5
+    additional_per_level_cost: 8
+  maximum_cost:
+    base_cost: 25
+    additional_per_level_cost: 8
+  anvil_cost: 1
+  max_level: 3
+  weight: 1
+  inject_into:
+    - minecraft:on_random_loot
+    - minecraft:tradeable
+wbsenchants:nihil:
+  enabled: true
+  description: Prevents all block and mob drops.
+  supported_items: wbsenchants:enchantable/loot_creators
+  minimum_cost:
+    base_cost: 5
+    additional_per_level_cost: 8
+  maximum_cost:
+    base_cost: 25
+    additional_per_level_cost: 8
+  anvil_cost: 1
+  max_level: 1
+  weight: 1
+  inject_into:
+    - minecraft:on_random_loot
+    - minecraft:tradeable
+wbsenchants:quick_ride:
+  enabled: true
+  description: Automatically get into the enchanted vehicle when placed, and automatically
+    return it to your inventory upon exiting.
+  primary_items:
+    - minecraft:book
+  supported_items: wbsenchants:enchantable/vehicle
+  minimum_cost:
+    base_cost: 5
+    additional_per_level_cost: 8
+  maximum_cost:
+    base_cost: 25
+    additional_per_level_cost: 8
+  anvil_cost: 1
+  max_level: 1
+  weight: 1
+  inject_into:
+    - minecraft:on_random_loot
+    - minecraft:tradeable
+wbsenchants:fleecing:
+  enabled: true
+  description: Increases yield of wool when shearing.
+  supported_items:
+    - minecraft:shears
+  primary_items:
+    - minecraft:shears
+  minimum_cost:
+    base_cost: 5
+    additional_per_level_cost: 8
+  maximum_cost:
+    base_cost: 25
+    additional_per_level_cost: 8
+  anvil_cost: 1
+  max_level: 3
+  weight: 2
+  inject_into:
+    - minecraft:on_random_loot
+    - minecraft:tradeable
+wbsenchants:cautiousness:
+  enabled: true
+  description: Prevents damaging your pets and baby passive mobs, and prevents sweeping
+    edge from damaging other players.
+  supported_items: minecraft:enchantable/weapon
+  minimum_cost:
+    base_cost: 5
+    additional_per_level_cost: 8
+  maximum_cost:
+    base_cost: 25
+    additional_per_level_cost: 8
+  anvil_cost: 1
+  max_level: 1
+  weight: 1
+  inject_into:
+    - minecraft:on_random_loot
+    - minecraft:tradeable
+wbsenchants:reinforced:
+  enabled: true
+  description: Gives a 25% chance to prevent the shield from being disabled.
+  primary_items:
+    - minecraft:shield
+  supported_items:
+    - minecraft:shield
+  minimum_cost:
+    base_cost: 5
+    additional_per_level_cost: 8
+  maximum_cost:
+    base_cost: 25
+    additional_per_level_cost: 8
+  anvil_cost: 1
+  max_level: 3
+  weight: 1
+  inject_into: []
+wbsenchants:reflexive:
+  enabled: true
+  description: When taking damage from a mob while this is anywhere but in your hand,
+    you'll instantly switch to it, so you're ready for combat!
+  primary_items:
+    - minecraft:shield
+  supported_items:
+    - minecraft:shield
+  minimum_cost:
+    base_cost: 30
+    additional_per_level_cost: 10
+  maximum_cost:
+    base_cost: 85
+    additional_per_level_cost: 10
+  anvil_cost: 1
+  max_level: 1
+  weight: 1
+  inject_into:
+    - minecraft:on_random_loot
+    - minecraft:tradeable
+wbsenchants:throwing:
+  enabled: true
+  description: Items thrown (potions, eggs, ender pearls) have increased speed.
+  supported_items: minecraft:enchantable/chest_armor
+  minimum_cost:
+    base_cost: 5
+    additional_per_level_cost: 8
+  maximum_cost:
+    base_cost: 25
+    additional_per_level_cost: 8
+  anvil_cost: 1
+  max_level: 4
+  weight: 1
+  inject_into:
+    - minecraft:on_random_loot
+    - minecraft:tradeable
+wbsenchants:demetrien:
+  enabled: true
+  description: Farmland tilled by items with this enchantment will never turn back
+    into dirt.
+  minimum_cost:
+    base_cost: 5
+    additional_per_level_cost: 8
+  maximum_cost:
+    base_cost: 25
+    additional_per_level_cost: 8
+  anvil_cost: 1
+  max_level: 1
+  weight: 1
+  inject_into:
+    - minecraft:on_random_loot
+    - minecraft:tradeable
+wbsenchants:galloping:
+  enabled: true
+  description: Speeds up mobs wearing the saddle.
+  supported_items:
+    - minecraft:saddle
+  minimum_cost:
+    base_cost: 5
+    additional_per_level_cost: 8
+  maximum_cost:
+    base_cost: 25
+    additional_per_level_cost: 8
+  anvil_cost: 1
+  max_level: 3
+  weight: 1
+  generation:
+    loot-table:
+      description: 2% chance to appear in Village loot chests
+      chance: 2
+      add-chance: 100
+      tables:
+        - .*village.*
+  inject_into:
+    - minecraft:on_random_loot
+    - minecraft:tradeable
+wbsenchants:leaping:
+  enabled: true
+  description: Increases jump height of mobs wearing the saddle.
+  supported_items:
+    - minecraft:saddle
+  minimum_cost:
+    base_cost: 5
+    additional_per_level_cost: 8
+  maximum_cost:
+    base_cost: 25
+    additional_per_level_cost: 8
+  anvil_cost: 1
+  max_level: 3
+  weight: 1
+  generation:
+    loot-table:
+      description: 2% chance to appear in Village loot chests
+      chance: 2
+      add-chance: 100
+      tables:
+        - .*village.*
+  inject_into:
+    - minecraft:on_random_loot
+    - minecraft:tradeable
+wbsenchants:cavalrous:
+  enabled: true
+  description: Greatly increases the health of horses, and applies regeneration.
+  supported_items: wbsenchants:enchantable/horse_armor
+  minimum_cost:
+    base_cost: 5
+    additional_per_level_cost: 8
+  maximum_cost:
+    base_cost: 25
+    additional_per_level_cost: 8
+  anvil_cost: 1
+  max_level: 3
+  weight: 1
+  generation:
+    loot-table:
+      description: 2% chance to appear in Village loot chests
+      chance: 2
+      add-chance: 100
+      tables:
+        - .*village.*
+  inject_into:
+    - minecraft:on_random_loot
+    - minecraft:tradeable
+wbsenchants:fungal_heart:
+  enabled: true
+  description: Grants Resistance while standing on Mycelium.
+  supported_items: minecraft:enchantable/chest_armor
+  minimum_cost:
+    base_cost: 5
+    additional_per_level_cost: 8
+  maximum_cost:
+    base_cost: 25
+    additional_per_level_cost: 8
+  anvil_cost: 1
+  max_level: 3
+  weight: 1
+  inject_into:
+    - minecraft:on_random_loot
+    - minecraft:tradeable
+wbsenchants:abyss_miner:
+  enabled: true
+  description: Grants increasing levels of Haste the further away from the surface
+    you are.
+  supported_items: minecraft:pickaxes
+  minimum_cost:
+    base_cost: 5
+    additional_per_level_cost: 8
+  maximum_cost:
+    base_cost: 25
+    additional_per_level_cost: 8
+  anvil_cost: 1
+  max_level: 1
+  weight: 1
+  generation:
+    loot-table:
+      description: 0.5% chance to appear in underground loot chests
+      chance: 0.5
+      add-chance: 100
+      conditions:
+        height:
+          max: 60
+  inject_into:
+    - minecraft:on_random_loot
+    - minecraft:tradeable
+wbsenchants:aetherean:
+  enabled: true
+  description: You can place blocks in mid-air.
+  supported_items: minecraft:enchantable/chest_armor
+  minimum_cost:
+    base_cost: 5
+    additional_per_level_cost: 8
+  maximum_cost:
+    base_cost: 25
+    additional_per_level_cost: 8
+  anvil_cost: 1
+  max_level: 1
+  weight: 1
+  inject_into: []
+  generation:
+    loot-table:
+      description: 2% chance to appear in loot chests above y=128
+      chance: 2
+      add-chance: 100
+      conditions:
+        height:
+          min: 128
+wbsenchants:buoyancy:
+  enabled: true
+  description: Allows mobs being ridden to swim without kicking off their rider.
+  supported_items:
+    - minecraft:saddle
+  minimum_cost:
+    base_cost: 5
+    additional_per_level_cost: 8
+  maximum_cost:
+    base_cost: 25
+    additional_per_level_cost: 8
+  anvil_cost: 1
+  max_level: 1
+  weight: 1
+  generation:
+    loot-table:
+      description: 2% chance to appear in Village loot chests
+      chance: 2
+      add-chance: 100
+      tables:
+        - .*village.*
+  inject_into:
+    - minecraft:on_random_loot
+    - minecraft:tradeable
+wbsenchants:annotated:
+  enabled: true
+  description: Maps with this enchantment will show many structures on the map.
+  supported_items: wbsenchants:maps
+  exclusive_with: wbsenchants:exclusive_set/maps
+  minimum_cost:
+    base_cost: 3
+    additional_per_level_cost: 6
+  maximum_cost:
+    base_cost: 9
+    additional_per_level_cost: 6
+  anvil_cost: 1
+  max_level: 1
+  weight: 5
+  generation:
+    loot-table:
+      description: 0.5% chance to appear in Village loot chests
+      chance: 0.5
+      add-chance: 100
+      tables:
+        - .*village.*
+  inject_into:
+    - minecraft:on_random_loot
+    - minecraft:tradeable
+    - wbsenchants:exclusive_set/maps
+wbsenchants:haven:
+  enabled: true
+  description: Prevents hostile mob spawning in the beacon's radius
+  primary_items:
+    - minecraft:book
+  supported_items: wbsenchants:enchantable/beacon
+  minimum_cost:
+    base_cost: 45
+    additional_per_level_cost: 8
+  maximum_cost:
+    base_cost: 85
+    additional_per_level_cost: 8
+  anvil_cost: 1
+  max_level: 1
+  weight: 1
+  inject_into: []
+wbsenchants:snaring:
+  enabled: true
+  description: Pulls hit entities towards you; the opposite of Knockback.
+  supported_items: minecraft:enchantable/weapon
+  exclusive_with: wbsenchants:exclusive_set/knockback
+  minimum_cost:
+    base_cost: 5
+    additional_per_level_cost: 8
+  maximum_cost:
+    base_cost: 25
+    additional_per_level_cost: 8
+  anvil_cost: 1
+  max_level: 2
+  weight: 5
+  inject_into:
+    - minecraft:on_random_loot
+    - minecraft:tradeable
+    - wbsenchants:exclusive_set/knockback
+wbsenchants:heaving:
+  enabled: true
+  description: Converts knockback to an upwards force.
+  supported_items: minecraft:enchantable/weapon
+  exclusive_with: wbsenchants:exclusive_set/knockback
+  minimum_cost:
+    base_cost: 5
+    additional_per_level_cost: 8
+  maximum_cost:
+    base_cost: 25
+    additional_per_level_cost: 8
+  anvil_cost: 1
+  max_level: 2
+  weight: 5
+  inject_into:
+    - minecraft:on_random_loot
+    - minecraft:tradeable
+    - wbsenchants:exclusive_set/knockback
+wbsenchants:whirling:
+  enabled: true
+  description: Converts knockback to be sideways.
+  supported_items: minecraft:enchantable/weapon
+  exclusive_with: wbsenchants:exclusive_set/knockback
+  minimum_cost:
+    base_cost: 5
+    additional_per_level_cost: 8
+  maximum_cost:
+    base_cost: 25
+    additional_per_level_cost: 8
+  anvil_cost: 1
+  max_level: 2
+  weight: 5
+  inject_into:
+    - minecraft:on_random_loot
+    - minecraft:tradeable
+    - wbsenchants:exclusive_set/knockback
+wbsenchants:hovering:
+  enabled: true
+  description: Creative-mode flight while within 5 blocks of the ground, but you still
+    take fall damage.
+  supported_items: wbsenchants:enchantable/elytra
+  minimum_cost:
+    base_cost: 5
+    additional_per_level_cost: 8
+  maximum_cost:
+    base_cost: 25
+    additional_per_level_cost: 8
+  anvil_cost: 1
+  max_level: 1
+  weight: 1
+  generation:
+    loot-table:
+      description: 0.5% chance to appear in End City loot
+      chance: 0.5
+      add-chance: 100
+      tables:
+        - .*end_city.*
+  inject_into: []
+wbsenchants:rerolling:
+  enabled: true
+  description: Makes the enchanting table re-roll enchantments when you close the
+    inventory.
+  supported_items:
+    - minecraft:enchanting_table
+  exclusive_with:
+    - wbsenchants:handheld
+  minimum_cost:
+    base_cost: 5
+    additional_per_level_cost: 8
+  maximum_cost:
+    base_cost: 25
+    additional_per_level_cost: 8
+  anvil_cost: 1
+  max_level: 1
+  weight: 1
+  generation:
+    trading:
+      description: Master Librarian villager trades
+      result: 'minecraft:enchanting_table'
+      emerald-cost:
+        min: 32
+        max: 64
+      item-cost: 'minecraft:enchanting_table'
+      chance: 50
+      villager-level: 5
+      villager-profession: librarian
+      level: WEIGHTED_SMALL
+  inject_into:
+    - minecraft:on_random_loot
+    - minecraft:tradeable
+wbsenchants:ambitiousness:
+  enabled: true
+  description: Increases the maximum enchanting level.
+  supported_items:
+    - minecraft:enchanting_table
+  exclusive_with:
+    - wbsenchants:handheld
+  minimum_cost:
+    base_cost: 5
+    additional_per_level_cost: 8
+  maximum_cost:
+    base_cost: 25
+    additional_per_level_cost: 8
+  anvil_cost: 1
+  max_level: 2
+  weight: 1
+  generation:
+    trading:
+      description: Master Librarian villager trades
+      result: 'minecraft:enchanting_table'
+      emerald-cost:
+        min: 32
+        max: 64
+      item-cost: 'minecraft:enchanting_table'
+      chance: 100
+      villager-level: 5
+      villager-profession: librarian
+      level: WEIGHTED_SMALL
+  inject_into:
+    - minecraft:on_random_loot
+    - minecraft:tradeable
+wbsenchants:recall:
+  enabled: true
+  description: Summons all of your (non-sitting) tamed mobs to you, if they're in
+    loaded chunks.
+  supported_items:
+    - minecraft:goat_horn
+  exclusive_with: wbsenchants:exclusive_set/horns
+  minimum_cost:
+    base_cost: 5
+    additional_per_level_cost: 8
+  maximum_cost:
+    base_cost: 25
+    additional_per_level_cost: 8
+  anvil_cost: 1
+  max_level: 1
+  weight: 1
+  inject_into:
+    - minecraft:on_random_loot
+    - minecraft:tradeable
+    - wbsenchants:exclusive_set/horns
+wbsenchants:ancient_cry:
+  enabled: true
+  description: Makes nearby hostile mobs randomly start targeting another hostile
+    mob.
+  supported_items:
+    - minecraft:goat_horn
+  exclusive_with: wbsenchants:exclusive_set/horns
+  minimum_cost:
+    base_cost: 5
+    additional_per_level_cost: 8
+  maximum_cost:
+    base_cost: 25
+    additional_per_level_cost: 8
+  anvil_cost: 1
+  max_level: 1
+  weight: 1
+  inject_into:
+    - minecraft:on_random_loot
+    - minecraft:tradeable
+    - wbsenchants:exclusive_set/horns
+wbsenchants:breathtaking:
+  enabled: true
+  description: Takes away oxygen when you hit an entity
+  supported_items:
+    - minecraft:trident
+  minimum_cost:
+    base_cost: 5
+    additional_per_level_cost: 8
+  maximum_cost:
+    base_cost: 25
+    additional_per_level_cost: 8
+  anvil_cost: 1
+  max_level: 1
+  weight: 1
+  inject_into:
+    - minecraft:on_random_loot
+    - minecraft:tradeable
+wbsenchants:platformer:
+  enabled: false
+  description: 'Adds the ability to jump mid-air, once per level of the enchantment.<br><red>Warning:
+    Highly affected by ping/lag. Not recommended on high latency connections.'
+  supported_items: minecraft:enchantable/foot_armor
+  minimum_cost:
+    base_cost: 5
+    additional_per_level_cost: 8
+  maximum_cost:
+    base_cost: 25
+    additional_per_level_cost: 8
+  anvil_cost: 1
+  max_level: 1
+  weight: 1
+  inject_into: []
+wbsenchants:venturing:
+  enabled: true
+  description: Shows the name of structures when you enter them.
+  supported_items: minecraft:enchantable/head_armor
+  minimum_cost:
+    base_cost: 5
+    additional_per_level_cost: 8
+  maximum_cost:
+    base_cost: 25
+    additional_per_level_cost: 8
+  anvil_cost: 1
+  max_level: 1
+  weight: 1
+  generation:
+    loot-table:
+      description: 2% chance to appear in Village loot chests
+      chance: 2
+      add-chance: 100
+      tables:
+        - .*village.*
+  inject_into:
+    - minecraft:on_random_loot
+    - minecraft:tradeable
+wbsenchants:hauling:
+  enabled: true
+  description: Greatly increases the pull strength of fishing rods.
+  supported_items: minecraft:enchantable/fishing
+  minimum_cost:
+    base_cost: 5
+    additional_per_level_cost: 8
+  maximum_cost:
+    base_cost: 25
+    additional_per_level_cost: 8
+  anvil_cost: 1
+  max_level: 3
+  weight: 1
+  generation:
+    loot-table:
+      description: 2% chance to appear in Village loot chests
+      chance: 2
+      add-chance: 100
+      tables:
+        - .*village.*
+  inject_into:
+    - minecraft:on_random_loot
+    - minecraft:tradeable
+wbsenchants:tracking:
+  enabled: true
+  description: Allows you to right click an entity to track it with the compass.
+  supported_items:
+    - minecraft:compass
+  minimum_cost:
+    base_cost: 5
+    additional_per_level_cost: 8
+  maximum_cost:
+    base_cost: 25
+    additional_per_level_cost: 8
+  anvil_cost: 1
+  max_level: 3
+  weight: 1
+  generation:
+    loot-table:
+      description: 2% chance to appear in Village loot chests
+      chance: 2
+      add-chance: 100
+      tables:
+        - .*village.*
+  inject_into:
+    - minecraft:on_random_loot
+    - minecraft:tradeable
+wbsenchants:curse/hypoxia:
+  enabled: true
+  description: You start losing oxygen above y 100.
+  supported_items: minecraft:enchantable/head_armor
+  minimum_cost:
+    base_cost: 5
+    additional_per_level_cost: 8
+  maximum_cost:
+    base_cost: 25
+    additional_per_level_cost: 8
+  anvil_cost: 1
+  max_level: 1
+  weight: 1
+  inject_into:
+    - minecraft:on_random_loot
+wbsenchants:powerlust:
+  enabled: true
+  display_name: <lang_or:enchantment.wbsenchants.powerlust:%s:'Powerlust'>
+  description: Allows generated enchantments to exceed their maximum level by 1, but
+    takes more levels when enchanting.
+  supported_items:
+    - minecraft:enchanting_table
+  exclusive_with: wbsenchants:exclusive_set/enchanting_table
+  minimum_cost:
+    base_cost: 5
+    additional_per_level_cost: 8
+  maximum_cost:
+    base_cost: 25
+    additional_per_level_cost: 8
+  anvil_cost: 1
+  max_level: 1
+  weight: 1
+  generation:
+    trading:
+      description: Master Librarian villager trades
+      result: 'minecraft:enchanting_table'
+      emerald-cost:
+        min: 32
+        max: 64
+      item-cost: 'minecraft:enchanting_table'
+      chance: 50
+      villager-level: 5
+      villager-profession: librarian
+      level: WEIGHTED_SMALL
+  inject_into:
+    - wbsenchants:exclusive_set/enchanting_table
+wbsenchants:industrious:
+  enabled: true
+  display_name: <lang_or:enchantment.wbsenchants.industrious:%s:'Industrious'>
+  description: Shears multiple sheep at a time.
+  supported_items:
+    - minecraft:shears
+  primary_items:
+    - minecraft:shears
+  minimum_cost:
+    base_cost: 5
+    additional_per_level_cost: 8
+  maximum_cost:
+    base_cost: 25
+    additional_per_level_cost: 8
+  anvil_cost: 1
+  max_level: 3
+  weight: 1
+  inject_into:
+    - minecraft:on_random_loot
+    - minecraft:tradeable

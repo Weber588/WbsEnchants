@@ -2,46 +2,74 @@ package wbs.enchants.generation.contexts;
 
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TextComponent;
+import org.bukkit.Bukkit;
+import org.bukkit.Material;
 import org.bukkit.configuration.ConfigurationSection;
-import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.AbstractVillager;
 import org.bukkit.entity.Villager;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.entity.VillagerAcquireTradeEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.MerchantRecipe;
-import org.bukkit.inventory.meta.EnchantmentStorageMeta;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import wbs.enchants.definition.EnchantmentDefinition;
-import wbs.enchants.WbsEnchants;
 import wbs.enchants.generation.GenerationContext;
 import wbs.enchants.util.EnchantUtils;
 
-import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
+import java.util.Random;
 
 public class VillagerTradeContext extends GenerationContext {
 
-    private final List<String> replaceableEnchants;
+    private int villagerLevel = 1;
+    @NotNull
+    private String resultString = "minecraft:enchanted_book";
+    private int emeraldCostMin = 1;
+    private int emeraldCostMax = 64;
+    @Nullable
+    private String itemCostString = "minecraft:book";
 
     public VillagerTradeContext(String key, EnchantmentDefinition definition, ConfigurationSection section, String directory) {
         super(key, definition, section, directory);
 
-        replaceableEnchants = section.getStringList("replaceable").stream()
-                .map(String::toLowerCase)
-                .collect(Collectors.toList());
+        villagerLevel = section.getInt("villager-level", villagerLevel);
+        resultString = section.getString("result", resultString);
+
+        ConfigurationSection emeraldCostSection = section.getConfigurationSection("emerald-cost");
+        if (emeraldCostSection != null) {
+            emeraldCostMin = emeraldCostSection.getInt("min", emeraldCostMin);
+            emeraldCostMax = emeraldCostSection.getInt("max", emeraldCostMax);
+        } else if (section.isInt("emerald-cost")) {
+            emeraldCostMin = section.getInt("emerald-cost", emeraldCostMin);
+            emeraldCostMax = section.getInt("emerald-cost", emeraldCostMax);
+        }
+
+        if (emeraldCostMin > emeraldCostMax) {
+            int max = emeraldCostMin;
+            emeraldCostMin = emeraldCostMax;
+            emeraldCostMax = max;
+        }
+
+        String itemCostString = section.getString("item-cost");
+        if (itemCostString != null) {
+            this.itemCostString = itemCostString;
+        } else {
+            if (!resultString.contains("enchanted_book")) {
+                this.itemCostString = null;
+            }
+        }
     }
 
     @Override
     public void writeToSection(ConfigurationSection section) {
-        section.set("replaceable", replaceableEnchants);
+        section.set("villager-level", villagerLevel);
+        section.set("result", resultString);
+        // TODO
     }
 
     @Override
     protected int getDefaultChance() {
-        // Amount of enchants (including custom ones in case they're available through trading) minus 2 for
-        // Soul Speed and Swift Sneak, which may not be obtained through this method.
-        return (int) (100.0 / (EnchantUtils.getAllEnchants().size() - 2));
+        return 25;
     }
 
     @Override
@@ -55,12 +83,6 @@ public class VillagerTradeContext extends GenerationContext {
             return;
         }
 
-        MerchantRecipe recipe = event.getRecipe();
-        ItemStack result = recipe.getResult();
-        if (!(result.getItemMeta() instanceof EnchantmentStorageMeta meta)) {
-            return;
-        }
-
         AbstractVillager abstractVillager = event.getEntity();
 
         if (!(abstractVillager instanceof Villager villager)) {
@@ -71,40 +93,46 @@ public class VillagerTradeContext extends GenerationContext {
             return;
         }
 
-        Map<Enchantment, Integer> storedEnchants = meta.getStoredEnchants();
-
-        Enchantment toReplace = storedEnchants.keySet()
-                .stream()
-                .filter(ench -> replaceableEnchants.isEmpty() || replaceableEnchants.contains(ench.getKey().toString().toLowerCase()))
-                .findAny()
-                .orElse(null);
-
-        if (toReplace != null) {
-            meta.removeStoredEnchant(toReplace);
-            WbsEnchants.getInstance().getLogger().info("toReplace: " + toReplace.getKey());
-
-            result.setItemMeta(meta);
-            EnchantUtils.addEnchantment(definition, result, generateLevel());
-
-            MerchantRecipe newRecipe = new MerchantRecipe(result,
-                    recipe.getUses(),
-                    recipe.getMaxUses(),
-                    recipe.hasExperienceReward(),
-                    recipe.getVillagerExperience(),
-                    recipe.getPriceMultiplier(),
-                    recipe.getDemand(),
-                    recipe.getSpecialPrice());
-
-            newRecipe.setIngredients(recipe.getIngredients());
-
-            event.setRecipe(newRecipe);
+        // nms Villager#increaseMerchantCareer increases level BEFORE acquiring trades -- reliable
+        if (villager.getVillagerLevel() != villagerLevel) {
+            return;
         }
+
+        MerchantRecipe recipe = buildRecipe(event);
+        event.setRecipe(recipe);
+    }
+
+    private @NotNull MerchantRecipe buildRecipe(VillagerAcquireTradeEvent event) {
+        ItemStack result = Bukkit.getItemFactory().createItemStack(resultString);
+        EnchantUtils.addEnchantment(definition, result, generateLevel());
+
+        MerchantRecipe recipe = new MerchantRecipe(result, 1);
+
+        MerchantRecipe replace = event.getRecipe();
+
+        // TODO: Add more configurability over recipe details
+        recipe.setDemand(replace.getDemand());
+        recipe.setExperienceReward(replace.hasExperienceReward());
+        recipe.setIgnoreDiscounts(replace.shouldIgnoreDiscounts());
+        recipe.setVillagerExperience(replace.getVillagerExperience());
+        recipe.setSpecialPrice(replace.getSpecialPrice());
+        recipe.setPriceMultiplier(replace.getPriceMultiplier());
+
+        if (emeraldCostMin > 0) {
+            recipe.addIngredient(ItemStack.of(Material.EMERALD, new Random().nextInt(emeraldCostMin, emeraldCostMax)));
+        }
+        if (itemCostString != null) {
+            recipe.addIngredient(Bukkit.getItemFactory().createItemStack(itemCostString));
+        }
+
+        return recipe;
     }
 
     @Override
     public String toString() {
         return "VillagerTradeContext{" +
-                "replaceableEnchants=" + replaceableEnchants +
+                "item=" + resultString +
+                ", villagerLevel=" + villagerLevel +
                 ", enchantment=" + definition +
                 ", conditions=" + conditions +
                 ", key='" + key + '\'' +

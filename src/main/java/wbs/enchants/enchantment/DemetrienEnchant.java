@@ -1,5 +1,6 @@
 package wbs.enchants.enchantment;
 
+import io.papermc.paper.registry.keys.tags.ItemTypeTagKeys;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.entity.LivingEntity;
@@ -27,6 +28,9 @@ public class DemetrienEnchant extends WbsEnchantment {
 
     public DemetrienEnchant() {
         super("demetrien", DESCRIPTION);
+
+        getDefinition()
+                .supportedItems(ItemTypeTagKeys.HOES);
     }
 
     @EventHandler

@@ -5,6 +5,7 @@ import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.block.BlockSupport;
+import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
@@ -18,9 +19,11 @@ import java.util.Set;
 
 public class CavingEnchant extends WbsEnchantment implements MovementEnchant {
     public static final Set<Material> PLACEABLE_TYPES = Set.of(Material.TORCH, Material.SOUL_TORCH);
-    public static final int LIGHT_LEVEL_REQUIRED = 0;
+    public static final int DEFAULT_LIGHT_LEVEL_REQUIRED = 3;
     public static final String DESCRIPTION = "Torches inside bundles on your hotbar with this enchantment " +
             "will automatically place themselves on the ground when you walk into the dark!";
+
+    private int lightLevelRequired = DEFAULT_LIGHT_LEVEL_REQUIRED;
 
     public CavingEnchant() {
         super("caving", DESCRIPTION);
@@ -33,9 +36,16 @@ public class CavingEnchant extends WbsEnchantment implements MovementEnchant {
     }
 
     @Override
+    public void configure(ConfigurationSection section, String directory) {
+        super.configure(section, directory);
+
+        lightLevelRequired = section.getInt("light-level-required", DEFAULT_LIGHT_LEVEL_REQUIRED);
+    }
+
+    @Override
     public void onChangeBlock(Player player, Block oldBlock, Block newBlock) {
         // TODO: Make it configurable if this only works when sky light = 0 (i.e. only caves/indoors), or if it works outside
-        if (newBlock.getLightFromBlocks() > LIGHT_LEVEL_REQUIRED) {
+        if (newBlock.getLightFromBlocks() > lightLevelRequired) {
             return;
         }
         if (!newBlock.isReplaceable()) {

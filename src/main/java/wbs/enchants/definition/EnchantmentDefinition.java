@@ -562,7 +562,7 @@ public class EnchantmentDefinition extends EnchantmentWrapper implements Compara
         }
 
         if (isTagged(EnchantmentTagKeys.TRADEABLE)) {
-            methodComponents.add(Component.text("Librarian trades"));
+            methodComponents.add(Component.text("Librarian book trades"));
         }
 
         if (isTagged(EnchantmentTagKeys.ON_RANDOM_LOOT)) {

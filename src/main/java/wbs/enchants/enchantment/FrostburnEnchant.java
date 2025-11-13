@@ -25,9 +25,8 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 public class FrostburnEnchant extends TargetedDamageEnchant {
-    private static final String DEFAULT_DESCRIPTION = "Does increased damage against water- and cold-vulnerable mobs, " +
-            "like endermen and blazes, but less damage against heat-vulnerable mobs, like strays. " +
-            "Has a small chance to slow enemies.";
+    private static final String DEFAULT_DESCRIPTION = "Sometimes apply slowness on hit. Does increased damage against water/cold vulnerable mobs, " +
+            "like endermen and blazes, but less damage against heat-vulnerable mobs, like strays.";
     private static final double CHANCE_PER_LEVEL = 5;
     private static final int DURATION_PER_LEVEL = 60;
 

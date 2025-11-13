@@ -12,3 +12,17 @@ error-highlight: '8'
 # Should we disable the item repair cost penalty when repairing in an anvil?
 # If true, items repaired with its repair material will incur no penalty or cost increase.
 disable-anvil-repair-penalty: false
+
+custom-enchantability:
+  # Should items that aren't enchantable in vanilla automatically be given the enchantable component?
+  add-enchantable-for-primary-items: true
+  # If the above is true, what should the enchantability level be by default?
+  default-enchantability: 15 # Same as wood & leather & netherite
+
+  # Override the enchantability of items [NOT IMPLEMENTED YET]
+  #overrides:
+  #  book: 1
+  #  bow: 1
+  #  crossbow: 1
+  #  fishing_rod: 1
+  #  trident: 1

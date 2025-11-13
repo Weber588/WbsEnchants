@@ -4,7 +4,6 @@ import org.bukkit.entity.Item;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.EquipmentSlot;
-import org.bukkit.inventory.EquipmentSlotGroup;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
 import wbs.enchants.WbsEnchantment;
@@ -22,8 +21,7 @@ public class MagneticEnchant extends WbsEnchantment implements TickableEnchant {
 
         getDefinition()
                 .maxLevel(4)
-                .supportedItems(WbsEnchantsBootstrap.ENCHANTABLE_MAGNETIC_ARMOR)
-                .activeSlots(EquipmentSlotGroup.ARMOR);
+                .supportedItems(WbsEnchantsBootstrap.ENCHANTABLE_MAGNETIC);
     }
 
     @Override
