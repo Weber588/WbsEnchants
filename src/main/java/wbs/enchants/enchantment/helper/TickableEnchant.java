@@ -5,6 +5,8 @@ import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
 import wbs.enchants.definition.EnchantmentExtension;
 
+import java.util.Map;
+
 public interface TickableEnchant extends EnchantmentExtension {
     int getTickFrequency();
 
@@ -26,6 +28,15 @@ public interface TickableEnchant extends EnchantmentExtension {
 
     }
 
+    /**
+     * Called every {@link #getTickFrequency()} ticks, once for each item stack enchanted with this enchantment
+     * in the inventory of a {@link LivingEntity}
+     * @param owner The entity that owns the inventory containing the itemStack
+     * @param enchantedStacks The items in their slots that are enchanted with this enchantment
+     */
+    default void onTickItemStack(LivingEntity owner, Map<ItemStack, Integer> enchantedStacks) {
+
+    }
 
     /**
      * Called every {@link #getTickFrequency()} ticks, once for each item stack enchanted with this enchantment
@@ -35,6 +46,15 @@ public interface TickableEnchant extends EnchantmentExtension {
      * @param slot The slot in the owner's inventory that the itemStack exists in
      */
     default void onTickEquipped(LivingEntity owner, ItemStack itemStack, EquipmentSlot slot) {
+
+    }
+    /**
+     * Called every {@link #getTickFrequency()} ticks, once for each item stack enchanted with this enchantment
+     * in an active item slot of a {@link LivingEntity}
+     * @param owner The entity that owns the inventory containing the itemStack
+     * @param enchantedStacks The items in their slots that are enchanted with this enchantment
+     */
+    default void onTickEquipped(LivingEntity owner, Map<ItemStack, EquipmentSlot> enchantedStacks) {
 
     }
 

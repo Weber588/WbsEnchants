@@ -1720,7 +1720,7 @@ wbsenchants:surface_miner:
   weight: 1
   inject_into:
     - minecraft:on_traded_equipment
-wbsenchants:shulker/carrying:
+wbsenchants:carrying:
   enabled: true
   description: Allows you to open the shulker box from your hand by right clicking,and
     gains an extra 9 inventory slots per level above the first.
@@ -1742,12 +1742,11 @@ wbsenchants:shulker/carrying:
       add-chance: 100
       tables:
         - .*end_city.*
-wbsenchants:shulker/refill:
+wbsenchants:refill:
   enabled: true
-  description: When you use the last item of a stack in your inventory, if an item
-    of the same type is in the shulker box, it will be immediately placed into your
-    hand.
-  supported_items: wbsenchants:enchantable/shulker_box
+  description: When you use the last item of a stack in your inventory, if an
+    item of the same type is in the enchanted item, it will be immediately placed into your hand.
+  supported_items: wbsenchants:enchantable/item_container
   minimum_cost:
     base_cost: 5
     additional_per_level_cost: 8
@@ -1765,11 +1764,11 @@ wbsenchants:shulker/refill:
       add-chance: 100
       tables:
         - .*end_city.*
-wbsenchants:shulker/siphoning:
+wbsenchants:siphoning:
   enabled: true
-  description: When you pick up an item, if the shulker box contains any of the same,
-    the picked up item will go straight to the shulker box.
-  supported_items: wbsenchants:enchantable/shulker_box
+  description: When you pick up an item, if the enchanted item contains any of
+    the same, the picked up item will go directly inside.
+  supported_items: wbsenchants:enchantable/item_container
   minimum_cost:
     base_cost: 5
     additional_per_level_cost: 8
@@ -1787,13 +1786,13 @@ wbsenchants:shulker/siphoning:
       add-chance: 100
       tables:
         - .*end_city.*
-wbsenchants:shulker/placing:
+wbsenchants:placing:
   enabled: true
   description: Placing the shulker box will instead place a random item from inside,
     if any are available. Sneak to place actual shulker box.
   supported_items: wbsenchants:enchantable/shulker_box
   exclusive_with:
-    - wbsenchants:shulker/carrying
+    - wbsenchants:carrying
   minimum_cost:
     base_cost: 5
     additional_per_level_cost: 8
@@ -1819,7 +1818,7 @@ wbsenchants:discarding:
     - minecraft:hopper
     - minecraft:hopper_minecart
   exclusive_with:
-    - wbsenchants:shulker/carrying
+    - wbsenchants:carrying
   minimum_cost:
     base_cost: 5
     additional_per_level_cost: 8

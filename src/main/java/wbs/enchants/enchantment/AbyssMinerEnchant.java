@@ -5,9 +5,7 @@ import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
-import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.EquipmentSlotGroup;
-import org.bukkit.inventory.ItemStack;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.jetbrains.annotations.NotNull;
@@ -34,7 +32,7 @@ public class AbyssMinerEnchant extends WbsEnchantment implements TickableEnchant
     }
 
     @Override
-    public void onTickEquipped(LivingEntity owner, ItemStack itemStack, EquipmentSlot slot) {
+    public void onTickEquipped(LivingEntity owner) {
         if (!(owner instanceof Player player)) {
             return;
         }

@@ -1,6 +1,9 @@
 package wbs.enchants.enchantment;
 
+import io.papermc.paper.datacomponent.DataComponentTypes;
+import io.papermc.paper.datacomponent.item.BundleContents;
 import io.papermc.paper.registry.keys.ItemTypeKeys;
+import net.kyori.adventure.util.Ticks;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
@@ -9,14 +12,15 @@ import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
-import org.bukkit.inventory.meta.BundleMeta;
 import wbs.enchants.WbsEnchantment;
 import wbs.enchants.enchantment.helper.MovementEnchant;
+import wbs.utils.util.entities.WbsEntityUtil;
 
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 
+@SuppressWarnings("UnstableApiUsage")
 public class CavingEnchant extends WbsEnchantment implements MovementEnchant {
     public static final Set<Material> PLACEABLE_TYPES = Set.of(Material.TORCH, Material.SOUL_TORCH);
     public static final int DEFAULT_LIGHT_LEVEL_REQUIRED = 3;
@@ -44,14 +48,24 @@ public class CavingEnchant extends WbsEnchantment implements MovementEnchant {
 
     @Override
     public void onChangeBlock(Player player, Block oldBlock, Block newBlock) {
-        // TODO: Make it configurable if this only works when sky light = 0 (i.e. only caves/indoors), or if it works outside
         if (newBlock.getLightFromBlocks() > lightLevelRequired) {
             return;
         }
+        // TODO: Make it configurable if this only works when sky light = 0 (i.e. only caves/indoors), or if it works outside
+        if (newBlock.getLightFromSky() > lightLevelRequired) {
+            return;
+        }
+
+        // Since light is async, only allow it to work if the player moved between two light levels that could actually
+        // exist. This way, walking into a block you just broke won't usually insta-place a torch there.
+        if (Math.abs(oldBlock.getLightFromBlocks() - newBlock.getLightFromBlocks()) > 3) {
+            return;
+        }
+
         if (!newBlock.isReplaceable()) {
             return;
         }
-        if (player.isInWater()) {
+        if (player.isInWater() || WbsEntityUtil.isInWater(player)) {
             return;
         }
 
@@ -72,10 +86,14 @@ public class CavingEnchant extends WbsEnchantment implements MovementEnchant {
             if (hotbarItem == null) {
                 continue;
             }
+            if (player.hasCooldown(hotbarItem)) {
+                continue;
+            }
 
-            if (hotbarItem.getItemMeta() instanceof BundleMeta bundle) {
+            BundleContents bundle = hotbarItem.getData(DataComponentTypes.BUNDLE_CONTENTS);
+            if (bundle != null) {
                 if (isEnchantmentOn(hotbarItem)) {
-                    List<ItemStack> bundleItems = new LinkedList<>(bundle.getItems());
+                    List<ItemStack> bundleItems = new LinkedList<>(bundle.contents());
 
                     for (ItemStack bundleItem : bundleItems) {
                         Material type = bundleItem.getType();
@@ -93,8 +111,8 @@ public class CavingEnchant extends WbsEnchantment implements MovementEnchant {
                     }
 
                     if (placedTorch) {
-                        bundle.setItems(bundleItems);
-                        hotbarItem.setItemMeta(bundle);
+                        hotbarItem.setData(DataComponentTypes.BUNDLE_CONTENTS, BundleContents.bundleContents().addAll(bundleItems).build());
+                        player.setCooldown(hotbarItem, Ticks.TICKS_PER_SECOND);
                     }
                 }
             }

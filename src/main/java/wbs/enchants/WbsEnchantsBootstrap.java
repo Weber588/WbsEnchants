@@ -61,6 +61,7 @@ public class WbsEnchantsBootstrap implements PluginBootstrap {
     public static final TagKey<ItemType> ENCHANTABLE_GROUND_MINING = ItemTypeTagKeys.create(createKey("enchantable/ground_mining"));
     public static final TagKey<ItemType> ENCHANTABLE_PROJECTILE_WEAPON = ItemTypeTagKeys.create(createKey("enchantable/projectile_weapon"));
     public static final TagKey<ItemType> ENCHANTABLE_SHULKER_BOX = ItemTypeTagKeys.create(createKey("enchantable/shulker_box"));
+    public static final TagKey<ItemType> ENCHANTABLE_ITEM_CONTAINER = ItemTypeTagKeys.create(createKey("enchantable/item_container"));
     public static final TagKey<ItemType> ENCHANTABLE_RUSTABLE = ItemTypeTagKeys.create(createKey("enchantable/rustable"));
     public static final TagKey<ItemType> ENCHANTABLE_MAGNETIC = ItemTypeTagKeys.create(createKey("enchantable/magnetic"));
 
@@ -111,23 +112,17 @@ public class WbsEnchantsBootstrap implements PluginBootstrap {
                         )
                 ),
                 new CustomTag<>(ENCHANTABLE_SHULKER_BOX,
-                        ItemTypeKeys.SHULKER_BOX,
-                        ItemTypeKeys.WHITE_SHULKER_BOX,
-                        ItemTypeKeys.ORANGE_SHULKER_BOX,
-                        ItemTypeKeys.MAGENTA_SHULKER_BOX,
-                        ItemTypeKeys.LIGHT_BLUE_SHULKER_BOX,
-                        ItemTypeKeys.YELLOW_SHULKER_BOX,
-                        ItemTypeKeys.LIME_SHULKER_BOX,
-                        ItemTypeKeys.PINK_SHULKER_BOX,
-                        ItemTypeKeys.GRAY_SHULKER_BOX,
-                        ItemTypeKeys.LIGHT_GRAY_SHULKER_BOX,
-                        ItemTypeKeys.CYAN_SHULKER_BOX,
-                        ItemTypeKeys.PURPLE_SHULKER_BOX,
-                        ItemTypeKeys.BLUE_SHULKER_BOX,
-                        ItemTypeKeys.BROWN_SHULKER_BOX,
-                        ItemTypeKeys.GREEN_SHULKER_BOX,
-                        ItemTypeKeys.RED_SHULKER_BOX,
-                        ItemTypeKeys.BLACK_SHULKER_BOX
+                        Set.of(),
+                        Set.of(
+                                TagEntry.tagEntry(ItemTypeTagKeys.SHULKER_BOXES, true)
+                        )
+                ),
+                new CustomTag<>(ENCHANTABLE_ITEM_CONTAINER,
+                        Set.of(),
+                        Set.of(
+                                TagEntry.tagEntry(ItemTypeTagKeys.BUNDLES, true),
+                                TagEntry.tagEntry(ItemTypeTagKeys.SHULKER_BOXES, true)
+                        )
                 ),
                 new CustomTag<>(ENCHANTABLE_PROJECTILE_WEAPON,
                         ItemTypeKeys.BOW,

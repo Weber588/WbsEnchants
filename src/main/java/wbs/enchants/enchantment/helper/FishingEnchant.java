@@ -1,6 +1,10 @@
 package wbs.enchants.enchantment.helper;
 
+import net.minecraft.world.InteractionHand;
 import org.bukkit.Material;
+import org.bukkit.craftbukkit.entity.CraftFishHook;
+import org.bukkit.craftbukkit.entity.CraftPlayer;
+import org.bukkit.craftbukkit.inventory.CraftItemStack;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.FishHook;
 import org.bukkit.entity.Player;
@@ -13,10 +17,6 @@ import org.bukkit.inventory.PlayerInventory;
 import org.jetbrains.annotations.NotNull;
 import wbs.enchants.util.EventUtils;
 
-import java.lang.reflect.Field;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
-import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
@@ -105,50 +105,20 @@ public interface FishingEnchant extends EnchantInterface, AutoRegistrableEnchant
         if (suppressEvent) {
             REELING.add(player.getUniqueId());
         }
-        // Awful terrible very bad reflection until this gets added to the API
-        try {
-            Object handle = reflectiveGet(hook, "getHandle");
 
-            if (handle != null) {
-                Object nmsItem = item.getClass().getMethod("unwrap", ItemStack.class).invoke(null, item);
+        int damage = ((CraftFishHook) hook).getHandle().retrieve(
+                ((CraftItemStack) item).handle,
+                hand == EquipmentSlot.HAND ? InteractionHand.MAIN_HAND : InteractionHand.OFF_HAND
+        );
 
-                reflectiveGet(handle, "retrieve", nmsItem);
-            }
-        } catch (NoSuchMethodException | InvocationTargetException | IllegalAccessException e) {
-            throw new RuntimeException("Failed to invoke retrieve via reflection.", e);
-        } finally {
-            if (suppressEvent) {
-                REELING.remove(player.getUniqueId());
-            }
-        }
-    }
+        item.damage(damage, player);
 
-    default void setHook(Player player, FishHook hook) {
-        REELING.add(player.getUniqueId());
-        // Awful terrible very bad reflection until this gets added to the API
-        try {
-            Object handle = Class.forName("org.bukkit.craftbukkit.entity.CraftHumanEntity").getMethod("getHandle").invoke(player);
-
-            if (handle != null) {
-                Field fishingField = handle.getClass().getField("fishing");
-
-                fishingField.set(handle, reflectiveGet(hook, "getHandle"));
-            }
-        } catch (NoSuchMethodException | InvocationTargetException | IllegalAccessException | ClassNotFoundException |
-                 NoSuchFieldException e) {
-            throw new RuntimeException("Failed to set hook via reflection.", e);
-        } finally {
+        if (suppressEvent) {
             REELING.remove(player.getUniqueId());
         }
     }
 
-    private static Object reflectiveGet(Class<?> clazz, String name, Object... params) throws NoSuchMethodException, InvocationTargetException, IllegalAccessException {
-        Method getHandMethod = clazz.getMethod(name, Arrays.stream(params).map(Object::getClass).toArray(Class[]::new));
-        return getHandMethod.invoke(null, params); // Static method
-    }
-
-    private static Object reflectiveGet(Object obj, String name, Object... params) throws NoSuchMethodException, InvocationTargetException, IllegalAccessException {
-        Method getHandMethod = obj.getClass().getMethod(name, Arrays.stream(params).map(Object::getClass).toArray(Class[]::new));
-        return getHandMethod.invoke(obj, params); // Static method
+    default void setHook(Player player, FishHook hook) {
+        ((CraftPlayer) player).getHandle().fishing = ((CraftFishHook) hook).getHandle();
     }
 }

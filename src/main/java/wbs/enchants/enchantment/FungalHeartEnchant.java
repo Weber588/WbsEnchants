@@ -3,7 +3,6 @@ package wbs.enchants.enchantment;
 import io.papermc.paper.registry.keys.tags.ItemTypeTagKeys;
 import org.bukkit.Material;
 import org.bukkit.entity.LivingEntity;
-import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.EquipmentSlotGroup;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.potion.PotionEffect;
@@ -31,11 +30,13 @@ public class FungalHeartEnchant extends WbsEnchantment implements TickableEnchan
 
 
     @Override
-    public void onTickEquipped(LivingEntity owner, ItemStack itemStack, EquipmentSlot slot) {
+    public void onTickEquipped(LivingEntity owner) {
+        ItemStack highestEnchanted = getHighestEnchanted(owner);
+
         if (owner.getLocation().subtract(0, 0.1, 0).getBlock().getType() == Material.MYCELIUM) {
             PotionEffect effect = new PotionEffect(PotionEffectType.RESISTANCE,
                     (int) (getTickFrequency() * 1.5),
-                    getLevel(itemStack) - 1,
+                    getLevel(highestEnchanted) - 1,
                     true,
                     false,
                     true);

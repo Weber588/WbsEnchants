@@ -15,12 +15,13 @@ import org.bukkit.inventory.InventoryHolder;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.persistence.PersistentDataContainer;
 import org.jetbrains.annotations.NotNull;
+import wbs.enchants.WbsEnchantment;
 import wbs.enchants.WbsEnchantsBootstrap;
 import wbs.enchants.enchantment.helper.ShulkerBoxEnchantment;
 import wbs.enchants.util.PersistentInventoryDataType;
 import wbs.utils.util.WbsEventUtils;
 
-public class CarryingEnchant extends ShulkerBoxEnchantment {
+public class CarryingEnchant extends WbsEnchantment implements ShulkerBoxEnchantment {
     private static final NamespacedKey EXTRA_INVENTORY_KEY = WbsEnchantsBootstrap.createKey("extra_inventory");
 
     private static final String DEFAULT_DESCRIPTION = "Allows you to open the shulker box from your hand by right clicking," +
@@ -30,6 +31,7 @@ public class CarryingEnchant extends ShulkerBoxEnchantment {
         super("carrying", DEFAULT_DESCRIPTION);
 
         getDefinition()
+                .supportedItems(WbsEnchantsBootstrap.ENCHANTABLE_SHULKER_BOX)
                 .maxLevel(4);
     }
 
@@ -174,7 +176,7 @@ public class CarryingEnchant extends ShulkerBoxEnchantment {
             }
 
 
-            box.save();
+            box.saveToItem();
         }
     }
 }

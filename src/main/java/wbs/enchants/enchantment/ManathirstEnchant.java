@@ -1,16 +1,19 @@
 package wbs.enchants.enchantment;
 
+import io.papermc.paper.datacomponent.DataComponentTypes;
 import io.papermc.paper.registry.keys.tags.ItemTypeTagKeys;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.Damageable;
 import wbs.enchants.WbsEnchantment;
 import wbs.enchants.WbsEnchantsBootstrap;
 import wbs.enchants.enchantment.helper.TickableEnchant;
 
+import java.util.Map;
+
+@SuppressWarnings("UnstableApiUsage")
 public class ManathirstEnchant extends WbsEnchantment implements TickableEnchant {
     private static final String DEFAULT_DESCRIPTION = "An alternative to mending, items with this enchantment will " +
             "slowly drain your XP bar to repair itself. Items are repaired slower than mending, " +
@@ -46,26 +49,35 @@ public class ManathirstEnchant extends WbsEnchantment implements TickableEnchant
     }
 
     @Override
-    public void onTickItemStack(LivingEntity owner, ItemStack item, int slot) {
+    public void onTickItemStack(LivingEntity owner, Map<ItemStack, Integer> enchantedStacks) {
         if (!(owner instanceof Player player)) {
             return;
         }
 
-        if (!player.isOnline() || player.calculateTotalExperiencePoints() < xpPerDura) {
+        if (!player.isOnline()) {
             return;
         }
 
-        if (!(item.getItemMeta() instanceof Damageable damageable) || !damageable.hasDamageValue()) {
-            return;
+        for (ItemStack item : enchantedStacks.keySet()) {
+            if (player.calculateTotalExperiencePoints() < xpPerDura) {
+                return;
+            }
+
+            Integer maxDamage = item.getData(DataComponentTypes.MAX_DAMAGE);
+            if (maxDamage == null) {
+                return;
+            }
+
+            Integer damage = item.getData(DataComponentTypes.DAMAGE);
+
+            if (damage == null || damage <= 0) {
+                return;
+            }
+
+            item.setData(DataComponentTypes.DAMAGE, damage - 1);
+
+            player.setExperienceLevelAndProgress(Math.max(0, player.calculateTotalExperiencePoints() - xpPerDura));
         }
-
-        if (damageable.getDamage() == 0) {
-            return;
-        }
-
-        damageable.setDamage(damageable.getDamage() - 1);
-        player.setExperienceLevelAndProgress(Math.max(0, player.calculateTotalExperiencePoints() - xpPerDura));
-
-        item.setItemMeta(damageable);
     }
+
 }

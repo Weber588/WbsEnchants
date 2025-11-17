@@ -133,86 +133,92 @@ public class AnnotatedEnchant extends WbsEnchantment implements TickableEnchant 
     }
 
     @Override
-    public void onTickEquipped(LivingEntity owner, ItemStack itemStack, EquipmentSlot slot) {
-        if (!getActiveSlots().contains(slot)) {
-            return;
-        }
+    public void onTickEquipped(LivingEntity owner, Map<ItemStack, EquipmentSlot> enchantedStacks) {
+        // TODO: Bulkify this so it does one set of completable futures and then maps the right decorations to the items
 
-        if (itemStack.getType() != Material.FILLED_MAP) {
-            return;
-        }
+        for (ItemStack itemStack : enchantedStacks.keySet()) {
+            EquipmentSlot slot = enchantedStacks.get(itemStack);
 
-        Long lastUpdated = itemStack.getPersistentDataContainer().get(LAST_UPDATED, PersistentDataType.LONG);
+            if (!getActiveSlots().contains(slot)) {
+                return;
+            }
 
-        if (lastUpdated == null || lastUpdated < System.currentTimeMillis() - UPDATE_FREQUENCY) {
-            if (itemStack.getItemMeta() instanceof MapMeta mapMeta) {
-                if (!mapMeta.hasMapView()) {
-                    return;
-                }
+            if (itemStack.getType() != Material.FILLED_MAP) {
+                return;
+            }
 
-                MapView map = Objects.requireNonNull(mapMeta.getMapView());
+            Long lastUpdated = itemStack.getPersistentDataContainer().get(LAST_UPDATED, PersistentDataType.LONG);
 
-                World world = map.getWorld();
-                if (world == null) {
-                    throw new IllegalStateException("World cannot be null in map initialize event");
-                }
-
-                itemStack.editPersistentDataContainer(container ->
-                        container.set(LAST_UPDATED, PersistentDataType.LONG, System.currentTimeMillis())
-                );
-
-                int widthMultiplier = switch (map.getScale()) {
-                    case CLOSEST -> 1;
-                    case CLOSE -> 2;
-                    case NORMAL -> 4;
-                    case FAR -> 8;
-                    case FARTHEST -> 16;
-                };
-
-                int halfWorldWidth = widthMultiplier * 64;
-
-                Set<CompletableFuture<Chunk>> futures = new HashSet<>();
-                for (int x = map.getCenterX() - halfWorldWidth; x < map.getCenterX() + halfWorldWidth; x+= 16) {
-                    for (int z = map.getCenterZ() - halfWorldWidth; z < map.getCenterZ() + halfWorldWidth; z += 16) {
-                        Location loc = new Location(world, x, 0, z);
-                        if (world.isPositionLoaded(loc)) {
-                            futures.add(world.getChunkAtAsync(loc, false));
-                        }
-                    }
-                }
-
-                CompletableFuture.allOf(futures.toArray(CompletableFuture[]::new)).thenRun(() -> {
-                    Set<Chunk> chunks = new HashSet<>();
-                    for (CompletableFuture<Chunk> future : futures) {
-                        Chunk chunk = future.join();
-                        if (chunk != null && chunk.isGenerated()) {
-                            chunks.add(chunk);
-                        }
+            if (lastUpdated == null || lastUpdated < System.currentTimeMillis() - UPDATE_FREQUENCY) {
+                if (itemStack.getItemMeta() instanceof MapMeta mapMeta) {
+                    if (!mapMeta.hasMapView()) {
+                        return;
                     }
 
-                    WbsEnchants.getInstance().getAsync(() -> {
-                        Set<GeneratedStructure> structures = new HashSet<>();
+                    MapView map = Objects.requireNonNull(mapMeta.getMapView());
 
-                        for (Chunk chunk : chunks) {
-                            structures.addAll(chunk.getStructures());
-                        }
+                    World world = map.getWorld();
+                    if (world == null) {
+                        throw new IllegalStateException("World cannot be null in map initialize event");
+                    }
 
-                        return structures;
-                    }, structures -> {
-                        Map<String, MapDecorations.DecorationEntry> decorationEntryMap = getDecorations(structures, world);
+                    itemStack.editPersistentDataContainer(container ->
+                            container.set(LAST_UPDATED, PersistentDataType.LONG, System.currentTimeMillis())
+                    );
 
-                        if (!decorationEntryMap.isEmpty()) {
-                            Player player = Bukkit.getPlayer(owner.getUniqueId());
-                            if (player != null && player.isOnline()) {
-                                player.getInventory().forEach(updatedItem -> {
-                                    if (updatedItem != null && updatedItem.isSimilar(itemStack)) {
-                                        updateItem(updatedItem, decorationEntryMap, true);
-                                    }
-                                });
+                    int widthMultiplier = switch (map.getScale()) {
+                        case CLOSEST -> 1;
+                        case CLOSE -> 2;
+                        case NORMAL -> 4;
+                        case FAR -> 8;
+                        case FARTHEST -> 16;
+                    };
+
+                    int halfWorldWidth = widthMultiplier * 64;
+
+                    Set<CompletableFuture<Chunk>> futures = new HashSet<>();
+                    for (int x = map.getCenterX() - halfWorldWidth; x < map.getCenterX() + halfWorldWidth; x+= 16) {
+                        for (int z = map.getCenterZ() - halfWorldWidth; z < map.getCenterZ() + halfWorldWidth; z += 16) {
+                            Location loc = new Location(world, x, 0, z);
+                            if (world.isPositionLoaded(loc)) {
+                                futures.add(world.getChunkAtAsync(loc, false));
                             }
                         }
+                    }
+
+                    CompletableFuture.allOf(futures.toArray(CompletableFuture[]::new)).thenRun(() -> {
+                        Set<Chunk> chunks = new HashSet<>();
+                        for (CompletableFuture<Chunk> future : futures) {
+                            Chunk chunk = future.join();
+                            if (chunk != null && chunk.isGenerated()) {
+                                chunks.add(chunk);
+                            }
+                        }
+
+                        WbsEnchants.getInstance().getAsync(() -> {
+                            Set<GeneratedStructure> structures = new HashSet<>();
+
+                            for (Chunk chunk : chunks) {
+                                structures.addAll(chunk.getStructures());
+                            }
+
+                            return structures;
+                        }, structures -> {
+                            Map<String, MapDecorations.DecorationEntry> decorationEntryMap = getDecorations(structures, world);
+
+                            if (!decorationEntryMap.isEmpty()) {
+                                Player player = Bukkit.getPlayer(owner.getUniqueId());
+                                if (player != null && player.isOnline()) {
+                                    player.getInventory().forEach(updatedItem -> {
+                                        if (updatedItem != null && updatedItem.isSimilar(itemStack)) {
+                                            updateItem(updatedItem, decorationEntryMap, true);
+                                        }
+                                    });
+                                }
+                            }
+                        });
                     });
-                });
+                }
             }
         }
     }

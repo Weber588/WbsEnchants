@@ -155,18 +155,12 @@ public class BloomingEnchant extends WbsEnchantment implements TickableEnchant {
     }
 
     @Override
-    public void onTickEquipped(LivingEntity owner, ItemStack item, EquipmentSlot slot) {
+    public void onTickEquipped(LivingEntity owner, Map<ItemStack, EquipmentSlot> enchantedStacks) {
         if (!(owner instanceof Player player)) {
             return;
         }
 
         if (!player.isOnline()) {
-            return;
-        }
-
-        Integer damage = item.getData(DataComponentTypes.DAMAGE);
-
-        if (damage == null || damage == 0) {
             return;
         }
         Map<BlockType, Double> flowerPowers = getFlowerPowers();
@@ -208,6 +202,15 @@ public class BloomingEnchant extends WbsEnchantment implements TickableEnchant {
         }
 
         int toRestore = (int) Math.ceil(totalFlowerPower);
-        item.setData(DataComponentTypes.DAMAGE, Math.max(0, damage - toRestore));
+
+        for (ItemStack item : enchantedStacks.keySet()) {
+            Integer damage = item.getData(DataComponentTypes.DAMAGE);
+
+            if (damage == null || damage == 0) {
+                continue;
+            }
+
+            item.setData(DataComponentTypes.DAMAGE, Math.max(0, damage - toRestore));
+        }
     }
 }

@@ -3,7 +3,6 @@ package wbs.enchants.enchantment;
 import io.papermc.paper.registry.keys.tags.ItemTypeTagKeys;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
-import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.EquipmentSlotGroup;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.potion.PotionEffect;
@@ -30,15 +29,17 @@ public class SurfaceMinerEnchant extends WbsEnchantment implements TickableEncha
     }
 
     @Override
-    public void onTickEquipped(LivingEntity owner, ItemStack itemStack, EquipmentSlot slot) {
+    public void onTickEquipped(LivingEntity owner) {
         if (!(owner instanceof Player player)) {
             return;
         }
 
+        ItemStack highestEnchanted = getHighestEnchanted(owner);
+
         if (WbsEntityUtil.canSeeSky(owner)) {
             PotionEffect effect = new PotionEffect(PotionEffectType.HASTE,
                     (int) (getTickFrequency() * 1.5),
-                    getLevel(itemStack) - 1,
+                    getLevel(highestEnchanted) - 1,
                     true,
                     false,
                     true);

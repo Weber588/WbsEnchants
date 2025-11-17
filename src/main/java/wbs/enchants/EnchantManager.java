@@ -133,6 +133,7 @@ public class EnchantManager {
     public static final TrackingEnchant TRACKING = new TrackingEnchant();
     public static final PowerlustEnchant POWERLUST = new PowerlustEnchant();
     public static final IndustriousEnchant INDUSTRIOUS = new IndustriousEnchant();
+    public static final StridingEnchant STRIDING = new StridingEnchant();
 
     public static final CurseRebuking CURSE_REBUKING = new CurseRebuking();
     public static final CurseVanilla CURSE_VANILLA = new CurseVanilla();
@@ -149,6 +150,7 @@ public class EnchantManager {
     public static final CurseRust CURSE_RUST = new CurseRust();
     public static final CurseRot CURSE_ROT = new CurseRot();
     public static final CurseHypoxia CURSE_HYPOXIA = new CurseHypoxia();
+    public static final CurseLimping CURSE_LIMPING = new CurseLimping();
 
     public static void register(WbsEnchantment enchantment) {
         REGISTERED_ENCHANTMENTS.add(enchantment);

@@ -18,7 +18,9 @@ import org.bukkit.inventory.ItemType;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import wbs.enchants.EnchantManager;
+import wbs.enchants.WbsEnchantment;
 import wbs.enchants.WbsEnchants;
+import wbs.enchants.WbsEnchantsBootstrap;
 import wbs.enchants.enchantment.helper.ShulkerBoxEnchantment;
 import wbs.enchants.util.BlockUtils;
 import wbs.utils.util.WbsCollectionUtil;
@@ -28,7 +30,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Objects;
 
-public class PlacingEnchant extends ShulkerBoxEnchantment {
+public class PlacingEnchant extends WbsEnchantment implements ShulkerBoxEnchantment {
     private static final String DEFAULT_DESCRIPTION = "Placing the shulker box will instead place a random item from " +
             "inside, if any are available. Sneak to place actual shulker box.";
 
@@ -36,6 +38,7 @@ public class PlacingEnchant extends ShulkerBoxEnchantment {
         super("placing", DEFAULT_DESCRIPTION);
 
         getDefinition()
+                .supportedItems(WbsEnchantsBootstrap.ENCHANTABLE_SHULKER_BOX)
                 .exclusiveWith(EnchantManager.CARRYING);
     }
 
@@ -111,7 +114,7 @@ public class PlacingEnchant extends ShulkerBoxEnchantment {
                     chosen.setAmount(chosen.getAmount() - 1);
                 }
 
-                wrapper.save();
+                wrapper.saveToItem();
             }
         }
     }

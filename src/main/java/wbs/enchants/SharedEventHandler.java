@@ -1,5 +1,7 @@
 package wbs.enchants;
 
+import com.google.common.collect.HashBasedTable;
+import com.google.common.collect.Table;
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
@@ -169,6 +171,8 @@ public class SharedEventHandler implements Listener {
 
             HashSet<TickableEnchant> hasEquipped = new HashSet<>();
             HashSet<TickableEnchant> hasAnywhere = new HashSet<>();
+            Table<TickableEnchant, ItemStack, EquipmentSlot> equipped = HashBasedTable.create();
+            Table<TickableEnchant, ItemStack, Integer> anywhere = HashBasedTable.create();
 
             EntityEquipment equipment = entity.getEquipment();
             if (equipment != null) {
@@ -190,6 +194,7 @@ public class SharedEventHandler implements Listener {
 
                         if (enchant.isEnchantmentOn(itemStack)) {
                             enchant.onTickEquipped(entity, itemStack, slot);
+                            equipped.put(enchant, itemStack, slot);
                             hasEquipped.add(enchant);
                         }
                     }
@@ -208,6 +213,7 @@ public class SharedEventHandler implements Listener {
                     for (TickableEnchant enchant : tickableEnchants) {
                         if (enchant.isEnchantmentOn(itemStack)) {
                             enchant.onTickItemStack(entity, itemStack, slot);
+                            anywhere.put(enchant, itemStack, slot);
                             hasAnywhere.add(enchant);
                         }
                     }
@@ -215,7 +221,9 @@ public class SharedEventHandler implements Listener {
             }
 
             hasAnywhere.forEach(enchant -> enchant.onTickAny(entity));
+            anywhere.rowKeySet().forEach(enchant -> enchant.onTickItemStack(entity, anywhere.row(enchant)));
             hasEquipped.forEach(enchant -> enchant.onTickEquipped(entity));
+            equipped.rowKeySet().forEach(enchant -> enchant.onTickEquipped(entity, equipped.row(enchant)));
         }
     }
 

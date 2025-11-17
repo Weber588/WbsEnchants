@@ -66,7 +66,6 @@ public class SubcommandInfo extends EnchantmentSubcommand {
                 .append("\n" + plugin.prefix + " " + plugin.getColour() + line)
                         .send(sender);
 
-        plugin.sendMessage(line, sender);
         return Command.SINGLE_SUCCESS;
     }
 

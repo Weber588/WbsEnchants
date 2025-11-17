@@ -1,6 +1,8 @@
 package wbs.enchants.enchantment;
 
 import io.papermc.paper.registry.keys.ItemTypeKeys;
+import net.minecraft.world.entity.Entity;
+import org.bukkit.craftbukkit.entity.CraftFishHook;
 import org.bukkit.entity.FishHook;
 import org.bukkit.entity.Player;
 import org.bukkit.event.player.PlayerFishEvent;
@@ -41,8 +43,11 @@ public class MulticastEnchant extends WbsEnchantment implements FishingEnchant {
 
                     FishHook backupHook = null;
                     for (FishHook hook : hooks) {
-                        ProjectileSource shooter = hook.getShooter();
-                        if (shooter != null && shooter.equals(player)) {
+                        if (hook.equals(event.getHook())) {
+                            continue;
+                        }
+                        Entity owner = ((CraftFishHook) hook).getHandle().getOwner();
+                        if (owner != null && owner.getUUID().equals(player.getUniqueId())) {
                             backupHook = hook;
                             if (hook.getHookedEntity() != null) {
                                 setHook(player, hook);
@@ -62,8 +67,8 @@ public class MulticastEnchant extends WbsEnchantment implements FishingEnchant {
         Collection<FishHook> hooks = player.getWorld().getEntitiesByClass(FishHook.class);
 
         for (FishHook hook : hooks) {
-            ProjectileSource shooter = hook.getShooter();
-            if (shooter != null && shooter.equals(player)) {
+            Entity owner = ((CraftFishHook) hook).getHandle().getOwner();
+            if (owner != null && owner.getUUID().equals(player.getUniqueId())) {
                 reelIn(player, hook, rod, hand, true);
             }
         }

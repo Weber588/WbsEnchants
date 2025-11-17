@@ -13,6 +13,24 @@ error-highlight: '8'
 # If true, items repaired with its repair material will incur no penalty or cost increase.
 disable-anvil-repair-penalty: false
 
+# Should books in grindstones gain enchantments while disenchanting tools?
+grindstone-enchant-recovery:
+  # If true, disenchanting an item in a grindstone while a book is also present, enchants removed
+  # from the item have a chance to gain some of the removed enchantments.
+  enabled: false
+  # How many enchants can be pulled off an enchanted item? If less than 1, any amount can be recovered.
+  max-enchants-recovered: 1
+  # If true, when a curse is recovered, it's also removed from the original item.
+  # This allows players to remove curses by moving them onto books.
+  # If false, curses will be *copied* onto the book instead, if the recovery-chance is met.
+  remove-curses-on-recovery: false
+  # How likely is each type of enchant to be recovered (as a percentage)?
+  recovery-chance:
+    regular: 10
+    curse: 0
+    ethereal: 5
+    paradoxical: 20
+
 custom-enchantability:
   # Should items that aren't enchantable in vanilla automatically be given the enchantable component?
   add-enchantable-for-primary-items: true

@@ -1,6 +1,5 @@
 package wbs.enchants.enchantment.helper;
 
-import net.kyori.adventure.text.Component;
 import org.bukkit.Tag;
 import org.bukkit.block.Block;
 import org.bukkit.block.ShulkerBox;
@@ -11,29 +10,19 @@ import org.bukkit.inventory.meta.ItemMeta;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import wbs.enchants.WbsEnchantment;
-import wbs.enchants.WbsEnchantsBootstrap;
-import wbs.utils.util.string.WbsStrings;
 
 import java.util.LinkedList;
 import java.util.List;
 
-public class ShulkerBoxEnchantment extends WbsEnchantment implements BlockEnchant {
-    public ShulkerBoxEnchantment(@NotNull String key, @NotNull String description) {
-        super("shulker/" + key, WbsStrings.capitalizeAll(key.replaceAll("_", " ")), description);
-
-        getDefinition()
-                .supportedItems(WbsEnchantsBootstrap.ENCHANTABLE_SHULKER_BOX);
-    }
-
+public interface ShulkerBoxEnchantment extends BlockEnchant {
     @Override
-    public boolean canEnchant(Block block) {
+    default boolean canEnchant(Block block) {
         return block.getState() instanceof ShulkerBox;
     }
 
     @Nullable
     @Contract("null -> null")
-    protected final ShulkerBoxWrapper getShulkerBox(ItemStack item) {
+    default ShulkerBoxWrapper getShulkerBox(ItemStack item) {
         if (item == null) {
             return null;
         }
@@ -59,10 +48,10 @@ public class ShulkerBoxEnchantment extends WbsEnchantment implements BlockEnchan
         return new ShulkerBoxWrapper(box, item);
     }
 
-    protected final List<ShulkerBoxWrapper> getEnchantedInInventory(Player player) {
+    default List<ShulkerBoxWrapper> getEnchantedBoxes(Player player) {
         List<ShulkerBoxWrapper> enchantedBoxes = new LinkedList<>();
         for (ItemStack item : player.getInventory()) {
-            if (item != null && isEnchantmentOn(item)) {
+            if (item != null && getThisEnchantment().isEnchantmentOn(item)) {
                 ShulkerBoxWrapper wrapper = getShulkerBox(item);
                 if (wrapper != null) {
                     enchantedBoxes.add(wrapper);
@@ -73,13 +62,17 @@ public class ShulkerBoxEnchantment extends WbsEnchantment implements BlockEnchan
         return enchantedBoxes;
     }
 
-    public record ShulkerBoxWrapper(@NotNull ShulkerBox box, @NotNull ItemStack item) {
-        public Component displayName() {
-            return item.effectiveName();
+    class ShulkerBoxWrapper extends ContainerItemWrapper {
+        private final @NotNull ShulkerBox box;
+
+        public ShulkerBoxWrapper(@NotNull ShulkerBox box, @NotNull ItemStack item) {
+            super(item);
+            this.box = box;
         }
 
-        public void save() {
-            ItemMeta meta = item.getItemMeta();
+        @Override
+        public void saveToItem() {
+            ItemMeta meta = item().getItemMeta();
 
             if (meta == null) {
                 return;
@@ -91,19 +84,31 @@ public class ShulkerBoxEnchantment extends WbsEnchantment implements BlockEnchan
 
             blockStateMeta.setBlockState(box);
 
-            item.setItemMeta(blockStateMeta);
+            item().setItemMeta(blockStateMeta);
         }
 
-        public boolean canContain(ItemStack check) {
-            if (check == null) {
-                return true;
-            }
+        @Override
+        public boolean containsAtLeast(ItemStack item, int amountRequired) {
+            return box.getInventory().containsAtLeast(item, amountRequired);
+        }
 
-            if (check.equals(item)) {
-                return false;
-            }
+        @Override
+        public ItemStack addItem(ItemStack other) {
+            return box.getInventory().addItem(other).get(0);
+        }
 
-            return !Tag.SHULKER_BOXES.isTagged(check.getType());
+        @Override
+        public ItemStack[] getItems() {
+            return box.getInventory().getContents();
+        }
+
+        @Override
+        public void removeItem(ItemStack stack) {
+            box.getInventory().removeItem(stack);
+        }
+
+        public @NotNull ShulkerBox box() {
+            return box;
         }
     }
 }

@@ -3,7 +3,6 @@ package wbs.enchants.enchantment;
 import org.bukkit.entity.Item;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
-import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
 import wbs.enchants.WbsEnchantment;
@@ -33,7 +32,7 @@ public class MagneticEnchant extends WbsEnchantment implements TickableEnchant {
             .setPredicate(item -> item.canPlayerPickup() && item.getPickupDelay() == 0);
 
     @Override
-    public void onTickEquipped(LivingEntity owner, ItemStack itemStack, EquipmentSlot slot) {
+    public void onTickEquipped(LivingEntity owner) {
         if (!owner.getCanPickupItems()) {
             return;
         }
@@ -42,7 +41,8 @@ public class MagneticEnchant extends WbsEnchantment implements TickableEnchant {
             return;
         }
 
-        int level = getLevel(itemStack);
+        ItemStack highestEnchanted = getHighestEnchanted(owner);
+        int level = getLevel(highestEnchanted);
 
         SELECTOR.setRange(level + 1)
                 .select(owner)

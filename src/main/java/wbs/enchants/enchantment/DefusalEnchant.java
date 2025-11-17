@@ -17,6 +17,8 @@ import wbs.utils.util.entities.selector.RadiusSelector;
 import wbs.utils.util.particles.NormalParticleEffect;
 import wbs.utils.util.particles.WbsParticleGroup;
 
+// TODO: Change this to be a single level enchant that always resets a creepers fuse ticks, but doesn't increase max ticks.
+//  Maybe 2 levels, where level 1 requires crits, level 2 doesn't?
 public class DefusalEnchant extends WbsEnchantment implements DamageEnchant {
     private static final int DEFAULT_CREEPER_FUSE_TICKS = 30;
     private static final int CHANCE_PER_LEVEL = 25;
