@@ -1,14 +1,20 @@
 package wbs.enchants.enchantment.shulkerbox;
 
 import io.papermc.paper.datacomponent.DataComponentTypes;
+import net.minecraft.core.component.DataComponents;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.item.component.Consumable;
 import org.bukkit.Bukkit;
 import org.bukkit.NamespacedKey;
+import org.bukkit.craftbukkit.entity.CraftPlayer;
+import org.bukkit.craftbukkit.inventory.CraftItemStack;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
+import wbs.enchants.WbsEnchantment;
 import wbs.enchants.WbsEnchantsBootstrap;
 import wbs.enchants.enchantment.helper.ShulkerBoxEnchantment;
 import wbs.enchants.enchantment.helper.TickableEnchant;
@@ -21,7 +27,7 @@ import java.util.List;
 
 // TODO: Could this be adapted to also be a bundle enchant?
 @SuppressWarnings("UnstableApiUsage")
-public class SnackingEnchant extends ShulkerBoxEnchantment implements TickableEnchant {
+public class SnackingEnchant extends WbsEnchantment implements ShulkerBoxEnchantment, TickableEnchant {
     private static final int MAX_COOLDOWN_TICKS = 20 * 120;
 
     private static final String DEFAULT_DESCRIPTION = "Automatically feeds you with items from the enchanted " +
@@ -32,6 +38,7 @@ public class SnackingEnchant extends ShulkerBoxEnchantment implements TickableEn
         super("snacking", DEFAULT_DESCRIPTION);
 
         getDefinition()
+                .supportedItems(WbsEnchantsBootstrap.ENCHANTABLE_SHULKER_BOX)
                 .maxLevel(3);
     }
 
@@ -77,22 +84,31 @@ public class SnackingEnchant extends ShulkerBoxEnchantment implements TickableEn
             return;
         }
 
-        AbstractMap.SimpleEntry<ItemStack, Integer> toEat = WbsCollectionUtil.getRandom(edibleItemsInSlots);
+        AbstractMap.SimpleEntry<ItemStack, Integer> toEatEntry = WbsCollectionUtil.getRandom(edibleItemsInSlots);
 
-        WbsPlayerUtil.PlayerConsumeItemResult consumeResult = WbsPlayerUtil.consume(player, toEat.getKey());
+        ItemStack toEat = toEatEntry.getKey();
+        ServerPlayer serverPlayer = ((CraftPlayer) player).getHandle();
+        net.minecraft.world.item.ItemStack serverItem = ((CraftItemStack) toEat).handle;
+        Consumable consumable = serverItem.getComponents().get(DataComponents.CONSUMABLE);
+        if (consumable != null) {
+            consumable.onConsume(serverPlayer.level(), serverPlayer, serverItem);
+        }
+
+        WbsPlayerUtil.PlayerConsumeItemResult consumeResult = WbsPlayerUtil.consume(player, toEat);
+
         if (consumeResult.success()) {
             container.set(LAST_SNACKED_KEY, PersistentDataType.INTEGER, Bukkit.getCurrentTick());
 
             if (consumeResult.remainingItem() != null) {
                 // Only remove 1 eaten
-                ItemStack toEatSingle = new ItemStack(toEat.getKey());
+                ItemStack toEatSingle = new ItemStack(toEat);
                 toEatSingle.setAmount(1);
                 inventory.removeItem(toEatSingle);
 
                 // If the slot is now free, replace that same slot with the remaining item.
-                ItemStack leftOverStack = inventory.getItem(toEat.getValue());
+                ItemStack leftOverStack = inventory.getItem(toEatEntry.getValue());
                 if (leftOverStack == null || leftOverStack.isEmpty()) {
-                    inventory.setItem(toEat.getValue(), consumeResult.remainingItem());
+                    inventory.setItem(toEatEntry.getValue(), consumeResult.remainingItem());
                 } else { // Otherwise, just add to inventory
                     inventory.addItem(consumeResult.remainingItem());
                 }

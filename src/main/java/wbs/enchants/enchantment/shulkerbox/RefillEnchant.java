@@ -8,21 +8,26 @@ import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.entity.EntityShootBowEvent;
 import org.bukkit.event.player.PlayerItemBreakEvent;
 import org.bukkit.event.player.PlayerItemConsumeEvent;
-import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
+import wbs.enchants.WbsEnchantment;
 import wbs.enchants.WbsEnchants;
-import wbs.enchants.enchantment.helper.ShulkerBoxEnchantment;
+import wbs.enchants.WbsEnchantsBootstrap;
+import wbs.enchants.enchantment.helper.ContainerItemEnchant;
+import wbs.enchants.enchantment.helper.ContainerItemWrapper;
 
 import java.util.List;
 import java.util.function.Consumer;
 
-public class RefillEnchant extends ShulkerBoxEnchantment {
+public class RefillEnchant extends WbsEnchantment implements ContainerItemEnchant {
     private static final String DEFAULT_DESCRIPTION = "When you use the last item of a stack in your inventory, if an " +
-            "item of the same type is in the shulker box, it will be immediately placed into your hand.";
+            "item of the same type is in the enchanted item, it will be immediately placed into your hand.";
 
     public RefillEnchant() {
         super("refill", DEFAULT_DESCRIPTION);
+
+        getDefinition()
+                .supportedItems(WbsEnchantsBootstrap.ENCHANTABLE_ITEM_CONTAINER);
     }
 
 
@@ -84,24 +89,23 @@ public class RefillEnchant extends ShulkerBoxEnchantment {
     }
 
     private void replaceExpendedItem(Player player, ItemStack used, Consumer<ItemStack> returnItem) {
-        List<ShulkerBoxWrapper> refillBoxes = getEnchantedInInventory(player);
+        List<ContainerItemWrapper> refillItems = getContainerItemWrappers(player);
 
-        if (refillBoxes.isEmpty()) {
+        if (refillItems.isEmpty()) {
             return;
         }
 
-        for (ShulkerBoxWrapper box : refillBoxes) {
-            Inventory checkForRefill = box.box().getInventory();
-            for (ItemStack stack : checkForRefill) {
+        for (ContainerItemWrapper wrapper : refillItems) {
+            for (ItemStack stack : wrapper.getItems()) {
                 if (stack != null && stack.isSimilar(used)) {
-                    checkForRefill.removeItem(stack);
+                    wrapper.removeItem(stack);
 
                     returnItem.accept(stack);
 
-                    box.save();
+                    wrapper.saveToItem();
 
                     WbsEnchants.getInstance().buildMessage("Item replaced from ")
-                            .append(box.displayName())
+                            .append(wrapper.displayName())
                             .append("&r!")
                             .build()
                             .sendActionBar(player);

@@ -9,23 +9,27 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.entity.EntityPickupItemEvent;
-import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
-import wbs.enchants.enchantment.helper.ShulkerBoxEnchantment;
+import wbs.enchants.WbsEnchantment;
+import wbs.enchants.WbsEnchantsBootstrap;
+import wbs.enchants.enchantment.helper.ContainerItemEnchant;
+import wbs.enchants.enchantment.helper.ContainerItemWrapper;
 import wbs.utils.util.entities.WbsEntityUtil;
 import wbs.utils.util.particles.NormalParticleEffect;
 import wbs.utils.util.particles.WbsParticleGroup;
 
-import java.util.HashMap;
 import java.util.List;
 
-public class SiphoningEnchant extends ShulkerBoxEnchantment {
-    private static final String DEFAULT_DESCRIPTION = "When you pick up an item, if the shulker box contains any of " +
-            "the same, the picked up item will go straight to the shulker box.";
+public class SiphoningEnchant extends WbsEnchantment implements ContainerItemEnchant {
+    private static final String DEFAULT_DESCRIPTION = "When you pick up an item, if the enchanted item contains any of " +
+            "the same, the picked up item will go directly inside.";
     private static final WbsParticleGroup PICKUP_EFFECT = new WbsParticleGroup();
 
     public SiphoningEnchant() {
         super("siphoning", DEFAULT_DESCRIPTION);
+
+        getDefinition()
+                .supportedItems(WbsEnchantsBootstrap.ENCHANTABLE_ITEM_CONTAINER);
     }
 
     static {
@@ -33,16 +37,16 @@ public class SiphoningEnchant extends ShulkerBoxEnchantment {
     }
 
     @EventHandler(ignoreCancelled = true, priority = EventPriority.HIGHEST)
-    public void onBlockDropItem(EntityPickupItemEvent event) {
+    public void onPickupItem(EntityPickupItemEvent event) {
         LivingEntity entity = event.getEntity();
 
         if (!(entity instanceof Player player)) {
             return;
         }
 
-        List<ShulkerBoxWrapper> autoPickupBoxes = getEnchantedInInventory(player);
+        List<ContainerItemWrapper> autoPickupItems = getContainerItemWrappers(player);
 
-        if (autoPickupBoxes.isEmpty()) {
+        if (autoPickupItems.isEmpty()) {
             return;
         }
 
@@ -53,27 +57,24 @@ public class SiphoningEnchant extends ShulkerBoxEnchantment {
             return;
         }
 
-        for (ShulkerBoxWrapper box : autoPickupBoxes) {
-            Inventory inventory = box.box().getInventory();
-            if (!inventory.containsAtLeast(drop, 1)) {
+        for (ContainerItemWrapper containerItem : autoPickupItems) {
+            if (!containerItem.containsAtLeast(drop, 1)) {
                 continue;
             }
 
-            if (box.canContain(drop)) {
-                HashMap<Integer, ItemStack> failed = box.box().getInventory().addItem(drop);
-                box.save();
+            if (containerItem.canContain(drop)) {
+                ItemStack failed = containerItem.addItem(drop);
+                containerItem.saveToItem();
 
-                PICKUP_EFFECT.play(dropEntity.getLocation(), WbsEntityUtil.getMiddleLocation(player));
-                dropEntity.getWorld().playSound(dropEntity.getLocation(), Sound.ENTITY_ITEM_PICKUP, 1, 1);
-
-                if (failed.isEmpty()) {
+                if (failed == null || failed.isEmpty()) {
                     dropEntity.remove();
                     event.setCancelled(true);
                     break;
-                } else {
-                    ItemStack failedToAdd = failed.get(0);
+                } else if (failed.getAmount() != drop.getAmount()) {
+                    PICKUP_EFFECT.play(dropEntity.getLocation(), WbsEntityUtil.getMiddleLocation(player));
+                    dropEntity.getWorld().playSound(dropEntity.getLocation(), Sound.ENTITY_ITEM_PICKUP, 1, 1);
 
-                    drop.setAmount(failedToAdd.getAmount());
+                    drop.setAmount(failed.getAmount());
                     dropEntity.setItemStack(drop);
                 }
             }
