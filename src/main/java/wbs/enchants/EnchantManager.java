@@ -21,12 +21,6 @@ import java.util.List;
 
 @SuppressWarnings("unused")
 public class EnchantManager {
-    public static final double DEFAULT_COST = 1000;
-    public static final double DEFAULT_COST_MODIFIER = 0.4;
-    public static final double DEFAULT_REMOVAL_COST = 100;
-    public static final double DEFAULT_EXTRACT_COST = 2000;
-    public static final boolean DEFAULT_USABLE_ANYWHERE = false;
-
     private static final List<WbsEnchantment> REGISTERED_ENCHANTMENTS = new LinkedList<>();
     private static final List<EnchantmentDefinition> EXTERNAL_DEFINITIONS = new LinkedList<>();
 
@@ -134,6 +128,10 @@ public class EnchantManager {
     public static final PowerlustEnchant POWERLUST = new PowerlustEnchant();
     public static final IndustriousEnchant INDUSTRIOUS = new IndustriousEnchant();
     public static final StridingEnchant STRIDING = new StridingEnchant();
+    public static final FlyFishingEnchant FLY_FISHING = new FlyFishingEnchant();
+    public static final LaunchingEnchant LAUNCHING = new LaunchingEnchant();
+    public static final SupersonicEnchant SUPERSONIC = new SupersonicEnchant();
+    public static final SalvageEnchant SALVAGE = new SalvageEnchant();
 
     public static final CurseRebuking CURSE_REBUKING = new CurseRebuking();
     public static final CurseVanilla CURSE_VANILLA = new CurseVanilla();

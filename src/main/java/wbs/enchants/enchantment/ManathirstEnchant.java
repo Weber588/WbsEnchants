@@ -60,18 +60,18 @@ public class ManathirstEnchant extends WbsEnchantment implements TickableEnchant
 
         for (ItemStack item : enchantedStacks.keySet()) {
             if (player.calculateTotalExperiencePoints() < xpPerDura) {
-                return;
+                continue;
             }
 
             Integer maxDamage = item.getData(DataComponentTypes.MAX_DAMAGE);
             if (maxDamage == null) {
-                return;
+                continue;
             }
 
             Integer damage = item.getData(DataComponentTypes.DAMAGE);
 
             if (damage == null || damage <= 0) {
-                return;
+                continue;
             }
 
             item.setData(DataComponentTypes.DAMAGE, damage - 1);

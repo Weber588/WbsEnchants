@@ -129,4 +129,16 @@ public class EnchantUtils {
 
         return displayName;
     }
+
+    public static @NotNull Map<Enchantment, Integer> getEnchants(ItemStack item) {
+        if (item.getItemMeta() instanceof EnchantmentStorageMeta meta) {
+            return new HashMap<>(meta.getStoredEnchants());
+        }
+
+        return new HashMap<>(item.getEnchantments());
+    }
+
+    public static boolean hasEnchants(ItemStack item) {
+        return !getEnchants(item).isEmpty();
+    }
 }

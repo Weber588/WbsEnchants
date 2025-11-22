@@ -1,7 +1,6 @@
 wbsenchants:entangled:
   enabled: true
   type: regular
-  aliases: []
   display_name: Entangled
   description: Crouch and punch a container (chest, barrel etc) to "entangle" your
     tool to it. Once entangled, drops from blocks broken will go straight to that
@@ -26,7 +25,6 @@ wbsenchants:entangled:
   inject_into: []
 wbsenchants:excavator:
   enabled: true
-  aliases: []
   display_name: Excavator
   description: Mines a 3x3 square at level 1, increasing the width by 2 per level.
   primary_items: minecraft:shovels
@@ -52,7 +50,6 @@ wbsenchants:excavator:
     - wbsenchants:exclusive_set/multiminer
 wbsenchants:harvester:
   enabled: true
-  aliases: []
   display_name: Harvester
   description: When you break or right click a crop, a 3x3 area is harvested and replanted
     automatically. Width increases by 2 per level.
@@ -79,7 +76,6 @@ wbsenchants:harvester:
     - minecraft:on_random_loot
 wbsenchants:vampiric:
   enabled: true
-  aliases: []
   display_name: Vampiric
   description: When you damage a mob, you have a 20% chance per level to gain 33.0%
     of the damage dealt, that expires after 10 seconds (per level).
@@ -110,7 +106,6 @@ wbsenchants:vampiric:
   inject_into: []
 wbsenchants:vein_miner:
   enabled: true
-  aliases: []
   display_name: Vein Miner
   description: When mining an ore, if there are other ores of the same type adjacent
     type, they'll be mined too (up to 6 blocks per level).
@@ -136,7 +131,6 @@ wbsenchants:vein_miner:
     - wbsenchants:exclusive_set/multiminer
 wbsenchants:blast_miner:
   enabled: true
-  aliases: []
   display_name: Blast Miner
   description: Mines a 3x1x3 square when you mine a stone-type block, increasing layers
     every level, for a maximum of 3x%max_level%x3 at level %max_level%.
@@ -162,7 +156,6 @@ wbsenchants:blast_miner:
     - wbsenchants:exclusive_set/multiminer
 wbsenchants:void_walker:
   enabled: false
-  aliases: []
   display_name: Void Walker
   description: When you fall into the void, you're immediately teleported to the top
     of the world - get that bucket clutch ready!
@@ -186,7 +179,6 @@ wbsenchants:void_walker:
   inject_into: []
 wbsenchants:planar_binding:
   enabled: true
-  aliases: []
   display_name: Planar Binding
   description: After hitting a mob, it is unable to teleport for 3 seconds (per level).
   supported_items: minecraft:enchantable/weapon
@@ -209,7 +201,6 @@ wbsenchants:planar_binding:
   inject_into: []
 wbsenchants:disarming:
   enabled: true
-  aliases: []
   display_name: Disarming
   description: When you critically hit a mob, you have a 10% chance of disarming it
     (per level). Disarming a non-player will force it to drop the item it's holding,
@@ -237,7 +228,6 @@ wbsenchants:disarming:
   inject_into: []
 wbsenchants:frenzied:
   enabled: true
-  aliases: []
   display_name: Frenzied
   description: When you kill an enemy, you gain increased attack speed for 5 seconds.
     If your speed buff is already present, the speed will keep increasing every kill
@@ -256,7 +246,6 @@ wbsenchants:frenzied:
     - minecraft:on_traded_equipment
 wbsenchants:lightweight:
   enabled: true
-  aliases: []
   display_name: Lightweight
   description: While holding a Lightweight shield in your offhand, you have a 30.0%
     chance per level of automatically blocking an attack, if you could block it with
@@ -288,7 +277,6 @@ wbsenchants:lightweight:
     - minecraft:on_traded_equipment
 wbsenchants:hellborne:
   enabled: true
-  aliases: []
   display_name: Hellborne
   description: You have strength and immunity to fire tick damage, with strength level
     relating to the level of the enchantment while you're on fire.
@@ -313,7 +301,6 @@ wbsenchants:hellborne:
   inject_into: []
 wbsenchants:decay:
   enabled: true
-  aliases: []
   display_name: Decay
   description: Has a chance to drop bonemeal when breaking compostable blocks, and
     does increased damage against living mobs (especially illagers).
@@ -346,7 +333,6 @@ wbsenchants:decay:
     - minecraft:exclusive_set/damage
 wbsenchants:scorching:
   enabled: true
-  aliases: []
   display_name: Scorching
   description: Smelts blocks you mine - simple!
   supported_items: minecraft:enchantable/mining
@@ -366,7 +352,6 @@ wbsenchants:scorching:
     - minecraft:exclusive_set/mining
 wbsenchants:frostburn:
   enabled: true
-  aliases: []
   display_name: Frostburn
   description: Does increased damage against water- and cold-vulnerable mobs, like
     endermen and blazes, but less damage against heat-vulnerable mobs, like strays.
@@ -395,7 +380,6 @@ wbsenchants:frostburn:
     - minecraft:exclusive_set/damage
 wbsenchants:ender_shot:
   enabled: true
-  aliases: []
   display_name: Ender Shot
   description: Fired arrows travel instantly in a straight line to its target.
   supported_items: minecraft:enchantable/bow
@@ -418,7 +402,6 @@ wbsenchants:ender_shot:
   inject_into: []
 wbsenchants:immortal:
   enabled: true
-  aliases: []
   display_name: Immortal
   description: Instead of breaking, items with this enchantment will simply stop working,
     or unequip itself. When dropped, the item takes 1 hour to despawn, and cannot
@@ -436,7 +419,6 @@ wbsenchants:immortal:
   inject_into: []
 wbsenchants:dual_wield:
   enabled: true
-  aliases: []
   display_name: Dual Wield
   description: When an item with this enchantment is in your offhand, it swings automatically
     after attacking!
@@ -454,11 +436,8 @@ wbsenchants:dual_wield:
     - minecraft:on_mob_spawn_equipment
 wbsenchants:pinpoint:
   enabled: true
-  aliases: []
   display_name: Pinpoint
-  description: Arrows like needles mean the damage is highly localised, making it
-    possible to hit the same entity with multiple arrows in quick succession, or even
-    at the same time.
+  description: Removes all inaccuracy from fired arrows
   supported_items: minecraft:enchantable/bow
   minimum_cost:
     base_cost: 5
@@ -469,17 +448,10 @@ wbsenchants:pinpoint:
   anvil_cost: 0
   max_level: 1
   weight: 5
-  generation:
-    spawn:
-      description: 5% chance to spawn on Skeleton's bows.
-      conditions:
-        entity-type: skeleton
-        spawn-reason:
-          reason: NATURAL
-  inject_into: []
+  inject_into:
+    - minecraft:on_mob_spawn_equipment
 wbsenchants:frictionless:
   enabled: false
-  aliases: []
   display_name: Frictionless
   description: A minecart enchantment that increases its maximum speed, but does not
     help it get there.
@@ -502,7 +474,6 @@ wbsenchants:frictionless:
         - .*mineshaft.*
 wbsenchants:unshakable:
   enabled: true
-  aliases: []
   display_name: Unshakeable
   description: A lead enchantment that allows you to leash hostile mobs!
   supported_items:
@@ -520,7 +491,6 @@ wbsenchants:unshakable:
     - minecraft:on_random_loot
 wbsenchants:transference:
   enabled: true
-  aliases: []
   display_name: Transference
   description: A map enchantment that, when right clicked, will take you to a random
     point on the map!
@@ -538,7 +508,6 @@ wbsenchants:transference:
     - minecraft:tradeable
 wbsenchants:unsinkable:
   enabled: true
-  aliases: []
   display_name: Unsinkable
   description: Boats with this enchantment can't stay sunk underwater!
   supported_items: minecraft:boats
@@ -562,7 +531,6 @@ wbsenchants:unsinkable:
     - minecraft:tradeable
 wbsenchants:defusal:
   enabled: true
-  aliases: []
   display_name: Defusal
   description: When hitting a creeper that's preparing to explode, you have a 25%
     chance per level to defuse it, instantly restarting its fuse time to zero. After
@@ -586,7 +554,6 @@ wbsenchants:defusal:
     - wbsenchants:exclusive_set/defusal
 wbsenchants:pilfering:
   enabled: true
-  aliases: []
   display_name: Pilfering
   description: Devised by the illagers, this enchantment allows you to shake down
     villagers to steal their trades without paying!
@@ -625,7 +592,6 @@ wbsenchants:pilfering:
   inject_into: []
 wbsenchants:resilience:
   enabled: true
-  aliases: []
   display_name: Resilience
   description: When you take damage, instead of the regular 0.5 seconds of invulnerability
     after taking damage, you're invulnerable for an additional 0.15 seconds per level
@@ -649,7 +615,6 @@ wbsenchants:resilience:
     - minecraft:exclusive_set/armor
 wbsenchants:manathirst:
   enabled: true
-  aliases: []
   display_name: Manathirst
   description: An alternative to mending, items with this enchantment will slowly
     drain your XP bar to repair itself. Items are repaired slower than mending, but
@@ -680,7 +645,6 @@ wbsenchants:manathirst:
         - minecraft:mending
 wbsenchants:shulkenforced:
   enabled: true
-  aliases: []
   display_name: Shulkenforced
   description: Vehicles with this enchantment are imbued with the power of shulkers,
     granting them resistance to gravity!
@@ -702,13 +666,10 @@ wbsenchants:shulkenforced:
       level:
         mode: WEIGHTED_LARGE
       tables:
-        - .*end_city.*
-  exclusive_with: minecraft:exclusive_set/mining
-  inject_into:
-    - minecraft:exclusive_set/mining
+        - .*end_city.*\
+  inject_into: []
 wbsenchants:divine_resonance:
   enabled: true
-  aliases: []
   display_name: Divine Resonance
   description: When the enchanted bell rings, all hostile mobs in the radius will
     glow, not just raiders!
@@ -735,10 +696,9 @@ wbsenchants:divine_resonance:
     - minecraft:on_traded_equipment
 wbsenchants:aridity:
   enabled: true
-  aliases: []
   display_name: Aridity
-  description: A sponge enchantment that automatically returns it to your hand after
-    placing, with a 25% chance per level of auto-drying immediately.
+  description: The sponge automatically returns to your hand after placing, never
+    getting wet.
   supported_items: wbsenchants:sponges
   minimum_cost:
     base_cost: 5
@@ -767,7 +727,6 @@ wbsenchants:aridity:
   inject_into: []
 wbsenchants:lava_walker:
   enabled: true
-  aliases: []
   display_name: Lava Walker
   description: Frost walker... but for lava!
   supported_items: minecraft:enchantable/foot_armor
@@ -790,7 +749,6 @@ wbsenchants:lava_walker:
   inject_into: []
 wbsenchants:wicked:
   enabled: true
-  aliases: []
   display_name: Wicked
   description: This enchantment greatly increases attack damage for every curse on
     the same item!
@@ -816,7 +774,6 @@ wbsenchants:wicked:
   inject_into: []
 wbsenchants:crushing:
   enabled: true
-  aliases: []
   display_name: Crushing
   description: A tool enchantment that crushes blocks into other, more broken-down
     versions!
@@ -971,7 +928,6 @@ wbsenchants:crushing:
     - minecraft:exclusive_set/mining
 wbsenchants:handheld:
   enabled: true
-  aliases: []
   display_name: Handheld
   description: An enchantment for a variety of utility blocks that allow them to be
     used directly from your hand, no placing required!
@@ -999,7 +955,6 @@ wbsenchants:handheld:
     - minecraft:tradeable
 wbsenchants:hogsbane:
   enabled: true
-  aliases: []
   display_name: Hogsbane
   description: A damage enchantment that does extra damage to pig-like mobs, such
     as pigs, hoglins, piglins, and variants!
@@ -1033,7 +988,6 @@ wbsenchants:hogsbane:
     - minecraft:exclusive_set/damage
 wbsenchants:butchering:
   enabled: true
-  aliases: []
   display_name: Butchering
   description: A damage enchant that deals extra damage to animals, and causes extra
     food to drop!
@@ -1097,7 +1051,6 @@ wbsenchants:butchering:
     - minecraft:exclusive_set/damage
 wbsenchants:soul_touch:
   enabled: true
-  aliases: []
   display_name: Soul Touch
   description: Allows your tool to pick up spawners!
   supported_items: minecraft:pickaxes
@@ -1123,7 +1076,6 @@ wbsenchants:soul_touch:
   inject_into: []
 wbsenchants:soulstealing:
   enabled: true
-  aliases: []
   display_name: Soulstealing
   description: Adds a 0.1% chance per level of killed mobs dropping its spawn egg!
   supported_items: minecraft:enchantable/weapon
@@ -1148,7 +1100,6 @@ wbsenchants:soulstealing:
   inject_into: []
 wbsenchants:stuttershot:
   enabled: true
-  aliases: []
   display_name: Stuttershot
   description: A ranged weapon enchantment that gives a 10% chance to shoot again
     immediately after firing!
@@ -1167,7 +1118,6 @@ wbsenchants:stuttershot:
     - minecraft:tradeable
 wbsenchants:echoing:
   enabled: true
-  aliases: []
   display_name: Echoing
   description: When a projectile hits a block, if it can be picked up, it'll immediately
     return to your inventory!
@@ -1191,7 +1141,6 @@ wbsenchants:echoing:
   inject_into: []
 wbsenchants:dimensional_stability:
   enabled: true
-  aliases: []
   display_name: Dimensional Stability
   supported_items: minecraft:beds
   description: Prevents the enchanted bed from exploding.
@@ -1209,7 +1158,6 @@ wbsenchants:dimensional_stability:
     - minecraft:tradeable
 wbsenchants:anima_conduit:
   enabled: true
-  aliases: []
   display_name: Anima Conduit
   description: Adds a small chance to regain health upon picking up XP.
   supported_items: minecraft:enchantable/chest_armor
@@ -1235,7 +1183,6 @@ wbsenchants:anima_conduit:
     - minecraft:on_random_loot
 wbsenchants:curse/rebuking:
   enabled: true
-  aliases: []
   display_name: Curse of Rebuking
   description: A weapon curse that causes the wielder to take 20% of damage dealt
     per level!
@@ -1253,7 +1200,6 @@ wbsenchants:curse/rebuking:
     - minecraft:on_random_loot
 wbsenchants:curse/vanilla:
   enabled: true
-  aliases: []
   display_name: Curse of Vanilla
   description: A curse that does nothing alone, but is incompatible with all non-vanilla
     enchants!
@@ -1272,7 +1218,6 @@ wbsenchants:curse/vanilla:
     - minecraft:on_random_loot
 wbsenchants:curse/exotic:
   enabled: true
-  aliases: []
   display_name: Curse of the Exotic
   description: A curse that does nothing alone, but is incompatible with all vanilla
     enchants
@@ -1291,7 +1236,6 @@ wbsenchants:curse/exotic:
     - minecraft:on_random_loot
 wbsenchants:curse/stumbling:
   enabled: true
-  aliases: []
   display_name: Curse of Stumbling
   description: A curse that causes increased fall damage when worn on boots; essentially
     the opposite of Feather Falling.
@@ -1318,7 +1262,6 @@ wbsenchants:curse/stumbling:
     - wbsenchants:exclusive_set/fall_damage_affecting
 wbsenchants:curse/insomnia:
   enabled: true
-  aliases: []
   display_name: Curse of Insomnia
   description: An armour curse that prevents the player from sleeping while worn.
   supported_items: minecraft:enchantable/head_armor
@@ -1335,7 +1278,6 @@ wbsenchants:curse/insomnia:
     - minecraft:on_random_loot
 wbsenchants:curse/midas:
   enabled: true
-  aliases: []
   display_name: Curse of Midas
   description: A pickaxe curse that causes mined metals to turn directly into gold!
   supported_items: minecraft:pickaxes
@@ -1361,7 +1303,6 @@ wbsenchants:curse/midas:
   inject_into: []
 wbsenchants:curse/turbulence:
   enabled: true
-  aliases: []
   display_name: Curse of Turbulence
   description: An elytra curse that causes turbulence while flying, making it harder
     to stay on track!
@@ -1378,7 +1319,6 @@ wbsenchants:curse/turbulence:
   inject_into: []
 wbsenchants:curse/voiding:
   enabled: true
-  aliases: []
   display_name: Curse of Voiding
   description: A bucket curse that causes any liquids picked up to simply disappear
     into the void!
@@ -1396,7 +1336,6 @@ wbsenchants:curse/voiding:
     - minecraft:on_random_loot
 wbsenchants:curse/erosion:
   enabled: true
-  aliases: []
   display_name: Curse of Erosion
   description: A tool curse that causes blocks to sometimes destabilise around mined
     blocks!
@@ -1414,7 +1353,6 @@ wbsenchants:curse/erosion:
     - minecraft:on_random_loot
 wbsenchants:curse/splintering:
   enabled: true
-  aliases: []
   display_name: Curse of Splintering
   description: An axe curse that causes mined logs to sometimes splinter into sticks!
   supported_items: minecraft:axes
@@ -1431,7 +1369,6 @@ wbsenchants:curse/splintering:
     - minecraft:on_random_loot
 wbsenchants:curse/the_end:
   enabled: true
-  aliases: []
   display_name: Curse of The End
   description: An armour curse that makes you take damage from water!
   supported_items: minecraft:enchantable/armor
@@ -1454,7 +1391,6 @@ wbsenchants:curse/the_end:
   inject_into: []
 wbsenchants:curse/mercy:
   enabled: true
-  aliases: []
   display_name: Curse of Mercy
   description: A weapon curse that refuses to deal a killing blow.
   supported_items: minecraft:enchantable/weapon
@@ -1471,7 +1407,6 @@ wbsenchants:curse/mercy:
     - minecraft:on_random_loot
 wbsenchants:tree_feller:
   enabled: true
-  aliases: []
   display_name: Tree Feller
   description: When breaking a log, the entire tree will be cut down, but use up hunger
     in exchange for each block broken.
@@ -1491,7 +1426,6 @@ wbsenchants:tree_feller:
     - wbsenchants:exclusive_set/multiminer
 wbsenchants:spiritheart:
   enabled: true
-  aliases: []
   display_name: Spiritheart
   description: You have 2 absorption hearts per level that reset at midnight.
   supported_items: minecraft:enchantable/chest_armor
@@ -1509,7 +1443,6 @@ wbsenchants:spiritheart:
     - minecraft:double_trade_price
 wbsenchants:afterlife:
   enabled: true
-  aliases: []
   display_name: Afterlife
   description: When this item breaks, this enchantment is removed and the item is
     restored to full health.
@@ -1535,7 +1468,6 @@ wbsenchants:afterlife:
   inject_into: []
 wbsenchants:caving:
   enabled: true
-  aliases: []
   display_name: Caving
   description: Torches inside bundles on your hotbar with this enchantment will automatically
     place themselves on the ground when you walk into the dark!
@@ -1562,7 +1494,6 @@ wbsenchants:caving:
   inject_into: []
 wbsenchants:earthbound:
   enabled: true
-  aliases: []
   display_name: Earthbound
   description: You are immune to Levitation, but can't have Feather Falling.
   supported_items: minecraft:enchantable/foot_armor
@@ -1587,7 +1518,6 @@ wbsenchants:earthbound:
     - wbsenchants:exclusive_set/fall_damage_affecting
 wbsenchants:disengage:
   enabled: true
-  aliases: []
   display_name: Disengage
   description: After killing a mob, you cannot take damage for 0.5 seconds per level.
   supported_items: minecraft:swords
@@ -1604,7 +1534,6 @@ wbsenchants:disengage:
     - minecraft:on_traded_equipment
 wbsenchants:enderspite:
   enabled: true
-  aliases: []
   display_name: Enderspite
   description: A targeted damage enchantment that affects ender mobs more strongly!
   supported_items: minecraft:enchantable/weapon
@@ -1635,7 +1564,6 @@ wbsenchants:enderspite:
     - minecraft:exclusive_set/damage
 wbsenchants:frostcreep:
   enabled: true
-  aliases: []
   display_name: Frostcreep
   description: When you block an attack with your shield, your attackers weapon will
     become cold, unable to attack for 0.4 seconds per level.
@@ -1657,7 +1585,6 @@ wbsenchants:frostcreep:
     - minecraft:on_random_loot
 wbsenchants:outreach:
   enabled: true
-  aliases: []
   display_name: Outreach
   description: A beacon enchant that increases its radius by 20% per level.
   supported_items: wbsenchants:enchantable/beacon
@@ -1744,8 +1671,9 @@ wbsenchants:carrying:
         - .*end_city.*
 wbsenchants:refill:
   enabled: true
-  description: When you use the last item of a stack in your inventory, if an
-    item of the same type is in the enchanted item, it will be immediately placed into your hand.
+  description: When you use the last item of a stack in your inventory, if an item
+    of the same type is in the enchanted item, it will be immediately placed into
+    your hand.
   supported_items: wbsenchants:enchantable/item_container
   minimum_cost:
     base_cost: 5
@@ -1766,8 +1694,8 @@ wbsenchants:refill:
         - .*end_city.*
 wbsenchants:siphoning:
   enabled: true
-  description: When you pick up an item, if the enchanted item contains any of
-    the same, the picked up item will go directly inside.
+  description: When you pick up an item, if the enchanted item contains any of the
+    same, the picked up item will go directly inside.
   supported_items: wbsenchants:enchantable/item_container
   minimum_cost:
     base_cost: 5
@@ -1859,9 +1787,9 @@ wbsenchants:blooming:
     cherry_leaves: 0.01
     mangrove_propagule: 0.0 # In the #minecraft:flowers tag, but shouldn't count for blooming.
     # Tags are only checked if a flower isn't listed above.
-    "#minecraft:small_flowers": 0.1
-    "#minecraft:flowers": 0.12 # Order specific, so this affects any flower not in the small_flowers tag
-    "#minecraft:flower_pots": 0.05
+    '#minecraft:small_flowers': 0.1
+    '#minecraft:flowers': 0.12 # Order specific, so this affects any flower not in the small_flowers tag
+    '#minecraft:flower_pots': 0.05
   minimum_cost:
     base_cost: 5
     additional_per_level_cost: 8
@@ -2518,21 +2446,19 @@ wbsenchants:rerolling:
   generation:
     trading:
       description: Master Librarian villager trades
-      result: 'minecraft:enchanting_table'
+      result: minecraft:enchanting_table
       emerald-cost:
         min: 32
         max: 64
-      item-cost: 'minecraft:enchanting_table'
-      chance: 50
+      item-cost: minecraft:enchanting_table
+      chance: 25
       villager-level: 5
       villager-profession: librarian
       level: WEIGHTED_SMALL
-  inject_into:
-    - minecraft:on_random_loot
-    - minecraft:tradeable
 wbsenchants:ambitiousness:
   enabled: true
-  description: Increases the maximum enchanting level.
+  description: Increases the maximum enchanting level, and allows you to exceed the
+    maximum level for some enchantments.
   supported_items:
     - minecraft:enchanting_table
   exclusive_with:
@@ -2544,23 +2470,20 @@ wbsenchants:ambitiousness:
     base_cost: 25
     additional_per_level_cost: 8
   anvil_cost: 1
-  max_level: 2
+  max_level: 3
   weight: 1
   generation:
     trading:
       description: Master Librarian villager trades
-      result: 'minecraft:enchanting_table'
+      result: minecraft:enchanting_table
       emerald-cost:
         min: 32
         max: 64
-      item-cost: 'minecraft:enchanting_table'
-      chance: 100
+      item-cost: minecraft:enchanting_table
+      chance: 25
       villager-level: 5
       villager-profession: librarian
       level: WEIGHTED_SMALL
-  inject_into:
-    - minecraft:on_random_loot
-    - minecraft:tradeable
 wbsenchants:recall:
   enabled: true
   description: Summons all of your (non-sitting) tamed mobs to you, if they're in
@@ -2720,9 +2643,9 @@ wbsenchants:curse/hypoxia:
     - minecraft:on_random_loot
 wbsenchants:powerlust:
   enabled: true
-  display_name: <lang_or:enchantment.wbsenchants.powerlust:%s:'Powerlust'>
-  description: Allows generated enchantments to exceed their maximum level by 1, but
-    takes more levels when enchanting.
+  display_name: Powerlust
+  description: Makes all 3 offered enchantments use the highest level that the enchanting
+    table can offer.
   supported_items:
     - minecraft:enchanting_table
   exclusive_with: wbsenchants:exclusive_set/enchanting_table
@@ -2738,12 +2661,12 @@ wbsenchants:powerlust:
   generation:
     trading:
       description: Master Librarian villager trades
-      result: 'minecraft:enchanting_table'
+      result: minecraft:enchanting_table
       emerald-cost:
         min: 32
         max: 64
-      item-cost: 'minecraft:enchanting_table'
-      chance: 50
+      item-cost: minecraft:enchanting_table
+      chance: 25
       villager-level: 5
       villager-profession: librarian
       level: WEIGHTED_SMALL
@@ -2751,7 +2674,7 @@ wbsenchants:powerlust:
     - wbsenchants:exclusive_set/enchanting_table
 wbsenchants:industrious:
   enabled: true
-  display_name: <lang_or:enchantment.wbsenchants.industrious:%s:'Industrious'>
+  display_name: Industrious
   description: Shears multiple sheep at a time.
   supported_items:
     - minecraft:shears
@@ -2769,3 +2692,117 @@ wbsenchants:industrious:
   inject_into:
     - minecraft:on_random_loot
     - minecraft:tradeable
+wbsenchants:striding:
+  enabled: true
+  display_name: Striding
+  description: Increases step height.
+  supported_items: minecraft:enchantable/leg_armor
+  minimum_cost:
+    base_cost: 5
+    additional_per_level_cost: 8
+  maximum_cost:
+    base_cost: 25
+    additional_per_level_cost: 8
+  anvil_cost: 1
+  max_level: 1
+  weight: 1
+  inject_into:
+    - minecraft:on_random_loot
+    - minecraft:tradeable
+wbsenchants:curse/limping:
+  enabled: true
+  display_name: Curse of Limping
+  description: Decreases step height.
+  supported_items: minecraft:enchantable/leg_armor
+  minimum_cost:
+    base_cost: 5
+    additional_per_level_cost: 8
+  maximum_cost:
+    base_cost: 25
+    additional_per_level_cost: 8
+  anvil_cost: 1
+  max_level: 1
+  weight: 1
+  inject_into:
+    - minecraft:on_random_loot
+    - minecraft:tradeable
+wbsenchants:fly_fishing:
+  enabled: true
+  display_name: Fly Fishing
+  description: Makes the window for catching fish shorter, but has a chance to get
+    extra loot when successful.
+  supported_items: minecraft:enchantable/fishing
+  exclusive_with:
+    - wbsenchants:auto_reel
+  minimum_cost:
+    base_cost: 5
+    additional_per_level_cost: 8
+  maximum_cost:
+    base_cost: 25
+    additional_per_level_cost: 8
+  anvil_cost: 1
+  max_level: 3
+  weight: 1
+  inject_into:
+    - minecraft:on_random_loot
+wbsenchants:launching:
+  enabled: true
+  display_name: Launching
+  description: Gives you an upwards boost when you start gliding.
+  supported_items:
+    - minecraft:elytra
+  primary_items:
+    - minecraft:elytra
+  minimum_cost:
+    base_cost: 12
+    additional_per_level_cost: 7
+  maximum_cost:
+    base_cost: 50
+    additional_per_level_cost: 5
+  anvil_cost: 4
+  max_level: 2
+  weight: 1
+  inject_into: []
+wbsenchants:supersonic:
+  enabled: true
+  display_name: Supersonic
+  description: When you deal damage while flying faster than 20 blocks per second,
+    you deal 100% more damage per level.
+  supported_items:
+    - minecraft:elytra
+  minimum_cost:
+    base_cost: 5
+    additional_per_level_cost: 8
+  maximum_cost:
+    base_cost: 25
+    additional_per_level_cost: 8
+  anvil_cost: 4
+  max_level: 2
+  weight: 1
+  inject_into: []
+  generation:
+    loot-table:
+      description: 5% chance to appear in city loot
+      chance: 5
+      add-chance: 100
+      tables:
+        - .*_city.*
+wbsenchants:salvage:
+  enabled: true
+  display_name: Salvage
+  description: When your Elytra breaks, you gain Slow Falling.
+  supported_items:
+    - minecraft:elytra
+  primary_items:
+    - minecraft:elytra
+  minimum_cost:
+    base_cost: 5
+    additional_per_level_cost: 8
+  maximum_cost:
+    base_cost: 55
+    additional_per_level_cost: 8
+  anvil_cost: 4
+  max_level: 1
+  weight: 1
+  inject_into: []
+

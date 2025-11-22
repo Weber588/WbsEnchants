@@ -1,6 +1,8 @@
 package wbs.enchants.enchantment.helper;
 
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
+import net.minecraft.world.entity.projectile.FishingHook;
 import org.bukkit.Material;
 import org.bukkit.craftbukkit.entity.CraftFishHook;
 import org.bukkit.craftbukkit.entity.CraftPlayer;
@@ -15,8 +17,12 @@ import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+import org.jetbrains.annotations.Range;
+import wbs.enchants.WbsEnchants;
 import wbs.enchants.util.EventUtils;
 
+import java.lang.reflect.Field;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
@@ -26,6 +32,7 @@ public interface FishingEnchant extends EnchantInterface, AutoRegistrableEnchant
     Set<PlayerFishEvent.State> REELING_SUPPRESSED = Set.of(
             PlayerFishEvent.State.REEL_IN,
             PlayerFishEvent.State.CAUGHT_FISH,
+            PlayerFishEvent.State.CAUGHT_ENTITY,
             PlayerFishEvent.State.FAILED_ATTEMPT
     );
 
@@ -34,7 +41,7 @@ public interface FishingEnchant extends EnchantInterface, AutoRegistrableEnchant
         EventUtils.register(ProjectileHitEvent.class, this::onHookHit, EventPriority.MONITOR, true);
     }
 
-    default void onFishEvent(PlayerFishEvent event) {
+    private void onFishEvent(PlayerFishEvent event) {
         Player player = event.getPlayer();
         if (REELING_SUPPRESSED.contains(event.getState()) && REELING.contains(player.getUniqueId())) {
             return;
@@ -62,7 +69,7 @@ public interface FishingEnchant extends EnchantInterface, AutoRegistrableEnchant
         onFishEvent(event, rod, hand);
     }
 
-    default void onHookHit(ProjectileHitEvent event) {
+    private void onHookHit(ProjectileHitEvent event) {
         Entity hit = event.getHitEntity();
         if (hit == null) {
             return;
@@ -118,7 +125,111 @@ public interface FishingEnchant extends EnchantInterface, AutoRegistrableEnchant
         }
     }
 
-    default void setHook(Player player, FishHook hook) {
-        ((CraftPlayer) player).getHandle().fishing = ((CraftFishHook) hook).getHandle();
+    default void setHook(Player player, @Nullable FishHook hook) {
+        ServerPlayer serverPlayer = ((CraftPlayer) player).getHandle();
+        FishingHook nmsHook = hook == null ? null : ((CraftFishHook) hook).getHandle();
+        serverPlayer.fishing = nmsHook;
+
+        if (nmsHook != null) {
+            nmsHook.setOwner(serverPlayer);
+        }
+    }
+
+    /**
+     * Gets the remaining ticks of being "bitten" -- if this value is >0, the player can currently pull in the fish.
+     * @param hook The hook entity to check nibble ticks on
+     * @return The remaining time until the bite is considered "missed"
+     */
+    @Range(from = 0, to = Integer.MAX_VALUE)
+    default int getNibbleTicksRemaining(@NotNull FishHook hook) {
+        FishingHook nmsHook = ((CraftFishHook) hook).getHandle();
+
+        try {
+            Field nibbleField = nmsHook.getClass().getDeclaredField("nibble");
+
+            nibbleField.setAccessible(true);
+
+            return (Integer) nibbleField.get(nmsHook);
+        } catch (NoSuchFieldException | IllegalAccessException e) {
+            WbsEnchants.getInstance().getLogger().warning("Failed to get nibble field from fishing hook.");
+            return 0;
+        }
+    }
+
+    default void setNibbleTicksRemaining(@NotNull FishHook hook, int nibbleTicks) {
+        FishingHook nmsHook = ((CraftFishHook) hook).getHandle();
+
+        try {
+            Field nibbleField = nmsHook.getClass().getDeclaredField("nibble");
+
+            nibbleField.setAccessible(true);
+
+            nibbleField.set(nmsHook, nibbleTicks);
+        } catch (NoSuchFieldException | IllegalAccessException e) {
+            WbsEnchants.getInstance().getLogger().warning("Failed to get nibble field from fishing hook.");
+            //throw new RuntimeException(e);
+        }
+    }
+
+    default int getLuck(@NotNull FishHook hook) {
+        FishingHook nmsHook = ((CraftFishHook) hook).getHandle();
+
+        try {
+            Field luckField = nmsHook.getClass().getDeclaredField("luck");
+
+            luckField.setAccessible(true);
+
+            return (Integer) luckField.get(nmsHook);
+        } catch (NoSuchFieldException | IllegalAccessException e) {
+            WbsEnchants.getInstance().getLogger().warning("Failed to get luck field from fishing hook.");
+            // throw new RuntimeException(e);
+            return 0;
+        }
+    }
+
+    default void setLuck(@NotNull FishHook hook, int luck) {
+        FishingHook nmsHook = ((CraftFishHook) hook).getHandle();
+
+        try {
+            Field luckField = nmsHook.getClass().getDeclaredField("luck");
+
+            luckField.setAccessible(true);
+
+            luckField.set(nmsHook, luck);
+        } catch (NoSuchFieldException | IllegalAccessException e) {
+            WbsEnchants.getInstance().getLogger().warning("Failed to get luck field from fishing hook.");
+            // throw new RuntimeException(e);
+        }
+    }
+
+    default int getLureSpeed(@NotNull FishHook hook) {
+        FishingHook nmsHook = ((CraftFishHook) hook).getHandle();
+
+        try {
+            Field lureSpeedField = nmsHook.getClass().getDeclaredField("lureSpeed");
+
+            lureSpeedField.setAccessible(true);
+
+            return (Integer) lureSpeedField.get(nmsHook);
+        } catch (NoSuchFieldException | IllegalAccessException e) {
+            WbsEnchants.getInstance().getLogger().warning("Failed to get lureSpeed field from fishing hook.");
+            return 0;
+           // throw new RuntimeException(e);
+        }
+    }
+
+    default void setLureSpeed(@NotNull FishHook hook, int lureSpeed) {
+        FishingHook nmsHook = ((CraftFishHook) hook).getHandle();
+
+        try {
+            Field lureSpeedField = nmsHook.getClass().getDeclaredField("lureSpeed");
+
+            lureSpeedField.setAccessible(true);
+
+            lureSpeedField.set(nmsHook, lureSpeed);
+        } catch (NoSuchFieldException | IllegalAccessException e) {
+            WbsEnchants.getInstance().getLogger().warning("Failed to get lureSpeed field from fishing hook.");
+            //throw new RuntimeException(e);
+        }
     }
 }

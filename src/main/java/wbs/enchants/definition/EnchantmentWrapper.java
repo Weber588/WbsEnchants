@@ -40,7 +40,7 @@ public class EnchantmentWrapper implements Keyed {
                 .get(this.key());
 
         if (enchantment == null) {
-            throw new IllegalStateException("Server enchantment not found for enchantment \"" + this.key() + "\".");
+            throw new IllegalStateException("Server enchantment not found for wrapped enchantment \"" + this.key() + "\".");
         }
 
         return enchantment;
@@ -82,7 +82,7 @@ public class EnchantmentWrapper implements Keyed {
     }
 
     public boolean isTagged(TagKey<Enchantment> tagKey) {
-        Registry<Enchantment> registry = RegistryAccess.registryAccess().getRegistry(RegistryKey.ENCHANTMENT);
+        Registry<@NotNull Enchantment> registry = RegistryAccess.registryAccess().getRegistry(RegistryKey.ENCHANTMENT);
         return registry.getTag(tagKey).contains(this.getTypedKey());
     }
 

@@ -23,6 +23,7 @@ import wbs.enchants.util.CooldownManager;
 import wbs.utils.util.string.WbsStrings;
 
 import java.util.*;
+import java.util.function.Predicate;
 
 public abstract class WbsEnchantment implements Comparable<WbsEnchantment>, Listener, EnchantmentExtension {
     @NotNull
@@ -190,15 +191,27 @@ public abstract class WbsEnchantment implements Comparable<WbsEnchantment>, List
                 .orElse(null);
     }
 
+    @Nullable
     public ItemStack getHighestEnchanted(LivingEntity entity) {
         return getHighestEnchanted(entity, getActiveSlots());
     }
 
     @Nullable
     public ItemStack getHighestEnchanted(LivingEntity entity, Collection<EquipmentSlot> slots) {
+        return getHighestEnchanted(entity, slots, item -> true);
+    }
+
+    @Nullable
+    public ItemStack getHighestEnchanted(LivingEntity entity, Predicate<ItemStack> predicate) {
+        return getHighestEnchanted(entity, getActiveSlots(), predicate);
+    }
+
+    @Nullable
+    public ItemStack getHighestEnchanted(LivingEntity entity, Collection<EquipmentSlot> slots, Predicate<ItemStack> predicate) {
         return slots.stream()
                 .map(slot -> getIfEnchanted(entity, slot))
                 .filter(Objects::nonNull)
+                .filter(predicate)
                 .max(Comparator.comparingInt(this::getLevel))
                 .orElse(null);
     }

@@ -135,9 +135,13 @@ public class EnchantsBootstrapSettings extends WbsBootstrapSettings<WbsEnchants>
                 EnchantManager.getCustomRegistered().forEach(enchant -> {
                     ConfigurationSection enchantSection = safeYaml.getConfigurationSection(enchant.key().value());
 
+                    if (enchantSection == null) {
+                        enchantSection = safeYaml.getConfigurationSection(enchant.key().asMinimalString());
+                    }
+
                     // Only write to config if the file doesn't already contain a definition for enchants -- don't want
                     // to override user configuration. (Or write if the enchantment is marked as "in development" and should
-                    // override every time.
+                    // override every time.)
                     if (enchant.developerMode() || enchantSection == null) {
                         enchant.buildConfigurationSection(safeYaml);
                     }
@@ -160,8 +164,8 @@ public class EnchantsBootstrapSettings extends WbsBootstrapSettings<WbsEnchants>
 
         manager.registerEventHandler(RegistryEvents.ENCHANTMENT.compose().newHandler(event -> {
             List<WbsEnchantment> invalidEnchantments = new LinkedList<>();
+            List<WbsEnchantment> disabledEnchants = new LinkedList<>();
             for (WbsEnchantment enchant : EnchantManager.getCustomRegistered()) {
-
                 if (enchant.getDefinition().getSupportedItems() == null) {
                     context.getLogger().error("Failed to load custom enchantment {} -- supportedItems is required prior to registration.", enchant.key().asString());
                     invalidEnchantments.add(enchant);
@@ -184,15 +188,24 @@ public class EnchantsBootstrapSettings extends WbsBootstrapSettings<WbsEnchants>
                     }
                 }
 
-                event.registry().register(
-                        TypedKey.create(RegistryKey.ENCHANTMENT, enchant.key()),
-                        builder -> enchant.getDefinition().buildTo(event::getOrCreateTag, builder)
-                );
+                if (enchant.isEnabled()) {
+                    event.registry().register(
+                            TypedKey.create(RegistryKey.ENCHANTMENT, enchant.key()),
+                            builder -> enchant.getDefinition().buildTo(event::getOrCreateTag, builder)
+                    );
+                } else {
+                    disabledEnchants.add(enchant);
+                }
             }
 
             if (!invalidEnchantments.isEmpty()) {
                 invalidEnchantments.forEach(EnchantManager::unregister);
                 context.getLogger().error("Unregistered {} invalid enchantments.", invalidEnchantments.size());
+            }
+
+            if (!disabledEnchants.isEmpty()) {
+                disabledEnchants.forEach(EnchantManager::unregister);
+                context.getLogger().info("Unregistered {} disabled enchantments.", disabledEnchants.size());
             }
         }));
     }

@@ -2,8 +2,6 @@ package wbs.enchants.enchantment;
 
 import io.papermc.paper.block.TileStateInventoryHolder;
 import io.papermc.paper.registry.keys.ItemTypeKeys;
-import org.bukkit.block.Block;
-import org.bukkit.block.EnchantingTable;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.enchantments.EnchantmentOffer;
 import org.bukkit.entity.HumanEntity;
@@ -11,36 +9,30 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.enchantment.EnchantItemEvent;
 import org.bukkit.event.enchantment.PrepareItemEnchantEvent;
 import org.bukkit.event.inventory.InventoryOpenEvent;
+import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.view.EnchantmentView;
 import org.jetbrains.annotations.NotNull;
 import wbs.enchants.WbsEnchantment;
 import wbs.enchants.WbsEnchantsBootstrap;
-import wbs.enchants.enchantment.helper.BlockStateEnchant;
-import wbs.utils.util.WbsMath;
+import wbs.enchants.enchantment.helper.EnchantingTableEnchant;
 
-import java.util.HashSet;
 import java.util.Map;
 import java.util.Random;
-import java.util.Set;
 
 @SuppressWarnings("UnstableApiUsage")
-public class AmbitiousnessEnchant extends WbsEnchantment implements BlockStateEnchant<EnchantingTable> {
-    private static final @NotNull String DEFAULT_DESCRIPTION = "Increases the maximum enchanting level.";
-    public static final int DEFAULT_MAX_BOOKSHELVES = 15;
-    public static final int IDEAL_MAX_BOOKSHELVES = 22;
+public class AmbitiousnessEnchant extends WbsEnchantment implements EnchantingTableEnchant {
+    private static final double MAX_LEVEL_BREAK_CHANCE = 50;
+
+    private static final @NotNull String DEFAULT_DESCRIPTION = "Increases the maximum enchanting level, and allows " +
+            "you to exceed the maximum level for some enchantments.";
 
     public AmbitiousnessEnchant() {
         super("ambitiousness", DEFAULT_DESCRIPTION);
 
         getDefinition()
-                .maxLevel(2)
+                .maxLevel(3)
                 .supportedItems(ItemTypeKeys.ENCHANTING_TABLE)
                 .exclusiveInject(WbsEnchantsBootstrap.EXCLUSIVE_SET_ENCHANTING_TABLE);
-    }
-
-    @Override
-    public Class<EnchantingTable> getStateClass() {
-        return EnchantingTable.class;
     }
 
     @EventHandler
@@ -69,58 +61,85 @@ public class AmbitiousnessEnchant extends WbsEnchantment implements BlockStateEn
             return;
         }
 
-        int[] levels = getModifiedLevels(event, level);
+        int seed = event.getView().getEnchantmentSeed();
 
-        for (int i = 0; i < 3; i++) {
-            EnchantmentOffer offer = event.getOffers()[i];
+        for (int slot = 0; slot < event.getOffers().length; slot++) {
+            EnchantmentOffer offer = event.getOffers()[slot];
             if (offer != null) {
-                offer.setCost(levels[i]);
+                offer.setCost(getEnchantmentCost(seed,
+                        slot,
+                        event.getEnchantmentBonus(),
+                        getMaxPower(level))
+                );
+            }
+        }
 
-                int offerLevel = offer.getEnchantmentLevel();
-                if (offer.getEnchantment().getMaxLevel() > offerLevel && WbsMath.chance(level * 25)) {
-                    offer.setEnchantmentLevel(offerLevel + 1);
+        updateEnchantmentOffers(event, seed);
+        int itemHash = getItemHash(event.getItem());
+
+        for (int slot = 0; slot < event.getOffers().length; slot++) {
+            EnchantmentOffer offer = event.getOffers()[slot];
+            if (offer != null) {
+                Enchantment enchantment = offer.getEnchantment();
+                if (enchantment.getMaxLevel() > 1 && shouldBreakMaxLevel(seed + slot + itemHash + enchantment.getKey().hashCode(), level, offer.getCost())) {
+                    offer.setEnchantmentLevel(offer.getEnchantmentLevel() + 1);
                 }
             }
         }
     }
 
+    private int getItemHash(@NotNull ItemStack item) {
+        return item.getItemMeta().getAsComponentString().hashCode();
+    }
+
+    private static int getMaxCost(int level) {
+        return getMaxPower(level) * 2;
+    }
+
+    private static int getMaxPower(int level) {
+        return DEFAULT_MAX_POWER + 5 * level;
+    }
+
+    private boolean shouldBreakMaxLevel(int seed, int tableLevel, int cost) {
+        double chanceFromLevel = ((double) tableLevel / maxLevel()) / 2;
+        double chanceFromCost = ((double) cost / getMaxCost(tableLevel)) / 2;
+
+        double chance = (chanceFromCost + chanceFromLevel) * (MAX_LEVEL_BREAK_CHANCE / 100);
+
+        return new Random(seed).nextDouble() > chance;
+    }
+
     @EventHandler
     public void onEnchant(EnchantItemEvent event) {
-        Block block = event.getEnchantBlock();
-
-        if (!isEnchanted(block)) {
+        Integer level = getLevel(event.getEnchantBlock());
+        if (level == null) {
             return;
         }
 
-        Enchantment enchantmentHint = event.getEnchantmentHint();
-        int levelHint = event.getLevelHint();
+        int seed = ((EnchantmentView) event.getView()).getEnchantmentSeed();
 
-        event.getItem().addEnchantment(enchantmentHint, levelHint);
-        Set<Enchantment> remove = new HashSet<>();
-        Map<Enchantment, Integer> enchantsToAdd = event.getEnchantsToAdd();
-        for (Enchantment enchantment : enchantsToAdd.keySet()) {
-            if (enchantment.conflictsWith(enchantmentHint)) {
-                remove.add(enchantment);
+        int cost = event.getExpLevelCost();
+        ItemStack item = event.getItem();
+
+        Map<Enchantment, Integer> enchantments = getEnchantments(
+                event.getEnchanter(),
+                seed,
+                item,
+                event.whichButton(),
+                cost
+        );
+
+        int itemHash = getItemHash(event.getItem());
+
+        for (Enchantment enchantment : enchantments.keySet()) {
+            int enchantLevel = enchantments.get(enchantment);
+            if (enchantment.getMaxLevel() > 1 && shouldBreakMaxLevel(seed + event.whichButton() + itemHash + enchantment.getKey().hashCode(), level, cost)) {
+                enchantments.put(enchantment, enchantLevel + 1);
             }
         }
 
-        for (Enchantment enchantment : remove) {
-            enchantsToAdd.remove(enchantment);
-        }
-    }
-
-    private int @NotNull [] getModifiedLevels(PrepareItemEnchantEvent event, int level) {
-        Random random = new Random(event.getEnchanter().getEnchantmentSeed());
-
-        int maxBookshelves = DEFAULT_MAX_BOOKSHELVES + (IDEAL_MAX_BOOKSHELVES - DEFAULT_MAX_BOOKSHELVES) * level / maxLevel();
-        int power = Math.min(event.getEnchantmentBonus(), maxBookshelves);
-        double modifiedPower = (double) power * (DEFAULT_MAX_BOOKSHELVES + level * 5) / maxBookshelves;
-        int base = (int) ((random.nextInt(6) + 1) + modifiedPower + random.nextInt((int) (modifiedPower + 1)));
-
-        return new int[]{
-                Math.max(base / 3, 1),
-                base * 2 / 3 + 1,
-                (int) Math.min(Math.max(base, modifiedPower * 2), 30 + level * 10)
-        };
+        Map<Enchantment, Integer> enchantsToAdd = event.getEnchantsToAdd();
+        enchantsToAdd.clear();
+        enchantsToAdd.putAll(enchantments);
     }
 }

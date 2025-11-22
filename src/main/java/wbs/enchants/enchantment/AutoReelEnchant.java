@@ -1,6 +1,8 @@
 package wbs.enchants.enchantment;
 
 import io.papermc.paper.registry.keys.ItemTypeKeys;
+import org.bukkit.entity.FishHook;
+import org.bukkit.entity.Player;
 import org.bukkit.event.player.PlayerFishEvent;
 import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
@@ -26,9 +28,18 @@ public class AutoReelEnchant extends WbsEnchantment implements FishingEnchant {
             return;
         }
 
-        // Run next tick so it's actually considered a successful pull
-        WbsEnchants.getInstance().runSync(() ->
-                reelIn(event.getPlayer(), event.getHook(), rod, hand)
-        );
+        FishHook hook = event.getHook();
+
+        // Run as close to the failure point as possible,
+        // so this doesn't completely outpace regular fishing
+        WbsEnchants.getInstance().runLater(() -> {
+            WbsEnchants.getInstance().runLater(() -> {
+                if (hook.isValid()) {
+                    Player player = event.getPlayer();
+                    player.swingHand(hand);
+                    reelIn(player, hook, rod, hand);
+                }
+            }, (getNibbleTicksRemaining(hook) - 1) / 2);
+        }, 1);
     }
 }

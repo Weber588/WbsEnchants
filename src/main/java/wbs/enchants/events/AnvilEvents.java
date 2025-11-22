@@ -1,6 +1,7 @@
 package wbs.enchants.events;
 
 import io.papermc.paper.datacomponent.DataComponentTypes;
+import io.papermc.paper.datacomponent.item.ItemEnchantments;
 import io.papermc.paper.datacomponent.item.Repairable;
 import io.papermc.paper.registry.TypedKey;
 import org.bukkit.enchantments.Enchantment;
@@ -28,15 +29,36 @@ public class AnvilEvents implements Listener {
         ItemStack secondItem = view.getItem(1);
         ItemStack result = event.getResult();
 
-        if (result == null || result.isEmpty() || firstItem == null || firstItem.isEmpty() || secondItem == null || secondItem.isEmpty()) {
+        if (firstItem == null || firstItem.isEmpty() || secondItem == null || secondItem.isEmpty()) {
             return;
         }
 
-        TypedKey<ItemType> secondItemType = ItemUtils.getTypedKey(secondItem);
+        // Doing a combination
+        if ((EnchantUtils.hasEnchants(firstItem) || EnchantUtils.hasEnchants(secondItem))) {
+            boolean createdResult = false;
+            ItemStack newResult = result;
+            if (result == null || result.isEmpty()) {
+                newResult = firstItem.clone();
+                createdResult = true;
+            }
+
+            mergeEnchantsOnto(newResult, firstItem, createdResult);
+            mergeEnchantsOnto(newResult, secondItem, createdResult);
+
+            if (createdResult && !newResult.equals(firstItem)) {
+                event.setResult(newResult);
+                event.getView().setRepairCost(newResult.getEnchantments().keySet().stream().mapToInt(Enchantment::getAnvilCost).sum());
+            }
+        }
+
+        if (result == null || result.isEmpty()) {
+            return;
+        }
 
         if (WbsEnchants.getInstance().getSettings().disableAnvilRepairPenalty()) {
             Repairable repairableData = firstItem.getData(DataComponentTypes.REPAIRABLE);
             if (repairableData != null) {
+                TypedKey<ItemType> secondItemType = ItemUtils.getTypedKey(secondItem);
                 if (repairableData.types().contains(secondItemType)) {
                     Integer firstItemPenalty = firstItem.getDataOrDefault(DataComponentTypes.REPAIR_COST, 0);
                     Integer resultPenalty = result.getDataOrDefault(DataComponentTypes.REPAIR_COST, 0);
@@ -47,18 +69,20 @@ public class AnvilEvents implements Listener {
                 }
             }
         }
-
-        // Doing a combination
-        if (secondItemType.equals(ItemUtils.getTypedKey(firstItem))) {
-            mergeEnchantsOnto(result, firstItem);
-            mergeEnchantsOnto(result, secondItem);
-        }
     }
 
-    private static void mergeEnchantsOnto(ItemStack to, ItemStack from) {
+    private static void mergeEnchantsOnto(ItemStack to, ItemStack from, boolean combine) {
         Map<Enchantment, Integer> resultEnchantments = new HashMap<>(to.getEnchantments());
+        ItemEnchantments data = to.getData(DataComponentTypes.STORED_ENCHANTMENTS);
+        if (data != null) {
+            resultEnchantments.putAll(data.enchantments());
+        }
 
         Map<Enchantment, Integer> enchantments = from.getEnchantments();
+        ItemEnchantments fromData = to.getData(DataComponentTypes.STORED_ENCHANTMENTS);
+        if (fromData != null) {
+            enchantments.putAll(fromData.enchantments());
+        }
 
         for (Enchantment originalEnchant : enchantments.keySet()) {
             if (resultEnchantments.containsKey(originalEnchant)) {
@@ -66,7 +90,11 @@ public class AnvilEvents implements Listener {
                 int resultLevel = to.getEnchantmentLevel(originalEnchant);
                 // Accept the highest -- even if it's over max level. No need to cap them if an original had it.
                 // TODO: Make this toggleable in config?
-                EnchantUtils.addEnchantment(originalEnchant, to, Math.max(originalLevel, resultLevel));
+                int finalLevel = Math.max(originalLevel, resultLevel);
+                if (originalLevel == resultLevel && combine && finalLevel < originalEnchant.getMaxLevel()) {
+                    finalLevel++;
+                }
+                EnchantUtils.addEnchantment(originalEnchant, to, finalLevel);
             }
         }
     }

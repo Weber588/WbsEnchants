@@ -1,7 +1,9 @@
 package wbs.enchants.enchantment;
 
 import io.papermc.paper.registry.keys.tags.ItemTypeTagKeys;
+import org.bukkit.Material;
 import org.bukkit.block.Block;
+import org.bukkit.block.PistonMoveReaction;
 import org.bukkit.block.TileState;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.FallingBlock;
@@ -54,23 +56,28 @@ public class HaulingEnchant extends WbsEnchantment implements FishingEnchant {
         );
 
         if (hookedEntity == null) {
-            if (hook.getVelocity().lengthSquared() < 0.1) {
+            if (hook.getVelocity().lengthSquared() < 0.1 && !WbsEntityUtil.isInWater(hook)) {
                 Set<Block> intersectingBlocks = WbsLocationUtil.getIntersectingBlocks(
                         hook.getBoundingBox().expand(Double.MIN_VALUE),
                         WbsEntityUtil.getMiddleLocation(hook)
                 );
 
                 intersectingBlocks.stream()
-                        .filter(block -> block.getState() instanceof TileState)
+                        .filter(block -> !(block.getState() instanceof TileState) && (
+                                block.getPistonMoveReaction() == PistonMoveReaction.MOVE || block.getPistonMoveReaction() == PistonMoveReaction.PUSH_ONLY
+                            )
+                        )
                         .filter(Predicate.not(BlockEnchant::hasBlockEnchants))
                         .filter(block -> BlockChunkStorageUtil.getContainer(block).isEmpty())
                         .findFirst().ifPresent(block -> {
                             block.getWorld().spawn(block.getLocation().add(0.5, 0, 0.5), FallingBlock.class, CreatureSpawnEvent.SpawnReason.ENCHANTMENT, (fallingBlock) -> {
-                            fallingBlock.setBlockData(block.getBlockData());
-                            fallingBlock.setBlockState(block.getState());
-                            fallingBlock.setVelocity(velocity);
-                    });
-                });
+                                fallingBlock.setBlockData(block.getBlockData());
+                                fallingBlock.setBlockState(block.getState());
+                                fallingBlock.setVelocity(velocity);
+                            });
+                            block.setType(Material.AIR);
+                        }
+                );
             }
         } else {
             // Standard hook pull sets velocity, doesn't add to it -- use custom implementation
