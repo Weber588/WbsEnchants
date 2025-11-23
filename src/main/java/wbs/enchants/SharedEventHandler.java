@@ -28,6 +28,7 @@ import wbs.enchants.events.EnchantedBlockPlaceEvent;
 import wbs.enchants.statuseffects.StatusEffectManager;
 import wbs.enchants.statuseffects.StatusEffectType;
 
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
@@ -39,7 +40,7 @@ import java.util.Set;
 public class SharedEventHandler implements Listener {
     private final WbsEnchants plugin;
 
-    private final Set<TickableEnchant> tickableEnchants = new HashSet<>();
+    private final Set<TickableEnchant> registeredTickableEnchants = new HashSet<>();
     private final Set<ItemModificationEnchant> itemModificationEnchants = new HashSet<>();
     private final Set<MovementEnchant> movementEnchants = new HashSet<>();
 
@@ -59,7 +60,7 @@ public class SharedEventHandler implements Listener {
     private void loadSharedEventEnchants() {
         EnchantManager.getCustomRegistered().forEach(enchantment -> {
             if (enchantment instanceof TickableEnchant tickable) {
-                tickableEnchants.add(tickable);
+                registeredTickableEnchants.add(tickable);
             }
 
             if (enchantment instanceof ItemModificationEnchant itemModificationEnchant) {
@@ -142,7 +143,7 @@ public class SharedEventHandler implements Listener {
     private void tickEnchants(Set<LivingEntity> allLivingEntities) {
         Set<TickableEnchant> tickableEnchants = new HashSet<>();
 
-        this.tickableEnchants.forEach(enchant -> {
+        this.registeredTickableEnchants.forEach(enchant -> {
             if (Bukkit.getCurrentTick() % enchant.getTickFrequency() == 0) {
                 tickableEnchants.add(enchant);
             }
@@ -156,11 +157,24 @@ public class SharedEventHandler implements Listener {
                 !block.getChunk().isLoaded() || !BlockEnchant.hasBlockEnchants(block)
         );
 
-        tickableEnchants.forEach(enchant -> {
-            if (enchant instanceof TickableBlockEnchant blockEnchant) {
-                tickingEnchantedBlocks.forEach(blockEnchant::onTick);
-            }
-        });
+        tickableEnchants.stream()
+                .filter(TickableBlockEnchant.class::isInstance)
+                .map(TickableBlockEnchant.class::cast)
+                .forEach(enchant -> {
+                    Map<Block, Integer> enchanted = new HashMap<>();
+
+                    tickingEnchantedBlocks.forEach(block -> {
+                        Integer level = enchant.getLevel(block);
+                        if (level != null && level > 0) {
+                            enchanted.put(block, level);
+                        }
+                    });
+
+                    if (!enchanted.isEmpty()) {
+                        enchant.tickAll(enchanted);
+                        enchanted.forEach(enchant::onTick);
+                    }
+                });
 
         tickableEnchants.forEach(TickableEnchant::onGlobalTick);
 

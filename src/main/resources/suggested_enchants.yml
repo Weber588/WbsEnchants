@@ -7,11 +7,11 @@ wbsenchants:entangled:
     chest anywhere in the world, so long as it has enough space for it.
   supported_items: minecraft:enchantable/mining
   minimum_cost:
-    base_cost: 5
-    additional_per_level_cost: 8
+    base_cost: 45
+    additional_per_level_cost: 0
   maximum_cost:
-    base_cost: 25
-    additional_per_level_cost: 8
+    base_cost: 65
+    additional_per_level_cost: 0
   anvil_cost: 0
   max_level: 1
   weight: 1
@@ -447,7 +447,7 @@ wbsenchants:pinpoint:
     additional_per_level_cost: 8
   anvil_cost: 0
   max_level: 1
-  weight: 5
+  weight: 3
   inject_into:
     - minecraft:on_mob_spawn_equipment
 wbsenchants:frictionless:
@@ -1791,11 +1791,11 @@ wbsenchants:blooming:
     '#minecraft:flowers': 0.12 # Order specific, so this affects any flower not in the small_flowers tag
     '#minecraft:flower_pots': 0.05
   minimum_cost:
-    base_cost: 5
-    additional_per_level_cost: 8
+    base_cost: 15
+    additional_per_level_cost: 0
   maximum_cost:
-    base_cost: 25
-    additional_per_level_cost: 8
+    base_cost: 55
+    additional_per_level_cost: 0
   anvil_cost: 1
   max_level: 1
   weight: 1
@@ -1920,11 +1920,11 @@ wbsenchants:multicast:
   supported_items:
     - minecraft:fishing_rod
   minimum_cost:
-    base_cost: 5
-    additional_per_level_cost: 8
-  maximum_cost:
     base_cost: 25
-    additional_per_level_cost: 8
+    additional_per_level_cost: 16
+  maximum_cost:
+    base_cost: 65
+    additional_per_level_cost: 16
   anvil_cost: 1
   max_level: 2
   weight: 1
@@ -2697,6 +2697,7 @@ wbsenchants:striding:
   display_name: Striding
   description: Increases step height.
   supported_items: minecraft:enchantable/leg_armor
+  primary_items: minecraft:enchantable/leg_armor
   minimum_cost:
     base_cost: 5
     additional_per_level_cost: 8
@@ -2748,19 +2749,19 @@ wbsenchants:fly_fishing:
 wbsenchants:launching:
   enabled: true
   display_name: Launching
-  description: Gives you an upwards boost when you start gliding.
+  description: Gives you an upwards boost when you start gliding while sneaking.
   supported_items:
     - minecraft:elytra
   primary_items:
     - minecraft:elytra
   minimum_cost:
-    base_cost: 12
-    additional_per_level_cost: 7
+    base_cost: 35
+    additional_per_level_cost: 12
   maximum_cost:
-    base_cost: 50
-    additional_per_level_cost: 5
+    base_cost: 65
+    additional_per_level_cost: 16
   anvil_cost: 4
-  max_level: 2
+  max_level: 3
   weight: 1
   inject_into: []
 wbsenchants:supersonic:
@@ -2796,13 +2797,47 @@ wbsenchants:salvage:
   primary_items:
     - minecraft:elytra
   minimum_cost:
-    base_cost: 5
+    base_cost: 15
     additional_per_level_cost: 8
   maximum_cost:
-    base_cost: 55
+    base_cost: 75
     additional_per_level_cost: 8
   anvil_cost: 4
   max_level: 1
   weight: 1
   inject_into: []
+wbsenchants:wisdom:
+  enabled: true
+  display_name: Wisdom
+  description: Removes XP pickup cooldown.
+  supported_items: minecraft:enchantable/head_armor
+  minimum_cost:
+    base_cost: 15
+    additional_per_level_cost: 8
+  maximum_cost:
+    base_cost: 75
+    additional_per_level_cost: 8
+  anvil_cost: 4
+  max_level: 1
+  weight: 1
+  inject_into:
+    - minecraft:on_random_loot
+    - minecraft:tradeable
+wbsenchants:necromancy:
+  enabled: true
+  display_name: Necromancy
+  description: Kills with this weapon may convert undead mobs into living ones.
+  supported_items: minecraft:enchantable/weapon
+  minimum_cost:
+    base_cost: 15
+    additional_per_level_cost: 8
+  maximum_cost:
+    base_cost: 75
+    additional_per_level_cost: 8
+  anvil_cost: 6
+  max_level: 3
+  weight: 1
+  inject_into:
+    - minecraft:on_random_loot
+    - minecraft:tradeable
 

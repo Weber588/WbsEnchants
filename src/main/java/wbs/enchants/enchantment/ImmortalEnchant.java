@@ -295,13 +295,13 @@ public class ImmortalEnchant extends WbsEnchantment {
                 continue;
             }
 
-            if (isEnchantmentOn(stack) && willBreak(held, 1)) {
+            if (isEnchantmentOn(stack) && willBreak(stack, 1)) {
                 ItemMeta meta = stack.getItemMeta();
                 Objects.requireNonNull(meta);
                 if (meta.hasEnchant(Enchantment.THORNS)) {
                     event.setCancelled(true);
                     if (damager instanceof Player player) {
-                        notifyImmortal(player, held);
+                        notifyImmortal(player, stack);
                     }
                     return;
                 }

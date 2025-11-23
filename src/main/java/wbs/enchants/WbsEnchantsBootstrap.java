@@ -24,6 +24,7 @@ import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.ItemType;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.intellij.lang.annotations.Pattern;
 import org.jetbrains.annotations.NotNull;
 import wbs.enchants.definition.EnchantmentDefinition;
 import wbs.enchants.type.EnchantmentType;
@@ -40,7 +41,7 @@ public class WbsEnchantsBootstrap implements PluginBootstrap {
     public static final String NAMESPACE = "wbsenchants";
     private EnchantsBootstrapSettings settings;
 
-    public static NamespacedKey createKey(String value) {
+    public static NamespacedKey createKey(@Pattern("[a-z_/]*") String value) {
         return new NamespacedKey(NAMESPACE, value);
     }
     

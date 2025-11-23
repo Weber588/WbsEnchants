@@ -1,6 +1,5 @@
 package wbs.enchants.enchantment;
 
-import io.papermc.paper.block.TileStateInventoryHolder;
 import io.papermc.paper.registry.keys.ItemTypeKeys;
 import org.bukkit.Location;
 import org.bukkit.block.EnchantingTable;
@@ -39,11 +38,12 @@ public class RerollingEnchant extends WbsEnchantment implements BlockStateEnchan
             return;
         }
 
-        if (!(event.getInventory().getHolder() instanceof TileStateInventoryHolder holder)) {
+        if (!(event.getInventory() instanceof EnchantingInventory enchantingInventory)) {
             return;
         }
 
-        if (!isEnchanted(holder.getBlock())) {
+        Location location = enchantingInventory.getLocation();
+        if (location == null || !isEnchanted(location.getBlock())) {
             return;
         }
 

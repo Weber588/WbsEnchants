@@ -1,7 +1,6 @@
 package wbs.enchants.events;
 
 import io.papermc.paper.datacomponent.DataComponentTypes;
-import io.papermc.paper.datacomponent.item.ItemEnchantments;
 import io.papermc.paper.datacomponent.item.Repairable;
 import io.papermc.paper.registry.TypedKey;
 import org.bukkit.enchantments.Enchantment;
@@ -16,7 +15,6 @@ import wbs.enchants.WbsEnchants;
 import wbs.enchants.util.EnchantUtils;
 import wbs.enchants.util.ItemUtils;
 
-import java.util.HashMap;
 import java.util.Map;
 
 @SuppressWarnings("UnstableApiUsage")
@@ -42,8 +40,10 @@ public class AnvilEvents implements Listener {
                 createdResult = true;
             }
 
-            mergeEnchantsOnto(newResult, firstItem, createdResult);
-            mergeEnchantsOnto(newResult, secondItem, createdResult);
+            mergeEnchantsOnto(newResult, firstItem);
+            mergeEnchantsOnto(newResult, secondItem);
+
+            combineEnchants(firstItem, secondItem, newResult);
 
             if (createdResult && !newResult.equals(firstItem)) {
                 event.setResult(newResult);
@@ -71,30 +71,43 @@ public class AnvilEvents implements Listener {
         }
     }
 
-    private static void mergeEnchantsOnto(ItemStack to, ItemStack from, boolean combine) {
-        Map<Enchantment, Integer> resultEnchantments = new HashMap<>(to.getEnchantments());
-        ItemEnchantments data = to.getData(DataComponentTypes.STORED_ENCHANTMENTS);
-        if (data != null) {
-            resultEnchantments.putAll(data.enchantments());
+    private static void combineEnchants(ItemStack firstItem, ItemStack secondItem, ItemStack newResult) {
+        Map<Enchantment, Integer> firstEnchants = EnchantUtils.getEnchants(firstItem);
+        Map<Enchantment, Integer> secondEnchants = EnchantUtils.getEnchants(secondItem);
+        Map<Enchantment, Integer> resultEnchants = EnchantUtils.getEnchants(newResult);
+
+        for (Map.Entry<Enchantment, Integer> firstEnchant : firstEnchants.entrySet()) {
+            for (Map.Entry<Enchantment, Integer> secondEnchant : secondEnchants.entrySet()) {
+                if (resultEnchants.containsKey(firstEnchant.getKey())) {
+                    if (secondEnchant.getKey().equals(firstEnchant.getKey())) {
+                        if (firstEnchant.getValue().equals(secondEnchant.getValue())) {
+                            if (firstEnchant.getKey().getMaxLevel() > firstEnchant.getValue()) {
+                                resultEnchants.put(firstEnchant.getKey(), firstEnchant.getValue() + 1);
+                            }
+                        }
+                    }
+                }
+            }
         }
 
-        Map<Enchantment, Integer> enchantments = from.getEnchantments();
-        ItemEnchantments fromData = to.getData(DataComponentTypes.STORED_ENCHANTMENTS);
-        if (fromData != null) {
-            enchantments.putAll(fromData.enchantments());
-        }
+        EnchantUtils.addEnchantments(newResult, resultEnchants);
+    }
+
+    private static void mergeEnchantsOnto(ItemStack to, ItemStack from) {
+        Map<Enchantment, Integer> resultEnchantments = EnchantUtils.getEnchants(to);
+
+        Map<Enchantment, Integer> enchantments = EnchantUtils.getEnchants(from);
 
         for (Enchantment originalEnchant : enchantments.keySet()) {
+            int originalLevel = enchantments.get(originalEnchant);
             if (resultEnchantments.containsKey(originalEnchant)) {
-                int originalLevel = enchantments.get(originalEnchant);
                 int resultLevel = to.getEnchantmentLevel(originalEnchant);
                 // Accept the highest -- even if it's over max level. No need to cap them if an original had it.
                 // TODO: Make this toggleable in config?
                 int finalLevel = Math.max(originalLevel, resultLevel);
-                if (originalLevel == resultLevel && combine && finalLevel < originalEnchant.getMaxLevel()) {
-                    finalLevel++;
-                }
                 EnchantUtils.addEnchantment(originalEnchant, to, finalLevel);
+            } else if (EnchantUtils.canEnchant(originalEnchant, to)) {
+                EnchantUtils.addEnchantment(originalEnchant, to, originalLevel);
             }
         }
     }

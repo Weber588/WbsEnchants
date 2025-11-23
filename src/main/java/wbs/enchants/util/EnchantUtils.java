@@ -141,4 +141,20 @@ public class EnchantUtils {
     public static boolean hasEnchants(ItemStack item) {
         return !getEnchants(item).isEmpty();
     }
+
+    public static void addEnchantments(ItemStack item, Map<Enchantment, Integer> enchantments) {
+        for (Map.Entry<Enchantment, Integer> enchantment : enchantments.entrySet()) {
+            addEnchantment(enchantment.getKey(), item, enchantment.getValue());
+        }
+    }
+
+    public static boolean canEnchant(Enchantment enchantment, ItemStack item) {
+        if (!enchantment.canEnchantItem(item)) {
+            return false;
+        }
+
+        Map<Enchantment, Integer> enchants = getEnchants(item);
+
+        return enchants.keySet().stream().noneMatch(other -> !other.equals(enchantment) && other.conflictsWith(enchantment));
+    }
 }
