@@ -1,8 +1,12 @@
 package wbs.enchants.enchantment;
 
+import com.destroystokyo.paper.event.player.PlayerPickupExperienceEvent;
 import io.papermc.paper.registry.keys.tags.ItemTypeTagKeys;
+import net.minecraft.server.level.ServerPlayer;
+import org.bukkit.craftbukkit.entity.CraftExperienceOrb;
+import org.bukkit.craftbukkit.entity.CraftPlayer;
+import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
-import org.bukkit.event.player.PlayerExpCooldownChangeEvent;
 import org.bukkit.inventory.EquipmentSlotGroup;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
@@ -22,10 +26,19 @@ public class WisdomEnchant extends WbsEnchantment {
     }
 
     @EventHandler
-    public void onPickupXP(PlayerExpCooldownChangeEvent event) {
-        ItemStack item = getHighestEnchanted(event.getPlayer());
+    public void onPickupXP(PlayerPickupExperienceEvent event) {
+        Player player = event.getPlayer();
+        ItemStack item = getHighestEnchanted(player);
         if (item != null) {
-            event.setNewCooldown(0);
+            ServerPlayer serverPlayer = ((CraftPlayer) player).getHandle();
+            player.getNearbyEntities(1, 2, 1)
+                    .stream()
+                    .filter(CraftExperienceOrb.class::isInstance)
+                    .map(CraftExperienceOrb.class::cast)
+                    .map(CraftExperienceOrb::getHandle)
+                    .forEach(orb ->
+                            serverPlayer.take(orb, 1)
+                    );
         }
     }
 }

@@ -81,10 +81,10 @@ wbsenchants:vampiric:
     of the damage dealt, that expires after 10 seconds (per level).
   supported_items: minecraft:enchantable/weapon
   minimum_cost:
-    base_cost: 5
+    base_cost: 15
     additional_per_level_cost: 8
   maximum_cost:
-    base_cost: 25
+    base_cost: 65
     additional_per_level_cost: 8
   anvil_cost: 0
   max_level: 3
@@ -111,11 +111,11 @@ wbsenchants:vein_miner:
     type, they'll be mined too (up to 6 blocks per level).
   supported_items: minecraft:pickaxes
   minimum_cost:
-    base_cost: 5
-    additional_per_level_cost: 8
+    base_cost: 55
+    additional_per_level_cost: 15
   maximum_cost:
-    base_cost: 25
-    additional_per_level_cost: 8
+    base_cost: 85
+    additional_per_level_cost: 15
   exclusive_with: wbsenchants:exclusive_set/multiminer
   anvil_cost: 0
   max_level: 4
@@ -136,11 +136,11 @@ wbsenchants:blast_miner:
     every level, for a maximum of 3x%max_level%x3 at level %max_level%.
   supported_items: minecraft:pickaxes
   minimum_cost:
-    base_cost: 5
-    additional_per_level_cost: 8
+    base_cost: 55
+    additional_per_level_cost: 15
   maximum_cost:
-    base_cost: 25
-    additional_per_level_cost: 8
+    base_cost: 85
+    additional_per_level_cost: 15
   exclusive_with: wbsenchants:exclusive_set/multiminer
   anvil_cost: 0
   max_level: 3
@@ -161,11 +161,11 @@ wbsenchants:void_walker:
     of the world - get that bucket clutch ready!
   supported_items: minecraft:enchantable/foot_armor
   minimum_cost:
-    base_cost: 5
-    additional_per_level_cost: 8
+    base_cost: 15
+    additional_per_level_cost: 12
   maximum_cost:
     base_cost: 25
-    additional_per_level_cost: 8
+    additional_per_level_cost: 12
   anvil_cost: 0
   max_level: 1
   weight: 1
@@ -183,11 +183,11 @@ wbsenchants:planar_binding:
   description: After hitting a mob, it is unable to teleport for 3 seconds (per level).
   supported_items: minecraft:enchantable/weapon
   minimum_cost:
-    base_cost: 5
-    additional_per_level_cost: 8
+    base_cost: 15
+    additional_per_level_cost: 12
   maximum_cost:
     base_cost: 25
-    additional_per_level_cost: 8
+    additional_per_level_cost: 12
   anvil_cost: 0
   max_level: 3
   weight: 5
@@ -208,10 +208,10 @@ wbsenchants:disarming:
     their weapon.
   supported_items: minecraft:enchantable/weapon
   minimum_cost:
-    base_cost: 5
+    base_cost: 15
     additional_per_level_cost: 8
   maximum_cost:
-    base_cost: 25
+    base_cost: 65
     additional_per_level_cost: 8
   anvil_cost: 0
   max_level: 3
@@ -255,10 +255,10 @@ wbsenchants:lightweight:
   primary_items:
     - minecraft:shield
   minimum_cost:
-    base_cost: 10
+    base_cost: 35
     additional_per_level_cost: 15
   maximum_cost:
-    base_cost: 60
+    base_cost: 85
     additional_per_level_cost: 15
   anvil_cost: 0
   max_level: 3
@@ -278,15 +278,15 @@ wbsenchants:lightweight:
 wbsenchants:hellborne:
   enabled: true
   display_name: Hellborne
-  description: You have strength and immunity to fire tick damage, with strength level
-    relating to the level of the enchantment while you're on fire.
+  description: You have immunity to fire tick damage, and while you're on fire,
+    you have strength equal to the level of the enchantment.
   supported_items: minecraft:enchantable/chest_armor
   minimum_cost:
-    base_cost: 5
-    additional_per_level_cost: 8
-  maximum_cost:
     base_cost: 25
-    additional_per_level_cost: 8
+    additional_per_level_cost: 15
+  maximum_cost:
+    base_cost: 65
+    additional_per_level_cost: 15
   anvil_cost: 0
   max_level: 2
   weight: 1
@@ -337,11 +337,11 @@ wbsenchants:scorching:
   description: Smelts blocks you mine - simple!
   supported_items: minecraft:enchantable/mining
   minimum_cost:
-    base_cost: 5
-    additional_per_level_cost: 8
+    base_cost: 35
+    additional_per_level_cost: 15
   maximum_cost:
-    base_cost: 25
-    additional_per_level_cost: 8
+    base_cost: 75
+    additional_per_level_cost: 15
   exclusive_with: minecraft:exclusive_set/mining
   anvil_cost: 0
   max_level: 1
@@ -353,9 +353,8 @@ wbsenchants:scorching:
 wbsenchants:frostburn:
   enabled: true
   display_name: Frostburn
-  description: Does increased damage against water- and cold-vulnerable mobs, like
-    endermen and blazes, but less damage against heat-vulnerable mobs, like strays.
-    Has a small chance to slow enemies.
+  description: Sometimes apply slowness on hit. Does increased damage against water/cold vulnerable mobs, 
+    like endermen and blazes, but less damage against heat-vulnerable mobs, like strays
   supported_items: minecraft:swords
   primary_items: minecraft:enchantable/weapon
   minimum_cost:
@@ -363,7 +362,7 @@ wbsenchants:frostburn:
     additional_per_level_cost: 12
   maximum_cost:
     base_cost: 25
-    additional_per_level_cost: 2
+    additional_per_level_cost: 6
   exclusive_with: minecraft:exclusive_set/damage
   anvil_cost: 0
   max_level: 3
@@ -384,11 +383,11 @@ wbsenchants:ender_shot:
   description: Fired arrows travel instantly in a straight line to its target.
   supported_items: minecraft:enchantable/bow
   minimum_cost:
-    base_cost: 5
-    additional_per_level_cost: 8
-  maximum_cost:
     base_cost: 25
-    additional_per_level_cost: 8
+    additional_per_level_cost: 15
+  maximum_cost:
+    base_cost: 65
+    additional_per_level_cost: 15
   anvil_cost: 0
   max_level: 1
   weight: 1
@@ -408,11 +407,11 @@ wbsenchants:immortal:
     be destroyed except for the void.
   supported_items: minecraft:enchantable/durability
   minimum_cost:
-    base_cost: 5
-    additional_per_level_cost: 8
+    base_cost: 35
+    additional_per_level_cost: 15
   maximum_cost:
-    base_cost: 25
-    additional_per_level_cost: 8
+    base_cost: 85
+    additional_per_level_cost: 15
   anvil_cost: 0
   max_level: 1
   weight: 1
@@ -424,11 +423,11 @@ wbsenchants:dual_wield:
     after attacking!
   supported_items: minecraft:enchantable/sword
   minimum_cost:
-    base_cost: 5
-    additional_per_level_cost: 8
+    base_cost: 15
+    additional_per_level_cost: 10
   maximum_cost:
-    base_cost: 25
-    additional_per_level_cost: 8
+    base_cost: 65
+    additional_per_level_cost: 10
   anvil_cost: 0
   max_level: 1
   weight: 1
@@ -440,7 +439,7 @@ wbsenchants:pinpoint:
   description: Removes all inaccuracy from fired arrows
   supported_items: minecraft:enchantable/bow
   minimum_cost:
-    base_cost: 5
+    base_cost: 15
     additional_per_level_cost: 8
   maximum_cost:
     base_cost: 25

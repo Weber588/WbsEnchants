@@ -130,8 +130,17 @@ public class SharedEventHandler implements Listener {
                     cancel();
                 }
 
+                // TODO: Make this a config
+                boolean playersOnly = true;
+
                 Set<LivingEntity> allLivingEntities = new HashSet<>();
-                Bukkit.getWorlds().forEach(world -> allLivingEntities.addAll(world.getLivingEntities()));
+                Bukkit.getWorlds().forEach(world -> {
+                    if (playersOnly) {
+                        allLivingEntities.addAll(world.getPlayers());
+                    } else {
+                        allLivingEntities.addAll(world.getLivingEntities());
+                    }
+                });
 
                 tickEnchants(allLivingEntities);
                 tickItemModificationEnchants(allLivingEntities);

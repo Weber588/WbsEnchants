@@ -13,8 +13,8 @@ import wbs.enchants.type.EnchantmentTypeManager;
 import wbs.enchants.util.DamageUtils;
 
 public class HellborneEnchant extends WbsEnchantment {
-    private static final String DEFAULT_DESCRIPTION = "You have strength and immunity to fire tick damage, " +
-            "with strength level relating to the level of the enchantment while you're on fire.";
+    private static final String DEFAULT_DESCRIPTION = "You have immunity to fire tick damage, and while you're on fire, " +
+            "you have strength equal to the level of the enchantment.";
 
     public HellborneEnchant() {
         super("hellborne", EnchantmentTypeManager.ETHEREAL, DEFAULT_DESCRIPTION);

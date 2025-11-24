@@ -1,9 +1,6 @@
 package wbs.enchants.enchantment;
 
-import org.bukkit.Bukkit;
-import org.bukkit.Chunk;
-import org.bukkit.Location;
-import org.bukkit.Particle;
+import org.bukkit.*;
 import org.bukkit.block.Beacon;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Enemy;
@@ -25,7 +22,6 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.stream.Collectors;
 
-@SuppressWarnings("UnstableApiUsage")
 public class HavenEnchant extends WbsEnchantment implements BlockStateEnchant<Beacon> {
     private static final @NotNull String DEFAULT_DESCRIPTION = "Prevents hostile mob spawning in the beacon's radius";
 
@@ -100,7 +96,7 @@ public class HavenEnchant extends WbsEnchantment implements BlockStateEnchant<Be
 
         for (Chunk chunk : chunksInRadius) {
             chunk.getTileEntities(
-                            block -> block.getState() instanceof Beacon,
+                            block -> block.getType() == Material.BEACON && block.getState() instanceof Beacon,
                             true
                     )
                     .stream()

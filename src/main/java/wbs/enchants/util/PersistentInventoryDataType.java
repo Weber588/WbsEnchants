@@ -97,7 +97,7 @@ public class PersistentInventoryDataType implements PersistentDataType<String, I
         for (int i = 0; i < inventory.getSize(); i++) {
             ConfigurationSection slotSection = asSection.getConfigurationSection(String.valueOf(i));
             if (slotSection != null) {
-                Map<String, Object> asMap = slotSection.getValues(true);
+                Map<String, Object> asMap = slotSection.getValues(false);
                 ItemStack deserialized = ItemStack.deserialize(asMap);
                 inventory.setItem(i, deserialized);
             }

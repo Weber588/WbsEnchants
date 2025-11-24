@@ -87,6 +87,7 @@ public class LootTableReplacementContext extends GenerationContext {
                     if (enchantments.containsKey(ench)) {
                         item.removeEnchantment(ench);
                         replacedAny = true;
+                        break;
                     }
                 }
 
