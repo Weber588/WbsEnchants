@@ -133,6 +133,7 @@ public class EnchantManager {
     public static final SupersonicEnchant SUPERSONIC = new SupersonicEnchant();
     public static final SalvageEnchant SALVAGE = new SalvageEnchant();
     public static final WisdomEnchant WISDOM = new WisdomEnchant();
+    public static final PortalWalkerEnchant PORTAL_WALKER_ENCHANT = new PortalWalkerEnchant();
 
     public static final CurseRebuking CURSE_REBUKING = new CurseRebuking();
     public static final CurseVanilla CURSE_VANILLA = new CurseVanilla();
