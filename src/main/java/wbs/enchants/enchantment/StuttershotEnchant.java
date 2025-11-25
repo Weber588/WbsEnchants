@@ -1,7 +1,7 @@
 package wbs.enchants.enchantment;
 
 import org.bukkit.Location;
-import org.bukkit.entity.Entity;
+import org.bukkit.entity.AbstractArrow;
 import org.bukkit.entity.Projectile;
 import org.bukkit.event.entity.ProjectileHitEvent;
 import org.bukkit.event.entity.ProjectileLaunchEvent;
@@ -35,7 +35,7 @@ public class StuttershotEnchant extends WbsEnchantment implements ProjectileEnch
     @Override
     public void onShoot(ProjectileLaunchEvent event, Projectile projectile, @NotNull ProjectileEnchant.WrappedProjectileSource source, int level) {
         if (WbsMath.chance(CHANCE_PER_LEVEL * level)) {
-            Entity copy = projectile.copy();
+            Projectile copy = (Projectile) projectile.copy();
             Location location = projectile.getLocation();
 
             new BukkitRunnable() {
@@ -47,6 +47,9 @@ public class StuttershotEnchant extends WbsEnchantment implements ProjectileEnch
                         spawnLoc = source.livingShooter().getEyeLocation();
                     }
 
+                    if (copy instanceof AbstractArrow arrow) {
+                        arrow.setPickupStatus(AbstractArrow.PickupStatus.CREATIVE_ONLY);
+                    }
                     copy.spawnAt(spawnLoc);
                 }
             }.runTaskLater(WbsEnchants.getInstance(), 5);
