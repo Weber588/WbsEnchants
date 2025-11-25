@@ -40,7 +40,7 @@ public class EchoingEnchant extends WbsEnchantment implements ProjectileEnchant<
         new BukkitRunnable() {
             @Override
             public void run() {
-                if (projectile.isValid() && projectile.isInBlock()) {
+                if (projectile.isValid() && projectile.isInBlock() && projectile.getPickupStatus() == AbstractArrow.PickupStatus.ALLOWED) {
                     projectile.remove();
 
                     Inventory shooterInventory = null;
