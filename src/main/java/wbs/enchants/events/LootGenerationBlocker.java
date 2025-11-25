@@ -68,6 +68,11 @@ public class LootGenerationBlocker implements Listener {
 
     @EventHandler
     public void onBrushBlock(PlayerInteractEvent event) {
+        EnchantsSettings settings = WbsEnchants.getInstance().settings;
+        if (!settings.forceOnlyLootEnchants()) {
+            return;
+        }
+
         ItemStack heldItem = event.getItem();
         if (heldItem != null && heldItem.getType() == Material.BRUSH) {
             Block clickedBlock = event.getClickedBlock();
