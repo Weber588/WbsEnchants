@@ -298,7 +298,9 @@ wbsenchants:hellborne:
       tables:
         - .*nether_bridge.*
         - .*nether_fortress.*
-  inject_into: []
+  exclusive_with: wbsenchants:cold_based
+  inject_into:
+    - wbsenchants:heat_based
 wbsenchants:decay:
   enabled: true
   display_name: Decay
@@ -347,6 +349,7 @@ wbsenchants:scorching:
   max_level: 1
   weight: 1
   inject_into:
+    - wbsenchants:heat_based
     - minecraft:tradeable
     - minecraft:on_random_loot
     - minecraft:exclusive_set/mining
@@ -374,6 +377,7 @@ wbsenchants:frostburn:
     - HUSK
     - ENDERMAN
   inject_into:
+    - wbsenchants:cold_based
     - minecraft:tradeable
     - minecraft:on_random_loot
     - minecraft:exclusive_set/damage
@@ -745,7 +749,9 @@ wbsenchants:lava_walker:
       add-chance: 100
       conditions:
         dimension-type: Nether
-  inject_into: []
+  exclusive_with: wbsenchants:cold_based
+  inject_into:
+    - wbsenchants:heat_based
 wbsenchants:wicked:
   enabled: true
   display_name: Wicked
@@ -1579,7 +1585,9 @@ wbsenchants:frostcreep:
   anvil_cost: 0
   max_level: 3
   weight: 1
+  exclusive_with: wbsenchants:heat_based
   inject_into:
+    - wbsenchants:cold_based
     - minecraft:tradeable
     - minecraft:on_random_loot
 wbsenchants:outreach:
@@ -1985,7 +1993,9 @@ wbsenchants:arctic_strike:
   anvil_cost: 1
   max_level: 3
   weight: 1
-  inject_into: []
+  exclusive_with: wbsenchants:heat_based
+  inject_into:
+    - wbsenchants:cold_based
   generation:
     loot-table:
       description: 3% change to appear in cold biome loot

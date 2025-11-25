@@ -10,6 +10,7 @@ import org.bukkit.event.block.BlockIgniteEvent;
 import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
 import wbs.enchants.WbsEnchantment;
+import wbs.enchants.WbsEnchantsBootstrap;
 
 public class HellfireEnchant extends WbsEnchantment {
     private static final String DESCRIPTION = "Makes this item produce soul fire instead of regular fire!";
@@ -18,7 +19,9 @@ public class HellfireEnchant extends WbsEnchantment {
         super("hellfire", DESCRIPTION);
 
         getDefinition()
-                .supportedItems(ItemTypeKeys.FLINT_AND_STEEL);
+                .supportedItems(ItemTypeKeys.FLINT_AND_STEEL)
+                .exclusiveWith(WbsEnchantsBootstrap.COLD_BASED_ENCHANTS)
+                .addInjectInto(WbsEnchantsBootstrap.HEAT_BASED_ENCHANTS);
     }
 
     @EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)

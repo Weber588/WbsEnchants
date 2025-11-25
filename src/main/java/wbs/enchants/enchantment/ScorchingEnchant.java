@@ -18,6 +18,7 @@ import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.scheduler.BukkitRunnable;
 import wbs.enchants.WbsEnchantment;
 import wbs.enchants.WbsEnchants;
+import wbs.enchants.WbsEnchantsBootstrap;
 import wbs.enchants.util.ItemUtils;
 import wbs.utils.util.particles.NormalParticleEffect;
 import wbs.utils.util.particles.WbsParticleGroup;
@@ -71,7 +72,8 @@ public class ScorchingEnchant extends WbsEnchantment {
 
         getDefinition()
                 .supportedItems(ItemTypeTagKeys.ENCHANTABLE_MINING)
-                .exclusiveInject(EnchantmentTagKeys.EXCLUSIVE_SET_MINING);
+                .exclusiveInject(EnchantmentTagKeys.EXCLUSIVE_SET_MINING)
+                .addInjectInto(WbsEnchantsBootstrap.HEAT_BASED_ENCHANTS);
     }
 
     @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)

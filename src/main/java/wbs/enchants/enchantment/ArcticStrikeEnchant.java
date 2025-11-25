@@ -10,6 +10,7 @@ import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import wbs.enchants.WbsEnchantment;
+import wbs.enchants.WbsEnchantsBootstrap;
 import wbs.enchants.enchantment.helper.DamageEnchant;
 import wbs.utils.util.entities.WbsEntityUtil;
 import wbs.utils.util.particles.NormalParticleEffect;
@@ -25,6 +26,8 @@ public class ArcticStrikeEnchant extends WbsEnchantment implements DamageEnchant
         getDefinition()
                 .maxLevel(3)
                 .supportedItems(ItemTypeTagKeys.ENCHANTABLE_WEAPON)
+                .exclusiveWith(WbsEnchantsBootstrap.HEAT_BASED_ENCHANTS)
+                .addInjectInto(WbsEnchantsBootstrap.COLD_BASED_ENCHANTS)
                 .minimumCost(5, 6)
                 .maximumCost(25, 6);
     }
@@ -41,7 +44,7 @@ public class ArcticStrikeEnchant extends WbsEnchantment implements DamageEnchant
         int currentFreezeTicks = victim.getFreezeTicks();
         int toAdd = victim.getMaxFreezeTicks() / 10 * level;
 
-        victim.setFreezeTicks((currentFreezeTicks + toAdd) * 2);
+        victim.setFreezeTicks(Math.min(currentFreezeTicks * 2, currentFreezeTicks + toAdd));
 
         EFFECT.play(Particle.SNOWFLAKE, WbsEntityUtil.getMiddleLocation(victim));
     }

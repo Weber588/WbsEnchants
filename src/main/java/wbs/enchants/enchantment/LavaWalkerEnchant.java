@@ -18,6 +18,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.persistence.PersistentDataContainer;
 import wbs.enchants.WbsEnchantment;
 import wbs.enchants.WbsEnchants;
+import wbs.enchants.WbsEnchantsBootstrap;
 import wbs.utils.util.WbsCollectionUtil;
 import wbs.utils.util.WbsItems;
 import wbs.utils.util.WbsLocationUtil;
@@ -41,7 +42,9 @@ public class LavaWalkerEnchant extends WbsEnchantment {
 
         getDefinition()
                 .maxLevel(2)
-                .supportedItems(ItemTypeTagKeys.ENCHANTABLE_FOOT_ARMOR);
+                .supportedItems(ItemTypeTagKeys.ENCHANTABLE_FOOT_ARMOR)
+                .exclusiveWith(WbsEnchantsBootstrap.COLD_BASED_ENCHANTS)
+                .addInjectInto(WbsEnchantsBootstrap.HEAT_BASED_ENCHANTS);
 
         // TODO: exclusiveWith = Create frost walker tag, maybe either "fluid_walkers" or "heat"/"cold"?
     }

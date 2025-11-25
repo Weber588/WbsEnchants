@@ -13,6 +13,7 @@ import org.bukkit.potion.PotionEffectType;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import wbs.enchants.WbsEnchantment;
+import wbs.enchants.WbsEnchantsBootstrap;
 import wbs.enchants.enchantment.helper.ShieldBlockEnchant;
 import wbs.utils.util.entities.WbsEntityUtil;
 import wbs.utils.util.particles.SphereParticleEffect;
@@ -28,6 +29,8 @@ public class FrostcreepEnchant extends WbsEnchantment implements ShieldBlockEnch
 
         getDefinition()
                 .supportedItems(ItemTypeKeys.SHIELD)
+                .exclusiveWith(WbsEnchantsBootstrap.HEAT_BASED_ENCHANTS)
+                .addInjectInto(WbsEnchantsBootstrap.COLD_BASED_ENCHANTS)
                 .maxLevel(3);
     }
 

@@ -13,6 +13,7 @@ import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import wbs.enchants.WbsEnchantsBootstrap;
 import wbs.enchants.enchantment.helper.TargetedDamageEnchant;
 import wbs.enchants.util.EntityUtils;
 import wbs.utils.util.WbsMath;
@@ -38,6 +39,8 @@ public class FrostburnEnchant extends TargetedDamageEnchant {
 
         getDefinition()
                 .supportedItems(ItemTypeTagKeys.ENCHANTABLE_WEAPON)
+                .exclusiveWith(WbsEnchantsBootstrap.HEAT_BASED_ENCHANTS)
+                .addInjectInto(WbsEnchantsBootstrap.COLD_BASED_ENCHANTS)
                 .maxLevel(3)
                 .weight(10);
     }

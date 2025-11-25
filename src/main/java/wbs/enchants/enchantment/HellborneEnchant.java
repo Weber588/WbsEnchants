@@ -9,6 +9,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import wbs.enchants.WbsEnchantment;
+import wbs.enchants.WbsEnchantsBootstrap;
 import wbs.enchants.type.EnchantmentTypeManager;
 import wbs.enchants.util.DamageUtils;
 
@@ -22,6 +23,8 @@ public class HellborneEnchant extends WbsEnchantment {
         getDefinition()
                 .maxLevel(2)
                 .supportedItems(ItemTypeTagKeys.ENCHANTABLE_CHEST_ARMOR)
+                .exclusiveWith(WbsEnchantsBootstrap.COLD_BASED_ENCHANTS)
+                .addInjectInto(WbsEnchantsBootstrap.HEAT_BASED_ENCHANTS)
                 .targetDescription("Chestplate");
     }
 
