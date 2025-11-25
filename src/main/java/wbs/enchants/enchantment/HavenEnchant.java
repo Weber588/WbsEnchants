@@ -86,9 +86,10 @@ public class HavenEnchant extends WbsEnchantment implements BlockStateEnchant<Be
 
         int simulationDistance = Bukkit.getServer().getViewDistance() * 16;
 
-        Collection<Chunk> chunksInRadius = Arrays.stream(from.getWorld().getLoadedChunks())
+        World world = from.getWorld();
+        Collection<Chunk> chunksInRadius = Arrays.stream(world.getLoadedChunks())
                 .filter(chunk -> {
-                    Location location = chunk.getBlock(7, from.getY(), 7).getLocation();
+                    Location location = chunk.getBlock(7, Math.max(from.getY(), world.getMaxHeight()), 7).getLocation();
                     double distanceSquared = location.distanceSquared(from.getLocation());
                     return distanceSquared < simulationDistance * simulationDistance;
                 })
