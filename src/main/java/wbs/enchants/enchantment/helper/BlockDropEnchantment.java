@@ -71,7 +71,7 @@ public interface BlockDropEnchantment extends EnchantInterface, AutoRegistrableE
             return;
         }
 
-        if (!WbsItems.isProperTool(broken, item)) {
+        if (!allowIncorrectTools() && !WbsItems.isProperTool(broken, item)) {
             return;
         }
 
@@ -90,6 +90,10 @@ public interface BlockDropEnchantment extends EnchantInterface, AutoRegistrableE
         }
 
         apply(event, marked);
+    }
+
+    default boolean allowIncorrectTools() {
+        return false;
     }
 
     void apply(BlockDropItemEvent event, MarkedLocation marked);

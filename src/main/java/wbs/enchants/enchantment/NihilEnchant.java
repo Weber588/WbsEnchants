@@ -28,6 +28,11 @@ public class NihilEnchant extends WbsEnchantment implements BlockDropEnchantment
     }
 
     @Override
+    public boolean allowIncorrectTools() {
+        return true;
+    }
+
+    @Override
     public void apply(BlockDropItemEvent event, MarkedLocation marked) {
         Player player = Bukkit.getPlayer(marked.playerUUID());
 
