@@ -43,9 +43,6 @@ public interface FishingEnchant extends EnchantInterface, AutoRegistrableEnchant
 
     private void onFishEvent(PlayerFishEvent event) {
         Player player = event.getPlayer();
-        if (REELING_SUPPRESSED.contains(event.getState()) && REELING.contains(player.getUniqueId())) {
-            return;
-        }
 
         EquipmentSlot hand = event.getHand();
         PlayerInventory inventory = player.getInventory();
@@ -66,7 +63,16 @@ public interface FishingEnchant extends EnchantInterface, AutoRegistrableEnchant
             return;
         }
 
+        if (REELING_SUPPRESSED.contains(event.getState()) && REELING.contains(player.getUniqueId())) {
+            onSuppressedFishEvent(event, rod, hand);
+            return;
+        }
+
         onFishEvent(event, rod, hand);
+    }
+
+    default void onSuppressedFishEvent(PlayerFishEvent event, ItemStack rod, EquipmentSlot hand) {
+
     }
 
     private void onHookHit(ProjectileHitEvent event) {
@@ -108,8 +114,8 @@ public interface FishingEnchant extends EnchantInterface, AutoRegistrableEnchant
     default void reelIn(Player player, FishHook hook, ItemStack item, EquipmentSlot hand) {
         reelIn(player, hook, item, hand, false);
     }
-    default void reelIn(Player player, FishHook hook, ItemStack item, EquipmentSlot hand, boolean suppressEvent) {
-        if (suppressEvent) {
+    default void reelIn(Player player, FishHook hook, ItemStack item, EquipmentSlot hand, boolean suppressRecursion) {
+        if (suppressRecursion) {
             REELING.add(player.getUniqueId());
         }
 
@@ -120,7 +126,7 @@ public interface FishingEnchant extends EnchantInterface, AutoRegistrableEnchant
 
         item.damage(damage, player);
 
-        if (suppressEvent) {
+        if (suppressRecursion) {
             REELING.remove(player.getUniqueId());
         }
     }

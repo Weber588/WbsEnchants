@@ -2,15 +2,16 @@ package wbs.enchants.enchantment;
 
 import io.papermc.paper.registry.keys.ItemTypeKeys;
 import net.kyori.adventure.util.TriState;
-import org.bukkit.entity.Entity;
-import org.bukkit.entity.FishHook;
-import org.bukkit.entity.Item;
+import org.bukkit.entity.*;
+import org.bukkit.event.EventHandler;
 import org.bukkit.event.entity.ProjectileHitEvent;
+import org.bukkit.event.entity.ProjectileLaunchEvent;
 import org.bukkit.event.player.PlayerFishEvent;
 import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 import wbs.enchants.WbsEnchantment;
+import wbs.enchants.WbsEnchantsBootstrap;
 import wbs.enchants.enchantment.helper.FishingEnchant;
 import wbs.enchants.util.ItemUtils;
 
@@ -23,7 +24,9 @@ public class HellHookEnchant extends WbsEnchantment implements FishingEnchant {
 
         getDefinition()
                 .maxLevel(3)
-                .supportedItems(ItemTypeKeys.FISHING_ROD);
+                .supportedItems(ItemTypeKeys.FISHING_ROD)
+                .exclusiveWith(WbsEnchantsBootstrap.COLD_BASED_ENCHANTS)
+                .addInjectInto(WbsEnchantsBootstrap.HEAT_BASED_ENCHANTS);
     }
 
     @Override
@@ -31,6 +34,22 @@ public class HellHookEnchant extends WbsEnchantment implements FishingEnchant {
         int level = getLevel(rod);
 
         hit.setFireTicks(level * 20);
+    }
+
+    @EventHandler
+    public void shootHook(ProjectileLaunchEvent event) {
+        if (event.getEntityType() != EntityType.FISHING_BOBBER) {
+            return;
+        }
+
+        if (event.getEntity() instanceof FishHook hook && hook.getShooter() instanceof Player player) {
+
+        }
+    }
+
+    @Override
+    public void onSuppressedFishEvent(PlayerFishEvent event, ItemStack rod, EquipmentSlot hand) {
+        onFishEvent(event, rod, hand);
     }
 
     @Override
