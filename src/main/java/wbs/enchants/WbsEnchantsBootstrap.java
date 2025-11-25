@@ -20,7 +20,6 @@ import io.papermc.paper.tag.PreFlattenTagRegistrar;
 import io.papermc.paper.tag.TagEntry;
 import org.bukkit.Keyed;
 import org.bukkit.NamespacedKey;
-import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.ItemType;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -262,6 +261,8 @@ public class WbsEnchantsBootstrap implements PluginBootstrap {
     public static final TagKey<Enchantment> EXCLUSIVE_SET_KNOCKBACK = EnchantmentTagKeys.create(createKey("exclusive_set/knockback"));
     public static final TagKey<Enchantment> EXCLUSIVE_SET_HORNS = EnchantmentTagKeys.create(createKey("exclusive_set/horns"));
     public static final TagKey<Enchantment> EXCLUSIVE_SET_ENCHANTING_TABLE = EnchantmentTagKeys.create(createKey("exclusive_set/enchanting_table"));
+    public static final TagKey<Enchantment> HEAT_BASED_ENCHANTS = EnchantmentTagKeys.create(createKey("heat_based"));
+    public static final TagKey<Enchantment> COLD_BASED_ENCHANTS = EnchantmentTagKeys.create(createKey("cold_based"));
 
     public static final TagKey<Enchantment> VANILLA = EnchantmentTagKeys.create(createKey("vanilla"));
     public static final TagKey<Enchantment> CUSTOM = EnchantmentTagKeys.create(createKey("custom"));
@@ -291,7 +292,12 @@ public class WbsEnchantsBootstrap implements PluginBootstrap {
                         EnchantmentKeys.KNOCKBACK
                 ),
                 CustomTag.getKeyTag(EXCLUSIVE_SET_HORNS),
-                CustomTag.getKeyTag(EXCLUSIVE_SET_ENCHANTING_TABLE)
+                CustomTag.getKeyTag(EXCLUSIVE_SET_ENCHANTING_TABLE),
+                CustomTag.getKeyTag(HEAT_BASED_ENCHANTS,
+                        EnchantmentKeys.FIRE_ASPECT,
+                        EnchantmentKeys.FLAME),
+                CustomTag.getKeyTag(COLD_BASED_ENCHANTS,
+                        EnchantmentKeys.FROST_WALKER)
         );
     }
 
@@ -300,7 +306,7 @@ public class WbsEnchantsBootstrap implements PluginBootstrap {
         boolean newExternalEnchants = false;
         if (settings.newExternalEnchants) {
             try {
-                externalEnchantsConfig.save(externalEnchantsFile);
+                settings.getExternalEnchantsConfig().save(externalEnchantsFile);
             } catch (IOException ex) {
                 context.getLogger().error(ex.getMessage());
             }
@@ -406,7 +412,6 @@ public class WbsEnchantsBootstrap implements PluginBootstrap {
     }
 
     private File externalEnchantsFile;
-    private YamlConfiguration externalEnchantsConfig;
 
 
     private static <T extends Keyed> void registerCustomTags(@NotNull BootstrapContext context,

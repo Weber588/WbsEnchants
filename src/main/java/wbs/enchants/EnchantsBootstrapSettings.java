@@ -55,6 +55,10 @@ public class EnchantsBootstrapSettings extends WbsBootstrapSettings<WbsEnchants>
     private YamlConfiguration enchantsConfig;
 
     private File externalEnchantsFile;
+    public YamlConfiguration getExternalEnchantsConfig() {
+        return externalEnchantsConfig;
+    }
+
     private YamlConfiguration externalEnchantsConfig;
     public boolean newExternalEnchants = false;
 
