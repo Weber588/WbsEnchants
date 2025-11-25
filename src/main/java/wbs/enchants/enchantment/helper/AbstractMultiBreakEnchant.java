@@ -76,7 +76,10 @@ public abstract class AbstractMultiBreakEnchant extends WbsEnchantment {
 
         if (isEnchantmentOn(item)) {
             int level = getLevel(item);
-            handleBreak(event, broken, player, item, level);
+            // TODO: Make this configurable
+            if (!player.isSneaking()) {
+                handleBreak(event, broken, player, item, level);
+            }
         }
     }
 
