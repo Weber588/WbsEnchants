@@ -2857,4 +2857,19 @@ wbsenchants:necromancy:
   inject_into:
     - minecraft:on_random_loot
     - minecraft:tradeable
+wbsenchants:portal_walker:
+  enabled: true
+  display_name: Portal Walker
+  description: Increases jump height of mobs wearing the saddle.
+  supported_items: minecraft:enchantable/leg_armor
+  minimum_cost:
+    base_cost: 25
+    additional_per_level_cost: 0
+  maximum_cost:
+    base_cost: 55
+    additional_per_level_cost: 0
+  anvil_cost: 6
+  max_level: 1
+  weight: 1
+  inject_into: []
 
