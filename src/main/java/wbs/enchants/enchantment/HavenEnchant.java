@@ -89,7 +89,7 @@ public class HavenEnchant extends WbsEnchantment implements BlockStateEnchant<Be
         World world = from.getWorld();
         Collection<Chunk> chunksInRadius = Arrays.stream(world.getLoadedChunks())
                 .filter(chunk -> {
-                    Location location = chunk.getBlock(7, Math.max(from.getY(), world.getMaxHeight()), 7).getLocation();
+                    Location location = chunk.getBlock(7, Math.min(from.getY(), world.getMaxHeight() - 1), 7).getLocation();
                     double distanceSquared = location.distanceSquared(from.getLocation());
                     return distanceSquared < simulationDistance * simulationDistance;
                 })
@@ -97,8 +97,7 @@ public class HavenEnchant extends WbsEnchantment implements BlockStateEnchant<Be
 
         for (Chunk chunk : chunksInRadius) {
             chunk.getTileEntities(
-                            block -> block.getType() == Material.BEACON && block.getState() instanceof Beacon,
-                            true
+                    block -> block.getType() == Material.BEACON && block.getState() instanceof Beacon, true
                     )
                     .stream()
                     .map(Beacon.class::cast)
