@@ -665,7 +665,7 @@ wbsenchants:shulkenforced:
       level:
         mode: WEIGHTED_LARGE
       tables:
-        - .*end_city.*\
+        - .*end_city.*
   inject_into: []
 wbsenchants:divine_resonance:
   enabled: true
@@ -2762,6 +2762,14 @@ wbsenchants:launching:
   anvil_cost: 4
   max_level: 3
   weight: 1
+  speed-per-level: 0.6
+  cooldown-seconds: 5
+  # Players can launch if there's a block within this distance underneath them.
+  max-blocks-above-ground: 2
+  # After a player launches, how many ticks should we ignore their movement for?
+  # Increase this amount to prevent the server from cancelling the speed due to player "moving wrongly"
+  # Duration is in ticks. Recommended to keep at least 1 to avoid issues on initial launch.
+  move-check-bypass-ticks: 5
   inject_into: []
 wbsenchants:supersonic:
   enabled: true
