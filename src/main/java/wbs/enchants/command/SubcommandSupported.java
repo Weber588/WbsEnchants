@@ -11,6 +11,7 @@ import io.papermc.paper.registry.RegistryAccess;
 import io.papermc.paper.registry.RegistryKey;
 import io.papermc.paper.registry.TypedKey;
 import io.papermc.paper.registry.keys.tags.EnchantmentTagKeys;
+import io.papermc.paper.registry.set.RegistryKeySet;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.TextDecoration;
 import org.bukkit.Material;
@@ -108,7 +109,12 @@ public class SubcommandSupported extends WbsSubcommand {
                             return false;
                         }
 
-                        Collection<ItemType> items = serverEnchantment.getSupportedItems().resolve(registry);
+                        RegistryKeySet<ItemType> primaryItems = serverEnchantment.getPrimaryItems();
+                        if (primaryItems == null || primaryItems.isEmpty()) {
+
+                        }
+
+                        Collection<ItemType> items = primaryItems.resolve(registry);
 
                         return items.contains(itemType);
                     })
