@@ -49,6 +49,7 @@ public class WbsEnchants extends WbsPlugin {
                 "customenchants"
         ).addSubcommands(
                 new SubcommandInfo(this),
+                new SubcommandFullInfo(this),
                 new SubcommandList(this),
                 new SubcommandHeld(this),
                 new SubcommandAdd(this),

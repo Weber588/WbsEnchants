@@ -15,7 +15,6 @@ import wbs.enchants.enchantment.helper.ItemModificationEnchant;
 import wbs.enchants.generation.GenerationContext;
 import wbs.enchants.type.EnchantmentType;
 
-import java.util.EnumSet;
 import java.util.List;
 
 @SuppressWarnings("unused")
@@ -43,7 +42,7 @@ public interface EnchantmentExtension extends Keyed {
         return getDefinition().displayName();
     }
 
-    default Component getHoverText(@Nullable EnumSet<EnchantmentDefinition.DescribeOptions> options) {
+    default Component getHoverText(@Nullable List<DescribeOption> options) {
         return getDefinition().getHoverText(options);
     }
 

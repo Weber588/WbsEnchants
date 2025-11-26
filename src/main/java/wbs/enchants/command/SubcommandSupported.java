@@ -111,7 +111,7 @@ public class SubcommandSupported extends WbsSubcommand {
 
                         RegistryKeySet<ItemType> primaryItems = serverEnchantment.getPrimaryItems();
                         if (primaryItems == null || primaryItems.isEmpty()) {
-
+                            return false;
                         }
 
                         Collection<ItemType> items = primaryItems.resolve(registry);

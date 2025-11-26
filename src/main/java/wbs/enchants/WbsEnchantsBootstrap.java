@@ -261,6 +261,7 @@ public class WbsEnchantsBootstrap implements PluginBootstrap {
     public static final TagKey<Enchantment> EXCLUSIVE_SET_KNOCKBACK = EnchantmentTagKeys.create(createKey("exclusive_set/knockback"));
     public static final TagKey<Enchantment> EXCLUSIVE_SET_HORNS = EnchantmentTagKeys.create(createKey("exclusive_set/horns"));
     public static final TagKey<Enchantment> EXCLUSIVE_SET_ENCHANTING_TABLE = EnchantmentTagKeys.create(createKey("exclusive_set/enchanting_table"));
+    public static final TagKey<Enchantment> EXCLUSIVE_SET_INFINITY = EnchantmentTagKeys.create(createKey("exclusive_set/infinity"));
     public static final TagKey<Enchantment> HEAT_BASED_ENCHANTS = EnchantmentTagKeys.create(createKey("heat_based"));
     public static final TagKey<Enchantment> COLD_BASED_ENCHANTS = EnchantmentTagKeys.create(createKey("cold_based"));
 
@@ -297,7 +298,10 @@ public class WbsEnchantsBootstrap implements PluginBootstrap {
                         EnchantmentKeys.FIRE_ASPECT,
                         EnchantmentKeys.FLAME),
                 CustomTag.getKeyTag(COLD_BASED_ENCHANTS,
-                        EnchantmentKeys.FROST_WALKER)
+                        EnchantmentKeys.FROST_WALKER),
+                CustomTag.getKeyTag(EXCLUSIVE_SET_INFINITY,
+                        EnchantmentKeys.INFINITY,
+                        EnchantmentKeys.MENDING)
         );
     }
 
@@ -316,6 +320,18 @@ public class WbsEnchantsBootstrap implements PluginBootstrap {
 
     @Override
     public void bootstrap(@NotNull BootstrapContext context) {
+        try {
+            bootstrapSafely(context);
+        } catch (Exception e) {
+            // Terrifying hack but nothing has loaded at this stage, so shouldn't be much risk of data corruption.
+            // Less risk than loading without the plugin though.
+            System.out.println("A fatal error occurred while starting WbsEnchants. The server will be shut down to prevent data loss.");
+            System.out.println("Please report this issue.");
+            System.exit(0);
+        }
+    }
+
+    private void bootstrapSafely(@NotNull BootstrapContext context) {
         LifecycleEventManager<@NotNull BootstrapContext> manager = context.getLifecycleManager();
 
         settings = new EnchantsBootstrapSettings(context);

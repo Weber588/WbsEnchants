@@ -12,7 +12,7 @@ wbsenchants:entangled:
   maximum_cost:
     base_cost: 65
     additional_per_level_cost: 0
-  anvil_cost: 0
+  anvil_cost: 12
   max_level: 1
   weight: 1
   generation:
@@ -35,7 +35,7 @@ wbsenchants:excavator:
   maximum_cost:
     base_cost: 85
     additional_per_level_cost: 15
-  anvil_cost: 0
+  anvil_cost: 10
   max_level: 2
   weight: 1
   generation:
@@ -61,7 +61,7 @@ wbsenchants:harvester:
   maximum_cost:
     base_cost: 40
     additional_per_level_cost: 8
-  anvil_cost: 0
+  anvil_cost: 8
   max_level: 2
   weight: 1
   generation:
@@ -631,7 +631,7 @@ wbsenchants:manathirst:
     base_cost: 25
     additional_per_level_cost: 8
   exclusive_with: wbsenchants:exclusive_set/self_repairing
-  anvil_cost: 0
+  anvil_cost: 4
   max_level: 1
   weight: 1
   xp-per-durability: 3
@@ -658,7 +658,7 @@ wbsenchants:shulkenforced:
   maximum_cost:
     base_cost: 25
     additional_per_level_cost: 8
-  anvil_cost: 0
+  anvil_cost: 4
   max_level: 1
   weight: 5
   generation:
@@ -684,7 +684,7 @@ wbsenchants:divine_resonance:
   maximum_cost:
     base_cost: 25
     additional_per_level_cost: 8
-  anvil_cost: 0
+  anvil_cost: 4
   max_level: 1
   weight: 1
   generation:
@@ -709,7 +709,7 @@ wbsenchants:aridity:
   maximum_cost:
     base_cost: 25
     additional_per_level_cost: 8
-  anvil_cost: 0
+  anvil_cost: 2
   max_level: 1
   weight: 1
   generation:
@@ -739,7 +739,7 @@ wbsenchants:lava_walker:
   maximum_cost:
     base_cost: 25
     additional_per_level_cost: 8
-  anvil_cost: 0
+  anvil_cost: 6
   max_level: 2
   weight: 1
   generation:
@@ -790,7 +790,7 @@ wbsenchants:crushing:
     base_cost: 25
     additional_per_level_cost: 8
   exclusive_with: minecraft:exclusive_set/mining
-  anvil_cost: 0
+  anvil_cost: 4
   max_level: 1
   weight: 5
   crush-materials:
@@ -945,7 +945,7 @@ wbsenchants:handheld:
   maximum_cost:
     base_cost: 25
     additional_per_level_cost: 8
-  anvil_cost: 0
+  anvil_cost: 4
   max_level: 1
   weight: 1
   generation:
@@ -971,7 +971,7 @@ wbsenchants:hogsbane:
     base_cost: 25
     additional_per_level_cost: 8
   exclusive_with: minecraft:exclusive_set/damage
-  anvil_cost: 0
+  anvil_cost: 1
   max_level: 5
   weight: 1
   affected-mobs:
@@ -1005,7 +1005,7 @@ wbsenchants:butchering:
     base_cost: 25
     additional_per_level_cost: 8
   exclusive_with: minecraft:exclusive_set/damage
-  anvil_cost: 0
+  anvil_cost: 1
   max_level: 3
   weight: 1
   affected-mobs:
@@ -1066,7 +1066,7 @@ wbsenchants:soul_touch:
     base_cost: 25
     additional_per_level_cost: 8
   exclusive_with: minecraft:exclusive_set/mining
-  anvil_cost: 0
+  anvil_cost: 10
   max_level: 1
   weight: 1
   generation:
@@ -1090,7 +1090,7 @@ wbsenchants:soulstealing:
   maximum_cost:
     base_cost: 25
     additional_per_level_cost: 8
-  anvil_cost: 0
+  anvil_cost: 10
   max_level: 3
   weight: 1
   generation:
@@ -1115,7 +1115,7 @@ wbsenchants:stuttershot:
   maximum_cost:
     base_cost: 25
     additional_per_level_cost: 8
-  anvil_cost: 0
+  anvil_cost: 4
   max_level: 3
   weight: 1
   inject_into:
@@ -1133,7 +1133,7 @@ wbsenchants:echoing:
   maximum_cost:
     base_cost: 25
     additional_per_level_cost: 8
-  anvil_cost: 0
+  anvil_cost: 4
   max_level: 1
   weight: 1
   generation:
@@ -1155,7 +1155,7 @@ wbsenchants:dimensional_stability:
   maximum_cost:
     base_cost: 25
     additional_per_level_cost: 8
-  anvil_cost: 0
+  anvil_cost: 4
   max_level: 1
   weight: 1
   inject_into:
@@ -1172,7 +1172,7 @@ wbsenchants:anima_conduit:
   maximum_cost:
     base_cost: 25
     additional_per_level_cost: 8
-  anvil_cost: 0
+  anvil_cost: 6
   max_level: 4
   weight: 1
   generation:
@@ -1198,7 +1198,7 @@ wbsenchants:curse/rebuking:
   maximum_cost:
     base_cost: 25
     additional_per_level_cost: 8
-  anvil_cost: 0
+  anvil_cost: 8
   max_level: 2
   weight: 1
   inject_into:
@@ -1216,7 +1216,7 @@ wbsenchants:curse/vanilla:
     base_cost: 25
     additional_per_level_cost: 8
   exclusive_with: wbsenchants:custom
-  anvil_cost: 0
+  anvil_cost: 8
   max_level: 1
   weight: 1
   inject_into:
@@ -1234,7 +1234,7 @@ wbsenchants:curse/exotic:
     base_cost: 25
     additional_per_level_cost: 8
   exclusive_with: wbsenchants:vanilla
-  anvil_cost: 0
+  anvil_cost: 8
   max_level: 1
   weight: 1
   inject_into:
@@ -1252,7 +1252,7 @@ wbsenchants:curse/stumbling:
     base_cost: 25
     additional_per_level_cost: 8
   exclusive_with: wbsenchants:exclusive_set/fall_damage_affecting
-  anvil_cost: 0
+  anvil_cost: 8
   max_level: 4
   weight: 10
   generation:
@@ -1276,7 +1276,7 @@ wbsenchants:curse/insomnia:
   maximum_cost:
     base_cost: 25
     additional_per_level_cost: 8
-  anvil_cost: 0
+  anvil_cost: 8
   max_level: 1
   weight: 1
   inject_into:
@@ -1293,7 +1293,7 @@ wbsenchants:curse/midas:
     base_cost: 25
     additional_per_level_cost: 8
   exclusive_with: wbsenchants:exclusive_set/midas
-  anvil_cost: 0
+  anvil_cost: 8
   max_level: 1
   weight: 1
   generation:
@@ -1318,7 +1318,7 @@ wbsenchants:curse/turbulence:
   maximum_cost:
     base_cost: 25
     additional_per_level_cost: 8
-  anvil_cost: 0
+  anvil_cost: 8
   max_level: 2
   weight: 1
   inject_into: []
@@ -1334,7 +1334,7 @@ wbsenchants:curse/voiding:
   maximum_cost:
     base_cost: 25
     additional_per_level_cost: 8
-  anvil_cost: 0
+  anvil_cost: 8
   max_level: 1
   weight: 1
   inject_into:
@@ -1351,7 +1351,7 @@ wbsenchants:curse/erosion:
   maximum_cost:
     base_cost: 25
     additional_per_level_cost: 8
-  anvil_cost: 0
+  anvil_cost: 8
   max_level: 2
   weight: 1
   inject_into:
@@ -1367,7 +1367,7 @@ wbsenchants:curse/splintering:
   maximum_cost:
     base_cost: 25
     additional_per_level_cost: 8
-  anvil_cost: 0
+  anvil_cost: 8
   max_level: 3
   weight: 1
   inject_into:
@@ -1383,7 +1383,7 @@ wbsenchants:curse/the_end:
   maximum_cost:
     base_cost: 25
     additional_per_level_cost: 8
-  anvil_cost: 0
+  anvil_cost: 8
   max_level: 2
   weight: 1
   generation:
@@ -1405,7 +1405,7 @@ wbsenchants:curse/mercy:
   maximum_cost:
     base_cost: 25
     additional_per_level_cost: 8
-  anvil_cost: 0
+  anvil_cost: 8
   max_level: 1
   weight: 1
   inject_into:
@@ -2775,7 +2775,7 @@ wbsenchants:launching:
   speed-per-level: 0.6
   cooldown-seconds: 5
   # Players can launch if there's a block within this distance underneath them.
-  max-blocks-above-ground: 2
+  max-blocks-above-ground: 5
   # After a player launches, how many ticks should we ignore their movement for?
   # Increase this amount to prevent the server from cancelling the speed due to player "moving wrongly"
   # Duration is in ticks. Recommended to keep at least 1 to avoid issues on initial launch.
@@ -2871,5 +2871,12 @@ wbsenchants:portal_walker:
   anvil_cost: 6
   max_level: 1
   weight: 1
+  generation:
+    loot-table:
+      description: 1% chance to appear in nether loot chests
+      chance: 1
+      add-chance: 100
+      conditions:
+        dimension-type: Nether
   inject_into: []
 

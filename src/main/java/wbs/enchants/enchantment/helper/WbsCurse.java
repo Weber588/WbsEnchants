@@ -15,5 +15,11 @@ public class WbsCurse extends WbsEnchantment {
                 EnchantmentTypeManager.CURSE,
                 displayName,
                 description);
+
+        // Defaults for curses in vanilla
+        getDefinition()
+                .minimumCost(25, 0)
+                .maximumCost(50, 0)
+                .anvilCost(8);
     }
 }

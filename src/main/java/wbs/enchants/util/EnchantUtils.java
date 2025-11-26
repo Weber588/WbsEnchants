@@ -5,20 +5,21 @@ import io.papermc.paper.registry.RegistryKey;
 import io.papermc.paper.registry.TypedKey;
 import io.papermc.paper.registry.keys.tags.EnchantmentTagKeys;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
+import net.kyori.adventure.text.format.TextDecoration;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.EnchantmentStorageMeta;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import wbs.enchants.*;
+import wbs.enchants.EnchantManager;
+import wbs.enchants.WbsEnchantment;
+import wbs.enchants.definition.DescribeOption;
 import wbs.enchants.definition.EnchantmentDefinition;
 import wbs.enchants.definition.EnchantmentExtension;
 import wbs.enchants.definition.EnchantmentWrapper;
 import wbs.enchants.type.EnchantmentTypeManager;
-import wbs.utils.util.plugin.WbsMessageBuilder;
-import wbs.utils.util.string.RomanNumerals;
 
-import java.util.EnumSet;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -84,38 +85,13 @@ public class EnchantUtils {
         return getHoverText(enchantment, null);
     }
 
-    public static Component getHoverText(Enchantment enchantment, EnumSet<EnchantmentDefinition.DescribeOptions> options) {
+    public static Component getHoverText(Enchantment enchantment, List<DescribeOption> options) {
         EnchantmentDefinition registeredEnchant = EnchantManager.getFromKey(enchantment.key());
         if (registeredEnchant != null) {
             return registeredEnchant.getHoverText(options);
         }
 
-        if (options == null) {
-            options = EnumSet.allOf(EnchantmentDefinition.DescribeOptions.class);
-        }
-
-        WbsMessageBuilder builder = WbsEnchants.getInstance().buildMessage("&h&m        &h ")
-                .append(getDisplayName(enchantment))
-                .append(" &h&m        &h");
-
-        if (options.contains(EnchantmentDefinition.DescribeOptions.MAX_LEVEL)) {
-            builder.append("\n&rMax level: &h" + RomanNumerals.toRoman(enchantment.getMaxLevel()) + " (" + enchantment.getMaxLevel() + ")");
-        }
-        if (options.contains(EnchantmentDefinition.DescribeOptions.TARGET)) {
-            // TODO: Find a way to show target tag. Currently can't, since Enchantment only has getSupportedItems
-            //  which is a set of supported item keys, not the tag itself.
-            //  Either find a way to get that tag directly, or find a way to iterate over all item tags and
-            //  find a tag that exactly matches the Enchantment.
-        }
-        if (options.contains(EnchantmentDefinition.DescribeOptions.DESCRIPTION)) {
-            if (enchantment.key().namespace().equals("minecraft")) {
-                builder.append("\n&rDescription: &hVanilla Enchantment");
-            } else {
-                builder.append("\n&rDescription: &hUnknown - Custom Enchantment");
-            }
-        }
-
-        return builder.toComponent();
+        return Component.text("Unknown Enchantment.").color(NamedTextColor.DARK_RED).decorate(TextDecoration.BOLD);
     }
 
     public static boolean isWbsManaged(Enchantment enchantment) {

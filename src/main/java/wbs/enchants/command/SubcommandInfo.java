@@ -8,29 +8,30 @@ import net.kyori.adventure.text.JoinConfiguration;
 import net.kyori.adventure.text.format.Style;
 import org.bukkit.command.CommandSender;
 import org.jetbrains.annotations.NotNull;
+import wbs.enchants.definition.DescribeOption;
 import wbs.enchants.definition.EnchantmentDefinition;
 import wbs.utils.util.plugin.WbsMessageBuilder;
 import wbs.utils.util.plugin.WbsPlugin;
 
-import java.util.EnumSet;
 import java.util.List;
 
-import static wbs.enchants.definition.EnchantmentDefinition.DescribeOptions;
-
-@SuppressWarnings("UnstableApiUsage")
 public class SubcommandInfo extends EnchantmentSubcommand {
+    protected List<DescribeOption> describeOptions = List.of(
+            DescribeOption.TYPE,
+            DescribeOption.MAX_LEVEL,
+            DescribeOption.TARGET,
+            DescribeOption.DESCRIPTION,
+            DescribeOption.GENERATION,
+            DescribeOption.CONFLICTS
+    );
+
+    protected SubcommandInfo(@NotNull WbsPlugin plugin, @NotNull String label) {
+        super(plugin, label);
+    }
+
     public SubcommandInfo(@NotNull WbsPlugin plugin) {
         super(plugin, "info");
     }
-
-    EnumSet<DescribeOptions> DESCRIBE_OPTIONS = EnumSet.of(
-            DescribeOptions.MAX_LEVEL,
-            DescribeOptions.TARGET,
-            DescribeOptions.TYPE,
-            DescribeOptions.GENERATION,
-            DescribeOptions.CONFLICTS,
-            DescribeOptions.DESCRIPTION
-    );
 
     @Override
     protected int executeNoArgs(CommandContext<CommandSourceStack> context) {
@@ -49,7 +50,7 @@ public class SubcommandInfo extends EnchantmentSubcommand {
             return Command.SINGLE_SUCCESS;
         }
 
-        List<Component> description = definition.getDetailComponents(DESCRIBE_OPTIONS, true);
+        List<Component> description = definition.getDetailComponents(describeOptions, true);
 
         String line = "=====================================";
         WbsMessageBuilder builder = plugin.buildMessage(line + "\n");

@@ -31,17 +31,14 @@ import org.bukkit.plugin.PluginManager;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import wbs.enchants.EnchantManager;
+import wbs.enchants.WbsEnchantRegistries;
 import wbs.enchants.WbsEnchants;
 import wbs.enchants.definition.TaggableRegistryKeySet.TaggableItemKeySet;
-import wbs.enchants.enchantment.helper.ConflictEnchantment;
 import wbs.enchants.generation.ContextManager;
 import wbs.enchants.generation.GenerationContext;
 import wbs.enchants.type.EnchantmentType;
 import wbs.enchants.type.EnchantmentTypeManager;
-import wbs.enchants.util.EnchantUtils;
 import wbs.utils.exceptions.InvalidConfigurationException;
-import wbs.utils.util.string.RomanNumerals;
 
 import java.lang.reflect.Field;
 import java.util.*;
@@ -50,11 +47,11 @@ import java.util.function.Consumer;
 @SuppressWarnings({"UnstableApiUsage", "unused", "UnusedReturnValue"})
 public class EnchantmentDefinition extends EnchantmentWrapper implements Comparable<EnchantmentDefinition> {
     // Must never contain CONFLICTS as it will lead to infinite recursion.
-    public static final EnumSet<DescribeOptions> DEFAULT_HOVER_OPTIONS = EnumSet.of(
-            DescribeOptions.TYPE,
-            DescribeOptions.DESCRIPTION,
-            DescribeOptions.MAX_LEVEL,
-            DescribeOptions.TARGET
+    public static final List<DescribeOption> DEFAULT_HOVER_OPTIONS = List.of(
+            DescribeOption.TYPE,
+            DescribeOption.DESCRIPTION,
+            DescribeOption.MAX_LEVEL,
+            DescribeOption.TARGET
     );
 
     private static NamespacedKey parseKey(ConfigurationSection section, String key, String directory) {
@@ -230,6 +227,10 @@ public class EnchantmentDefinition extends EnchantmentWrapper implements Compara
         return this;
     }
 
+    public @NotNull EnchantmentRegistryEntry.EnchantmentCost minimumCost() {
+        return minimumCost;
+    }
+
     public EnchantmentDefinition maximumCost(@NotNull EnchantmentRegistryEntry.EnchantmentCost maximumCost) {
         this.maximumCost = maximumCost;
         return this;
@@ -240,9 +241,16 @@ public class EnchantmentDefinition extends EnchantmentWrapper implements Compara
         return this;
     }
 
+    public @NotNull EnchantmentRegistryEntry.EnchantmentCost maximumCost() {
+        return maximumCost;
+    }
+
     public EnchantmentDefinition anvilCost(int anvilCost) {
         this.anvilCost = anvilCost;
         return this;
+    }
+    public int anvilCost() {
+        return anvilCost;
     }
 
     public EnchantmentDefinition activeSlots(EquipmentSlotGroup activeSlots) {
@@ -631,7 +639,7 @@ public class EnchantmentDefinition extends EnchantmentWrapper implements Compara
     public Component getHoverText() {
         return getHoverText(null);
     }
-    public Component getHoverText(@Nullable EnumSet<DescribeOptions> options) {
+    public Component getHoverText(@Nullable List<DescribeOption> options) {
         // Get components without events -- events can't be used in hover text anyway
         List<Component> descriptionComponents = getDetailComponents(options, false);
 
@@ -743,10 +751,10 @@ public class EnchantmentDefinition extends EnchantmentWrapper implements Compara
     public Component interactiveDisplay(Integer level) {
         return interactiveDisplay(DEFAULT_HOVER_OPTIONS, level);
     }
-    public Component interactiveDisplay(EnumSet<DescribeOptions> options) {
+    public Component interactiveDisplay(List<DescribeOption> options) {
         return interactiveDisplay(options, null);
     }
-    public Component interactiveDisplay(@Nullable EnumSet<DescribeOptions> options, @Nullable Integer level) {
+    public Component interactiveDisplay(@Nullable List<DescribeOption> options, @Nullable Integer level) {
         Component base;
 
         if (level == null) {
@@ -807,93 +815,21 @@ public class EnchantmentDefinition extends EnchantmentWrapper implements Compara
         return getDetailComponents(null, includeEvents);
     }
     @NotNull
-    public List<Component> getDetailComponents(@Nullable EnumSet<DescribeOptions> options, boolean includeEvents) {
+    public List<Component> getDetailComponents(@Nullable List<DescribeOption> options, boolean includeEvents) {
         if (options == null) {
-            options = EnumSet.allOf(DescribeOptions.class);
+            options = new LinkedList<>(WbsEnchantRegistries.DESCRIBE_OPTIONS.values());
         }
 
         List<Component> components = new LinkedList<>();
 
-        int maxLevel = maxLevel();
-        if (maxLevel == 0) {
-            maxLevel = 1;
-        }
-
-        Style style = Style.style(WbsEnchants.getInstance().getTextColour());
-        Style highlight = Style.style(WbsEnchants.getInstance().getTextHighlightColour());
-
-        TextComponent lineStart = Component.text("\n - ").style(highlight);
-
         components.add(Component.text("Name: ").append(displayName())
                 .append(Component.text(" (" + key().asString() + ")").color(NamedTextColor.GRAY)));
 
-        if (options.contains(DescribeOptions.TYPE)) {
-            components.add(Component.text("Type: ").append(getType().getNameComponent()));
-        }
+        for (DescribeOption option : options) {
+            Component component = option.describe(this);
 
-        if (options.contains(DescribeOptions.MAX_LEVEL)) {
-            components.add(Component.text("Maximum level: ").append(
-                    Component.text(RomanNumerals.toRoman(maxLevel) + " (" + maxLevel + ")")
-                            .style(highlight)
-                    )
-            );
-        }
-
-        if (options.contains(DescribeOptions.TARGET)) {
-            components.add(Component.text("Target: ").append(
-                    getTargetDescription(lineStart).applyFallbackStyle(highlight)
-            ));
-        }
-
-        if (options.contains(DescribeOptions.DESCRIPTION)) {
-            components.add(Component.text("Description: ").append(
-                    description().applyFallbackStyle(highlight)));
-        }
-
-        if (options.contains(DescribeOptions.GENERATION)) {
-            if (canGenerate()) {
-                components.add(
-                        Component.text("Generation:")
-                                .append(
-                                        getGenerationInfo(lineStart)
-                                ).style(style)
-                );
-            }
-        }
-
-        if (options.contains(DescribeOptions.CONFLICTS)) {
-            List<Enchantment> conflicts = EnchantUtils.getConflictsWith(getEnchantment());
-
-            // Don't show enchants that only exist to conflict (typically curses)
-            conflicts.removeIf(check -> EnchantUtils.getAsCustom(check) instanceof ConflictEnchantment);
-            conflicts.removeIf(other -> key().equals(other.getKey()));
-
-            if (!conflicts.isEmpty()) {
-                Component conflictsComponent = Component.text("Conflicts with: ");
-
-                // If this is a conflict enchantment, show that description instead.
-                if (EnchantManager.getCustomFromKey(key()) instanceof ConflictEnchantment conflictEnchant) {
-                    conflictsComponent = conflictsComponent.append(Component.text(conflictEnchant.getConflictsDescription()));
-                } else if (!conflicts.isEmpty()) {
-                    conflicts.sort(Comparator.comparing(org.bukkit.Keyed::getKey));
-
-                    for (Enchantment conflict : conflicts) {
-                        EnchantmentDefinition conflictDef = EnchantManager.getFrom(conflict);
-
-                        Component conflictComponent;
-                        if (conflictDef == null) {
-                            conflictComponent = EnchantUtils.getDisplayName(conflict);
-                        } else {
-                            conflictComponent = conflictDef.interactiveDisplay();
-                        }
-
-                        conflictsComponent = conflictsComponent.append(lineStart)
-                                .append(conflictComponent);
-                    }
-
-                }
-
-                components.add(conflictsComponent);
+            if (component != null) {
+                components.add(component);
             }
         }
 
@@ -937,14 +873,5 @@ public class EnchantmentDefinition extends EnchantmentWrapper implements Compara
     public interface TagProducer {
         @Contract("!null -> !null")
         <V extends org.bukkit.Keyed> Tag<@NotNull V> getOrCreateTag(TagKey<V> tagKey);
-    }
-
-    public enum DescribeOptions {
-        MAX_LEVEL,
-        TARGET,
-        TYPE,
-        GENERATION,
-        CONFLICTS,
-        DESCRIPTION
     }
 }

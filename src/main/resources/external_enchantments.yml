@@ -32,6 +32,7 @@ minecraft:impaling:
   description: Increases damage to aquatic mobs.
 minecraft:infinity:
   description: Allows the bow to fire normal arrows for free. You must have at least one arrow for this to work.
+  exclusive_with: wbsenchants:exclusive_set/infinity
 minecraft:knockback:
   description: Increases the knockback strength of the weapon.
 minecraft:looting:
