@@ -14,6 +14,7 @@ public class SubcommandFullInfo extends SubcommandInfo {
                 DescribeOption.TYPE,
                 DescribeOption.MAX_LEVEL,
                 DescribeOption.TARGET,
+                DescribeOption.ACTIVE_SLOTS,
                 DescribeOption.DESCRIPTION,
                 DescribeOption.ANVIL_COST,
                 DescribeOption.WEIGHT,

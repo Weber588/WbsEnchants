@@ -88,7 +88,7 @@ public class TaggableRegistryKeySet<T extends Keyed> {
             return null;
         }
 
-        Registry<T> registry = RegistryAccess.registryAccess().getRegistry(registryKey);
+        Registry<@NotNull T> registry = RegistryAccess.registryAccess().getRegistry(registryKey);
 
         return typedKeys.stream().map(registry::get).filter(Objects::nonNull).toList();
     }
@@ -113,7 +113,7 @@ public class TaggableRegistryKeySet<T extends Keyed> {
 
             return display;
         } else {
-            return Component.join(JoinConfiguration.separator(Component.newline().append(lineStart)), componentList);
+            return Component.join(JoinConfiguration.separator(lineStart), componentList);
         }
     }
 

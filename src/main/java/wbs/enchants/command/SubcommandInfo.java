@@ -50,22 +50,24 @@ public class SubcommandInfo extends EnchantmentSubcommand {
             return Command.SINGLE_SUCCESS;
         }
 
-        List<Component> description = definition.getDetailComponents(describeOptions, true);
+        plugin.runAsync(() -> {
+            List<Component> description = definition.getDetailComponents(describeOptions, true);
 
-        String line = "=====================================";
-        WbsMessageBuilder builder = plugin.buildMessage(line + "\n");
+            String line = "=====================================";
+            WbsMessageBuilder builder = plugin.buildMessage(line + "\n");
 
-        JoinConfiguration joinConfig = JoinConfiguration.builder()
-                .separator(Component.text("\n"))
-                .parentStyle(Style.style(plugin.getTextColour()))
-                .build();
+            JoinConfiguration joinConfig = JoinConfiguration.builder()
+                    .separator(Component.text("\n"))
+                    .parentStyle(Style.style(plugin.getTextColour()))
+                    .build();
 
-        Component mergedDescription = Component.join(joinConfig, description)
-                .color(plugin.getTextColour());
+            Component mergedDescription = Component.join(joinConfig, description)
+                    .color(plugin.getTextColour());
 
-        builder.append(mergedDescription)
-                .append("\n" + plugin.prefix + " " + plugin.getColour() + line)
-                        .send(sender);
+            builder.append(mergedDescription)
+                    .append("\n" + plugin.prefix + " " + plugin.getColour() + line)
+                    .send(sender);
+        });
 
         return Command.SINGLE_SUCCESS;
     }

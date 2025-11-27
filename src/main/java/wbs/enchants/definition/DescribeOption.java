@@ -2,6 +2,7 @@ package wbs.enchants.definition;
 
 import io.papermc.paper.registry.RegistryAccess;
 import io.papermc.paper.registry.RegistryKey;
+import io.papermc.paper.registry.TypedKey;
 import io.papermc.paper.registry.tag.Tag;
 import net.kyori.adventure.key.Key;
 import net.kyori.adventure.key.Keyed;
@@ -14,6 +15,7 @@ import net.kyori.adventure.text.format.Style;
 import org.bukkit.NamespacedKey;
 import org.bukkit.Registry;
 import org.bukkit.enchantments.Enchantment;
+import org.bukkit.inventory.EquipmentSlot;
 import org.intellij.lang.annotations.Subst;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -23,11 +25,11 @@ import wbs.enchants.WbsEnchantRegistries;
 import wbs.enchants.WbsEnchantsBootstrap;
 import wbs.enchants.enchantment.helper.ConflictEnchantment;
 import wbs.enchants.util.EnchantUtils;
+import wbs.utils.util.WbsEnums;
 import wbs.utils.util.string.RomanNumerals;
+import wbs.utils.util.string.WbsStrings;
 
-import java.util.Comparator;
-import java.util.LinkedList;
-import java.util.List;
+import java.util.*;
 import java.util.function.Function;
 
 @SuppressWarnings("UnstableApiUsage")
@@ -40,6 +42,7 @@ public class DescribeOption implements Keyed {
     public static final DescribeOption TYPE = new DescribeOption("type", DescribeOption::type);
     public static final DescribeOption MAX_LEVEL = new DescribeOption("max_level", DescribeOption::maxLevel);
     public static final DescribeOption TARGET = new DescribeOption("target", DescribeOption::target);
+    public static final DescribeOption ACTIVE_SLOTS = new DescribeOption("active_slots", DescribeOption::activeSlots);
     public static final DescribeOption DESCRIPTION = new DescribeOption("description", DescribeOption::description);
     public static final DescribeOption WEIGHT = new DescribeOption("weight", DescribeOption::weight);
     public static final DescribeOption ANVIL_COST = new DescribeOption("anvil_cost", DescribeOption::anvilCost);
@@ -147,17 +150,26 @@ public class DescribeOption implements Keyed {
             return null;
         }
 
-        Component component = Component.text("In tags:");
+        Map<TypedKey<Enchantment>, Component> enchantmentDisplays = new HashMap<>();
+
+        registry.stream()
+                .forEach(ench -> enchantmentDisplays.put(
+                        TypedKey.create(RegistryKey.ENCHANTMENT, ench.key()),
+                        EnchantUtils.getDisplayName(ench).applyFallbackStyle(HIGHLIGHT)
+                    )
+                );
+
+        Component component = Component.text("In tags: ");
 
         List<Component> tagComponents = new LinkedList<>();
-        for (Tag<Enchantment> tag : tags) {
-            component = component.append(LINE_START);
 
+        for (Tag<Enchantment> tag : tags) {
             Component tagEnchants = Component.join(
                     JoinConfiguration.builder().separator(Component.text(", ").style(BASE_STYLE)).build(),
-                    tag.resolve(registry).stream()
-                            .map(EnchantUtils::getDisplayName)
-                            .map(entry -> entry.applyFallbackStyle(HIGHLIGHT))
+                    tag.values().stream()
+                            .distinct()
+                            .sorted()
+                            .map(enchantmentDisplays::get)
                             .toList()
             );
 
@@ -180,15 +192,62 @@ public class DescribeOption implements Keyed {
         return Component.text("Weight: ").append(Component.text(definition.weight()).style(HIGHLIGHT));
     }
 
+    private static Component activeSlots(EnchantmentDefinition definition) {
+        List<TextComponent> slotComponents = definition.activeSlots()
+                .stream()
+                .map(group -> {
+                    String asString = WbsStrings.capitalizeAll(group.toString());
+                    return Component.text(asString).style(HIGHLIGHT).hoverEvent(Component.join(
+                            JoinConfiguration.builder().separator(Component.text(", ")).build(),
+                            Arrays.stream(EquipmentSlot.values())
+                                    .filter(group)
+                                    .map(WbsEnums::toPrettyString)
+                                    .map(Component::text)
+                                    .toList()
+                            )
+                    );
+                })
+                .toList();
+
+        Component slotGroups = Component.join(JoinConfiguration.builder().separator(LINE_START).build(), slotComponents);
+
+        return Component.text("Active Slots: ").append(slotGroups);
+    }
+
     private static Component costs(EnchantmentDefinition definition) {
+        TextComponent minimumComponent = Component.text("\n  Minimum: ");
+        TextComponent maximumComponent = Component.text("\n  Maximum: ");
+
+        if (definition.maxLevel() <= 1) {
+            minimumComponent = minimumComponent.append(Component.text(definition.minimumCost().baseCost()).style(HIGHLIGHT));
+            maximumComponent = maximumComponent.append(Component.text(definition.maximumCost().baseCost()).style(HIGHLIGHT));
+        } else {
+            minimumComponent = minimumComponent
+                    .append(
+                            Component.text("\n    Base: ").append(
+                                    Component.text(definition.minimumCost().baseCost()).style(HIGHLIGHT)
+                            )
+                    ).append(
+                    Component.text("\n    Per Level: ").append(
+                            Component.text(definition.minimumCost().additionalPerLevelCost()).style(HIGHLIGHT)
+                    )
+            );
+
+            maximumComponent = maximumComponent
+                    .append(
+                            Component.text("\n    Base: ").append(
+                                    Component.text(definition.maximumCost().baseCost()).style(HIGHLIGHT)
+                            )
+                    ).append(
+                            Component.text("\n    Per Level: ").append(
+                                    Component.text(definition.maximumCost().additionalPerLevelCost()).style(HIGHLIGHT)
+                    )
+            );
+        }
+
         return Component.text("Enchanting Level Ranges:")
-                .append(Component.text("\n  Minimum:")
-                        .append(Component.text("\n    Base: ").append(Component.text(definition.minimumCost().baseCost()).style(HIGHLIGHT)))
-                        .append(Component.text("\n    Per Level: ").append(Component.text(definition.minimumCost().additionalPerLevelCost()).style(HIGHLIGHT)))
-                ).append(Component.text("\n  Maximum:")
-                        .append(Component.text("\n    Base: ").append(Component.text(definition.maximumCost().baseCost()).style(HIGHLIGHT)))
-                        .append(Component.text("\n    Per Level: ").append(Component.text(definition.maximumCost().additionalPerLevelCost()).style(HIGHLIGHT)))
-                );
+                .append(minimumComponent)
+                .append(maximumComponent);
     }
 
     private static Component anvilCost(EnchantmentDefinition definition) {
