@@ -24,12 +24,10 @@ import org.bukkit.event.enchantment.PrepareItemEnchantEvent;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import wbs.enchants.WbsEnchants;
 import wbs.enchants.events.enchanting.*;
 
 import java.util.*;
 import java.util.function.ToIntFunction;
-import java.util.stream.Collectors;
 
 @SuppressWarnings("UnstableApiUsage")
 public class EnchantingEventUtils {
@@ -182,10 +180,6 @@ public class EnchantingEventUtils {
                     if (!enchantments.isEmpty()) {
                         filterCompatibleEnchantments(availableEnchantmentResults, getLast(enchantments));
                     }
-                    WbsEnchants.getInstance().getLogger().info("After filter: " +
-                            availableEnchantmentResults.keySet().stream()
-                                    .map(ench -> ench.getKey().asMinimalString())
-                                    .collect(Collectors.joining("; ")));
 
                     if (availableEnchantmentResults.isEmpty()) {
                         break;
@@ -226,7 +220,6 @@ public class EnchantingEventUtils {
             }
         }
         toRemove.forEach(enchantments::remove);
-        toRemove.forEach(removed -> WbsEnchants.getInstance().getLogger().info("removed: " + removed.key().asMinimalString()));
     }
 
     public static Map<Enchantment, Integer> getAvailableEnchantmentResults(EnchantingContext context, int modifiedEnchantingLevel, ItemStack stack, Collection<Enchantment> availableOnTable) {
