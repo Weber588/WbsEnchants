@@ -107,7 +107,7 @@ public class LightweightEnchant extends WbsEnchantment implements DamageEnchant 
                 playerVictim.swingOffHand();
             //    playerVictim.playEffect(EntityEffect.SHIELD_BLOCK);
 
-                int noDamageTicks = playerVictim.getMaximumNoDamageTicks() / ((maxLevel() + 1) - level);
+                int noDamageTicks = playerVictim.getMaximumNoDamageTicks() / Math.min(((maxLevel() + 1) - level), 1);
                 playerVictim.setNoDamageTicks(noDamageTicks);
                 playerVictim.setCooldown(offhandItem.getType(), Math.max(noDamageTicks, 0));
 
