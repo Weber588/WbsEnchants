@@ -8,6 +8,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.event.HandlerList;
 import wbs.enchants.command.*;
 import wbs.enchants.events.*;
+import wbs.enchants.events.enchanting.EnchantingTableEvents;
 import wbs.utils.util.WbsFileUtil;
 import wbs.utils.util.commands.brigadier.WbsCommand;
 import wbs.utils.util.commands.brigadier.WbsErrorsSubcommand;

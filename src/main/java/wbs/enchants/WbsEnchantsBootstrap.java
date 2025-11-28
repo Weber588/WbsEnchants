@@ -10,8 +10,10 @@ import io.papermc.paper.plugin.lifecycle.event.types.LifecycleEvents;
 import io.papermc.paper.registry.RegistryKey;
 import io.papermc.paper.registry.TypedKey;
 import io.papermc.paper.registry.event.RegistryEvents;
+import io.papermc.paper.registry.keys.BlockTypeKeys;
 import io.papermc.paper.registry.keys.EnchantmentKeys;
 import io.papermc.paper.registry.keys.ItemTypeKeys;
+import io.papermc.paper.registry.keys.tags.BlockTypeTagKeys;
 import io.papermc.paper.registry.keys.tags.EnchantmentTagKeys;
 import io.papermc.paper.registry.keys.tags.ItemTypeTagKeys;
 import io.papermc.paper.registry.tag.TagKey;
@@ -263,6 +265,7 @@ public class WbsEnchantsBootstrap implements PluginBootstrap {
     public static final TagKey<Enchantment> EXCLUSIVE_SET_KNOCKBACK = EnchantmentTagKeys.create(createKey("exclusive_set/knockback"));
     public static final TagKey<Enchantment> EXCLUSIVE_SET_HORNS = EnchantmentTagKeys.create(createKey("exclusive_set/horns"));
     public static final TagKey<Enchantment> EXCLUSIVE_SET_ENCHANTING_TABLE = EnchantmentTagKeys.create(createKey("exclusive_set/enchanting_table"));
+    public static final TagKey<Enchantment> EXCLUSIVE_SET_CHISELED_BOOKSHELF = EnchantmentTagKeys.create(createKey("exclusive_set/chiseled_bookshelf"));
     public static final TagKey<Enchantment> EXCLUSIVE_SET_INFINITY = EnchantmentTagKeys.create(createKey("exclusive_set/infinity"));
     public static final TagKey<Enchantment> HEAT_BASED_ENCHANTS = EnchantmentTagKeys.create(createKey("heat_based"));
     public static final TagKey<Enchantment> COLD_BASED_ENCHANTS = EnchantmentTagKeys.create(createKey("cold_based"));
@@ -296,6 +299,7 @@ public class WbsEnchantsBootstrap implements PluginBootstrap {
                 ),
                 CustomTag.getKeyTag(EXCLUSIVE_SET_HORNS),
                 CustomTag.getKeyTag(EXCLUSIVE_SET_ENCHANTING_TABLE),
+                CustomTag.getKeyTag(EXCLUSIVE_SET_CHISELED_BOOKSHELF),
                 CustomTag.getKeyTag(HEAT_BASED_ENCHANTS,
                         EnchantmentKeys.FIRE_ASPECT,
                         EnchantmentKeys.FLAME),
@@ -340,6 +344,11 @@ public class WbsEnchantsBootstrap implements PluginBootstrap {
         settings.reload();
 
         registerCustomTags(context, manager);
+
+        // TODO: Make this configurable for block enchants.
+        manager.registerEventHandler(LifecycleEvents.TAGS.postFlatten(RegistryKey.BLOCK).newHandler(event -> {
+            event.registrar().addToTag(BlockTypeTagKeys.ENCHANTMENT_POWER_PROVIDER, List.of(BlockTypeKeys.CHISELED_BOOKSHELF));
+        }));
 
         manager.registerEventHandler(LifecycleEvents.TAGS.postFlatten(RegistryKey.ENCHANTMENT).newHandler(event -> {
             Multimap<TagKey<Enchantment>, TypedKey<Enchantment>> toAdd = HashMultimap.create();

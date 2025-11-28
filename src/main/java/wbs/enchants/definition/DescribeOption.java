@@ -103,7 +103,6 @@ public class DescribeOption implements Keyed {
 
         // Don't show enchants that only exist to conflict (typically curses)
         conflicts.removeIf(check -> EnchantUtils.getAsCustom(check) instanceof ConflictEnchantment);
-        conflicts.removeIf(other -> definition.key().equals(other.getKey()));
 
         if (!conflicts.isEmpty()) {
             Component conflictsComponent = Component.text("Conflicts with: ");

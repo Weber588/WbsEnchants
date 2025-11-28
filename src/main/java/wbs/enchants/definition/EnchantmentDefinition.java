@@ -75,6 +75,11 @@ public class EnchantmentDefinition extends EnchantmentWrapper implements Compara
         if (keySet == null) {
             return null;
         }
+
+        if (keySet instanceof Tag<@NotNull T> tag) {
+            return tag.tagKey();
+        }
+
         String tagSplit = "tagKey=#";
         String asString = keySet.toString();
 

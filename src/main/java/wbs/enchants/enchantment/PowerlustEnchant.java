@@ -1,22 +1,22 @@
 package wbs.enchants.enchantment;
 
 import io.papermc.paper.registry.keys.ItemTypeKeys;
-import org.bukkit.enchantments.Enchantment;
-import org.bukkit.enchantments.EnchantmentOffer;
+import org.bukkit.block.EnchantingTable;
 import org.bukkit.event.EventHandler;
-import org.bukkit.event.enchantment.EnchantItemEvent;
-import org.bukkit.event.enchantment.PrepareItemEnchantEvent;
-import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.view.EnchantmentView;
 import org.jetbrains.annotations.NotNull;
 import wbs.enchants.WbsEnchantment;
 import wbs.enchants.WbsEnchantsBootstrap;
-import wbs.enchants.enchantment.helper.EnchantingTableEnchant;
+import wbs.enchants.enchantment.helper.BlockStateEnchant;
+import wbs.enchants.enchantment.helper.EnchantingEnchant;
+import wbs.enchants.events.enchanting.ChooseEnchantmentCostEvent;
+import wbs.enchants.events.enchanting.EnchantingPreparationContext;
+import wbs.enchants.util.EnchantingEventUtils;
 
-import java.util.Map;
-
-@SuppressWarnings("UnstableApiUsage")
-public class PowerlustEnchant extends WbsEnchantment implements EnchantingTableEnchant {
+public class PowerlustEnchant extends WbsEnchantment implements EnchantingEnchant, BlockStateEnchant<EnchantingTable> {
+    @Override
+    public Class<EnchantingTable> getStateClass() {
+        return EnchantingTable.class;
+    }
     private static final @NotNull String DEFAULT_DESCRIPTION = "Makes all 3 offered enchantments use the highest level that " +
             "the enchanting table can offer.";
 
@@ -30,54 +30,19 @@ public class PowerlustEnchant extends WbsEnchantment implements EnchantingTableE
     }
 
     @EventHandler
-    public void onPrepEnchant(PrepareItemEnchantEvent event) {
-        Integer level = getLevel(event.getEnchantBlock());
+    public void onChooseCost(ChooseEnchantmentCostEvent event) {
+        EnchantingPreparationContext context = event.getContext();
+
+        Integer level = getLevel(context.enchantingBlock());
         if (level == null) {
             return;
         }
 
-        if (event.getItem().isEmpty()) {
-            return;
-        }
+        int cost = EnchantingEventUtils.getEnchantmentCost(
+                event.getSeed() + event.getSlot(),
+                2,
+                event.getPower());
 
-        int seed = event.getView().getEnchantmentSeed();
-
-        for (int slot = 0; slot < event.getOffers().length; slot++) {
-            EnchantmentOffer offer = event.getOffers()[slot];
-            if (offer != null) {
-                int cost = getEnchantmentCost(seed + slot,
-                        2,
-                        event.getEnchantmentBonus());
-
-                offer.setCost(cost);
-            }
-        }
-
-        updateEnchantmentOffers(event);
-    }
-
-    @EventHandler
-    public void onEnchant(EnchantItemEvent event) {
-        Integer level = getLevel(event.getEnchantBlock());
-        if (level == null) {
-            return;
-        }
-
-        int seed = ((EnchantmentView) event.getView()).getEnchantmentSeed();
-
-        int cost = event.getExpLevelCost();
-        ItemStack item = event.getItem();
-
-        Map<Enchantment, Integer> enchantments = getEnchantments(
-                event.getEnchanter(),
-                seed,
-                item,
-                event.whichButton(),
-                cost
-        );
-
-        Map<Enchantment, Integer> enchantsToAdd = event.getEnchantsToAdd();
-        enchantsToAdd.clear();
-        enchantsToAdd.putAll(enchantments);
+        event.setCost(cost);
     }
 }
