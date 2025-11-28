@@ -1,17 +1,22 @@
 package wbs.enchants.enchantment.helper;
 
+import com.destroystokyo.paper.event.block.AnvilDamagedEvent;
 import org.bukkit.*;
 import org.bukkit.block.Block;
+import org.bukkit.entity.Entity;
+import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Item;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.block.BlockDropItemEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
+import org.bukkit.event.entity.EntityChangeBlockEvent;
 import org.bukkit.event.world.ChunkLoadEvent;
 import org.bukkit.inventory.EntityEquipment;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import wbs.enchants.EnchantManager;
 import wbs.enchants.WbsEnchantment;
@@ -145,6 +150,41 @@ public interface BlockEnchant extends EnchantInterface, AutoRegistrableEnchant {
         EventUtils.register(BlockPlaceEvent.class, this::onPlace, EventPriority.NORMAL, true);
         EventUtils.register(BlockDropItemEvent.class, this::onDrop, EventPriority.NORMAL, true);
         EventUtils.register(ChunkLoadEvent.class, this::onLoad, EventPriority.NORMAL, true);
+        EventUtils.register(AnvilDamagedEvent.class, this::onAnvilBreak, EventPriority.MONITOR, true);
+        EventUtils.register(EntityChangeBlockEvent.class, this::onEnchantedBlockFall, EventPriority.MONITOR, true);
+    }
+
+    default void onEnchantedBlockFall(EntityChangeBlockEvent event) {
+        if (event.getEntityType() == EntityType.FALLING_BLOCK) {
+            @NotNull Block block = event.getBlock();
+            Entity entity = event.getEntity();
+            WbsEnchantment enchant = getThisEnchantment();
+            if (event.getTo().isAir()) {
+                if (isEnchanted(block)) {
+                    Integer level = removeEnchant(block, enchant);
+                    if (level != null) {
+                        entity.getPersistentDataContainer().set(enchant.getKey(), PersistentDataType.INTEGER, level);
+                    }
+                }
+            } else {
+                Integer level = entity.getPersistentDataContainer().get(enchant.getKey(), PersistentDataType.INTEGER);
+                if (level != null) {
+                    enchantBlock(block, enchant, level);
+                }
+            }
+        }
+    }
+
+    default void onAnvilBreak(AnvilDamagedEvent event) {
+        if (event.isBreaking()) {
+            Location location = event.getInventory().getLocation();
+            if (location != null) {
+                Block block = location.getBlock();
+                if (isEnchanted(block)) {
+                    removeEnchant(block, getThisEnchantment());
+                }
+            }
+        }
     }
 
     default void onLoad(ChunkLoadEvent event) {
@@ -167,23 +207,26 @@ public interface BlockEnchant extends EnchantInterface, AutoRegistrableEnchant {
         }
 
         WbsEnchantment enchant = getThisEnchantment();
-        NamespacedKey key = enchant.getKey();
 
         ItemStack placedItem = equipment.getItem(event.getHand());
         if (enchant.isEnchantmentOn(placedItem)) {
             int level = enchant.getLevel(placedItem);
 
-            PersistentDataContainer blockContainer = getBlockContainer(block);
-
-            blockContainer.set(key, PersistentDataType.INTEGER, level);
-
-            updateBlockContainer(block, blockContainer);
-
-            EnchantedBlockPlaceEvent enchantedEvent = new EnchantedBlockPlaceEvent(this, block);
-            Bukkit.getPluginManager().callEvent(enchantedEvent);
+            enchantBlock(block, enchant, level);
 
             afterPlace(event, placedItem);
         }
+    }
+
+    private void enchantBlock(Block block, WbsEnchantment enchant, int level) {
+        PersistentDataContainer blockContainer = getBlockContainer(block);
+
+        blockContainer.set(enchant.getKey(), PersistentDataType.INTEGER, level);
+
+        updateBlockContainer(block, blockContainer);
+
+        EnchantedBlockPlaceEvent enchantedEvent = new EnchantedBlockPlaceEvent((BlockEnchant) enchant, block);
+        Bukkit.getPluginManager().callEvent(enchantedEvent);
     }
 
     @Nullable
@@ -200,32 +243,25 @@ public interface BlockEnchant extends EnchantInterface, AutoRegistrableEnchant {
 
     default void onDrop(BlockDropItemEvent event) {
         WbsEnchantment enchant = getThisEnchantment();
-        NamespacedKey key = enchant.getKey();
 
         Block block = event.getBlock();
-        PersistentDataContainer blockContainer = getBlockContainer(block);
-
-        Integer level = blockContainer.get(key, PersistentDataType.INTEGER);
-
-        blockContainer.remove(key);
-        updateBlockContainer(block, blockContainer);
-
-        List<Item> items = event.getItems();
-
-        ItemStack dropped = null;
-        Material material = event.getBlockState().getBlockData().getPlacementMaterial();
-        for (Item item : items) {
-            if (item.getItemStack().getType() == material && item.getItemStack().getAmount() == 1) {
-                dropped = item.getItemStack();
-                break;
-            }
-        }
-
-        if (dropped == null) {
-            return;
-        }
-
+        Integer level = removeEnchant(block, enchant);
         if (level != null) {
+            List<Item> items = event.getItems();
+
+            ItemStack dropped = null;
+            Material material = event.getBlockState().getBlockData().getPlacementMaterial();
+            for (Item item : items) {
+                if (item.getItemStack().getType() == material && item.getItemStack().getAmount() == 1) {
+                    dropped = item.getItemStack();
+                    break;
+                }
+            }
+
+            if (dropped == null) {
+                return;
+            }
+
             EnchantedBlockBreakEvent enchantedEvent = new EnchantedBlockBreakEvent(this, block);
             Bukkit.getPluginManager().callEvent(enchantedEvent);
 
@@ -233,6 +269,19 @@ public interface BlockEnchant extends EnchantInterface, AutoRegistrableEnchant {
 
             afterDrop(event, dropped);
         }
+    }
+
+    private static @Nullable Integer removeEnchant(Block block, WbsEnchantment enchant) {
+        return removeEnchant(block, enchant.getKey());
+    }
+    private static @Nullable Integer removeEnchant(Block block, NamespacedKey key) {
+        PersistentDataContainer blockContainer = getBlockContainer(block);
+
+        Integer level = blockContainer.get(key, PersistentDataType.INTEGER);
+
+        blockContainer.remove(key);
+        updateBlockContainer(block, blockContainer);
+        return level;
     }
 
     default void afterPlace(BlockPlaceEvent event, ItemStack placedItem) {
