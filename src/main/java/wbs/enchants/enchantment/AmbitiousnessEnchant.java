@@ -13,6 +13,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.view.EnchantmentView;
 import org.jetbrains.annotations.NotNull;
 import wbs.enchants.WbsEnchantment;
+import wbs.enchants.WbsEnchants;
 import wbs.enchants.WbsEnchantsBootstrap;
 import wbs.enchants.enchantment.helper.EnchantingTableEnchant;
 
@@ -141,5 +142,15 @@ public class AmbitiousnessEnchant extends WbsEnchantment implements EnchantingTa
         Map<Enchantment, Integer> enchantsToAdd = event.getEnchantsToAdd();
         enchantsToAdd.clear();
         enchantsToAdd.putAll(enchantments);
+    }
+
+    @Override
+    public boolean shouldGenerateEnchant(int modifiedEnchantingLevel, Enchantment enchantment, int enchantmentLevel) {
+        if (enchantment.getMaxLevel() == enchantmentLevel) {
+            WbsEnchants.getInstance().getLogger().info("shouldGenerateEnchant: " + enchantment.getKey().asMinimalString() + " " + modifiedEnchantingLevel + "; " + modifiedEnchantingLevel);
+            WbsEnchants.getInstance().getLogger().info("enchantment.getMinModifiedCost(enchantmentLevel): " + enchantment.getMinModifiedCost(enchantmentLevel));
+        }
+        // Remove upper bounce for enchant types
+        return modifiedEnchantingLevel >= enchantment.getMinModifiedCost(enchantmentLevel);
     }
 }

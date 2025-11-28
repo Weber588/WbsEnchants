@@ -11,7 +11,6 @@ import io.papermc.paper.registry.RegistryAccess;
 import io.papermc.paper.registry.RegistryKey;
 import io.papermc.paper.registry.TypedKey;
 import io.papermc.paper.registry.keys.tags.EnchantmentTagKeys;
-import io.papermc.paper.registry.set.RegistryKeySet;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.TextDecoration;
 import org.bukkit.Material;
@@ -27,6 +26,7 @@ import wbs.enchants.EnchantManager;
 import wbs.enchants.EnchantsSettings;
 import wbs.enchants.WbsEnchants;
 import wbs.enchants.definition.EnchantmentDefinition;
+import wbs.enchants.util.EnchantUtils;
 import wbs.utils.util.commands.brigadier.WbsSubcommand;
 import wbs.utils.util.commands.brigadier.WbsSuggestionProvider;
 import wbs.utils.util.commands.brigadier.argument.WbsStringArgumentType;
@@ -109,14 +109,7 @@ public class SubcommandSupported extends WbsSubcommand {
                             return false;
                         }
 
-                        RegistryKeySet<ItemType> primaryItems = serverEnchantment.getPrimaryItems();
-                        if (primaryItems == null || primaryItems.isEmpty()) {
-                            return false;
-                        }
-
-                        Collection<ItemType> items = primaryItems.resolve(registry);
-
-                        return items.contains(itemType);
+                        return EnchantUtils.isPrimaryItem(itemType, serverEnchantment);
                     })
                     .filter(enchantment -> namespace == null || enchantment.key().namespace().equals(namespace))
                     .toList());

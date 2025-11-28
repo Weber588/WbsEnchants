@@ -212,8 +212,10 @@ public class WbsEnchantsBootstrap implements PluginBootstrap {
                         )
                 ),
                 new CustomTag<>(ENCHANTABLE_BUNDLE,
-                        Set.of(ItemTypeKeys.BUNDLE),
-                        Set.of()
+                        Set.of(),
+                        Set.of(
+                                TagEntry.tagEntry(ItemTypeTagKeys.BUNDLES, true)
+                        )
                 ),
                 new CustomTag<>(ENCHANTABLE_BEACON,
                         Set.of(ItemTypeKeys.BEACON),

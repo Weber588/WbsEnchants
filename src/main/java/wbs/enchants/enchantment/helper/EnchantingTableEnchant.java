@@ -1,25 +1,29 @@
 package wbs.enchants.enchantment.helper;
 
-import net.minecraft.core.HolderSet;
-import net.minecraft.core.RegistryAccess;
-import net.minecraft.core.registries.Registries;
-import net.minecraft.tags.EnchantmentTags;
+import io.papermc.paper.datacomponent.DataComponentTypes;
+import io.papermc.paper.datacomponent.item.Enchantable;
+import io.papermc.paper.registry.RegistryAccess;
+import io.papermc.paper.registry.RegistryKey;
+import io.papermc.paper.registry.keys.tags.EnchantmentTagKeys;
+import io.papermc.paper.registry.tag.Tag;
+import net.minecraft.util.Mth;
 import net.minecraft.util.RandomSource;
-import net.minecraft.world.item.enchantment.EnchantmentHelper;
-import net.minecraft.world.item.enchantment.EnchantmentInstance;
+import net.minecraft.util.random.WeightedRandom;
+import org.bukkit.Keyed;
 import org.bukkit.Material;
+import org.bukkit.Registry;
 import org.bukkit.block.EnchantingTable;
-import org.bukkit.craftbukkit.CraftWorld;
-import org.bukkit.craftbukkit.enchantments.CraftEnchantment;
-import org.bukkit.craftbukkit.inventory.CraftItemStack;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.enchantments.EnchantmentOffer;
 import org.bukkit.entity.Player;
 import org.bukkit.event.enchantment.PrepareItemEnchantEvent;
 import org.bukkit.inventory.ItemStack;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import wbs.enchants.util.EnchantUtils;
 
 import java.util.*;
+import java.util.function.ToIntFunction;
 
 @SuppressWarnings("UnstableApiUsage")
 public interface EnchantingTableEnchant extends BlockStateEnchant<EnchantingTable> {
@@ -89,6 +93,10 @@ public interface EnchantingTableEnchant extends BlockStateEnchant<EnchantingTabl
                         costs[slot]
                 );
 
+                if (enchantments.isEmpty()) {
+                    continue;
+                }
+
                 Enchantment[] sortedOptions = enchantments.keySet().stream()
                         .sorted(Comparator.comparing(enchant -> enchant.key().asString()))
                         .toArray(Enchantment[]::new);
@@ -102,30 +110,123 @@ public interface EnchantingTableEnchant extends BlockStateEnchant<EnchantingTabl
     }
 
     default Map<Enchantment, Integer> getEnchantments(Player player, long seed, ItemStack stack, int salt, int cost) {
-        return getEnchantments(((CraftWorld) player.getWorld()).getHandle().registryAccess(), seed, stack, salt, cost);
+        return getEnchantments(seed, stack, salt, cost);
     }
-    default Map<Enchantment, Integer> getEnchantments(RegistryAccess registryAccess, long seed, ItemStack stack, int salt, int cost) {
+    default Map<Enchantment, Integer> getEnchantments(long seed, ItemStack stack, int salt, int cost) {
         RandomSource source = RandomSource.create(seed + salt);
-        Optional<HolderSet.Named<net.minecraft.world.item.enchantment.Enchantment>> optional = registryAccess.lookupOrThrow(Registries.ENCHANTMENT).get(EnchantmentTags.IN_ENCHANTING_TABLE);
-        if (optional.isEmpty()) {
+
+        Registry<@NotNull Enchantment> registry = RegistryAccess.registryAccess().getRegistry(RegistryKey.ENCHANTMENT);
+        Tag<@NotNull Enchantment> availableOnTable = registry.getTag(EnchantmentTagKeys.IN_ENCHANTING_TABLE);
+        if (availableOnTable.isEmpty()) {
             return Map.of();
         } else {
-            List<EnchantmentInstance> list = EnchantmentHelper.selectEnchantment(
+            Map<Enchantment, Integer> enchantments = selectEnchantment(
                     source,
-                    ((CraftItemStack) stack).handle,
+                    stack,
                     cost,
-                    optional.get().stream()
+                    availableOnTable.resolve(registry)
             );
-            if (stack.getType() == Material.BOOK && list.size() > 1) {
-                list.remove(source.nextInt(list.size()));
-            }
 
-            Map<Enchantment, Integer> enchantments = new HashMap<>();
-            list.forEach(instance -> {
-                enchantments.put(CraftEnchantment.minecraftHolderToBukkit(instance.enchantment()), instance.level());
-            });
+            if (stack.getType() == Material.BOOK && enchantments.size() > 1) {
+                Enchantment key = getRandomKey(enchantments, source);
+
+                enchantments.remove(key);
+            }
 
             return enchantments;
         }
+    }
+
+    private static <T extends Keyed> T getRandomKey(Map<T, Integer> map, RandomSource source) {
+        List<T> list = map.keySet().stream().sorted(Comparator.comparing(Keyed::getKey)).toList();
+        return list.get(source.nextInt(map.size()));
+    }
+    private static <T extends Keyed> Optional<T> getRandomKey(Map<T, Integer> map, RandomSource source, ToIntFunction<T> weightProvider) {
+        List<T> list = map.keySet().stream().sorted(Comparator.comparing(Keyed::getKey)).toList();
+        return WeightedRandom.getRandomItem(source, list, weightProvider);
+    }
+    private static <T extends Keyed> T getLast(Map<T, Integer> map) {
+        List<T> list = map.keySet().stream().sorted(Comparator.comparing(Keyed::getKey)).toList();
+        return list.getLast();
+    }
+
+    default Map<Enchantment, Integer> selectEnchantment(RandomSource random, ItemStack stack, final int level, Collection<Enchantment> availableOnTable) {
+        Map<Enchantment, Integer> enchantments = new HashMap<>();
+        Enchantable enchantable = stack.getData(DataComponentTypes.ENCHANTABLE);
+        if (enchantable == null) {
+            return enchantments;
+        } else {
+            int modifiedLevel = getModifiedLevel(random, level, enchantable);
+            Map<Enchantment, Integer> availableEnchantmentResults = getAvailableEnchantmentResults(modifiedLevel, stack, availableOnTable);
+            if (!availableEnchantmentResults.isEmpty()) {
+                Optional<Enchantment> toAdd = getRandomKey(availableEnchantmentResults, random, Enchantment::getWeight);
+                Objects.requireNonNull(enchantments);
+                toAdd.ifPresent(enchantment -> enchantments.put(enchantment, availableEnchantmentResults.get(enchantment)));
+
+                while(random.nextInt(50) <= modifiedLevel) {
+                    if (!enchantments.isEmpty()) {
+                        filterCompatibleEnchantments(availableEnchantmentResults, getLast(enchantments));
+                    }
+
+                    if (availableEnchantmentResults.isEmpty()) {
+                        break;
+                    }
+
+                    toAdd = getRandomKey(availableEnchantmentResults, random, Enchantment::getWeight);
+                    Objects.requireNonNull(enchantments);
+                    toAdd.ifPresent(enchantment -> enchantments.put(enchantment, availableEnchantmentResults.get(enchantment)));
+                    modifiedLevel /= 2;
+                }
+            }
+
+            return enchantments;
+        }
+    }
+
+    private static int getModifiedLevel(RandomSource random, int level, Enchantable enchantable) {
+        level += 1 + random.nextInt(enchantable.value() / 4 + 1) + random.nextInt(enchantable.value() / 4 + 1);
+        float f = (random.nextFloat() + random.nextFloat() - 1.0F) * 0.15F;
+        level = Mth.clamp(Math.round((float) level + (float) level * f), 1, Integer.MAX_VALUE);
+        return level;
+    }
+
+    default void filterCompatibleEnchantments(Map<Enchantment, Integer> dataList, Enchantment enchantment) {
+        List<Enchantment> toRemove = new LinkedList<>();
+        for (Enchantment compare : dataList.keySet()) {
+            if (compare.conflictsWith(enchantment)) {
+                toRemove.add(compare);
+            }
+        }
+        toRemove.forEach(dataList::remove);
+    }
+
+    default Map<Enchantment, Integer> getAvailableEnchantmentResults(int modifiedEnchantingLevel, ItemStack stack, Collection<Enchantment> availableOnTable) {
+        Map<Enchantment, Integer> enchantments = new HashMap<>();
+        boolean isBook = stack.getType() == Material.BOOK;
+        availableOnTable.stream()
+                .filter(enchantment -> isBook || isPrimaryItem(stack, enchantment))
+                .forEach((enchantment) -> {
+                    for (int enchantmentLevel = getMaxLevel(enchantment); enchantmentLevel >= 1; --enchantmentLevel) {
+                        if (shouldGenerateEnchant(modifiedEnchantingLevel, enchantment, enchantmentLevel)) {
+                            enchantments.put(enchantment, enchantmentLevel);
+                            break;
+                        }
+                    }
+                });
+
+        return enchantments;
+    }
+
+    default int getMaxLevel(Enchantment enchantment) {
+        return enchantment.getMaxLevel();
+    }
+
+    default boolean shouldGenerateEnchant(int modifiedEnchantingLevel, Enchantment enchantment, int enchantmentLevel) {
+        return modifiedEnchantingLevel >= enchantment.getMinModifiedCost(enchantmentLevel) &&
+                modifiedEnchantingLevel <= enchantment.getMaxModifiedCost(enchantmentLevel);
+    }
+
+    default boolean isPrimaryItem(ItemStack item, Enchantment enchantment) {
+        return EnchantUtils.isPrimaryItem(item, enchantment);
     }
 }

@@ -4,11 +4,13 @@ import io.papermc.paper.registry.RegistryAccess;
 import io.papermc.paper.registry.RegistryKey;
 import io.papermc.paper.registry.TypedKey;
 import io.papermc.paper.registry.keys.tags.EnchantmentTagKeys;
+import io.papermc.paper.registry.set.RegistryKeySet;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextDecoration;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.ItemType;
 import org.bukkit.inventory.meta.EnchantmentStorageMeta;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -20,11 +22,10 @@ import wbs.enchants.definition.EnchantmentExtension;
 import wbs.enchants.definition.EnchantmentWrapper;
 import wbs.enchants.type.EnchantmentTypeManager;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
+@SuppressWarnings("UnstableApiUsage")
 public class EnchantUtils {
     public static List<Enchantment> getConflictsWith(Enchantment enchant) {
         return getConflictsWith(enchant, getAllEnchants());
@@ -132,5 +133,23 @@ public class EnchantUtils {
         Map<Enchantment, Integer> enchants = getEnchants(item);
 
         return enchants.keySet().stream().noneMatch(other -> !other.equals(enchantment) && other.conflictsWith(enchantment));
+    }
+
+    public static boolean isPrimaryItem(ItemStack item, Enchantment enchantment) {
+        return isPrimaryItem(Objects.requireNonNull(item.getType().asItemType()), enchantment);
+    }
+
+    public static boolean isPrimaryItem(ItemType itemType, Enchantment enchantment) {
+        RegistryKeySet<@NotNull ItemType> supportedItems = enchantment.getSupportedItems();
+        if (!supportedItems.contains(TypedKey.create(RegistryKey.ITEM, itemType.key()))) {
+            return false;
+        }
+
+        RegistryKeySet<@NotNull ItemType> primaryItems = enchantment.getPrimaryItems();
+        if (primaryItems == null || primaryItems.isEmpty()) {
+            return true;
+        }
+
+        return primaryItems.contains(TypedKey.create(RegistryKey.ITEM, itemType.key()));
     }
 }
