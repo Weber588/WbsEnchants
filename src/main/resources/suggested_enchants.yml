@@ -7,10 +7,10 @@ wbsenchants:entangled:
     chest anywhere in the world, so long as it has enough space for it.
   supported_items: minecraft:enchantable/mining
   minimum_cost:
-    base_cost: 45
+    base_cost: 55
     additional_per_level_cost: 0
   maximum_cost:
-    base_cost: 65
+    base_cost: 75
     additional_per_level_cost: 0
   anvil_cost: 12
   max_level: 1
@@ -30,12 +30,12 @@ wbsenchants:excavator:
   primary_items: minecraft:shovels
   supported_items: minecraft:shovels
   minimum_cost:
-    base_cost: 55
+    base_cost: 45
     additional_per_level_cost: 15
   maximum_cost:
-    base_cost: 85
+    base_cost: 65
     additional_per_level_cost: 15
-  anvil_cost: 10
+  anvil_cost: 8
   max_level: 2
   weight: 1
   generation:
@@ -61,7 +61,7 @@ wbsenchants:harvester:
   maximum_cost:
     base_cost: 40
     additional_per_level_cost: 8
-  anvil_cost: 8
+  anvil_cost: 4
   max_level: 2
   weight: 1
   generation:
@@ -86,7 +86,7 @@ wbsenchants:vampiric:
   maximum_cost:
     base_cost: 65
     additional_per_level_cost: 8
-  anvil_cost: 0
+  anvil_cost: 4
   max_level: 3
   weight: 5
   generation:
@@ -111,13 +111,13 @@ wbsenchants:vein_miner:
     type, they'll be mined too (up to 6 blocks per level).
   supported_items: minecraft:pickaxes
   minimum_cost:
-    base_cost: 55
+    base_cost: 45
     additional_per_level_cost: 15
   maximum_cost:
-    base_cost: 85
+    base_cost: 65
     additional_per_level_cost: 15
   exclusive_with: wbsenchants:exclusive_set/multiminer
-  anvil_cost: 0
+  anvil_cost: 6
   max_level: 4
   weight: 1
   generation:
@@ -136,13 +136,13 @@ wbsenchants:blast_miner:
     every level, for a maximum of 3x%max_level%x3 at level %max_level%.
   supported_items: minecraft:pickaxes
   minimum_cost:
-    base_cost: 55
+    base_cost: 45
     additional_per_level_cost: 15
   maximum_cost:
-    base_cost: 85
+    base_cost: 65
     additional_per_level_cost: 15
   exclusive_with: wbsenchants:exclusive_set/multiminer
-  anvil_cost: 0
+  anvil_cost: 8
   max_level: 3
   weight: 5
   generation:
@@ -166,7 +166,7 @@ wbsenchants:void_walker:
   maximum_cost:
     base_cost: 25
     additional_per_level_cost: 12
-  anvil_cost: 0
+  anvil_cost: 2
   max_level: 1
   weight: 1
   generation:
@@ -188,7 +188,7 @@ wbsenchants:planar_binding:
   maximum_cost:
     base_cost: 25
     additional_per_level_cost: 12
-  anvil_cost: 0
+  anvil_cost: 2
   max_level: 3
   weight: 5
   generation:
@@ -213,7 +213,7 @@ wbsenchants:disarming:
   maximum_cost:
     base_cost: 65
     additional_per_level_cost: 8
-  anvil_cost: 0
+  anvil_cost: 4
   max_level: 3
   weight: 1
   generation:
@@ -239,7 +239,7 @@ wbsenchants:frenzied:
   maximum_cost:
     base_cost: 25
     additional_per_level_cost: 8
-  anvil_cost: 0
+  anvil_cost: 6
   max_level: 1
   weight: 5
   inject_into:
@@ -255,12 +255,12 @@ wbsenchants:lightweight:
   primary_items:
     - minecraft:shield
   minimum_cost:
-    base_cost: 35
-    additional_per_level_cost: 15
+    base_cost: 45
+    additional_per_level_cost: 20
   maximum_cost:
-    base_cost: 85
-    additional_per_level_cost: 15
-  anvil_cost: 0
+    base_cost: 65
+    additional_per_level_cost: 20
+  anvil_cost: 8
   max_level: 3
   weight: 3
   generation:
@@ -287,7 +287,7 @@ wbsenchants:hellborne:
   maximum_cost:
     base_cost: 65
     additional_per_level_cost: 15
-  anvil_cost: 0
+  anvil_cost: 6
   max_level: 2
   weight: 1
   generation:
@@ -315,7 +315,7 @@ wbsenchants:decay:
     base_cost: 60
     additional_per_level_cost: 15
   exclusive_with: minecraft:exclusive_set/damage
-  anvil_cost: 0
+  anvil_cost: 1
   max_level: 5
   weight: 1
   affected-mobs:
@@ -345,7 +345,7 @@ wbsenchants:scorching:
     base_cost: 75
     additional_per_level_cost: 15
   exclusive_with: minecraft:exclusive_set/mining
-  anvil_cost: 0
+  anvil_cost: 12
   max_level: 1
   weight: 1
   inject_into:
@@ -367,7 +367,7 @@ wbsenchants:frostburn:
     base_cost: 25
     additional_per_level_cost: 6
   exclusive_with: minecraft:exclusive_set/damage
-  anvil_cost: 0
+  anvil_cost: 2
   max_level: 3
   weight: 1
   affected-mobs:
@@ -392,7 +392,7 @@ wbsenchants:ender_shot:
   maximum_cost:
     base_cost: 65
     additional_per_level_cost: 15
-  anvil_cost: 0
+  anvil_cost: 8
   max_level: 1
   weight: 1
   generation:
@@ -411,12 +411,12 @@ wbsenchants:immortal:
     be destroyed except for the void.
   supported_items: minecraft:enchantable/durability
   minimum_cost:
-    base_cost: 35
-    additional_per_level_cost: 15
+    base_cost: 45
+    additional_per_level_cost: 0
   maximum_cost:
     base_cost: 85
-    additional_per_level_cost: 15
-  anvil_cost: 0
+    additional_per_level_cost: 0
+  anvil_cost: 12
   max_level: 1
   weight: 1
   inject_into: []
@@ -432,7 +432,7 @@ wbsenchants:dual_wield:
   maximum_cost:
     base_cost: 65
     additional_per_level_cost: 10
-  anvil_cost: 0
+  anvil_cost: 8
   max_level: 1
   weight: 1
   inject_into:
@@ -448,7 +448,7 @@ wbsenchants:pinpoint:
   maximum_cost:
     base_cost: 25
     additional_per_level_cost: 8
-  anvil_cost: 0
+  anvil_cost: 8
   max_level: 1
   weight: 3
   inject_into:
@@ -465,7 +465,7 @@ wbsenchants:frictionless:
   maximum_cost:
     base_cost: 25
     additional_per_level_cost: 8
-  anvil_cost: 0
+  anvil_cost: 8
   max_level: 3
   weight: 1
   generation:
@@ -482,12 +482,12 @@ wbsenchants:unshakable:
   supported_items:
     - minecraft:lead
   minimum_cost:
-    base_cost: 5
-    additional_per_level_cost: 8
+    base_cost: 10
+    additional_per_level_cost: 0
   maximum_cost:
-    base_cost: 25
-    additional_per_level_cost: 8
-  anvil_cost: 0
+    base_cost: 41
+    additional_per_level_cost: 0
+  anvil_cost: 8
   max_level: 1
   weight: 1
   inject_into:
@@ -504,7 +504,7 @@ wbsenchants:transference:
   maximum_cost:
     base_cost: 25
     additional_per_level_cost: 8
-  anvil_cost: 0
+  anvil_cost: 8
   max_level: 1
   weight: 5
   inject_into:
@@ -520,7 +520,7 @@ wbsenchants:unsinkable:
   maximum_cost:
     base_cost: 25
     additional_per_level_cost: 8
-  anvil_cost: 0
+  anvil_cost: 8
   max_level: 1
   weight: 5
   generation:
@@ -548,7 +548,7 @@ wbsenchants:defusal:
     base_cost: 15
     additional_per_level_cost: 8
   exclusive_with: wbsenchants:exclusive_set/defusal
-  anvil_cost: 0
+  anvil_cost: 2
   max_level: 3
   weight: 1
   inject_into:
@@ -567,7 +567,7 @@ wbsenchants:pilfering:
   maximum_cost:
     base_cost: 25
     additional_per_level_cost: 8
-  anvil_cost: 0
+  anvil_cost: 2
   max_level: 3
   weight: 5
   generation:
@@ -608,7 +608,7 @@ wbsenchants:resilience:
     base_cost: 50
     additional_per_level_cost: 25
   exclusive_with: minecraft:exclusive_set/armor
-  anvil_cost: 1
+  anvil_cost: 6
   max_level: 2
   weight: 1
   inject_into:
@@ -1423,7 +1423,7 @@ wbsenchants:tree_feller:
   maximum_cost:
     base_cost: 65
     additional_per_level_cost: 5
-  anvil_cost: 0
+  anvil_cost: 6
   max_level: 3
   weight: 1
   exclusive_with: wbsenchants:exclusive_set/multiminer
@@ -1440,7 +1440,7 @@ wbsenchants:spiritheart:
   maximum_cost:
     base_cost: 25
     additional_per_level_cost: 8
-  anvil_cost: 0
+  anvil_cost: 2
   max_level: 3
   weight: 1
   inject_into:
@@ -1458,7 +1458,7 @@ wbsenchants:afterlife:
   maximum_cost:
     base_cost: 25
     additional_per_level_cost: 8
-  anvil_cost: 0
+  anvil_cost: 8
   max_level: 1
   weight: 1
   generation:
@@ -1476,7 +1476,24 @@ wbsenchants:caving:
   display_name: Caving
   description: Torches inside bundles on your hotbar with this enchantment will automatically
     place themselves on the ground when you walk into the dark!
-  supported_items: wbsenchants:enchantable/bundle
+  supported_items:
+    - minecraft:bundle
+    - minecraft:white_bundle
+    - minecraft:orange_bundle
+    - minecraft:magenta_bundle
+    - minecraft:light_blue_bundle
+    - minecraft:yellow_bundle
+    - minecraft:lime_bundle
+    - minecraft:pink_bundle
+    - minecraft:gray_bundle
+    - minecraft:light_gray_bundle
+    - minecraft:cyan_bundle
+    - minecraft:purple_bundle
+    - minecraft:blue_bundle
+    - minecraft:brown_bundle
+    - minecraft:green_bundle
+    - minecraft:red_bundle
+    - minecraft:black_bundle
   light-level-required: 3
   minimum_cost:
     base_cost: 5
@@ -1484,7 +1501,7 @@ wbsenchants:caving:
   maximum_cost:
     base_cost: 25
     additional_per_level_cost: 8
-  anvil_cost: 0
+  anvil_cost: 2
   max_level: 1
   weight: 1
   generation:
@@ -1509,7 +1526,7 @@ wbsenchants:earthbound:
     base_cost: 25
     additional_per_level_cost: 8
   exclusive_with: wbsenchants:exclusive_set/fall_damage_affecting
-  anvil_cost: 0
+  anvil_cost: 2
   max_level: 1
   weight: 1
   generation:
@@ -1532,7 +1549,7 @@ wbsenchants:disengage:
   maximum_cost:
     base_cost: 30
     additional_per_level_cost: 15
-  anvil_cost: 0
+  anvil_cost: 2
   max_level: 3
   weight: 1
   inject_into:
@@ -1549,7 +1566,7 @@ wbsenchants:enderspite:
     base_cost: 25
     additional_per_level_cost: 8
   exclusive_with: minecraft:exclusive_set/damage
-  anvil_cost: 0
+  anvil_cost: 1
   max_level: 5
   weight: 1
   affected-mobs:
@@ -1582,7 +1599,7 @@ wbsenchants:frostcreep:
   maximum_cost:
     base_cost: 30
     additional_per_level_cost: 8
-  anvil_cost: 0
+  anvil_cost: 6
   max_level: 3
   weight: 1
   exclusive_with: wbsenchants:heat_based
@@ -1603,7 +1620,7 @@ wbsenchants:outreach:
   maximum_cost:
     base_cost: 60
     additional_per_level_cost: 5
-  anvil_cost: 0
+  anvil_cost: 8
   max_level: 3
   weight: 1
   inject_into: []
@@ -1617,7 +1634,7 @@ wbsenchants:hydrophobic:
   maximum_cost:
     base_cost: 25
     additional_per_level_cost: 8
-  anvil_cost: 1
+  anvil_cost: 4
   max_level: 3
   weight: 1
   inject_into:
@@ -1635,7 +1652,7 @@ wbsenchants:pyroclastic:
   maximum_cost:
     base_cost: 25
     additional_per_level_cost: 8
-  anvil_cost: 1
+  anvil_cost: 8
   max_level: 1
   weight: 1
   inject_into: []
@@ -1649,7 +1666,7 @@ wbsenchants:surface_miner:
   maximum_cost:
     base_cost: 25
     additional_per_level_cost: 8
-  anvil_cost: 1
+  anvil_cost: 3
   max_level: 3
   weight: 1
   inject_into:
@@ -1665,7 +1682,7 @@ wbsenchants:carrying:
   maximum_cost:
     base_cost: 25
     additional_per_level_cost: 8
-  anvil_cost: 1
+  anvil_cost: 6
   max_level: 4
   weight: 1
   inject_into: []
@@ -1688,7 +1705,7 @@ wbsenchants:refill:
   maximum_cost:
     base_cost: 25
     additional_per_level_cost: 8
-  anvil_cost: 1
+  anvil_cost: 6
   max_level: 1
   weight: 1
   inject_into: []
@@ -1710,7 +1727,7 @@ wbsenchants:siphoning:
   maximum_cost:
     base_cost: 25
     additional_per_level_cost: 8
-  anvil_cost: 1
+  anvil_cost: 12
   max_level: 1
   weight: 1
   inject_into: []
@@ -1734,7 +1751,7 @@ wbsenchants:placing:
   maximum_cost:
     base_cost: 25
     additional_per_level_cost: 8
-  anvil_cost: 1
+  anvil_cost: 8
   max_level: 1
   weight: 1
   inject_into: []
@@ -1760,7 +1777,7 @@ wbsenchants:discarding:
   maximum_cost:
     base_cost: 25
     additional_per_level_cost: 8
-  anvil_cost: 1
+  anvil_cost: 8
   max_level: 1
   weight: 1
   inject_into:
@@ -1803,7 +1820,7 @@ wbsenchants:blooming:
   maximum_cost:
     base_cost: 55
     additional_per_level_cost: 0
-  anvil_cost: 1
+  anvil_cost: 8
   max_level: 1
   weight: 1
   inject_into:
@@ -1819,7 +1836,7 @@ wbsenchants:curse/rust:
   maximum_cost:
     base_cost: 25
     additional_per_level_cost: 8
-  anvil_cost: 1
+  anvil_cost: 8
   max_level: 1
   weight: 1
   inject_into:
@@ -1837,7 +1854,7 @@ wbsenchants:ghost_pact:
   maximum_cost:
     base_cost: 25
     additional_per_level_cost: 8
-  anvil_cost: 1
+  anvil_cost: 3
   max_level: 4
   weight: 1
   inject_into:
@@ -1860,7 +1877,7 @@ wbsenchants:fanged:
   maximum_cost:
     base_cost: 25
     additional_per_level_cost: 8
-  anvil_cost: 1
+  anvil_cost: 6
   max_level: 3
   weight: 1
   inject_into: []
@@ -1881,7 +1898,7 @@ wbsenchants:magnetic:
   maximum_cost:
     base_cost: 25
     additional_per_level_cost: 8
-  anvil_cost: 1
+  anvil_cost: 10
   max_level: 1
   weight: 1
   inject_into:
@@ -1900,7 +1917,7 @@ wbsenchants:casting:
   maximum_cost:
     base_cost: 25
     additional_per_level_cost: 8
-  anvil_cost: 1
+  anvil_cost: 4
   max_level: 1
   weight: 1
   inject_into: []
@@ -1914,7 +1931,7 @@ wbsenchants:curse/rot:
   maximum_cost:
     base_cost: 25
     additional_per_level_cost: 8
-  anvil_cost: 1
+  anvil_cost: 8
   max_level: 3
   weight: 1
   inject_into:
@@ -1932,7 +1949,7 @@ wbsenchants:multicast:
   maximum_cost:
     base_cost: 65
     additional_per_level_cost: 16
-  anvil_cost: 1
+  anvil_cost: 6
   max_level: 2
   weight: 1
   inject_into:
@@ -1951,7 +1968,7 @@ wbsenchants:auto_reel:
   maximum_cost:
     base_cost: 25
     additional_per_level_cost: 8
-  anvil_cost: 1
+  anvil_cost: 8
   max_level: 1
   weight: 1
   inject_into:
@@ -1969,7 +1986,7 @@ wbsenchants:hell_hook:
   maximum_cost:
     base_cost: 25
     additional_per_level_cost: 8
-  anvil_cost: 1
+  anvil_cost: 8
   max_level: 3
   weight: 1
   inject_into: []
@@ -1990,7 +2007,7 @@ wbsenchants:arctic_strike:
   maximum_cost:
     base_cost: 25
     additional_per_level_cost: 8
-  anvil_cost: 1
+  anvil_cost: 4
   max_level: 3
   weight: 1
   exclusive_with: wbsenchants:heat_based
@@ -2014,7 +2031,7 @@ wbsenchants:tempered:
   maximum_cost:
     base_cost: 25
     additional_per_level_cost: 8
-  anvil_cost: 1
+  anvil_cost: 8
   max_level: 3
   weight: 1
   inject_into:
@@ -2030,7 +2047,7 @@ wbsenchants:nihil:
   maximum_cost:
     base_cost: 25
     additional_per_level_cost: 8
-  anvil_cost: 1
+  anvil_cost: 4
   max_level: 1
   weight: 1
   inject_into:
@@ -2049,7 +2066,7 @@ wbsenchants:quick_ride:
   maximum_cost:
     base_cost: 25
     additional_per_level_cost: 8
-  anvil_cost: 1
+  anvil_cost: 4
   max_level: 1
   weight: 1
   inject_into:
@@ -2068,7 +2085,7 @@ wbsenchants:fleecing:
   maximum_cost:
     base_cost: 25
     additional_per_level_cost: 8
-  anvil_cost: 1
+  anvil_cost: 3
   max_level: 3
   weight: 2
   inject_into:
@@ -2085,7 +2102,7 @@ wbsenchants:cautiousness:
   maximum_cost:
     base_cost: 25
     additional_per_level_cost: 8
-  anvil_cost: 1
+  anvil_cost: 4
   max_level: 1
   weight: 1
   inject_into:
@@ -2104,7 +2121,7 @@ wbsenchants:reinforced:
   maximum_cost:
     base_cost: 25
     additional_per_level_cost: 8
-  anvil_cost: 1
+  anvil_cost: 2
   max_level: 3
   weight: 1
   inject_into: []
@@ -2117,12 +2134,12 @@ wbsenchants:reflexive:
   supported_items:
     - minecraft:shield
   minimum_cost:
-    base_cost: 30
-    additional_per_level_cost: 10
+    base_cost: 45
+    additional_per_level_cost: 0
   maximum_cost:
     base_cost: 85
-    additional_per_level_cost: 10
-  anvil_cost: 1
+    additional_per_level_cost: 0
+  anvil_cost: 12
   max_level: 1
   weight: 1
   inject_into:
@@ -2138,7 +2155,7 @@ wbsenchants:throwing:
   maximum_cost:
     base_cost: 25
     additional_per_level_cost: 8
-  anvil_cost: 1
+  anvil_cost: 2
   max_level: 4
   weight: 1
   inject_into:
@@ -2154,7 +2171,7 @@ wbsenchants:demetrien:
   maximum_cost:
     base_cost: 25
     additional_per_level_cost: 8
-  anvil_cost: 1
+  anvil_cost: 8
   max_level: 1
   weight: 1
   inject_into:
@@ -2171,7 +2188,7 @@ wbsenchants:galloping:
   maximum_cost:
     base_cost: 25
     additional_per_level_cost: 8
-  anvil_cost: 1
+  anvil_cost: 2
   max_level: 3
   weight: 1
   generation:
@@ -2218,7 +2235,7 @@ wbsenchants:cavalrous:
   maximum_cost:
     base_cost: 25
     additional_per_level_cost: 8
-  anvil_cost: 1
+  anvil_cost: 3
   max_level: 3
   weight: 1
   generation:
@@ -2241,7 +2258,7 @@ wbsenchants:fungal_heart:
   maximum_cost:
     base_cost: 25
     additional_per_level_cost: 8
-  anvil_cost: 1
+  anvil_cost: 2
   max_level: 3
   weight: 1
   inject_into:
@@ -2258,7 +2275,7 @@ wbsenchants:abyss_miner:
   maximum_cost:
     base_cost: 25
     additional_per_level_cost: 8
-  anvil_cost: 1
+  anvil_cost: 8
   max_level: 1
   weight: 1
   generation:
@@ -2282,7 +2299,7 @@ wbsenchants:aetherean:
   maximum_cost:
     base_cost: 25
     additional_per_level_cost: 8
-  anvil_cost: 1
+  anvil_cost: 8
   max_level: 1
   weight: 1
   inject_into: []
@@ -2305,7 +2322,7 @@ wbsenchants:buoyancy:
   maximum_cost:
     base_cost: 25
     additional_per_level_cost: 8
-  anvil_cost: 1
+  anvil_cost: 8
   max_level: 1
   weight: 1
   generation:
@@ -2329,7 +2346,7 @@ wbsenchants:annotated:
   maximum_cost:
     base_cost: 9
     additional_per_level_cost: 6
-  anvil_cost: 1
+  anvil_cost: 8
   max_level: 1
   weight: 5
   generation:
@@ -2351,11 +2368,11 @@ wbsenchants:haven:
   supported_items: wbsenchants:enchantable/beacon
   minimum_cost:
     base_cost: 45
-    additional_per_level_cost: 8
+    additional_per_level_cost: 0
   maximum_cost:
     base_cost: 85
-    additional_per_level_cost: 8
-  anvil_cost: 1
+    additional_per_level_cost: 0
+  anvil_cost: 12
   max_level: 1
   weight: 1
   inject_into: []
@@ -2370,7 +2387,7 @@ wbsenchants:snaring:
   maximum_cost:
     base_cost: 25
     additional_per_level_cost: 8
-  anvil_cost: 1
+  anvil_cost: 2
   max_level: 2
   weight: 5
   inject_into:
@@ -2406,7 +2423,7 @@ wbsenchants:whirling:
   maximum_cost:
     base_cost: 25
     additional_per_level_cost: 8
-  anvil_cost: 1
+  anvil_cost: 2
   max_level: 2
   weight: 5
   inject_into:
@@ -2424,7 +2441,7 @@ wbsenchants:hovering:
   maximum_cost:
     base_cost: 25
     additional_per_level_cost: 8
-  anvil_cost: 1
+  anvil_cost: 12
   max_level: 1
   weight: 1
   generation:
@@ -2449,7 +2466,7 @@ wbsenchants:rerolling:
   maximum_cost:
     base_cost: 25
     additional_per_level_cost: 8
-  anvil_cost: 1
+  anvil_cost: 8
   max_level: 1
   weight: 1
   generation:
@@ -2478,7 +2495,7 @@ wbsenchants:ambitiousness:
   maximum_cost:
     base_cost: 25
     additional_per_level_cost: 8
-  anvil_cost: 1
+  anvil_cost: 16
   max_level: 3
   weight: 1
   generation:
@@ -2506,7 +2523,7 @@ wbsenchants:recall:
   maximum_cost:
     base_cost: 25
     additional_per_level_cost: 8
-  anvil_cost: 1
+  anvil_cost: 8
   max_level: 1
   weight: 1
   inject_into:
@@ -2526,7 +2543,7 @@ wbsenchants:ancient_cry:
   maximum_cost:
     base_cost: 25
     additional_per_level_cost: 8
-  anvil_cost: 1
+  anvil_cost: 8
   max_level: 1
   weight: 1
   inject_into:
@@ -2544,7 +2561,7 @@ wbsenchants:breathtaking:
   maximum_cost:
     base_cost: 25
     additional_per_level_cost: 8
-  anvil_cost: 1
+  anvil_cost: 8
   max_level: 1
   weight: 1
   inject_into:
@@ -2561,7 +2578,7 @@ wbsenchants:platformer:
   maximum_cost:
     base_cost: 25
     additional_per_level_cost: 8
-  anvil_cost: 1
+  anvil_cost: 8
   max_level: 1
   weight: 1
   inject_into: []
@@ -2575,7 +2592,7 @@ wbsenchants:venturing:
   maximum_cost:
     base_cost: 25
     additional_per_level_cost: 8
-  anvil_cost: 1
+  anvil_cost: 4
   max_level: 1
   weight: 1
   generation:
@@ -2645,7 +2662,7 @@ wbsenchants:curse/hypoxia:
   maximum_cost:
     base_cost: 25
     additional_per_level_cost: 8
-  anvil_cost: 1
+  anvil_cost: 8
   max_level: 1
   weight: 1
   inject_into:
@@ -2664,7 +2681,7 @@ wbsenchants:powerlust:
   maximum_cost:
     base_cost: 25
     additional_per_level_cost: 8
-  anvil_cost: 1
+  anvil_cost: 8
   max_level: 1
   weight: 1
   generation:
@@ -2695,7 +2712,7 @@ wbsenchants:industrious:
   maximum_cost:
     base_cost: 25
     additional_per_level_cost: 8
-  anvil_cost: 1
+  anvil_cost: 2
   max_level: 3
   weight: 1
   inject_into:
@@ -2713,7 +2730,7 @@ wbsenchants:striding:
   maximum_cost:
     base_cost: 25
     additional_per_level_cost: 8
-  anvil_cost: 1
+  anvil_cost: 8
   max_level: 1
   weight: 1
   inject_into:
@@ -2730,7 +2747,7 @@ wbsenchants:curse/limping:
   maximum_cost:
     base_cost: 25
     additional_per_level_cost: 8
-  anvil_cost: 1
+  anvil_cost: 8
   max_level: 1
   weight: 1
   inject_into:
@@ -2750,7 +2767,7 @@ wbsenchants:fly_fishing:
   maximum_cost:
     base_cost: 25
     additional_per_level_cost: 8
-  anvil_cost: 1
+  anvil_cost: 2
   max_level: 3
   weight: 1
   inject_into:
@@ -2879,4 +2896,94 @@ wbsenchants:portal_walker:
       conditions:
         dimension-type: Nether
   inject_into: []
+wbsenchants:invocation:
+  enabled: true
+  display_name: Invocation
+  description: Allows any enchantments contained in the chiseled bookshelf to appear
+    on any enchanting table that uses it for power.
+  supported_items:
+    - minecraft:chiseled_bookshelf
+  exclusive_with: wbsenchants:exclusive_set/chiseled_bookshelf
+  minimum_cost:
+    base_cost: 5
+    additional_per_level_cost: 8
+  maximum_cost:
+    base_cost: 25
+    additional_per_level_cost: 8
+  anvil_cost: 6
+  max_level: 3
+  weight: 1
+  inject_into:
+    - wbsenchants:exclusive_set/chiseled_bookshelf
+  generation:
+    trading:
+      result: minecraft:chiseled_bookshelf
+      emerald-cost:
+        min: 32
+        max: 64
+      item-cost: minecraft:chiseled_bookshelf
+      chance: 33
+      replace: minecraft:compass
+      villager-profession: librarian
+      level: WEIGHTED_SMALL
+wbsenchants:abjuration:
+  enabled: true
+  display_name: Abjuration
+  description: Prevents any enchantments contained in the chiseled bookshelf from
+    appearing on any enchanting table that uses it for power.
+  supported_items:
+    - minecraft:chiseled_bookshelf
+  exclusive_with: wbsenchants:exclusive_set/chiseled_bookshelf
+  minimum_cost:
+    base_cost: 5
+    additional_per_level_cost: 8
+  maximum_cost:
+    base_cost: 25
+    additional_per_level_cost: 8
+  anvil_cost: 2
+  max_level: 3
+  weight: 1
+  generation:
+    trading:
+      result: minecraft:chiseled_bookshelf
+      emerald-cost:
+        min: 32
+        max: 64
+      item-cost: minecraft:chiseled_bookshelf
+      chance: 33
+      replace: minecraft:compass
+      villager-profession: librarian
+      level: WEIGHTED_SMALL
+  inject_into:
+    - wbsenchants:exclusive_set/chiseled_bookshelf
+wbsenchants:insightful:
+  enabled: true
+  display_name: Insightful
+  description: Ensures any enchantments contained in the chiseled bookshelf will be
+    the enchantment hint whenever a nearby enchanting table would generate it.
+  supported_items:
+    - minecraft:chiseled_bookshelf
+  exclusive_with: wbsenchants:exclusive_set/chiseled_bookshelf
+  minimum_cost:
+    base_cost: 5
+    additional_per_level_cost: 8
+  maximum_cost:
+    base_cost: 25
+    additional_per_level_cost: 8
+  anvil_cost: 2
+  max_level: 1
+  weight: 1
+  generation:
+    trading:
+      result: minecraft:chiseled_bookshelf
+      emerald-cost:
+        min: 32
+        max: 64
+      item-cost: minecraft:chiseled_bookshelf
+      chance: 33
+      replace: minecraft:compass
+      villager-profession: librarian
+      level: WEIGHTED_SMALL
+  inject_into:
+    - wbsenchants:exclusive_set/chiseled_bookshelf
 
