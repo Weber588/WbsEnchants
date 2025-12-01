@@ -16,23 +16,44 @@ import org.jetbrains.annotations.Nullable;
 import wbs.enchants.definition.EnchantmentDefinition;
 import wbs.enchants.generation.GenerationContext;
 import wbs.enchants.util.EnchantUtils;
+import wbs.utils.util.WbsKeyed;
 
+import java.util.Map;
 import java.util.Random;
 
 public class VillagerTradeContext extends GenerationContext {
 
-    private int villagerLevel = 1;
+    @Nullable
+    private Integer villagerLevel = null;
+    @Nullable
+    private Villager.Profession villagerProfession = null;
     @NotNull
     private String resultString = "minecraft:enchanted_book";
     private int emeraldCostMin = 1;
     private int emeraldCostMax = 64;
     @Nullable
     private String itemCostString = "minecraft:book";
+    @Nullable
+    private String replaceItemKey = null;
 
     public VillagerTradeContext(String key, EnchantmentDefinition definition, ConfigurationSection section, String directory) {
         super(key, definition, section, directory);
 
-        villagerLevel = section.getInt("villager-level", villagerLevel);
+        if (section.isInt("villager-level")) {
+            villagerLevel = section.getInt("villager-level");
+            if (villagerLevel < 1 || villagerLevel > 5) {
+                villagerLevel = null;
+            }
+        }
+
+        replaceItemKey = section.getString("replace", replaceItemKey);
+
+        String professionString = section.getString("profession");
+
+        if (professionString != null) {
+            villagerProfession = WbsKeyed.getKeyedFromString(Villager.Profession.class, professionString);
+        }
+
         resultString = section.getString("result", resultString);
 
         ConfigurationSection emeraldCostSection = section.getConfigurationSection("emerald-cost");
@@ -72,9 +93,35 @@ public class VillagerTradeContext extends GenerationContext {
         return 25;
     }
 
+    private static final Map<Integer, String> LEVEL_NAMES = Map.of(
+            1, "Novice",
+            2, "Apprentice",
+            3, "Journeyman",
+            4, "Expert",
+            5, "Master"
+    );
+
     @Override
     protected Component describeContext(TextComponent listBreak) {
-        return Component.text("On villager trades: " + chanceToRun() + "%");
+        TextComponent description;
+
+        if (replaceItemKey == null) {
+            description = Component.text("On");
+        } else {
+            description = Component.text("Replacing " + replaceItemKey + " on");
+        }
+
+        if (villagerLevel != null) {
+            description = description.append(Component.text(" " + LEVEL_NAMES.get(villagerLevel)));
+        }
+
+        if (villagerProfession != null) {
+            description = description.append(Component.text(" " + WbsKeyed.toPrettyString(villagerProfession)));
+        }
+
+        description = description.append(Component.text(" villager trades: " + chanceToRun() + "%"));
+
+        return description;
     }
 
     @EventHandler
@@ -94,7 +141,16 @@ public class VillagerTradeContext extends GenerationContext {
         }
 
         // nms Villager#increaseMerchantCareer increases level BEFORE acquiring trades -- reliable
-        if (villager.getVillagerLevel() != villagerLevel) {
+        if (villagerLevel != null && villager.getVillagerLevel() != villagerLevel) {
+            return;
+        }
+
+        if (villagerProfession != null && villager.getProfession() != villagerProfession) {
+            return;
+        }
+
+        ItemStack result = event.getRecipe().getResult();
+        if (replaceItemKey != null && !result.isSimilar(Bukkit.getItemFactory().createItemStack(replaceItemKey))) {
             return;
         }
 

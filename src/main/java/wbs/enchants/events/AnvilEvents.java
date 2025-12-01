@@ -37,6 +37,11 @@ public class AnvilEvents implements Listener {
             ItemStack newResult = result;
             if (result == null || result.isEmpty()) {
                 newResult = firstItem.clone();
+                int firstItemCost = firstItem.getDataOrDefault(DataComponentTypes.REPAIR_COST, 0);
+                int secondItemCost = secondItem.getDataOrDefault(DataComponentTypes.REPAIR_COST, 0);
+
+                int newCost = Math.max(firstItemCost, secondItemCost);
+                newResult.setData(DataComponentTypes.REPAIR_COST, newCost * 2 + 1);
                 createdResult = true;
             }
 

@@ -5,7 +5,6 @@ import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.context.CommandContext;
 import io.papermc.paper.command.brigadier.CommandSourceStack;
 import io.papermc.paper.command.brigadier.Commands;
-import io.papermc.paper.command.brigadier.argument.ArgumentTypes;
 import io.papermc.paper.registry.RegistryAccess;
 import io.papermc.paper.registry.RegistryKey;
 import io.papermc.paper.registry.keys.tags.EnchantmentTagKeys;
@@ -46,20 +45,13 @@ public class SubcommandTagInfo extends WbsSubcommand {
                 builder.then(Commands.literal(key)
                         .executes(context -> this.execute(context.getSource().getSender(), key))
         ));
-
-        builder.then(Commands.literal("custom")
-                        .executes(this::executeNoArgs)
-                        .then(Commands.argument("tag", ArgumentTypes.namespacedKey())
-                                .executes(this::executeCustom)
-                        )
-        );
     }
 
     @Override
     protected int executeNoArgs(CommandContext<CommandSourceStack> context) {
         CommandSender sender = context.getSource().getSender();
 
-        plugin.sendMessage("Usage: &h/" + context.getRootNode().getName() + " " + getLabel() + " <tag_type|\"custom\" [key]>", sender);
+        plugin.sendMessage("Usage: &h/" + context.getRootNode().getName() + " " + getLabel() + " <tag_type> <key>", sender);
 
         return Command.SINGLE_SUCCESS;
     }

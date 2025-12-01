@@ -3,6 +3,9 @@ package wbs.enchants.enchantment;
 import io.papermc.paper.registry.keys.tags.ItemTypeTagKeys;
 import org.bukkit.Bukkit;
 import org.bukkit.NamespacedKey;
+import org.bukkit.attribute.Attribute;
+import org.bukkit.attribute.AttributeInstance;
+import org.bukkit.attribute.AttributeModifier;
 import org.bukkit.entity.*;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.entity.CreatureSpawnEvent;
@@ -14,6 +17,7 @@ import org.bukkit.persistence.PersistentDataContainer;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import wbs.enchants.WbsEnchantment;
+import wbs.enchants.WbsEnchants;
 import wbs.enchants.WbsEnchantsBootstrap;
 import wbs.enchants.enchantment.helper.DamageEnchant;
 import wbs.enchants.type.EnchantmentTypeManager;
@@ -60,18 +64,37 @@ public class GhostPactEnchant extends WbsEnchantment implements DamageEnchant {
                     Vex vex = victim.getWorld().spawn(
                             WbsEntityUtil.getMiddleLocation(victim),
                             Vex.class,
-                            CreatureSpawnEvent.SpawnReason.ENCHANTMENT
+                            CreatureSpawnEvent.SpawnReason.ENCHANTMENT,
+                            summoned -> {
+                                summoned.setLimitedLifetime(true);
+                                summoned.setLimitedLifetimeTicks(200);
+                                summoned.setTarget(attacker);
+                                if (livingVictim instanceof Mob mob) {
+                                    summoned.setSummoner(mob);
+                                }
+
+                                AttributeInstance movementAttribute = summoned.getAttribute(Attribute.MOVEMENT_SPEED);
+                                if (movementAttribute == null) {
+                                    movementAttribute = summoned.getAttribute(Attribute.FLYING_SPEED);
+                                    if (movementAttribute == null) {
+                                        WbsEnchants.getInstance().getLogger().info("Vex had no movement attribute!");
+                                    }
+                                }
+
+                                if (movementAttribute != null) {
+                                    AttributeModifier modifier = new AttributeModifier(
+                                            WbsEnchantsBootstrap.createKey(""),
+                                            2,
+                                            AttributeModifier.Operation.MULTIPLY_SCALAR_1
+                                    );
+                                    movementAttribute.addModifier(modifier);
+                                }
+                            }
                     );
 
 
                     // Summoner is stored as Mob, which LivingEntity/Player don't extend, so worst case
                     // the vex might turn around and hit the wearer themselves idk
-                    vex.setLimitedLifetime(true);
-                    vex.setLimitedLifetimeTicks(200);
-                    vex.setTarget(attacker);
-                    if (livingVictim instanceof Mob mob) {
-                        vex.setSummoner(mob);
-                    }
 
                     PersistentDataContainer vexContainer = vex.getPersistentDataContainer();
 

@@ -15,6 +15,7 @@ import org.bukkit.event.EventPriority;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockDropItemEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
+import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.persistence.PersistentDataContainer;
@@ -86,6 +87,10 @@ public class EntangledEnchant extends WbsEnchantment {
 
     @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
     public void onShiftClick(PlayerInteractEvent event) {
+        if (event.getHand() != EquipmentSlot.HAND) {
+            return;
+        }
+
         Block clicked = event.getClickedBlock();
         if (clicked == null) {
             return;

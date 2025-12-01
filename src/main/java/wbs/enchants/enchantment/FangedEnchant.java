@@ -41,10 +41,10 @@ public class FangedEnchant extends WbsEnchantment implements DamageEnchant {
 
         if (item != null) {
             if (newCooldown(attacker, MAX_COOLDOWN_TICKS / getLevel(item))) {
-                Location hitLocation = livingVictim.getLocation();
                 new BukkitRunnable() {
                     @Override
                     public void run() {
+                        Location hitLocation = livingVictim.getLocation();
                         hitLocation.getWorld().spawn(
                                 hitLocation,
                                 EvokerFangs.class,

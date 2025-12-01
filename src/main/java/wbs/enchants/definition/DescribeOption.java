@@ -4,6 +4,7 @@ import io.papermc.paper.registry.RegistryAccess;
 import io.papermc.paper.registry.RegistryKey;
 import io.papermc.paper.registry.TypedKey;
 import io.papermc.paper.registry.tag.Tag;
+import io.papermc.paper.registry.tag.TagKey;
 import net.kyori.adventure.key.Key;
 import net.kyori.adventure.key.Keyed;
 import net.kyori.adventure.text.Component;
@@ -103,6 +104,7 @@ public class DescribeOption implements Keyed {
 
         // Don't show enchants that only exist to conflict (typically curses)
         conflicts.removeIf(check -> EnchantUtils.getAsCustom(check) instanceof ConflictEnchantment);
+        conflicts.removeIf(check -> check.key().equals(definition.key()));
 
         if (!conflicts.isEmpty()) {
             Component conflictsComponent = Component.text("Conflicts with: ");
@@ -135,13 +137,20 @@ public class DescribeOption implements Keyed {
         return null;
     }
 
+    private static final Set<@Nullable TagKey<Enchantment>> IGNORED_TAGS = Set.of(
+            WbsEnchantsBootstrap.CUSTOM,
+            WbsEnchantsBootstrap.VANILLA
+    );
+
     private static @Nullable Component tags(EnchantmentDefinition definition) {
         Registry<Enchantment> registry = RegistryAccess.registryAccess().getRegistry(RegistryKey.ENCHANTMENT);
 
         List<Tag<Enchantment>> tags = new LinkedList<>();
         for (Tag<Enchantment> tag : registry.getTags()) {
             if (tag.contains(definition.getTypedKey())) {
-                tags.add(tag);
+                if (!IGNORED_TAGS.contains(tag.tagKey())) {
+                    tags.add(tag);
+                }
             }
         }
 

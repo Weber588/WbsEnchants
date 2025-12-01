@@ -2,6 +2,7 @@ package wbs.enchants.enchantment;
 
 import io.papermc.paper.registry.keys.tags.ItemTypeTagKeys;
 import org.bukkit.Material;
+import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
@@ -27,6 +28,8 @@ public class DisarmingEnchant extends WbsEnchantment implements DamageEnchant {
 
     private static final Random RANDOM = new Random(System.currentTimeMillis());
 
+    private boolean disarmNamedMobs = false;
+
     public DisarmingEnchant() {
         super("disarming", DEFAULT_DESCRIPTION);
 
@@ -37,8 +40,19 @@ public class DisarmingEnchant extends WbsEnchantment implements DamageEnchant {
     }
 
     @Override
+    public void configure(ConfigurationSection section, String directory) {
+        super.configure(section, directory);
+
+        disarmNamedMobs = section.getBoolean("disarm-named-mobs", disarmNamedMobs);
+    }
+
+    @Override
     public void handleAttack(@NotNull EntityDamageByEntityEvent event, @NotNull LivingEntity attacker, @NotNull Entity victim, @Nullable Projectile projectile) {
         if (!(attacker instanceof Player playerAttacker) || !(victim instanceof LivingEntity livingVictim)) {
+            return;
+        }
+
+        if (!disarmNamedMobs && livingVictim.customName() != null) {
             return;
         }
 
