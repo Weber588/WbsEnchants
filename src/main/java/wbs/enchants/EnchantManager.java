@@ -137,6 +137,7 @@ public class EnchantManager {
     public static final InvocationEnchant INVOCATION = new InvocationEnchant();
     public static final AbjurationEnchant ABJURATION = new AbjurationEnchant();
     public static final InsightfulEnchant INSIGHTFUL = new InsightfulEnchant();
+    public static final TailwindEnchant TAILWIND = new TailwindEnchant();
 
     public static final CurseRebuking CURSE_REBUKING = new CurseRebuking();
     public static final CurseVanilla CURSE_VANILLA = new CurseVanilla();
@@ -154,6 +155,7 @@ public class EnchantManager {
     public static final CurseRot CURSE_ROT = new CurseRot();
     public static final CurseHypoxia CURSE_HYPOXIA = new CurseHypoxia();
     public static final CurseLimping CURSE_LIMPING = new CurseLimping();
+    public static final CursePermanence CURSE_PERMANENCE = new CursePermanence();
 
     public static void register(WbsEnchantment enchantment) {
         REGISTERED_ENCHANTMENTS.add(enchantment);

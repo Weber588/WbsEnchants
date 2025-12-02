@@ -1,11 +1,11 @@
 package wbs.enchants.enchantment.curse;
 
-import io.papermc.paper.registry.keys.tags.ItemTypeTagKeys;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.entity.EntityRegainHealthEvent;
 import org.bukkit.inventory.EquipmentSlotGroup;
+import wbs.enchants.WbsEnchantsBootstrap;
 import wbs.enchants.enchantment.helper.WbsCurse;
 
 public class CurseRot extends WbsCurse {
@@ -18,7 +18,7 @@ public class CurseRot extends WbsCurse {
         getDefinition()
                 .maxLevel(3)
                 .activeSlots(EquipmentSlotGroup.ARMOR)
-                .supportedItems(ItemTypeTagKeys.ENCHANTABLE_ARMOR);
+                .supportedItems(WbsEnchantsBootstrap.ENCHANTABLE_ALL_ARMOR);
     }
 
     @EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)

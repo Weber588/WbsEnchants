@@ -75,6 +75,9 @@ public class WbsEnchantsBootstrap implements PluginBootstrap {
     public static final TagKey<ItemType> ENCHANTABLE_ELYTRA = ItemTypeTagKeys.create(createKey("enchantable/elytra"));
     public static final TagKey<ItemType> ENCHANTABLE_BUCKET = ItemTypeTagKeys.create(createKey("enchantable/bucket"));
     public static final TagKey<ItemType> ENCHANTABLE_HORSE_ARMOR = ItemTypeTagKeys.create(createKey("enchantable/horse_armor"));
+    public static final TagKey<ItemType> ENCHANTABLE_HARNESS = ItemTypeTagKeys.create(createKey("enchantable/harness"));
+    public static final TagKey<ItemType> ENCHANTABLE_ALL_ARMOR = ItemTypeTagKeys.create(createKey("enchantable/all_armor"));
+    public static final TagKey<ItemType> ENCHANTABLE_BODY_ARMOR = ItemTypeTagKeys.create(createKey("enchantable/all_body_armor"));
 
     // TODO: Put this somewhere proper (config?)
     private static List<CustomTag<ItemType>> getItemTags() {
@@ -251,6 +254,38 @@ public class WbsEnchantsBootstrap implements PluginBootstrap {
                                 ItemTypeKeys.DIAMOND_HORSE_ARMOR
                         ),
                         Set.of()
+                ),
+                new CustomTag<>(ENCHANTABLE_HARNESS,
+                        Set.of(),
+                        Set.of(
+                                TagEntry.tagEntry(ItemTypeTagKeys.HARNESSES, true)
+                        )
+                ),
+                new CustomTag<>(ENCHANTABLE_ALL_ARMOR,
+                        Set.of(
+                                ItemTypeKeys.LEATHER_HORSE_ARMOR,
+                                ItemTypeKeys.IRON_HORSE_ARMOR,
+                                ItemTypeKeys.GOLDEN_HORSE_ARMOR,
+                                ItemTypeKeys.DIAMOND_HORSE_ARMOR,
+                                ItemTypeKeys.WOLF_ARMOR
+                        ),
+                        Set.of(
+                                TagEntry.tagEntry(ItemTypeTagKeys.ENCHANTABLE_ARMOR, true),
+                                TagEntry.tagEntry(ItemTypeTagKeys.HARNESSES, true)
+                        )
+                ),
+                new CustomTag<>(ENCHANTABLE_BODY_ARMOR,
+                        Set.of(
+                                ItemTypeKeys.LEATHER_HORSE_ARMOR,
+                                ItemTypeKeys.IRON_HORSE_ARMOR,
+                                ItemTypeKeys.GOLDEN_HORSE_ARMOR,
+                                ItemTypeKeys.DIAMOND_HORSE_ARMOR,
+                                ItemTypeKeys.WOLF_ARMOR
+                        ),
+                        Set.of(
+                                TagEntry.tagEntry(ItemTypeTagKeys.ENCHANTABLE_CHEST_ARMOR, true),
+                                TagEntry.tagEntry(ItemTypeTagKeys.HARNESSES, true)
+                        )
                 )
         );
     }

@@ -1,6 +1,5 @@
 package wbs.enchants.enchantment;
 
-import io.papermc.paper.registry.keys.tags.ItemTypeTagKeys;
 import org.bukkit.Bukkit;
 import org.bukkit.NamespacedKey;
 import org.bukkit.attribute.Attribute;
@@ -43,7 +42,7 @@ public class GhostPactEnchant extends WbsEnchantment implements DamageEnchant {
         getDefinition()
                 .maxLevel(4)
                 .exclusiveInject(WbsEnchantsBootstrap.EXCLUSIVE_SET_ARMOR_RETALIATION)
-                .supportedItems(ItemTypeTagKeys.ENCHANTABLE_ARMOR);
+                .supportedItems(WbsEnchantsBootstrap.ENCHANTABLE_ALL_ARMOR);
     }
 
     @Override

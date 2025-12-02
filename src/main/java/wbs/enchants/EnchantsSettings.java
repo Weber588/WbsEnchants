@@ -37,6 +37,7 @@ public class EnchantsSettings extends WbsSettings {
         developerMode = config.getBoolean("developer-mode", developerMode);
         forceOnlyLootEnchants = config.getBoolean("force-only-loot-enchants", forceOnlyLootEnchants);
         disableAnvilRepairPenalty = config.getBoolean("disable-anvil-repair-penalty", disableAnvilRepairPenalty);
+        tickNonPlayers = config.getBoolean("tick-non-players", tickNonPlayers);
 
         ConfigurationSection enchantabilitySection = config.getConfigurationSection("custom-enchantability");
 
@@ -100,5 +101,10 @@ public class EnchantsSettings extends WbsSettings {
         }
 
         return isPrimaryItem;
+    }
+
+    private boolean tickNonPlayers = true;
+    public boolean tickNonPlayers() {
+        return tickNonPlayers;
     }
 }

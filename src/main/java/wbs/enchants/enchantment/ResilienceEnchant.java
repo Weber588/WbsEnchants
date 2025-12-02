@@ -1,7 +1,6 @@
 package wbs.enchants.enchantment;
 
 import io.papermc.paper.registry.keys.tags.EnchantmentTagKeys;
-import io.papermc.paper.registry.keys.tags.ItemTypeTagKeys;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Projectile;
@@ -12,6 +11,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import wbs.enchants.WbsEnchantment;
 import wbs.enchants.WbsEnchants;
+import wbs.enchants.WbsEnchantsBootstrap;
 import wbs.enchants.enchantment.helper.DamageEnchant;
 
 public class ResilienceEnchant extends WbsEnchantment implements DamageEnchant {
@@ -27,7 +27,7 @@ public class ResilienceEnchant extends WbsEnchantment implements DamageEnchant {
 
         getDefinition()
                 .maxLevel(2)
-                .supportedItems(ItemTypeTagKeys.ENCHANTABLE_ARMOR)
+                .supportedItems(WbsEnchantsBootstrap.ENCHANTABLE_ALL_ARMOR)
                 .exclusiveInject(EnchantmentTagKeys.EXCLUSIVE_SET_ARMOR)
                 .weight(5);
     }

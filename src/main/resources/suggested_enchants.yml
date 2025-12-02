@@ -235,14 +235,14 @@ wbsenchants:frenzied:
     until the time left goes below 5 seconds.
   supported_items: minecraft:enchantable/weapon
   minimum_cost:
-    base_cost: 5
+    base_cost: 20
     additional_per_level_cost: 8
   maximum_cost:
-    base_cost: 25
+    base_cost: 50
     additional_per_level_cost: 8
   anvil_cost: 6
   max_level: 1
-  weight: 5
+  weight: 2
   inject_into:
     - minecraft:on_traded_equipment
 wbsenchants:lightweight:
@@ -461,10 +461,10 @@ wbsenchants:frictionless:
     help it get there.
   supported_items: wbsenchants:minecarts
   minimum_cost:
-    base_cost: 5
+    base_cost: 15
     additional_per_level_cost: 8
   maximum_cost:
-    base_cost: 25
+    base_cost: 50
     additional_per_level_cost: 8
   anvil_cost: 8
   max_level: 3
@@ -500,10 +500,10 @@ wbsenchants:transference:
     point on the map!
   supported_items: wbsenchants:maps
   minimum_cost:
-    base_cost: 5
+    base_cost: 25
     additional_per_level_cost: 8
   maximum_cost:
-    base_cost: 25
+    base_cost: 50
     additional_per_level_cost: 8
   anvil_cost: 8
   max_level: 1
@@ -516,10 +516,10 @@ wbsenchants:unsinkable:
   description: Boats with this enchantment can't stay sunk underwater!
   supported_items: minecraft:boats
   minimum_cost:
-    base_cost: 5
+    base_cost: 25
     additional_per_level_cost: 8
   maximum_cost:
-    base_cost: 25
+    base_cost: 50
     additional_per_level_cost: 8
   anvil_cost: 8
   max_level: 1
@@ -543,10 +543,10 @@ wbsenchants:defusal:
   supported_items: minecraft:swords
   primary_items: minecraft:enchantable/weapon
   minimum_cost:
-    base_cost: 5
+    base_cost: 10
     additional_per_level_cost: 8
   maximum_cost:
-    base_cost: 15
+    base_cost: 25
     additional_per_level_cost: 8
   exclusive_with: wbsenchants:exclusive_set/defusal
   anvil_cost: 2
@@ -563,10 +563,10 @@ wbsenchants:pilfering:
     villagers to steal their trades without paying!
   supported_items: minecraft:enchantable/weapon
   minimum_cost:
-    base_cost: 5
+    base_cost: 15
     additional_per_level_cost: 8
   maximum_cost:
-    base_cost: 25
+    base_cost: 50
     additional_per_level_cost: 8
   anvil_cost: 2
   max_level: 3
@@ -599,7 +599,7 @@ wbsenchants:resilience:
   display_name: Resilience
   description: When you take damage, instead of the regular 0.5 seconds of invulnerability
     after taking damage, you're invulnerable for an additional 0.15 seconds per level
-  supported_items: minecraft:enchantable/armor
+  supported_items: wbsenchants:enchantable/all_armor
   primary_items:
     - minecraft:book
   minimum_cost:
@@ -626,11 +626,11 @@ wbsenchants:manathirst:
     any recently!
   supported_items: minecraft:enchantable/durability
   minimum_cost:
-    base_cost: 5
-    additional_per_level_cost: 8
-  maximum_cost:
     base_cost: 25
-    additional_per_level_cost: 8
+    additional_per_level_cost: 25
+  maximum_cost:
+    base_cost: 75
+    additional_per_level_cost: 25
   exclusive_with: wbsenchants:exclusive_set/self_repairing
   anvil_cost: 4
   max_level: 1
@@ -654,10 +654,10 @@ wbsenchants:shulkenforced:
     granting them resistance to gravity!
   supported_items: wbsenchants:enchantable/vehicle
   minimum_cost:
-    base_cost: 5
+    base_cost: 15
     additional_per_level_cost: 8
   maximum_cost:
-    base_cost: 25
+    base_cost: 40
     additional_per_level_cost: 8
   anvil_cost: 4
   max_level: 1
@@ -735,11 +735,11 @@ wbsenchants:lava_walker:
   description: Frost walker... but for lava!
   supported_items: minecraft:enchantable/foot_armor
   minimum_cost:
-    base_cost: 5
-    additional_per_level_cost: 8
-  maximum_cost:
     base_cost: 25
-    additional_per_level_cost: 8
+    additional_per_level_cost: 12
+  maximum_cost:
+    base_cost: 45
+    additional_per_level_cost: 12
   anvil_cost: 6
   max_level: 2
   weight: 1
@@ -760,10 +760,10 @@ wbsenchants:wicked:
     the same item!
   supported_items: minecraft:enchantable/weapon
   minimum_cost:
-    base_cost: 5
+    base_cost: 25
     additional_per_level_cost: 8
   maximum_cost:
-    base_cost: 25
+    base_cost: 75
     additional_per_level_cost: 8
   anvil_cost: 0
   max_level: 1
@@ -785,11 +785,11 @@ wbsenchants:crushing:
     versions!
   supported_items: minecraft:enchantable/mining
   minimum_cost:
-    base_cost: 5
-    additional_per_level_cost: 8
+    base_cost: 15
+    additional_per_level_cost: 0
   maximum_cost:
-    base_cost: 25
-    additional_per_level_cost: 8
+    base_cost: 65
+    additional_per_level_cost: 0
   exclusive_with: minecraft:exclusive_set/mining
   anvil_cost: 4
   max_level: 1
@@ -1061,10 +1061,10 @@ wbsenchants:soul_touch:
   description: Allows your tool to pick up spawners!
   supported_items: minecraft:pickaxes
   minimum_cost:
-    base_cost: 5
+    base_cost: 25
     additional_per_level_cost: 8
   maximum_cost:
-    base_cost: 25
+    base_cost: 75
     additional_per_level_cost: 8
   exclusive_with: minecraft:exclusive_set/mining
   anvil_cost: 10
@@ -1086,10 +1086,10 @@ wbsenchants:soulstealing:
   description: Adds a 0.1% chance per level of killed mobs dropping its spawn egg!
   supported_items: minecraft:enchantable/weapon
   minimum_cost:
-    base_cost: 5
+    base_cost: 25
     additional_per_level_cost: 8
   maximum_cost:
-    base_cost: 25
+    base_cost: 65
     additional_per_level_cost: 8
   anvil_cost: 10
   max_level: 3
@@ -1112,10 +1112,10 @@ wbsenchants:stuttershot:
   supported_items: wbsenchants:enchantable/projectile_weapon
   minimum_cost:
     base_cost: 5
-    additional_per_level_cost: 8
+    additional_per_level_cost: 10
   maximum_cost:
-    base_cost: 25
-    additional_per_level_cost: 8
+    base_cost: 50
+    additional_per_level_cost: 0
   anvil_cost: 4
   max_level: 3
   weight: 1
@@ -1129,10 +1129,10 @@ wbsenchants:echoing:
     return to your inventory!
   supported_items: wbsenchants:enchantable/projectile_weapon
   minimum_cost:
-    base_cost: 5
+    base_cost: 25
     additional_per_level_cost: 8
   maximum_cost:
-    base_cost: 25
+    base_cost: 50
     additional_per_level_cost: 8
   anvil_cost: 4
   max_level: 1
@@ -1151,11 +1151,11 @@ wbsenchants:dimensional_stability:
   supported_items: minecraft:beds
   description: Prevents the enchanted bed from exploding.
   minimum_cost:
-    base_cost: 5
-    additional_per_level_cost: 8
+    base_cost: 15
+    additional_per_level_cost: 0
   maximum_cost:
-    base_cost: 25
-    additional_per_level_cost: 8
+    base_cost: 45
+    additional_per_level_cost: 0
   anvil_cost: 4
   max_level: 1
   weight: 1
@@ -1168,11 +1168,11 @@ wbsenchants:anima_conduit:
   description: Adds a small chance to regain health upon picking up XP.
   supported_items: minecraft:enchantable/chest_armor
   minimum_cost:
-    base_cost: 5
-    additional_per_level_cost: 8
+    base_cost: 20
+    additional_per_level_cost: 10
   maximum_cost:
-    base_cost: 25
-    additional_per_level_cost: 8
+    base_cost: 60
+    additional_per_level_cost: 10
   anvil_cost: 6
   max_level: 4
   weight: 1
@@ -1191,7 +1191,7 @@ wbsenchants:curse/rebuking:
   enabled: true
   display_name: Curse of Rebuking
   description: A weapon curse that causes the wielder to take 20% of damage dealt
-    per level!
+    per level
   supported_items: minecraft:enchantable/weapon
   minimum_cost:
     base_cost: 5
@@ -1208,13 +1208,13 @@ wbsenchants:curse/vanilla:
   enabled: true
   display_name: Curse of Vanilla
   description: A curse that does nothing alone, but is incompatible with all non-vanilla
-    enchants!
+    enchants
   supported_items: minecraft:enchantable/vanishing
   minimum_cost:
-    base_cost: 5
+    base_cost: 15
     additional_per_level_cost: 8
   maximum_cost:
-    base_cost: 25
+    base_cost: 35
     additional_per_level_cost: 8
   exclusive_with: wbsenchants:custom
   anvil_cost: 8
@@ -1229,10 +1229,10 @@ wbsenchants:curse/exotic:
     enchants
   supported_items: minecraft:enchantable/vanishing
   minimum_cost:
-    base_cost: 5
+    base_cost: 15
     additional_per_level_cost: 8
   maximum_cost:
-    base_cost: 25
+    base_cost: 35
     additional_per_level_cost: 8
   exclusive_with: wbsenchants:vanilla
   anvil_cost: 8
@@ -1288,10 +1288,10 @@ wbsenchants:curse/midas:
   description: A pickaxe curse that causes mined metals to turn directly into gold!
   supported_items: minecraft:pickaxes
   minimum_cost:
-    base_cost: 5
+    base_cost: 15
     additional_per_level_cost: 8
   maximum_cost:
-    base_cost: 25
+    base_cost: 35
     additional_per_level_cost: 8
   exclusive_with: wbsenchants:exclusive_set/midas
   anvil_cost: 8
@@ -1317,7 +1317,7 @@ wbsenchants:curse/turbulence:
     base_cost: 5
     additional_per_level_cost: 8
   maximum_cost:
-    base_cost: 25
+    base_cost: 45
     additional_per_level_cost: 8
   anvil_cost: 8
   max_level: 2
@@ -1377,7 +1377,7 @@ wbsenchants:curse/the_end:
   enabled: true
   display_name: Curse of The End
   description: An armour curse that makes you take damage from water!
-  supported_items: minecraft:enchantable/armor
+  supported_items: wbsenchants:enchantable/all_armor
   minimum_cost:
     base_cost: 5
     additional_per_level_cost: 8
@@ -1454,10 +1454,10 @@ wbsenchants:afterlife:
     restored to full health.
   supported_items: minecraft:enchantable/durability
   minimum_cost:
-    base_cost: 5
+    base_cost: 25
     additional_per_level_cost: 8
   maximum_cost:
-    base_cost: 25
+    base_cost: 50
     additional_per_level_cost: 8
   anvil_cost: 8
   max_level: 1
@@ -1497,10 +1497,10 @@ wbsenchants:caving:
     - minecraft:black_bundle
   light-level-required: 3
   minimum_cost:
-    base_cost: 5
+    base_cost: 15
     additional_per_level_cost: 8
   maximum_cost:
-    base_cost: 25
+    base_cost: 45
     additional_per_level_cost: 8
   anvil_cost: 2
   max_level: 1
@@ -1630,10 +1630,10 @@ wbsenchants:hydrophobic:
   description: Increases the radius of drying by 2 blocks per level.
   supported_items: wbsenchants:sponges
   minimum_cost:
-    base_cost: 5
+    base_cost: 35
     additional_per_level_cost: 8
   maximum_cost:
-    base_cost: 25
+    base_cost: 85
     additional_per_level_cost: 8
   anvil_cost: 4
   max_level: 3
@@ -1648,10 +1648,10 @@ wbsenchants:pyroclastic:
   exclusive_with:
     - wbsenchants:hydrophobic
   minimum_cost:
-    base_cost: 5
+    base_cost: 25
     additional_per_level_cost: 8
   maximum_cost:
-    base_cost: 25
+    base_cost: 55
     additional_per_level_cost: 8
   anvil_cost: 8
   max_level: 1
@@ -1847,7 +1847,7 @@ wbsenchants:ghost_pact:
   enabled: true
   description: When you take more than 2 hearts of damage in a single hit, you have
     a chance of summoning your own Vex to engage your attacker!
-  supported_items: minecraft:enchantable/armor
+  supported_items: wbsenchants:enchantable/all_armor
   exclusive_with: wbsenchants:exclusive_set/armor_retaliation
   minimum_cost:
     base_cost: 5
@@ -1925,7 +1925,7 @@ wbsenchants:casting:
 wbsenchants:curse/rot:
   enabled: true
   description: When worn, regeneration is 1.2x slower per level.
-  supported_items: minecraft:enchantable/armor
+  supported_items: wbsenchants:enchantable/all_armor
   minimum_cost:
     base_cost: 5
     additional_per_level_cost: 8
@@ -2987,4 +2987,40 @@ wbsenchants:insightful:
       level: WEIGHTED_SMALL
   inject_into:
     - wbsenchants:exclusive_set/chiseled_bookshelf
+wbsenchants:tailwind:
+  enabled: true
+  display_name: Tailwind
+  description: Increases the flight speed of happy ghasts.
+  supported_items: wbsenchants:enchantable/harness
+  primary_items: wbsenchants:enchantable/harness
+  minimum_cost:
+    base_cost: 25
+    additional_per_level_cost: 8
+  maximum_cost:
+    base_cost: 75
+    additional_per_level_cost: 8
+  anvil_cost: 8
+  max_level: 3
+  weight: 4
+  inject_into:
+    - minecraft:on_random_loot
+    - minecraft:tradeable
+wbsenchants:curse/permanence:
+  enabled: true
+  display_name: Curse of Permanence
+  description: Prevents this item from being used in an anvil or otherwise repaired.
+  supported_items: minecraft:enchantable/durability
+  exclusive_with: wbsenchants:exclusive_set/self_repairing
+  minimum_cost:
+    base_cost: 25
+    additional_per_level_cost: 0
+  maximum_cost:
+    base_cost: 50
+    additional_per_level_cost: 0
+  anvil_cost: 8
+  max_level: 1
+  weight: 2
+  inject_into:
+    - minecraft:on_random_loot
+    - minecraft:tradeable
 

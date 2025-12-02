@@ -16,7 +16,6 @@ import wbs.enchants.util.EnchantingEventUtils;
 import java.util.Map;
 import java.util.Random;
 
-@SuppressWarnings("UnstableApiUsage")
 public class AmbitiousnessEnchant extends WbsEnchantment implements EnchantingEnchant, BlockStateEnchant<EnchantingTable> {
     @Override
     public Class<EnchantingTable> getStateClass() {

@@ -1,12 +1,12 @@
 package wbs.enchants.enchantment.curse;
 
-import io.papermc.paper.registry.keys.tags.ItemTypeTagKeys;
 import org.bukkit.damage.DamageSource;
 import org.bukkit.damage.DamageType;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.inventory.ItemStack;
+import wbs.enchants.WbsEnchantsBootstrap;
 import wbs.enchants.enchantment.helper.WbsCurse;
 import wbs.utils.util.WbsMath;
 
@@ -21,7 +21,7 @@ public class CurseTheEnd extends WbsCurse {
 
         getDefinition()
                 .maxLevel(2)
-                .supportedItems(ItemTypeTagKeys.ENCHANTABLE_ARMOR);
+                .supportedItems(WbsEnchantsBootstrap.ENCHANTABLE_ALL_ARMOR);
     }
 
     @EventHandler

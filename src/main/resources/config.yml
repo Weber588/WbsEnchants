@@ -13,6 +13,10 @@ error-highlight: '8'
 # If true, items repaired with its repair material will incur no penalty or cost increase.
 disable-anvil-repair-penalty: false
 
+# Should enchantments that rely on an intermittent clock affect non-players?
+# If false, some enchants will stop working for mobs.
+tick-non-players: true
+
 # Should books in grindstones gain enchantments while disenchanting tools?
 grindstone-enchant-recovery:
   # If true, disenchanting an item in a grindstone while a book is also present, enchants removed

@@ -131,14 +131,14 @@ public class SharedEventHandler implements Listener {
                 }
 
                 // TODO: Make this a config
-                boolean playersOnly = true;
+                boolean tickNonPlayers = plugin.getSettings().tickNonPlayers();
 
                 Set<LivingEntity> allLivingEntities = new HashSet<>();
                 Bukkit.getWorlds().forEach(world -> {
-                    if (playersOnly) {
-                        allLivingEntities.addAll(world.getPlayers());
-                    } else {
+                    if (tickNonPlayers) {
                         allLivingEntities.addAll(world.getLivingEntities());
+                    } else {
+                        allLivingEntities.addAll(world.getPlayers());
                     }
                 });
 
