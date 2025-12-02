@@ -13,11 +13,13 @@ public class GetAvailableEnchantsEvent extends Event {
     private final EnchantingContext context;
     private final Set<@NotNull Enchantment> availableOnTable;
     private final ItemStack stack;
+    private boolean allowIncorrectTypes;
 
-    public GetAvailableEnchantsEvent(EnchantingContext context, Set<@NotNull Enchantment> availableOnTable, ItemStack stack) {
+    public GetAvailableEnchantsEvent(EnchantingContext context, Set<@NotNull Enchantment> availableOnTable, ItemStack stack, boolean allowIncorrectTypes) {
         this.context = context;
         this.availableOnTable = availableOnTable;
         this.stack = stack;
+        this.allowIncorrectTypes = allowIncorrectTypes;
     }
 
     public ItemStack getStack() {
@@ -37,5 +39,14 @@ public class GetAvailableEnchantsEvent extends Event {
     }
     public static @NotNull HandlerList getHandlerList() {
         return HANDLER_LIST;
+    }
+
+    public boolean allowIncorrectTypes() {
+        return allowIncorrectTypes;
+    }
+
+    public GetAvailableEnchantsEvent setAllowIncorrectTypes(boolean allowIncorrectTypes) {
+        this.allowIncorrectTypes = allowIncorrectTypes;
+        return this;
     }
 }

@@ -178,7 +178,7 @@ public class EnchantingEventUtils {
 
                 while(random.nextInt(50) <= modifiedLevel) {
                     if (!enchantments.isEmpty()) {
-                        filterCompatibleEnchantments(availableEnchantmentResults, getLast(enchantments));
+                        filterCompatibleEnchantments(availableEnchantmentResults, enchantments.keySet());
                     }
 
                     if (availableEnchantmentResults.isEmpty()) {
@@ -212,11 +212,13 @@ public class EnchantingEventUtils {
         return level;
     }
 
-    public static void filterCompatibleEnchantments(Map<Enchantment, Integer> enchantments, Enchantment enchantment) {
+    public static void filterCompatibleEnchantments(Map<Enchantment, Integer> enchantments, Collection<Enchantment> alreadyAddedEnchantments) {
         List<Enchantment> toRemove = new LinkedList<>();
-        for (Enchantment compare : enchantments.keySet()) {
-            if (!compare.equals(enchantment) && compare.conflictsWith(enchantment)) {
-                toRemove.add(compare);
+        for (Enchantment alreadyAdded : alreadyAddedEnchantments) {
+            for (Enchantment compare : enchantments.keySet()) {
+                if (compare.conflictsWith(alreadyAdded)) {
+                    toRemove.add(compare);
+                }
             }
         }
         toRemove.forEach(enchantments::remove);
@@ -229,8 +231,14 @@ public class EnchantingEventUtils {
 
         available.removeIf(enchantment -> !(isBook || EnchantUtils.isPrimaryItem(stack, enchantment)));
 
-        GetAvailableEnchantsEvent availableEnchantsEvent = new GetAvailableEnchantsEvent(context, available, stack);
+        boolean allowIncorrectTypes = false;
+
+        GetAvailableEnchantsEvent availableEnchantsEvent = new GetAvailableEnchantsEvent(context, available, stack, allowIncorrectTypes);
         availableEnchantsEvent.callEvent();
+
+        if (!availableEnchantsEvent.allowIncorrectTypes()) {
+            available.removeIf(enchant -> !EnchantUtils.canEnchant(enchant, stack));
+        }
 
         for (Enchantment enchantment : available) {
             if (enchantments.containsKey(enchantment)) {

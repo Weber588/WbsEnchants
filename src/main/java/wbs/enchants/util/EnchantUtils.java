@@ -8,6 +8,7 @@ import io.papermc.paper.registry.set.RegistryKeySet;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextDecoration;
+import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.ItemType;
@@ -126,7 +127,7 @@ public class EnchantUtils {
     }
 
     public static boolean canEnchant(Enchantment enchantment, ItemStack item) {
-        if (!enchantment.canEnchantItem(item)) {
+        if (item.getType() != Material.BOOK && !enchantment.canEnchantItem(item)) {
             return false;
         }
 
