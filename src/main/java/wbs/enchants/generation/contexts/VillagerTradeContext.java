@@ -2,6 +2,7 @@ package wbs.enchants.generation.contexts;
 
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TextComponent;
+import net.kyori.adventure.text.format.Style;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.configuration.ConfigurationSection;
@@ -17,6 +18,7 @@ import wbs.enchants.definition.EnchantmentDefinition;
 import wbs.enchants.generation.GenerationContext;
 import wbs.enchants.util.EnchantUtils;
 import wbs.utils.util.WbsKeyed;
+import wbs.utils.util.string.WbsStrings;
 
 import java.util.Map;
 import java.util.Random;
@@ -26,7 +28,7 @@ public class VillagerTradeContext extends GenerationContext {
     @Nullable
     private Integer villagerLevel = null;
     @Nullable
-    private Villager.Profession villagerProfession = null;
+    private final String villagerProfession;
     @NotNull
     private String resultString = "minecraft:enchanted_book";
     private int emeraldCostMin = 1;
@@ -48,11 +50,7 @@ public class VillagerTradeContext extends GenerationContext {
 
         replaceItemKey = section.getString("replace", replaceItemKey);
 
-        String professionString = section.getString("villager-profession");
-
-        if (professionString != null) {
-            villagerProfession = WbsKeyed.getKeyedFromString(Villager.Profession.class, professionString);
-        }
+        villagerProfession = section.getString("villager-profession");
 
         resultString = section.getString("result", resultString);
 
@@ -111,7 +109,7 @@ public class VillagerTradeContext extends GenerationContext {
             ItemStack stack;
             try {
                 stack = Bukkit.getItemFactory().createItemStack(replaceItemKey);
-                description = Component.text("Replacing ").append(stack.effectiveName()).append(Component.text(" on"));
+                description = Component.text("Replacing ").append(stack.effectiveName().style(Style.empty())).append(Component.text(" on"));
             } catch (IllegalArgumentException ex) {
                 description = Component.text("Replacing " + replaceItemKey + " on");
             }
@@ -122,7 +120,7 @@ public class VillagerTradeContext extends GenerationContext {
         }
 
         if (villagerProfession != null) {
-            description = description.append(Component.text(" " + WbsKeyed.toPrettyString(villagerProfession)));
+            description = description.append(Component.text(" " + WbsStrings.capitalizeAll(villagerProfession)));
         }
 
         description = description.append(Component.text(" villager trades: " + chanceToRun() + "%"));
@@ -151,8 +149,11 @@ public class VillagerTradeContext extends GenerationContext {
             return;
         }
 
-        if (villagerProfession != null && villager.getProfession() != villagerProfession) {
-            return;
+        if (villagerProfession != null) {
+            Villager.Profession profession = WbsKeyed.getKeyedFromString(Villager.Profession.class, villagerProfession);
+            if (profession != null && villager.getProfession() != profession) {
+                return;
+            }
         }
 
         ItemStack result = event.getRecipe().getResult();

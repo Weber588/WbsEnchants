@@ -378,6 +378,7 @@ public class WbsEnchantsBootstrap implements PluginBootstrap {
             // Less risk than loading without the plugin though.
             System.out.println("A fatal error occurred while starting WbsEnchants. The server will be shut down to prevent data loss.");
             System.out.println("Please report this issue.");
+            e.printStackTrace();
             System.exit(0);
         }
     }
