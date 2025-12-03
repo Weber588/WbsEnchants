@@ -1,17 +1,16 @@
 package wbs.enchants.enchantment;
 
+import com.destroystokyo.paper.entity.ai.Goal;
+import com.destroystokyo.paper.entity.ai.MobGoals;
+import com.destroystokyo.paper.entity.ai.PaperGoal;
 import io.papermc.paper.datacomponent.DataComponentTypes;
 import io.papermc.paper.datacomponent.item.UseCooldown;
 import io.papermc.paper.registry.keys.ItemTypeKeys;
 import net.kyori.adventure.util.Ticks;
-import org.bukkit.Location;
-import org.bukkit.Particle;
-import org.bukkit.Sound;
-import org.bukkit.World;
-import org.bukkit.entity.Creeper;
-import org.bukkit.entity.Enemy;
-import org.bukkit.entity.Mob;
-import org.bukkit.entity.Player;
+import net.minecraft.world.entity.ai.goal.AvoidEntityGoal;
+import org.bukkit.*;
+import org.bukkit.craftbukkit.entity.CraftCreeper;
+import org.bukkit.entity.*;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
@@ -71,15 +70,29 @@ public class AncientCryEnchant extends WbsEnchantment {
 
             List<Mob> inRange = new RadiusSelector<>(Mob.class)
                     .setRange(RANGE)
-                    .setPredicate(mob -> mob instanceof Enemy && !(mob instanceof Creeper))
+                    .setPredicate(mob -> mob instanceof Enemy)
                     .select(player);
 
             for (Mob mob : inRange) {
-                Optional<Mob> closest = inRange.stream()
-                        .filter(Predicate.not(mob::equals))
-                        .min(Comparator.comparingDouble(check -> check.getLocation().distanceSquared(mob.getLocation())));
+                if (mob instanceof CraftCreeper creeper) {
+                    MobGoals mobGoals = Bukkit.getMobGoals();
+                    Goal<@NotNull Creature> goal = new PaperGoal<>(new AvoidEntityGoal<>(
+                            creeper.getHandle(),
+                            net.minecraft.world.entity.player.Player.class,
+                            12.0F,
+                            1.0,
+                            1.2
+                    ));
+                    mobGoals.addGoal(creeper, 0, goal);
+                } else {
+                    Optional<Mob> closest = inRange.stream()
+                            .filter(Predicate.not(mob::equals))
+                            .filter(Predicate.not(Creeper.class::isInstance))
+                            .min(Comparator.comparingDouble(check -> check.getLocation().distanceSquared(mob.getLocation())));
 
-                closest.ifPresent(mob::setTarget);
+                    closest.ifPresent(mob::setTarget);
+
+                }
             }
         }
     }
