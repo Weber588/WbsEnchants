@@ -170,7 +170,7 @@ public class EnchantingEventUtils {
             return enchantments;
         } else {
             int modifiedLevel = getModifiedLevel(random, level, enchantable);
-            Map<Enchantment, Integer> availableEnchantmentResults = getAvailableEnchantmentResults(context, modifiedLevel, stack, availableOnTable);
+            Map<Enchantment, Integer> availableEnchantmentResults = getAvailableEnchantmentAtLevel(context, modifiedLevel, stack, availableOnTable);
             if (!availableEnchantmentResults.isEmpty()) {
                 Optional<Enchantment> toAdd = getRandomKey(availableEnchantmentResults, random, Enchantment::getWeight);
                 Objects.requireNonNull(enchantments);
@@ -224,8 +224,26 @@ public class EnchantingEventUtils {
         toRemove.forEach(enchantments::remove);
     }
 
-    public static Map<Enchantment, Integer> getAvailableEnchantmentResults(EnchantingContext context, int modifiedEnchantingLevel, ItemStack stack, Collection<Enchantment> availableOnTable) {
+    public static Map<Enchantment, Integer> getAvailableEnchantmentAtLevel(EnchantingContext context, int modifiedEnchantingLevel, ItemStack stack, Collection<Enchantment> availableOnTable) {
         Map<Enchantment, Integer> enchantments = new HashMap<>();
+        Set<Enchantment> available = getAvailableEnchants(context, stack, availableOnTable);
+
+        for (Enchantment enchantment : available) {
+            if (enchantments.containsKey(enchantment)) {
+                continue;
+            }
+            for (int enchantmentLevel = enchantment.getMaxLevel(); enchantmentLevel >= 1; --enchantmentLevel) {
+                if (canGenerateEnchant(context, modifiedEnchantingLevel, enchantment, enchantmentLevel)) {
+                    enchantments.put(enchantment, enchantmentLevel);
+                    break;
+                }
+            }
+        }
+
+        return enchantments;
+    }
+
+    private static @NotNull Set<Enchantment> getAvailableEnchants(EnchantingContext context, ItemStack stack, Collection<Enchantment> availableOnTable) {
         boolean isBook = stack.getType() == Material.BOOK;
         Set<Enchantment> available = new HashSet<>(availableOnTable);
 
@@ -239,23 +257,10 @@ public class EnchantingEventUtils {
         if (!availableEnchantsEvent.allowIncorrectTypes()) {
             available.removeIf(enchant -> !EnchantUtils.canEnchant(enchant, stack));
         }
-
-        for (Enchantment enchantment : available) {
-            if (enchantments.containsKey(enchantment)) {
-                continue;
-            }
-            for (int enchantmentLevel = enchantment.getMaxLevel(); enchantmentLevel >= 1; --enchantmentLevel) {
-                if (shouldGenerateEnchant(context, modifiedEnchantingLevel, enchantment, enchantmentLevel)) {
-                    enchantments.put(enchantment, enchantmentLevel);
-                    break;
-                }
-            }
-        }
-
-        return enchantments;
+        return available;
     }
 
-    public static boolean shouldGenerateEnchant(EnchantingContext context, int modifiedEnchantingLevel, Enchantment enchantment, int enchantmentLevel) {
+    public static boolean canGenerateEnchant(EnchantingContext context, int modifiedEnchantingLevel, Enchantment enchantment, int enchantmentLevel) {
         boolean isAllowed = modifiedEnchantingLevel >= enchantment.getMinModifiedCost(enchantmentLevel) &&
                 modifiedEnchantingLevel <= enchantment.getMaxModifiedCost(enchantmentLevel);
 
