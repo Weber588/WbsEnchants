@@ -138,6 +138,7 @@ public class EnchantManager {
     public static final AbjurationEnchant ABJURATION = new AbjurationEnchant();
     public static final InsightfulEnchant INSIGHTFUL = new InsightfulEnchant();
     public static final TailwindEnchant TAILWIND = new TailwindEnchant();
+    public static final AutothermicEnchant AUTOTHERMIC = new AutothermicEnchant();
 
     public static final CurseRebuking CURSE_REBUKING = new CurseRebuking();
     public static final CurseVanilla CURSE_VANILLA = new CurseVanilla();

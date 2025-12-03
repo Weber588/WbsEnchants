@@ -2,6 +2,7 @@ package wbs.enchants.enchantment;
 
 import com.destroystokyo.paper.event.player.PlayerArmorChangeEvent;
 import io.papermc.paper.registry.keys.tags.ItemTypeTagKeys;
+import net.kyori.adventure.util.Ticks;
 import org.bukkit.Bukkit;
 import org.bukkit.NamespacedKey;
 import org.bukkit.World;
@@ -16,13 +17,13 @@ import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
-import org.bukkit.scheduler.BukkitRunnable;
 import wbs.enchants.WbsEnchantment;
 import wbs.enchants.WbsEnchants;
 import wbs.enchants.WbsEnchantsBootstrap;
+import wbs.enchants.enchantment.helper.TickableEnchant;
 
-public class SpiritheartEnchant extends WbsEnchantment {
-    private static final int TICKS_PER_DAY = 24000;
+public class SpiritheartEnchant extends WbsEnchantment implements TickableEnchant {
+    private static final int TICKS_PER_DAY = 1200 * Ticks.TICKS_PER_SECOND;
     private static final NamespacedKey LAST_APPLIED_KEY = WbsEnchantsBootstrap.createKey("spiritheart_last_applied");
 
     private static int getTimeUntilMidnight() {
@@ -53,15 +54,6 @@ public class SpiritheartEnchant extends WbsEnchantment {
     @Override
     public void registerEvents() {
         super.registerEvents();
-
-        // Start clock to detect midnight
-
-        new BukkitRunnable() {
-            @Override
-            public void run() {
-                onPassedMidnight();
-            }
-        }.runTaskTimer(WbsEnchants.getInstance(), getTimeUntilMidnight(), TICKS_PER_DAY);
     }
 
     public void applyFor(LivingEntity entity, ItemStack enchanted) {
@@ -142,5 +134,15 @@ public class SpiritheartEnchant extends WbsEnchantment {
         if (isEnchantmentOn(event.getItem())) {
             applyFor(entity, event.getItem());
         }
+    }
+
+    @Override
+    public void onGlobalTick() {
+        WbsEnchants.getInstance().runLater(this::onPassedMidnight, getTimeUntilMidnight());
+    }
+
+    @Override
+    public int getTickFrequency() {
+        return TICKS_PER_DAY;
     }
 }

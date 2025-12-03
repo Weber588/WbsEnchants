@@ -48,7 +48,7 @@ public class VillagerTradeContext extends GenerationContext {
 
         replaceItemKey = section.getString("replace", replaceItemKey);
 
-        String professionString = section.getString("profession");
+        String professionString = section.getString("villager-profession");
 
         if (professionString != null) {
             villagerProfession = WbsKeyed.getKeyedFromString(Villager.Profession.class, professionString);
@@ -108,7 +108,13 @@ public class VillagerTradeContext extends GenerationContext {
         if (replaceItemKey == null) {
             description = Component.text("On");
         } else {
-            description = Component.text("Replacing " + replaceItemKey + " on");
+            ItemStack stack;
+            try {
+                stack = Bukkit.getItemFactory().createItemStack(replaceItemKey);
+                description = Component.text("Replacing ").append(stack.effectiveName()).append(Component.text(" on"));
+            } catch (IllegalArgumentException ex) {
+                description = Component.text("Replacing " + replaceItemKey + " on");
+            }
         }
 
         if (villagerLevel != null) {

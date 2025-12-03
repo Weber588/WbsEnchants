@@ -87,7 +87,12 @@ public interface BlockEnchant extends EnchantInterface, AutoRegistrableEnchant {
         } else {
             enchantedBlocksContainer.set(blockKey, PersistentDataType.TAG_CONTAINER, container);
         }
-        chunkContainer.set(BLOCK_ENCHANTS_KEY, PersistentDataType.TAG_CONTAINER, enchantedBlocksContainer);
+
+        if (enchantedBlocksContainer.isEmpty()) {
+            chunkContainer.remove(BLOCK_ENCHANTS_KEY);
+        } else {
+            chunkContainer.set(BLOCK_ENCHANTS_KEY, PersistentDataType.TAG_CONTAINER, enchantedBlocksContainer);
+        }
     }
 
     static Map<Block, Map<BlockEnchant, Integer>> getBlockEnchantments(Chunk chunk) {

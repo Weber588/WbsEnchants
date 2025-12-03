@@ -44,7 +44,7 @@ public class SharedEventHandler implements Listener {
     private final Set<ItemModificationEnchant> itemModificationEnchants = new HashSet<>();
     private final Set<MovementEnchant> movementEnchants = new HashSet<>();
 
-    private final Set<Block> tickingEnchantedBlocks = new HashSet<>();
+    private final Set<Block> enchantedBlocks = new HashSet<>();
 
     public SharedEventHandler(WbsEnchants plugin) {
         this.plugin = plugin;
@@ -89,24 +89,24 @@ public class SharedEventHandler implements Listener {
     public void onChunkLoad(ChunkLoadEvent event) {
         Map<Block, Map<BlockEnchant, Integer>> enchantedBlocks = BlockEnchant.getBlockEnchantments(event.getChunk());
 
-        tickingEnchantedBlocks.addAll(enchantedBlocks.keySet());
+        this.enchantedBlocks.addAll(enchantedBlocks.keySet());
     }
 
     @EventHandler(priority = EventPriority.MONITOR)
     public void onChunkUnload(ChunkUnloadEvent event) {
         Map<Block, Map<BlockEnchant, Integer>> enchantedBlocks = BlockEnchant.getBlockEnchantments(event.getChunk());
 
-        tickingEnchantedBlocks.removeAll(enchantedBlocks.keySet());
+        this.enchantedBlocks.removeAll(enchantedBlocks.keySet());
     }
 
     @EventHandler(priority = EventPriority.MONITOR)
     public void onEnchantBlock(EnchantedBlockPlaceEvent event) {
-        tickingEnchantedBlocks.add(event.getBlock());
+        enchantedBlocks.add(event.getBlock());
     }
 
     @EventHandler(priority = EventPriority.MONITOR)
     public void onEnchantBlock(EnchantedBlockBreakEvent event) {
-        tickingEnchantedBlocks.remove(event.getBlock());
+        enchantedBlocks.remove(event.getBlock());
     }
 
     @EventHandler
@@ -162,7 +162,7 @@ public class SharedEventHandler implements Listener {
             return;
         }
 
-        tickingEnchantedBlocks.removeIf(block ->
+        enchantedBlocks.removeIf(block ->
                 !block.getChunk().isLoaded() || !BlockEnchant.hasBlockEnchants(block)
         );
 
@@ -172,7 +172,7 @@ public class SharedEventHandler implements Listener {
                 .forEach(enchant -> {
                     Map<Block, Integer> enchanted = new HashMap<>();
 
-                    tickingEnchantedBlocks.forEach(block -> {
+                    enchantedBlocks.forEach(block -> {
                         Integer level = enchant.getLevel(block);
                         if (level != null && level > 0) {
                             enchanted.put(block, level);

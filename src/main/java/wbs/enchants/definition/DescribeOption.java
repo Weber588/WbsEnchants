@@ -3,6 +3,7 @@ package wbs.enchants.definition;
 import io.papermc.paper.registry.RegistryAccess;
 import io.papermc.paper.registry.RegistryKey;
 import io.papermc.paper.registry.TypedKey;
+import io.papermc.paper.registry.set.RegistryKeySet;
 import io.papermc.paper.registry.tag.Tag;
 import io.papermc.paper.registry.tag.TagKey;
 import net.kyori.adventure.key.Key;
@@ -17,6 +18,7 @@ import org.bukkit.NamespacedKey;
 import org.bukkit.Registry;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.EquipmentSlot;
+import org.bukkit.inventory.ItemType;
 import org.intellij.lang.annotations.Subst;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -105,6 +107,11 @@ public class DescribeOption implements Keyed {
         // Don't show enchants that only exist to conflict (typically curses)
         conflicts.removeIf(check -> EnchantUtils.getAsCustom(check) instanceof ConflictEnchantment);
         conflicts.removeIf(check -> check.key().equals(definition.key()));
+
+        RegistryKeySet<ItemType> supportedItems = definition.getEnchantment().getSupportedItems();
+
+        // If there's no overlap between supported items, don't show it.
+        conflicts.removeIf(check -> check.getSupportedItems().values().stream().noneMatch(supportedItems::contains));
 
         if (!conflicts.isEmpty()) {
             Component conflictsComponent = Component.text("Conflicts with: ");

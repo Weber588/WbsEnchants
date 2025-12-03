@@ -78,6 +78,7 @@ public class WbsEnchantsBootstrap implements PluginBootstrap {
     public static final TagKey<ItemType> ENCHANTABLE_HARNESS = ItemTypeTagKeys.create(createKey("enchantable/harness"));
     public static final TagKey<ItemType> ENCHANTABLE_ALL_ARMOR = ItemTypeTagKeys.create(createKey("enchantable/all_armor"));
     public static final TagKey<ItemType> ENCHANTABLE_BODY_ARMOR = ItemTypeTagKeys.create(createKey("enchantable/all_body_armor"));
+    public static final TagKey<ItemType> ENCHANTABLE_FUELLED_BLOCK = ItemTypeTagKeys.create(createKey("enchantable/fuelled_block"));
 
     // TODO: Put this somewhere proper (config?)
     private static List<CustomTag<ItemType>> getItemTags() {
@@ -286,6 +287,15 @@ public class WbsEnchantsBootstrap implements PluginBootstrap {
                                 TagEntry.tagEntry(ItemTypeTagKeys.ENCHANTABLE_CHEST_ARMOR, true),
                                 TagEntry.tagEntry(ItemTypeTagKeys.HARNESSES, true)
                         )
+                ),
+                new CustomTag<>(ENCHANTABLE_FUELLED_BLOCK,
+                        Set.of(
+                                ItemTypeKeys.BREWING_STAND,
+                                ItemTypeKeys.FURNACE,
+                                ItemTypeKeys.SMOKER,
+                                ItemTypeKeys.BLAST_FURNACE
+                        ),
+                        Set.of()
                 )
         );
     }

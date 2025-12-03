@@ -941,11 +941,11 @@ wbsenchants:handheld:
   primary_items:
     - minecraft:book
   minimum_cost:
-    base_cost: 5
-    additional_per_level_cost: 8
+    base_cost: 15
+    additional_per_level_cost: 9
   maximum_cost:
-    base_cost: 25
-    additional_per_level_cost: 8
+    base_cost: 65
+    additional_per_level_cost: 9
   anvil_cost: 4
   max_level: 1
   weight: 1
@@ -3023,4 +3023,33 @@ wbsenchants:curse/permanence:
   inject_into:
     - minecraft:on_random_loot
     - minecraft:tradeable
-
+wbsenchants:autothermic:
+  enabled: true
+  display_name: Autothermic
+  description: Reduces the rate of fuel consumption
+  supported_items: wbsenchants:enchantable/fuelled_block
+  exclusive_with: wbsenchants:cold_based
+  minimum_cost:
+    base_cost: 15
+    additional_per_level_cost: 9
+  maximum_cost:
+    base_cost: 65
+    additional_per_level_cost: 9
+  anvil_cost: 4
+  max_level: 3
+  weight: 1
+  generation:
+    trading:
+      result: minecraft:furnace
+      emerald-cost:
+        min: 32
+        max: 64
+      item-cost: minecraft:furnace
+      chance: 33
+      replace: minecraft:quartz_pillar
+      villager-profession: mason
+      level: WEIGHTED_SMALL
+  inject_into:
+    - wbsenchants:heat_based
+    - minecraft:on_random_loot
+    - minecraft:tradeable
