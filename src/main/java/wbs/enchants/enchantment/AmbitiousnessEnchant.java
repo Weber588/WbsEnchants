@@ -1,7 +1,11 @@
 package wbs.enchants.enchantment;
 
+import io.papermc.paper.registry.RegistryKey;
+import io.papermc.paper.registry.TypedKey;
 import io.papermc.paper.registry.keys.ItemTypeKeys;
+import org.bukkit.NamespacedKey;
 import org.bukkit.block.EnchantingTable;
+import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.event.EventHandler;
 import org.bukkit.inventory.ItemStack;
@@ -13,6 +17,8 @@ import wbs.enchants.enchantment.helper.EnchantingEnchant;
 import wbs.enchants.events.enchanting.*;
 import wbs.enchants.util.EnchantingEventUtils;
 
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
 import java.util.Random;
 
@@ -21,8 +27,6 @@ public class AmbitiousnessEnchant extends WbsEnchantment implements EnchantingEn
     public Class<EnchantingTable> getStateClass() {
         return EnchantingTable.class;
     }
-
-    private static final double MAX_LEVEL_BREAK_CHANCE = 50;
 
     private static final @NotNull String DEFAULT_DESCRIPTION = "Increases the maximum enchanting level, and allows " +
             "you to exceed the maximum level for some enchantments.";
@@ -34,6 +38,36 @@ public class AmbitiousnessEnchant extends WbsEnchantment implements EnchantingEn
                 .maxLevel(3)
                 .supportedItems(ItemTypeKeys.ENCHANTING_TABLE)
                 .exclusiveInject(WbsEnchantsBootstrap.EXCLUSIVE_SET_ENCHANTING_TABLE);
+    }
+
+    private double chanceToExceedAtMax = 50;
+    private final List<TypedKey<Enchantment>> allowExceedingMaxLevel = new LinkedList<>();
+    private final List<TypedKey<Enchantment>> preventExceedingMaxLevel = new LinkedList<>();
+
+    @Override
+    public void configure(ConfigurationSection section, String directory) {
+        super.configure(section, directory);
+
+        chanceToExceedAtMax = section.getDouble("chance-to-exceed-max-level", chanceToExceedAtMax);
+
+        List<String> allowStrings = section.getStringList("allow-exceeding-max-level");
+        for (String allowString : allowStrings) {
+            NamespacedKey key = NamespacedKey.fromString(allowString);
+
+            if (key != null) {
+                allowExceedingMaxLevel.add(RegistryKey.ENCHANTMENT.typedKey(key));
+            }
+        }
+
+        List<String> preventStrings = section.getStringList("prevent-exceeding-max-level");
+        for (String preventString : preventStrings) {
+            NamespacedKey key = NamespacedKey.fromString(preventString);
+
+            if (key != null) {
+                preventExceedingMaxLevel.add(RegistryKey.ENCHANTMENT.typedKey(key));
+            }
+        }
+
     }
 
     @EventHandler
@@ -62,7 +96,7 @@ public class AmbitiousnessEnchant extends WbsEnchantment implements EnchantingEn
         double chanceFromLevel = ((double) tableLevel / maxLevel()) / 2;
         double chanceFromCost = ((double) cost / getMaxCost(tableLevel)) / 2;
 
-        double chance = (chanceFromCost + chanceFromLevel) * (MAX_LEVEL_BREAK_CHANCE / 100);
+        double chance = (chanceFromCost + chanceFromLevel) * (chanceToExceedAtMax / 100);
 
         return new Random(seed).nextDouble() > chance;
     }
@@ -86,6 +120,18 @@ public class AmbitiousnessEnchant extends WbsEnchantment implements EnchantingEn
         int itemHash = getItemHash(item);
 
         for (Enchantment enchantment : enchantments.keySet()) {
+            TypedKey<Enchantment> typedKey = RegistryKey.ENCHANTMENT.typedKey(enchantment.key());
+            if (preventExceedingMaxLevel.contains(typedKey)) {
+                // Skip if prevented
+                continue;
+            }
+            if (!allowExceedingMaxLevel.isEmpty()) {
+                if (!allowExceedingMaxLevel.contains(typedKey)) {
+                    // Skip if not in allow list, unless it's empty
+                    continue;
+                }
+            }
+
             int enchantLevel = enchantments.get(enchantment);
             boolean shouldBreakMaxLevel = shouldBreakMaxLevel(
                     seed + slot + itemHash + enchantment.getKey().hashCode(),

@@ -16,7 +16,7 @@ import wbs.enchants.WbsEnchantment;
 import java.lang.reflect.Field;
 
 public class PortalWalkerEnchant extends WbsEnchantment {
-    private static final @NotNull String DEFAULT_DESCRIPTION = "Increases jump height of mobs wearing the saddle.";
+    private static final @NotNull String DEFAULT_DESCRIPTION = "Allows you to instantly travel through nether portals.";
 
     public PortalWalkerEnchant() {
         super("portal_walker", DEFAULT_DESCRIPTION);

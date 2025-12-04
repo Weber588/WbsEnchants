@@ -155,7 +155,7 @@ wbsenchants:blast_miner:
   inject_into:
     - wbsenchants:exclusive_set/multiminer
 wbsenchants:void_walker:
-  enabled: false
+  enabled: true
   display_name: Void Walker
   description: When you fall into the void, you're immediately teleported to the top
     of the world - get that bucket clutch ready!
@@ -2490,6 +2490,16 @@ wbsenchants:ambitiousness:
     - minecraft:enchanting_table
   exclusive_with:
     - wbsenchants:handheld
+  # The chance that, at a level 60 enchant, a given enchantment will exceed its maximum level.
+  # Enchantments with only 1 level (silk touch, mending, etc) can never be exceeded.
+  chance-to-exceed-max-level: 50
+  # Enchantments in this list can exceed their max level by 1.
+  # If this is empty, ALL leveled enchantments are able to exceed max level, except those added to the "prevent-exceeding-max-level" list.
+  allow-exceeding-max-level: []
+  # Enchantments in this list can never exceed their max level
+  prevent-exceeding-max-level:
+    - wbsenchants:lightweight
+    - wbsenchants:carrying
   minimum_cost:
     base_cost: 5
     additional_per_level_cost: 8
@@ -2878,7 +2888,7 @@ wbsenchants:necromancy:
 wbsenchants:portal_walker:
   enabled: true
   display_name: Portal Walker
-  description: Increases jump height of mobs wearing the saddle.
+  description: Allows you to instantly travel through nether portals.
   supported_items: minecraft:enchantable/leg_armor
   minimum_cost:
     base_cost: 25
