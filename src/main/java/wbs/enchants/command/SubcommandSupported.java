@@ -48,8 +48,9 @@ public class SubcommandSupported extends WbsSubcommand {
 
     @Override
     protected void addThens(LiteralArgumentBuilder<CommandSourceStack> builder) {
+        Registry<@NotNull ItemType> registry = RegistryAccess.registryAccess().getRegistry(RegistryKey.ITEM);
         builder.then(Commands.argument("item", ArgumentTypes.resourceKey(RegistryKey.ITEM))
-                .suggests(new ItemTypeSuggestionProvider(((commandContext, itemType) -> isEnchantable(itemType))))
+                .suggests(new ItemTypeSuggestionProvider(((commandContext, itemType) -> !getValidEnchantments(itemType, null, registry).isEmpty())))
                 .executes(commandContext -> execute(commandContext, null))
                 .then(Commands.argument("namespace", WbsStringArgumentType.word())
                         .suggests(WbsSuggestionProvider.getStatic(EnchantManager.getNamespaces()))
@@ -85,15 +86,7 @@ public class SubcommandSupported extends WbsSubcommand {
         }
 
         Registry<@NotNull ItemType> registry = RegistryAccess.registryAccess().getRegistry(RegistryKey.ITEM);
-        List<EnchantmentDefinition> supported = new LinkedList<>(EnchantManager.getAllKnownDefinitions()
-                .stream()
-                .filter(enchantment -> enchantment.getEnchantment()
-                        .getSupportedItems()
-                        .resolve(registry)
-                        .contains(itemType)
-                )
-                .filter(enchantment -> namespace == null || enchantment.key().namespace().equals(namespace))
-                .toList());
+        List<EnchantmentDefinition> supported = getValidEnchantments(itemType, namespace, registry);
 
         Collection<Enchantment> inEnchantingTable = RegistryAccess.registryAccess().getRegistry(RegistryKey.ENCHANTMENT).getTagValues(EnchantmentTagKeys.IN_ENCHANTING_TABLE);
 
@@ -136,6 +129,17 @@ public class SubcommandSupported extends WbsSubcommand {
         }
 
         return Command.SINGLE_SUCCESS;
+    }
+
+    private static @NotNull List<EnchantmentDefinition> getValidEnchantments(@NotNull ItemType itemType, @Nullable String namespace, Registry<@NotNull ItemType> registry) {
+        return new LinkedList<>(EnchantManager.getAllKnownDefinitions()
+                .stream()
+                .filter(enchantment -> enchantment.getEnchantment()
+                        .getSupportedItems()
+                        .contains(RegistryKey.ITEM.typedKey(itemType.key()))
+                )
+                .filter(enchantment -> namespace == null || enchantment.key().namespace().equals(namespace))
+                .toList());
     }
 
     private static boolean isEnchantable(@NotNull ItemType itemType) {

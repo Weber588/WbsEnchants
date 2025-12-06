@@ -90,6 +90,11 @@ public class SharedEventHandler implements Listener {
         Map<Block, Map<BlockEnchant, Integer>> enchantedBlocks = BlockEnchant.getBlockEnchantments(event.getChunk());
 
         this.enchantedBlocks.addAll(enchantedBlocks.keySet());
+        enchantedBlocks.forEach((block, enchants) -> {
+            enchants.forEach((enchant, level) -> {
+                enchant.onLoad(event, block, level);
+            });
+        });
     }
 
     @EventHandler(priority = EventPriority.MONITOR)

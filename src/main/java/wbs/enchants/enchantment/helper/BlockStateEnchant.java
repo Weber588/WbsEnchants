@@ -2,9 +2,9 @@ package wbs.enchants.enchantment.helper;
 
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockState;
-import org.bukkit.event.block.BlockDropItemEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.inventory.ItemStack;
+import org.jetbrains.annotations.NotNull;
 
 public interface BlockStateEnchant<T extends BlockState> extends BlockEnchant {
     Class<T> getStateClass();
@@ -28,11 +28,9 @@ public interface BlockStateEnchant<T extends BlockState> extends BlockEnchant {
     }
 
     @Override
-    default void afterDrop(BlockDropItemEvent event, ItemStack droppedItem) {
-        BlockState state = event.getBlock().getState();
-
+    default void afterDrop(@NotNull BlockState state, ItemStack droppedItem) {
         if (getStateClass().isInstance(state)) {
-            afterDrop(event, getStateClass().cast(state), droppedItem);
+            afterDrop(state, getStateClass().cast(state), droppedItem);
         }
 
         if (state.isPlaced()) {
@@ -48,7 +46,7 @@ public interface BlockStateEnchant<T extends BlockState> extends BlockEnchant {
 
     }
 
-    default void afterDrop(BlockDropItemEvent event, T t, ItemStack droppedItem) {
+    default void afterDrop(@NotNull BlockState state, T t, ItemStack droppedItem) {
 
     }
 }

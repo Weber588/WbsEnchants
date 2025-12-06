@@ -256,11 +256,11 @@ wbsenchants:lightweight:
   primary_items:
     - minecraft:shield
   minimum_cost:
-    base_cost: 45
-    additional_per_level_cost: 20
+    base_cost: 35
+    additional_per_level_cost: 10
   maximum_cost:
     base_cost: 65
-    additional_per_level_cost: 20
+    additional_per_level_cost: 10
   anvil_cost: 8
   max_level: 3
   weight: 3
