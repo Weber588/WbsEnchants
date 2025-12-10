@@ -68,7 +68,7 @@ public class SnackingEnchant extends WbsEnchantment implements ShulkerBoxEnchant
             return;
         }
 
-        Inventory inventory = wrapper.box().getInventory();
+        Inventory inventory = wrapper.getInventory();
 
         // Using a collection of entries rather than a map because we need to index by ItemStack, but
         // doing so might lead to conflicts with hashCode if an identical item is in multiple slots

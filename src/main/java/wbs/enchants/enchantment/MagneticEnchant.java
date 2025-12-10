@@ -1,10 +1,12 @@
 package wbs.enchants.enchantment;
 
+import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Item;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
+import org.jetbrains.annotations.NotNull;
 import wbs.enchants.WbsEnchantment;
 import wbs.enchants.WbsEnchantsBootstrap;
 import wbs.enchants.enchantment.helper.TickableEnchant;
@@ -14,6 +16,7 @@ import java.util.HashMap;
 
 public class MagneticEnchant extends WbsEnchantment implements TickableEnchant {
     private static final String DEFAULT_DESCRIPTION = "Your item pickup radius is extended.";
+    public static final int DEFAULT_PICKUP_RADIUS = 1;
 
     public MagneticEnchant() {
         super("magnetic", DEFAULT_DESCRIPTION);
@@ -21,6 +24,15 @@ public class MagneticEnchant extends WbsEnchantment implements TickableEnchant {
         getDefinition()
                 .maxLevel(4)
                 .supportedItems(WbsEnchantsBootstrap.ENCHANTABLE_MAGNETIC);
+    }
+
+    private double radiusPerLevel = 1;
+
+    @Override
+    public void configure(@NotNull ConfigurationSection section, String directory) {
+        super.configure(section, directory);
+
+        radiusPerLevel = section.getDouble("radius-per-level", radiusPerLevel);
     }
 
     @Override
@@ -44,7 +56,7 @@ public class MagneticEnchant extends WbsEnchantment implements TickableEnchant {
         ItemStack highestEnchanted = getHighestEnchanted(owner);
         int level = getLevel(highestEnchanted);
 
-        SELECTOR.setRange(level + 1)
+        SELECTOR.setRange((level * radiusPerLevel) + DEFAULT_PICKUP_RADIUS)
                 .select(owner)
                 .forEach(item -> {
                     if (!item.isValid()) {

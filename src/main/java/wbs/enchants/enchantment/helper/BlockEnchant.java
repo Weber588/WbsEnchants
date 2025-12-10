@@ -32,6 +32,7 @@ import org.bukkit.event.entity.EntityChangeBlockEvent;
 import org.bukkit.event.entity.EntityExplodeEvent;
 import org.bukkit.event.world.ChunkLoadEvent;
 import org.bukkit.inventory.EntityEquipment;
+import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.ItemType;
 import org.bukkit.persistence.PersistentDataContainer;
@@ -197,6 +198,25 @@ public interface BlockEnchant extends EnchantInterface, AutoRegistrableEnchant {
 
     default boolean isEnchanted(Block block) {
         return getLevel(block) != null;
+    }
+
+    @Nullable
+    default Integer getLevel(Inventory inventory) {
+        Location location = inventory.getLocation();
+        if (location == null) {
+            return null;
+        }
+
+        return getLevel(location.getBlock());
+    }
+
+    default boolean isEnchanted(Inventory inventory) {
+        Location location = inventory.getLocation();
+        if (location == null) {
+            return false;
+        }
+
+        return isEnchanted(location.getBlock());
     }
     //endregion
 

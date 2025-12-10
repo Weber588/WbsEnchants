@@ -11,7 +11,6 @@ import org.jetbrains.annotations.Nullable;
 import wbs.enchants.definition.EnchantmentDefinition;
 import wbs.utils.util.plugin.WbsPlugin;
 
-@SuppressWarnings("UnstableApiUsage")
 public class SubcommandClear extends EnchantmentSubcommand {
     public SubcommandClear(@NotNull WbsPlugin plugin) {
         super(plugin, "clear");

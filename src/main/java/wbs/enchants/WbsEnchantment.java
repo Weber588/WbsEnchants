@@ -268,7 +268,10 @@ public abstract class WbsEnchantment implements Comparable<WbsEnchantment>, List
     }
 
 
-    public int getLevel(@NotNull ItemStack item) {
+    public int getLevel(@Nullable ItemStack item) {
+        if (item == null) {
+            return 0;
+        }
         return item.getEnchantments().getOrDefault(getEnchantment(), 0);
     }
 

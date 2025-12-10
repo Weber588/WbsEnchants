@@ -45,6 +45,11 @@ public class AethereanEnchant extends WbsEnchantment {
             return;
         }
 
+        // Don't place enchanted blocks -- undefined behaviour
+        if (!item.getEnchantments().isEmpty()) {
+            return;
+        }
+
         Player player = event.getPlayer();
 
         if (player.getGameMode() == GameMode.SPECTATOR || player.getGameMode() == GameMode.ADVENTURE) {

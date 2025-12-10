@@ -1,5 +1,7 @@
 package wbs.enchants;
 
+import io.papermc.paper.datacomponent.DataComponentTypes;
+import io.papermc.paper.datacomponent.item.Enchantable;
 import io.papermc.paper.registry.RegistryAccess;
 import io.papermc.paper.registry.RegistryKey;
 import io.papermc.paper.registry.TypedKey;
@@ -9,6 +11,7 @@ import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.ItemType;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import wbs.enchants.type.EnchantmentType;
 import wbs.enchants.type.EnchantmentTypeManager;
 import wbs.utils.util.plugin.WbsSettings;
@@ -106,5 +109,9 @@ public class EnchantsSettings extends WbsSettings {
     private boolean tickNonPlayers = true;
     public boolean tickNonPlayers() {
         return tickNonPlayers;
+    }
+
+    public @Nullable Enchantable getEnchantability(ItemStack stack) {
+        return stack.getDataOrDefault(DataComponentTypes.ENCHANTABLE, addEnchantability ? Enchantable.enchantable(defaultEnchantability) : null);
     }
 }

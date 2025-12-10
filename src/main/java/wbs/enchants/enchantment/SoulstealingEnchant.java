@@ -17,13 +17,13 @@ public class SoulstealingEnchant extends WbsEnchantment {
     private static final String DEFAULT_DESCRIPTION = "Adds a " + CHANCE_PER_LEVEL + "% chance per level of killed mobs dropping its spawn egg!";
 
     // TODO: Make configurable
-    private final Set<Material> blacklistedMaterials = Set.of(
-            Material.ELDER_GUARDIAN_SPAWN_EGG,
-            Material.ENDER_DRAGON_SPAWN_EGG,
-            Material.WITHER_SPAWN_EGG,
-            Material.IRON_GOLEM_SPAWN_EGG,
-            Material.SNOW_GOLEM_SPAWN_EGG,
-            Material.WARDEN_SPAWN_EGG
+        private final Set<Material> blacklistedMaterials = Set.of(
+                Material.ELDER_GUARDIAN_SPAWN_EGG,
+                Material.ENDER_DRAGON_SPAWN_EGG,
+                Material.WITHER_SPAWN_EGG,
+                Material.IRON_GOLEM_SPAWN_EGG,
+                Material.SNOW_GOLEM_SPAWN_EGG,
+                Material.WARDEN_SPAWN_EGG
     );
 
     public SoulstealingEnchant() {

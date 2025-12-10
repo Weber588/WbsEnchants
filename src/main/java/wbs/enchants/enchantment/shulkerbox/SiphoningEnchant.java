@@ -66,15 +66,18 @@ public class SiphoningEnchant extends WbsEnchantment implements ContainerItemEnc
                 ItemStack failed = containerItem.addItem(drop);
                 containerItem.saveToItem();
 
-                if (failed == null || failed.isEmpty()) {
+                int failedAmount = failed == null ? 0 : failed.getAmount();
+
+                PICKUP_EFFECT.play(dropEntity.getLocation(), WbsEntityUtil.getMiddleLocation(player));
+                dropEntity.getWorld().playSound(dropEntity.getLocation(), Sound.ENTITY_ITEM_PICKUP, 1, 1);
+
+                if (failedAmount == 0) {
                     dropEntity.remove();
                     event.setCancelled(true);
                     break;
-                } else if (failed.getAmount() != drop.getAmount()) {
-                    PICKUP_EFFECT.play(dropEntity.getLocation(), WbsEntityUtil.getMiddleLocation(player));
-                    dropEntity.getWorld().playSound(dropEntity.getLocation(), Sound.ENTITY_ITEM_PICKUP, 1, 1);
-
-                    drop.setAmount(failed.getAmount());
+                } else if (failedAmount != drop.getAmount()) {
+                    player.playPickupItemAnimation(dropEntity, drop.getAmount() - failedAmount);
+                    drop.setAmount(failedAmount);
                     dropEntity.setItemStack(drop);
                 }
             }

@@ -1,5 +1,7 @@
 package wbs.enchants.enchantment;
 
+import com.destroystokyo.paper.entity.ai.MobGoals;
+import com.destroystokyo.paper.entity.ai.VanillaGoal;
 import org.bukkit.Bukkit;
 import org.bukkit.NamespacedKey;
 import org.bukkit.attribute.Attribute;
@@ -91,6 +93,8 @@ public class GhostPactEnchant extends WbsEnchantment implements DamageEnchant {
                             }
                     );
 
+                    MobGoals mobGoals = Bukkit.getMobGoals();
+                    mobGoals.removeGoal(vex, VanillaGoal.VEX_RANDOM_MOVE);
 
                     // Summoner is stored as Mob, which LivingEntity/Player don't extend, so worst case
                     // the vex might turn around and hit the wearer themselves idk

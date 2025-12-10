@@ -1,6 +1,5 @@
 package wbs.enchants.util;
 
-import io.papermc.paper.datacomponent.DataComponentTypes;
 import io.papermc.paper.datacomponent.item.Enchantable;
 import io.papermc.paper.registry.RegistryAccess;
 import io.papermc.paper.registry.RegistryKey;
@@ -24,6 +23,7 @@ import org.bukkit.event.enchantment.PrepareItemEnchantEvent;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import wbs.enchants.WbsEnchants;
 import wbs.enchants.events.enchanting.*;
 
 import java.util.*;
@@ -120,8 +120,6 @@ public class EnchantingEventUtils {
     }
 
     public static Map<Enchantment, Integer> getEnchantments(EnchantingContext context, long seed, ItemStack stack, int slot, int cost) {
-        RandomSource source = RandomSource.create(seed + slot);
-
         Registry<@NotNull Enchantment> registry = RegistryAccess.registryAccess().getRegistry(RegistryKey.ENCHANTMENT);
         Tag<@NotNull Enchantment> availableOnTableTag = registry.getTag(EnchantmentTagKeys.IN_ENCHANTING_TABLE);
         Collection<@NotNull Enchantment> availableOnTable = availableOnTableTag.resolve(registry);
@@ -129,25 +127,38 @@ public class EnchantingEventUtils {
         if (availableOnTable.isEmpty()) {
             return Map.of();
         } else {
-            Map<Enchantment, Integer> enchantments = selectEnchantment(
-                    context,
-                    source,
-                    stack,
-                    cost,
-                    availableOnTable
-            );
-
-            if (stack.getType() == Material.BOOK && enchantments.size() > 1) {
-                Enchantment key = getRandomKey(enchantments, source);
-
-                enchantments.remove(key);
-            }
-
-            SelectEnchantmentsEvent selectionEvent = new SelectEnchantmentsEvent(context, enchantments, cost, slot);
-            selectionEvent.callEvent();
-
-            return enchantments;
+            return finalizeSelection(context, stack, slot, cost, seed, availableOnTable);
         }
+    }
+
+    public static @NotNull Map<Enchantment, Integer> finalizeSelection(EnchantingContext context, ItemStack stack, int slot, int cost, long seed, Collection<@NotNull Enchantment> availableOnTable) {
+        RandomSource source = createRandom(seed, slot);
+        return finalizeSelection(context, stack, slot, cost, source, availableOnTable);
+    }
+
+    private static @NotNull RandomSource createRandom(long seed, int slot) {
+        return RandomSource.create(seed + slot);
+    }
+
+    public static @NotNull Map<Enchantment, Integer> finalizeSelection(EnchantingContext context, ItemStack stack, int slot, int cost, RandomSource source, Collection<@NotNull Enchantment> availableOnTable) {
+        Map<Enchantment, Integer> enchantments = selectEnchantment(
+                context,
+                source,
+                stack,
+                cost,
+                availableOnTable
+        );
+
+        if (stack.getType() == Material.BOOK && enchantments.size() > 1) {
+            Enchantment key = getRandomKey(enchantments, source);
+
+            enchantments.remove(key);
+        }
+
+        SelectEnchantmentsEvent selectionEvent = new SelectEnchantmentsEvent(context, enchantments, cost, slot);
+        selectionEvent.callEvent();
+
+        return enchantments;
     }
 
     private static <T extends Keyed> T getRandomKey(Map<T, Integer> map, RandomSource source) {
@@ -165,7 +176,7 @@ public class EnchantingEventUtils {
 
     public static Map<Enchantment, Integer> selectEnchantment(EnchantingContext context, RandomSource random, ItemStack stack, final int level, Collection<Enchantment> availableOnTable) {
         Map<Enchantment, Integer> enchantments = new LinkedHashMap<>();
-        Enchantable enchantable = stack.getData(DataComponentTypes.ENCHANTABLE);
+        Enchantable enchantable = WbsEnchants.getInstance().getSettings().getEnchantability(stack);
         if (enchantable == null) {
             return enchantments;
         } else {
@@ -205,7 +216,19 @@ public class EnchantingEventUtils {
         return event.getWeight();
     }
 
-    private static int getModifiedLevel(RandomSource random, int level, Enchantable enchantable) {
+    public static int getModifiedLevel(long seed, int slot, int level, ItemStack stack) {
+        Enchantable data = WbsEnchants.getInstance().getSettings().getEnchantability(stack);
+
+        if (data == null) {
+            return -1;
+        }
+
+        return getModifiedLevel(seed, slot, level, data);
+    }
+    public static int getModifiedLevel(long seed, int slot, int level, @NotNull Enchantable enchantable) {
+        return getModifiedLevel(createRandom(seed, slot), level, enchantable);
+    }
+    public static int getModifiedLevel(RandomSource random, int level, @NotNull Enchantable enchantable) {
         level += 1 + random.nextInt(enchantable.value() / 4 + 1) + random.nextInt(enchantable.value() / 4 + 1);
         float f = (random.nextFloat() + random.nextFloat() - 1.0F) * 0.15F;
         level = Mth.clamp(Math.round((float) level + (float) level * f), 1, Integer.MAX_VALUE);
@@ -243,7 +266,7 @@ public class EnchantingEventUtils {
         return enchantments;
     }
 
-    private static @NotNull Set<Enchantment> getAvailableEnchants(EnchantingContext context, ItemStack stack, Collection<Enchantment> availableOnTable) {
+    public static @NotNull Set<Enchantment> getAvailableEnchants(EnchantingContext context, ItemStack stack, Collection<Enchantment> availableOnTable) {
         boolean isBook = stack.getType() == Material.BOOK;
         Set<Enchantment> available = new HashSet<>(availableOnTable);
 

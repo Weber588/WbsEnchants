@@ -1,7 +1,5 @@
 package wbs.enchants.enchantment.shulkerbox;
 
-import org.bukkit.Bukkit;
-import org.bukkit.NamespacedKey;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -11,19 +9,13 @@ import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.Inventory;
-import org.bukkit.inventory.InventoryHolder;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.persistence.PersistentDataContainer;
-import org.jetbrains.annotations.NotNull;
 import wbs.enchants.WbsEnchantment;
 import wbs.enchants.WbsEnchantsBootstrap;
 import wbs.enchants.enchantment.helper.ShulkerBoxEnchantment;
-import wbs.enchants.util.PersistentInventoryDataType;
 import wbs.utils.util.WbsEventUtils;
 
 public class CarryingEnchant extends WbsEnchantment implements ShulkerBoxEnchantment {
-    private static final NamespacedKey EXTRA_INVENTORY_KEY = WbsEnchantsBootstrap.createKey("extra_inventory");
-
     private static final String DEFAULT_DESCRIPTION = "Allows you to open the shulker box from your hand by right clicking," +
             "and gains an extra 9 inventory slots per level above the first.";
 
@@ -93,24 +85,22 @@ public class CarryingEnchant extends WbsEnchantment implements ShulkerBoxEnchant
 
         event.setCancelled(true);
 
-        ShulkerBoxHolder holder = new ShulkerBoxHolder(wrapper, getLevel(item) - 1);
-
-        player.openInventory(holder.getInventory());
+        player.openInventory(wrapper.getInventory());
     }
 
     @EventHandler(priority = EventPriority.HIGHEST)
     public void onInventoryClick(InventoryClickEvent event) {
         Inventory topInventory = event.getView().getTopInventory();
 
-        if (!(topInventory.getHolder() instanceof ShulkerBoxHolder holder)) {
+        if (!(topInventory.getHolder() instanceof ShulkerBoxWrapper holder)) {
             return;
         }
 
         ItemStack addedItem = WbsEventUtils.getItemAddedToTopInventory(event);
-        if (!holder.box.canContain(addedItem)) {
+        if (!holder.canContain(addedItem)) {
             event.setCancelled(true);
         } else {
-            holder.save();
+            holder.saveToItem();
         }
     }
 
@@ -118,65 +108,10 @@ public class CarryingEnchant extends WbsEnchantment implements ShulkerBoxEnchant
     public void onInventoryClose(InventoryCloseEvent event) {
         Inventory inventory = event.getInventory();
 
-        if (!(inventory.getHolder() instanceof ShulkerBoxHolder holder)) {
+        if (!(inventory.getHolder() instanceof ShulkerBoxWrapper holder)) {
             return;
         }
 
-        holder.save();
-    }
-
-    private static class ShulkerBoxHolder implements InventoryHolder {
-        private final @NotNull Inventory inventory;
-        private final ShulkerBoxWrapper box;
-
-        private ShulkerBoxHolder(ShulkerBoxWrapper wrapper, int extraRows) {
-            this.box = wrapper;
-
-            Inventory baseInventory = wrapper.box().getInventory();
-
-            PersistentDataContainer container = wrapper.box().getPersistentDataContainer();
-            Inventory extraInventory = container.get(EXTRA_INVENTORY_KEY, PersistentInventoryDataType.INSTANCE);
-
-            inventory = Bukkit.createInventory(this, 9 * (3 + extraRows), wrapper.displayName());
-            for (int i = 0; i < baseInventory.getSize(); i++) {
-                inventory.setItem(i, baseInventory.getItem(i));
-            }
-
-            if (extraInventory != null) {
-                for (int i = 0; i < extraInventory.getSize(); i++) {
-                    inventory.setItem(baseInventory.getSize() + i, extraInventory.getItem(i));
-                }
-            }
-        }
-
-        @Override
-        public @NotNull Inventory getInventory() {
-            return inventory;
-        }
-
-        public boolean canContain(ItemStack check) {
-            return box.canContain(check);
-        }
-
-        public void save() {
-            Inventory baseInventory = box.box().getInventory();
-
-            for (int i = 0; i < baseInventory.getSize(); i++) {
-                baseInventory.setItem(i, inventory.getItem(i));
-            }
-
-            if (inventory.getSize() > baseInventory.getSize()) {
-                Inventory extraInventory = Bukkit.createInventory(this, inventory.getSize() - baseInventory.getSize(), box.displayName());
-
-                for (int i = 0; i < inventory.getSize() - baseInventory.getSize(); i++) {
-                    extraInventory.setItem(i, inventory.getItem(i + baseInventory.getSize()));
-                }
-
-                box.box().getPersistentDataContainer().set(EXTRA_INVENTORY_KEY, PersistentInventoryDataType.INSTANCE, extraInventory);
-            }
-
-
-            box.saveToItem();
-        }
+        holder.saveToItem();
     }
 }

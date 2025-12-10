@@ -68,7 +68,7 @@ public class PlacingEnchant extends WbsEnchantment implements ShulkerBoxEnchantm
         }
 
         if (isEnchantmentOn(placedItem)) {
-            Inventory inventory = wrapper.box().getInventory();
+            Inventory inventory = wrapper.getInventory();
 
             List<@NotNull ItemStack> placeable = new LinkedList<>();
             for (ItemStack check : inventory) {
