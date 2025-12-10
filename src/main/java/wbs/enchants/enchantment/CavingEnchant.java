@@ -12,6 +12,7 @@ import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
+import org.jetbrains.annotations.NotNull;
 import wbs.enchants.WbsEnchantment;
 import wbs.enchants.enchantment.helper.MovementEnchant;
 import wbs.utils.util.entities.WbsEntityUtil;
@@ -40,7 +41,7 @@ public class CavingEnchant extends WbsEnchantment implements MovementEnchant {
     }
 
     @Override
-    public void configure(ConfigurationSection section, String directory) {
+    public void configure(@NotNull ConfigurationSection section, String directory) {
         super.configure(section, directory);
 
         lightLevelRequired = section.getInt("light-level-required", DEFAULT_LIGHT_LEVEL_REQUIRED);

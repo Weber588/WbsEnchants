@@ -86,14 +86,14 @@ public class ButcheringEnchant extends TargetedDamageEnchant {
     }
 
     @Override
-    public void configure(ConfigurationSection section, String directory) {
+    public void configure(@NotNull ConfigurationSection section, String directory) {
         super.configure(section, directory);
 
         foodPercentIncreasePerLevel = section.getInt(FOOD_INCREASE_KEY, foodPercentIncreasePerLevel);
     }
 
     @Override
-    public ConfigurationSection buildConfigurationSection(YamlConfiguration baseFile) {
+    public @NotNull ConfigurationSection buildConfigurationSection(YamlConfiguration baseFile) {
         ConfigurationSection section = super.buildConfigurationSection(baseFile);
 
         section.set(FOOD_INCREASE_KEY, foodPercentIncreasePerLevel);

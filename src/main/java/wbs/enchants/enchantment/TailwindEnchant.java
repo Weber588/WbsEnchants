@@ -22,7 +22,7 @@ public class TailwindEnchant extends WbsEnchantment {
         EnchantmentAttributeEffect attributeEffect = new EnchantmentAttributeEffect(
                 ResourceLocation.fromNamespaceAndPath(WbsEnchantsBootstrap.NAMESPACE, key().value()),
                 Attributes.FLYING_SPEED,
-                LevelBasedValue.perLevel(0.5f, 0.5f),
+                LevelBasedValue.perLevel(0.4f, 0.4f),
                 AttributeModifier.Operation.ADD_MULTIPLIED_BASE
         );
 

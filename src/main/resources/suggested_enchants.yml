@@ -1197,7 +1197,7 @@ wbsenchants:curse/rebuking:
     base_cost: 5
     additional_per_level_cost: 8
   maximum_cost:
-    base_cost: 25
+    base_cost: 20
     additional_per_level_cost: 8
   anvil_cost: 8
   max_level: 2
@@ -1250,12 +1250,12 @@ wbsenchants:curse/stumbling:
     base_cost: 5
     additional_per_level_cost: 8
   maximum_cost:
-    base_cost: 25
+    base_cost: 10
     additional_per_level_cost: 8
   exclusive_with: wbsenchants:exclusive_set/fall_damage_affecting
   anvil_cost: 8
   max_level: 4
-  weight: 10
+  weight: 5
   generation:
     loot-table:
       chance: 5
@@ -1832,7 +1832,7 @@ wbsenchants:curse/rust:
   description: The item will break more quickly.
   supported_items: wbsenchants:enchantable/rustable
   minimum_cost:
-    base_cost: 5
+    base_cost: 15
     additional_per_level_cost: 8
   maximum_cost:
     base_cost: 25
@@ -1893,6 +1893,7 @@ wbsenchants:magnetic:
   enabled: true
   description: Your item pickup radius is extended.
   supported_items: wbsenchants:enchantable/magnetic
+  radius-per-level: 3
   minimum_cost:
     base_cost: 5
     additional_per_level_cost: 8
@@ -1902,8 +1903,14 @@ wbsenchants:magnetic:
   anvil_cost: 10
   max_level: 1
   weight: 1
+  generation:
+    loot-table:
+      description: 5% chance to appear in Bastion loot
+      chance: 5
+      add-chance: 100
+      tables:
+        - .*bastion.*
   inject_into:
-    - minecraft:on_random_loot
     - minecraft:on_traded_equipment
 wbsenchants:casting:
   enabled: true
@@ -1927,7 +1934,7 @@ wbsenchants:curse/rot:
   description: When worn, regeneration is 1.2x slower per level.
   supported_items: wbsenchants:enchantable/all_armor
   minimum_cost:
-    base_cost: 5
+    base_cost: 15
     additional_per_level_cost: 8
   maximum_cost:
     base_cost: 25
@@ -3022,14 +3029,14 @@ wbsenchants:curse/permanence:
   supported_items: minecraft:enchantable/durability
   exclusive_with: wbsenchants:exclusive_set/self_repairing
   minimum_cost:
-    base_cost: 25
-    additional_per_level_cost: 0
+    base_cost: 15
+    additional_per_level_cost: 8
   maximum_cost:
-    base_cost: 50
-    additional_per_level_cost: 0
+    base_cost: 30
+    additional_per_level_cost: 8
   anvil_cost: 8
   max_level: 1
-  weight: 2
+  weight: 1
   inject_into:
     - minecraft:on_random_loot
     - minecraft:tradeable
@@ -3063,3 +3070,83 @@ wbsenchants:autothermic:
     - wbsenchants:heat_based
     - minecraft:on_random_loot
     - minecraft:tradeable
+wbsenchants:shrinking:
+  enabled: true
+  display_name: Shrinking
+  description: Shrinks the wearer.
+  scale-percent: 25
+  supported_items: wbsenchants:enchantable/scalable_down
+  exclusive_with: wbsenchants:exclusive_set/scalable
+  minimum_cost:
+    base_cost: 5
+    additional_per_level_cost: 8
+  maximum_cost:
+    base_cost: 25
+    additional_per_level_cost: 8
+  anvil_cost: 1
+  max_level: 2
+  weight: 1
+  inject_into:
+    - wbsenchants:exclusive_set/scalable
+    - minecraft:tradeable
+wbsenchants:embiggening:
+  enabled: true
+  display_name: Embiggening
+  description: Enlarges the wearer.
+  scale-percent: 25
+  supported_items: wbsenchants:enchantable/scalable_up
+  exclusive_with: wbsenchants:exclusive_set/scalable
+  minimum_cost:
+    base_cost: 5
+    additional_per_level_cost: 8
+  maximum_cost:
+    base_cost: 25
+    additional_per_level_cost: 8
+  anvil_cost: 1
+  max_level: 2
+  weight: 1
+  inject_into:
+    - wbsenchants:exclusive_set/scalable
+    - minecraft:tradeable
+wbsenchants:recovery:
+  enabled: true
+  display_name: Recovery
+  description: Books in grindstones have a chance to gain enchantments when another
+    item is disenchanted.
+  supported_items:
+    - minecraft:grindstone
+  # How many enchants can be pulled off an enchanted item? If less than 1, any amount can be recovered.
+  max-enchants-recovered: 1
+  # If true, when a curse is recovered, it's also removed from the original item.
+  # This allows players to remove curses by moving them onto books.
+  # If false, curses will be *copied* onto the book instead, if the recovery-chance is met.
+  remove-curses-on-recovery: false
+  # How likely is each type of enchant to be recovered (as a percentage)?
+  recovery-chance:
+    regular: 10
+    curse: 0
+    ethereal: 5
+    paradoxical: 20
+  minimum_cost:
+    base_cost: 5
+    additional_per_level_cost: 8
+  maximum_cost:
+    base_cost: 25
+    additional_per_level_cost: 8
+  anvil_cost: 1
+  max_level: 3
+  weight: 1
+  generation:
+    trading:
+      result: minecraft:grindstone
+      emerald-cost:
+        min: 32
+        max: 64
+      item-cost: minecraft:grindstone
+      chance: 100
+      replace: minecraft:bell
+      villager-profession: weaponsmith
+      level: WEIGHTED_SMALL
+  inject_into:
+    - minecraft:tradeable
+

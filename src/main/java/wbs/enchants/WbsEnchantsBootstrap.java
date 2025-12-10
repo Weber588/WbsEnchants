@@ -79,6 +79,8 @@ public class WbsEnchantsBootstrap implements PluginBootstrap {
     public static final TagKey<ItemType> ENCHANTABLE_ALL_ARMOR = ItemTypeTagKeys.create(createKey("enchantable/all_armor"));
     public static final TagKey<ItemType> ENCHANTABLE_BODY_ARMOR = ItemTypeTagKeys.create(createKey("enchantable/all_body_armor"));
     public static final TagKey<ItemType> ENCHANTABLE_FUELLED_BLOCK = ItemTypeTagKeys.create(createKey("enchantable/fuelled_block"));
+    public static final TagKey<ItemType> ENCHANTABLE_SCALABLE_UP = ItemTypeTagKeys.create(createKey("enchantable/scalable_up"));
+    public static final TagKey<ItemType> ENCHANTABLE_SCALABLE_DOWN = ItemTypeTagKeys.create(createKey("enchantable/scalable_down"));
 
     // TODO: Put this somewhere proper (config?)
     private static List<CustomTag<ItemType>> getItemTags() {
@@ -296,6 +298,22 @@ public class WbsEnchantsBootstrap implements PluginBootstrap {
                                 ItemTypeKeys.BLAST_FURNACE
                         ),
                         Set.of()
+                ),
+                new CustomTag<>(ENCHANTABLE_SCALABLE_UP,
+                        Set.of(
+                                ItemTypeKeys.SADDLE,
+                                ItemTypeKeys.ARMOR_STAND
+                        ),
+                        Set.of()
+                ),
+                new CustomTag<>(ENCHANTABLE_SCALABLE_DOWN,
+                        Set.of(
+                                ItemTypeKeys.SADDLE,
+                                ItemTypeKeys.ARMOR_STAND
+                        ),
+                        Set.of(
+                                TagEntry.tagEntry(ItemTypeTagKeys.HARNESSES, true)
+                        )
                 )
         );
     }
@@ -312,6 +330,7 @@ public class WbsEnchantsBootstrap implements PluginBootstrap {
     public static final TagKey<Enchantment> EXCLUSIVE_SET_ENCHANTING_TABLE = EnchantmentTagKeys.create(createKey("exclusive_set/enchanting_table"));
     public static final TagKey<Enchantment> EXCLUSIVE_SET_CHISELED_BOOKSHELF = EnchantmentTagKeys.create(createKey("exclusive_set/chiseled_bookshelf"));
     public static final TagKey<Enchantment> EXCLUSIVE_SET_INFINITY = EnchantmentTagKeys.create(createKey("exclusive_set/infinity"));
+    public static final TagKey<Enchantment> EXCLUSIVE_SET_SCALABLE = EnchantmentTagKeys.create(createKey("exclusive_set/scalable"));
     public static final TagKey<Enchantment> HEAT_BASED_ENCHANTS = EnchantmentTagKeys.create(createKey("heat_based"));
     public static final TagKey<Enchantment> COLD_BASED_ENCHANTS = EnchantmentTagKeys.create(createKey("cold_based"));
 
@@ -352,7 +371,8 @@ public class WbsEnchantsBootstrap implements PluginBootstrap {
                         EnchantmentKeys.FROST_WALKER),
                 CustomTag.getKeyTag(EXCLUSIVE_SET_INFINITY,
                         EnchantmentKeys.INFINITY,
-                        EnchantmentKeys.MENDING)
+                        EnchantmentKeys.MENDING),
+                CustomTag.getKeyTag(EXCLUSIVE_SET_SCALABLE)
         );
     }
 

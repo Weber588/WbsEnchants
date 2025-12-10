@@ -89,9 +89,10 @@ public interface EnchantmentExtension extends Keyed {
     default void configureBoostrap(ConfigurationSection section, String directory) {
         getDefinition().configureBoostrap(section, directory);
     }
-    default void configure(ConfigurationSection section, String directory) {
+    default void configure(@NotNull ConfigurationSection section, String directory) {
         getDefinition().configure(section, directory);
     }
+    @NotNull
     default ConfigurationSection buildConfigurationSection(YamlConfiguration baseFile) {
         return getDefinition().buildConfigurationSection(baseFile);
     }

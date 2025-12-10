@@ -2,8 +2,6 @@ package wbs.enchants.enchantment;
 
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Vehicle;
-import org.bukkit.event.entity.EntityPlaceEvent;
-import org.bukkit.inventory.ItemStack;
 import wbs.enchants.WbsEnchantment;
 import wbs.enchants.WbsEnchantsBootstrap;
 import wbs.enchants.enchantment.helper.VehicleEnchant;
@@ -26,8 +24,8 @@ public class ShulkenforcedEnchant extends WbsEnchantment implements VehicleEncha
     }
 
     @Override
-    public void afterPlace(EntityPlaceEvent event, ItemStack placedItem) {
-        if (event.getEntity() instanceof Vehicle vehicle) {
+    public void afterPlace(PlaceContext context) {
+        if (context.entity() instanceof Vehicle vehicle) {
             vehicle.setGravity(false);
         }
     }

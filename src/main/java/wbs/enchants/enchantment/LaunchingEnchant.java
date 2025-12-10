@@ -49,7 +49,7 @@ public class LaunchingEnchant extends WbsEnchantment {
     }
 
     @Override
-    public void configure(ConfigurationSection section, String directory) {
+    public void configure(@NotNull ConfigurationSection section, String directory) {
         super.configure(section, directory);
 
         speedPerLevel = section.getDouble("speed-per-level", speedPerLevel);

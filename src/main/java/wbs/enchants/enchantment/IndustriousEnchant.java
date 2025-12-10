@@ -56,7 +56,7 @@ public class IndustriousEnchant extends WbsEnchantment implements ShearingEnchan
     }
 
     @Override
-    public void configure(ConfigurationSection section, String directory) {
+    public void configure(@NotNull ConfigurationSection section, String directory) {
         super.configure(section, directory);
 
         radiusPerLevel = section.getInt("radius-per-level", radiusPerLevel);

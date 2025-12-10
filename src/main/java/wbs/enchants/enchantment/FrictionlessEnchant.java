@@ -2,8 +2,6 @@ package wbs.enchants.enchantment;
 
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Minecart;
-import org.bukkit.event.entity.EntityPlaceEvent;
-import org.bukkit.inventory.ItemStack;
 import wbs.enchants.WbsEnchantment;
 import wbs.enchants.WbsEnchantsBootstrap;
 import wbs.enchants.enchantment.helper.VehicleEnchant;
@@ -22,17 +20,14 @@ public class FrictionlessEnchant extends WbsEnchantment implements VehicleEnchan
     }
 
     @Override
-    public void afterPlace(EntityPlaceEvent event, ItemStack placedItem) {
-        Entity entity = event.getEntity();
-        if (!(entity instanceof Minecart minecart)) {
+    public void afterPlace(PlaceContext context) {
+        if (!(context.entity() instanceof Minecart minecart)) {
             return;
         }
 
-        int level = getLevel(placedItem);
-
         double defaultMax = minecart.getMaxSpeed();
 
-        minecart.setMaxSpeed(defaultMax * (1 + level / 3.0));
+        minecart.setMaxSpeed(defaultMax * (1 + context.level() / 3.0));
     }
 
     @Override

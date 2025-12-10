@@ -139,6 +139,9 @@ public class EnchantManager {
     public static final InsightfulEnchant INSIGHTFUL = new InsightfulEnchant();
     public static final TailwindEnchant TAILWIND = new TailwindEnchant();
     public static final AutothermicEnchant AUTOTHERMIC = new AutothermicEnchant();
+    public static final ShrinkingEnchant SHRINKING = new ShrinkingEnchant();
+    public static final EmbiggeningEnchant EMBIGGENING = new EmbiggeningEnchant();
+    public static final RecoveryEnchant RECOVERY = new RecoveryEnchant();
 
     public static final CurseRebuking CURSE_REBUKING = new CurseRebuking();
     public static final CurseVanilla CURSE_VANILLA = new CurseVanilla();

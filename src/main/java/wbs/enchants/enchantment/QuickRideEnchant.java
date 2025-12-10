@@ -1,13 +1,14 @@
 package wbs.enchants.enchantment;
 
-import org.bukkit.entity.*;
+import org.bukkit.entity.Boat;
+import org.bukkit.entity.Entity;
+import org.bukkit.entity.Item;
+import org.bukkit.entity.Player;
 import org.bukkit.entity.minecart.RideableMinecart;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.entity.EntityDismountEvent;
-import org.bukkit.event.entity.EntityPlaceEvent;
 import org.bukkit.event.vehicle.VehicleDamageEvent;
 import org.bukkit.event.vehicle.VehicleDestroyEvent;
-import org.bukkit.inventory.ItemStack;
 import wbs.enchants.WbsEnchantment;
 import wbs.enchants.WbsEnchants;
 import wbs.enchants.WbsEnchantsBootstrap;
@@ -26,14 +27,14 @@ public class QuickRideEnchant extends WbsEnchantment implements VehicleEnchant {
     }
 
     @Override
-    public void afterPlace(EntityPlaceEvent event, ItemStack placedItem) {
-        Player player = event.getPlayer();
+    public void afterPlace(PlaceContext context) {
+        Player player = context.player();
 
         if (player == null) {
             return;
         }
 
-        event.getEntity().addPassenger(player);
+        context.entity().addPassenger(player);
     }
 
     @EventHandler

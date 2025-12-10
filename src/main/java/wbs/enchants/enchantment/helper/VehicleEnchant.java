@@ -23,11 +23,7 @@ public interface VehicleEnchant extends EntityEnchant {
         }
         Vehicle vehicle = event.getVehicle();
 
-        Material material = switch (vehicle) {
-            case Boat boat -> boat.getBoatMaterial();
-            case Minecart minecart -> minecart.getMinecartMaterial();
-            default -> null;
-        };
+        Material material = EntityEnchant.getEntityMaterial(vehicle);
 
         if (material == null) {
             return;

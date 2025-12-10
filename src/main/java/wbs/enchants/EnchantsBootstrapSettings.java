@@ -123,10 +123,10 @@ public class EnchantsBootstrapSettings extends WbsBootstrapSettings<WbsEnchants>
             }
             if (enchantSection == null) {
                 newEnchantAdded = true;
-                enchant.buildConfigurationSection(enchantsConfig);
-            } else {
-                enchant.configure(enchantSection, enchantsConfig.getName() + "/" + enchant.key().value());
+                enchantSection = enchant.buildConfigurationSection(enchantsConfig);
             }
+
+            enchant.configure(enchantSection, enchantsConfig.getName() + "/" + enchant.key().value());
         }
 
         if (newEnchantAdded) {

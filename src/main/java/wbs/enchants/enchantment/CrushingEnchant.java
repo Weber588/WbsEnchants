@@ -12,6 +12,7 @@ import org.bukkit.event.EventPriority;
 import org.bukkit.event.block.BlockDropItemEvent;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.Contract;
+import org.jetbrains.annotations.NotNull;
 import wbs.enchants.WbsEnchantment;
 import wbs.enchants.WbsEnchants;
 import wbs.enchants.enchantment.helper.BlockDropEnchantment;
@@ -41,7 +42,7 @@ public class CrushingEnchant extends WbsEnchantment implements BlockDropEnchantm
     }
 
     @Override
-    public void configure(ConfigurationSection section, String directory) {
+    public void configure(@NotNull ConfigurationSection section, String directory) {
         super.configure(section, directory);
 
         ConfigurationSection mapSection = section.getConfigurationSection(CRUSH_MAP_KEY);
@@ -198,7 +199,7 @@ public class CrushingEnchant extends WbsEnchantment implements BlockDropEnchantm
     }
 
     @Override
-    public ConfigurationSection buildConfigurationSection(YamlConfiguration baseFile) {
+    public @NotNull ConfigurationSection buildConfigurationSection(YamlConfiguration baseFile) {
         ConfigurationSection section = super.buildConfigurationSection(baseFile);
 
         if (crushingMap.isEmpty()) {

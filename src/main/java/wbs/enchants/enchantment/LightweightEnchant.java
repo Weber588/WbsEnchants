@@ -39,7 +39,7 @@ public class LightweightEnchant extends WbsEnchantment implements DamageEnchant 
     }
 
     @Override
-    public void configure(ConfigurationSection section, String directory) {
+    public void configure(@NotNull ConfigurationSection section, String directory) {
         super.configure(section, directory);
 
         blockChance = section.getDouble("max-block-chance", blockChance);

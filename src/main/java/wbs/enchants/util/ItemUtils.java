@@ -5,6 +5,7 @@ import io.papermc.paper.registry.RegistryKey;
 import io.papermc.paper.registry.TypedKey;
 import org.bukkit.Bukkit;
 import org.bukkit.inventory.*;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Iterator;
@@ -18,6 +19,11 @@ public class ItemUtils {
         }
         return TypedKey.create(RegistryKey.ITEM, Objects.requireNonNull(item.getType().asItemType()).key());
     }
+
+    public static int getItemHash(@NotNull ItemStack item) {
+        return item.getItemMeta().getAsComponentString().hashCode();
+    }
+
 
     @Nullable
     public static ItemStack smeltItem(ItemStack stack) {

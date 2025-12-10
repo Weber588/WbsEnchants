@@ -89,7 +89,7 @@ public class BloomingEnchant extends WbsEnchantment implements TickableEnchant {
     }
 
     @Override
-    public void configure(ConfigurationSection section, String directory) {
+    public void configure(@NotNull ConfigurationSection section, String directory) {
         super.configure(section, directory);
 
         RegistryKey<BlockType> registryKey = RegistryKey.BLOCK;
@@ -135,7 +135,7 @@ public class BloomingEnchant extends WbsEnchantment implements TickableEnchant {
     }
 
     @Override
-    public ConfigurationSection buildConfigurationSection(YamlConfiguration baseFile) {
+    public @NotNull ConfigurationSection buildConfigurationSection(YamlConfiguration baseFile) {
         ConfigurationSection section = super.buildConfigurationSection(baseFile);
 
         FLOWER_POWERS.forEach((key, power) -> {

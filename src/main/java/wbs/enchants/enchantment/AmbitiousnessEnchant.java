@@ -16,6 +16,7 @@ import wbs.enchants.enchantment.helper.BlockStateEnchant;
 import wbs.enchants.enchantment.helper.EnchantingEnchant;
 import wbs.enchants.events.enchanting.*;
 import wbs.enchants.util.EnchantingEventUtils;
+import wbs.enchants.util.ItemUtils;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -45,7 +46,7 @@ public class AmbitiousnessEnchant extends WbsEnchantment implements EnchantingEn
     private final List<TypedKey<Enchantment>> preventExceedingMaxLevel = new LinkedList<>();
 
     @Override
-    public void configure(ConfigurationSection section, String directory) {
+    public void configure(@NotNull ConfigurationSection section, String directory) {
         super.configure(section, directory);
 
         chanceToExceedAtMax = section.getDouble("chance-to-exceed-max-level", chanceToExceedAtMax);
@@ -78,10 +79,6 @@ public class AmbitiousnessEnchant extends WbsEnchantment implements EnchantingEn
         if (level != null) {
             event.setMaxPower(getMaxPower(level));
         }
-    }
-
-    private int getItemHash(@NotNull ItemStack item) {
-        return item.getItemMeta().getAsComponentString().hashCode();
     }
 
     private static int getMaxCost(int level) {
@@ -117,7 +114,7 @@ public class AmbitiousnessEnchant extends WbsEnchantment implements EnchantingEn
 
         Map<Enchantment, Integer> enchantments = event.getEnchantments();
 
-        int itemHash = getItemHash(item);
+        int itemHash = ItemUtils.getItemHash(item);
 
         for (Enchantment enchantment : enchantments.keySet()) {
             TypedKey<Enchantment> typedKey = RegistryKey.ENCHANTMENT.typedKey(enchantment.key());

@@ -7,6 +7,7 @@ import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
+import org.jetbrains.annotations.NotNull;
 import wbs.enchants.WbsEnchantment;
 import wbs.enchants.WbsEnchantsBootstrap;
 import wbs.enchants.enchantment.helper.TickableEnchant;
@@ -30,14 +31,14 @@ public class ManathirstEnchant extends WbsEnchantment implements TickableEnchant
     }
 
     @Override
-    public void configure(ConfigurationSection section, String directory) {
+    public void configure(@NotNull ConfigurationSection section, String directory) {
         super.configure(section, directory);
 
         xpPerDura = section.getInt("xp-per-durability", xpPerDura);
     }
 
     @Override
-    public ConfigurationSection buildConfigurationSection(YamlConfiguration baseFile) {
+    public @NotNull ConfigurationSection buildConfigurationSection(YamlConfiguration baseFile) {
         ConfigurationSection section = super.buildConfigurationSection(baseFile);
         section.set("xp-per-durability", xpPerDura);
         return section;

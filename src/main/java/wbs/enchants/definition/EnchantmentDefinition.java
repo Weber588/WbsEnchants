@@ -115,7 +115,9 @@ public class EnchantmentDefinition extends EnchantmentWrapper implements Compara
     @NotNull
     private EnchantmentRegistryEntry.EnchantmentCost maximumCost = EnchantmentRegistryEntry.EnchantmentCost.of(25, 8);
     private int anvilCost = 1;
-    private EquipmentSlotGroup activeSlots = EquipmentSlotGroup.ANY;
+    private EquipmentSlotGroup[] activeSlots = {
+            EquipmentSlotGroup.ANY
+    };
 
     @NotNull
     private final DataComponentMap.Builder effects = DataComponentMap.builder();
@@ -258,7 +260,7 @@ public class EnchantmentDefinition extends EnchantmentWrapper implements Compara
         return anvilCost;
     }
 
-    public EnchantmentDefinition activeSlots(EquipmentSlotGroup activeSlots) {
+    public EnchantmentDefinition activeSlots(EquipmentSlotGroup ... activeSlots) {
         this.activeSlots = activeSlots;
         return this;
     }
@@ -431,10 +433,11 @@ public class EnchantmentDefinition extends EnchantmentWrapper implements Compara
             }
         }
     }
-
+    @NotNull
     public ConfigurationSection buildConfigurationSection(YamlConfiguration baseFile) {
         return buildConfigurationSection(baseFile, null);
     }
+    @NotNull
     public ConfigurationSection buildConfigurationSection(YamlConfiguration baseFile, @Nullable EnchantmentRegistryEntry.Builder fallback) {
         ConfigurationSection section = baseFile.createSection(key().asString());
         configureFallback(fallback);
@@ -475,11 +478,11 @@ public class EnchantmentDefinition extends EnchantmentWrapper implements Compara
         return section;
     }
 
-    public void configure(ConfigurationSection section, String directory) {
+    public void configure(@NotNull ConfigurationSection section, String directory) {
         configure(section, null, directory);
     }
 
-    public void configure(ConfigurationSection section, @Nullable EnchantmentRegistryEntry.Builder fallback, String directory) {
+    public void configure(@NotNull ConfigurationSection section, @Nullable EnchantmentRegistryEntry.Builder fallback, String directory) {
         configureBoostrap(section, fallback, directory);
 
         ConfigurationSection generationSection = section.getConfigurationSection("generation");
@@ -872,7 +875,13 @@ public class EnchantmentDefinition extends EnchantmentWrapper implements Compara
     }
 
     public boolean isActiveInSlot(EquipmentSlot slot) {
-        return activeSlots.test(slot);
+        for (EquipmentSlotGroup activeSlot : activeSlots) {
+            if (activeSlot.test(slot)) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     public interface TagProducer {

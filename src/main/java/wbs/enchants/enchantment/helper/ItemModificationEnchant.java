@@ -25,7 +25,7 @@ import java.util.List;
 import java.util.Map;
 
 public interface ItemModificationEnchant extends EnchantmentExtension, EnchantInterface, AutoRegistrableEnchant {
-    NamespacedKey HAS_ENCHANT_MODIFICATION_KEY = WbsEnchantsBootstrap.createKey("has-enchant-modification");
+    NamespacedKey HAS_ENCHANT_MODIFICATION_KEY = WbsEnchantsBootstrap.createKey("has_enchant_modification");
 
     default void registerModificationEvents() {
         EventUtils.register(EnchantItemEvent.class, this::onEnchant);

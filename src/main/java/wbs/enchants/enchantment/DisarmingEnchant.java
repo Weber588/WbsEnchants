@@ -40,7 +40,7 @@ public class DisarmingEnchant extends WbsEnchantment implements DamageEnchant {
     }
 
     @Override
-    public void configure(ConfigurationSection section, String directory) {
+    public void configure(@NotNull ConfigurationSection section, String directory) {
         super.configure(section, directory);
 
         disarmNamedMobs = section.getBoolean("disarm-named-mobs", disarmNamedMobs);

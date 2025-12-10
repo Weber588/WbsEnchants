@@ -89,7 +89,7 @@ public abstract class TargetedDamageEnchant extends WbsEnchantment implements Da
     }
 
     @Override
-    public void configure(ConfigurationSection section, String directory) {
+    public void configure(@NotNull ConfigurationSection section, String directory) {
         super.configure(section, directory);
 
         List<String> affectedMobs = section.getStringList(LIST_KEY);
@@ -112,7 +112,7 @@ public abstract class TargetedDamageEnchant extends WbsEnchantment implements Da
     }
 
     @Override
-    public ConfigurationSection buildConfigurationSection(YamlConfiguration baseFile) {
+    public @NotNull ConfigurationSection buildConfigurationSection(YamlConfiguration baseFile) {
         ConfigurationSection section = super.buildConfigurationSection(baseFile);
 
         if (this.affectedMobTypes.isEmpty()) {
