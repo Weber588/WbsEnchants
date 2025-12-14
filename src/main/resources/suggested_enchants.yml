@@ -2507,6 +2507,7 @@ wbsenchants:ambitiousness:
   prevent-exceeding-max-level:
     - wbsenchants:lightweight
     - wbsenchants:carrying
+    - wbsenchants:ambitiousness
   minimum_cost:
     base_cost: 5
     additional_per_level_cost: 8
@@ -3149,4 +3150,22 @@ wbsenchants:recovery:
       level: WEIGHTED_SMALL
   inject_into:
     - minecraft:tradeable
+wbsenchants:hypercharged:
+  enabled: true
+  display_name: Hypercharged
+  description: Enchanting a water bottle will take levels equal to the requirement, instead of just 3. Those levels will be stored in it as an enchanted bottle.
+  supported_items: wbsenchants:enchantable/hypercharged
+  primary_items: wbsenchants:enchantable/hypercharged
+  minimum_cost:
+    base_cost: 5
+    additional_per_level_cost: 8
+  maximum_cost:
+    base_cost: 25
+    additional_per_level_cost: 8
+  anvil_cost: 1
+  max_level: 3
+  weight: 10
+  inject_into: []
+
+
 

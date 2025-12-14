@@ -142,6 +142,7 @@ public class EnchantManager {
     public static final ShrinkingEnchant SHRINKING = new ShrinkingEnchant();
     public static final EmbiggeningEnchant EMBIGGENING = new EmbiggeningEnchant();
     public static final RecoveryEnchant RECOVERY = new RecoveryEnchant();
+    public static final HyperchargedEnchant HYPERCHARGED_ENCHANT = new HyperchargedEnchant();
 
     public static final CurseRebuking CURSE_REBUKING = new CurseRebuking();
     public static final CurseVanilla CURSE_VANILLA = new CurseVanilla();

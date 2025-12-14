@@ -38,7 +38,7 @@ import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
 @SuppressWarnings({"UnstableApiUsage", "unused"})
-public class WbsEnchantsBootstrap implements PluginBootstrap {
+public final class WbsEnchantsBootstrap implements PluginBootstrap {
     public static final String NAMESPACE = "wbsenchants";
     private EnchantsBootstrapSettings settings;
 
@@ -81,6 +81,7 @@ public class WbsEnchantsBootstrap implements PluginBootstrap {
     public static final TagKey<ItemType> ENCHANTABLE_FUELLED_BLOCK = ItemTypeTagKeys.create(createKey("enchantable/fuelled_block"));
     public static final TagKey<ItemType> ENCHANTABLE_SCALABLE_UP = ItemTypeTagKeys.create(createKey("enchantable/scalable_up"));
     public static final TagKey<ItemType> ENCHANTABLE_SCALABLE_DOWN = ItemTypeTagKeys.create(createKey("enchantable/scalable_down"));
+    public static final TagKey<ItemType> ENCHANTABLE_HYPERCHARGED = ItemTypeTagKeys.create(createKey("enchantable/hypercharged"));
 
     // TODO: Put this somewhere proper (config?)
     private static List<CustomTag<ItemType>> getItemTags() {
@@ -314,6 +315,13 @@ public class WbsEnchantsBootstrap implements PluginBootstrap {
                         Set.of(
                                 TagEntry.tagEntry(ItemTypeTagKeys.HARNESSES, true)
                         )
+                ),
+                new CustomTag<>(ENCHANTABLE_HYPERCHARGED,
+                        Set.of(
+                                ItemTypeKeys.POTION,
+                                ItemTypeKeys.EXPERIENCE_BOTTLE
+                        ),
+                        Set.of()
                 )
         );
     }

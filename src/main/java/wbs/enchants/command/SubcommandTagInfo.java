@@ -51,7 +51,7 @@ public class SubcommandTagInfo extends WbsSubcommand {
     protected int executeNoArgs(CommandContext<CommandSourceStack> context) {
         CommandSender sender = context.getSource().getSender();
 
-        plugin.sendMessage("Usage: &h/" + context.getRootNode().getName() + " " + getLabel() + " <tag_type> <key>", sender);
+        plugin.sendMessage("Usage: &h/" + context.getInput().split(" ")[0] + " " + getLabel() + " <tag_type> <key>", sender);
 
         return Command.SINGLE_SUCCESS;
     }

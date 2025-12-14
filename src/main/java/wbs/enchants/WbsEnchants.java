@@ -25,7 +25,7 @@ import java.nio.file.StandardCopyOption;
 import java.util.HashMap;
 import java.util.Map;
 
-public class WbsEnchants extends WbsPlugin {
+public final class WbsEnchants extends WbsPlugin {
     private static WbsEnchants instance;
     public static WbsEnchants getInstance() {
         return instance;

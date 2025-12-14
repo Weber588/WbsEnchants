@@ -20,6 +20,7 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.loot.LootContext;
 import org.bukkit.loot.LootTable;
+import org.jetbrains.annotations.NotNull;
 import wbs.enchants.definition.EnchantmentDefinition;
 import wbs.enchants.util.EnchantUtils;
 import wbs.utils.exceptions.InvalidConfigurationException;
@@ -68,11 +69,15 @@ public class LootTableContext extends ExistingLootContext {
         return definition.weight() * 3;
     }
 
-    private boolean canAddTo(LootTable table) {
+    private boolean canAddTo(@NotNull LootTable table) {
         if (tables.isEmpty()) {
             return true;
         }
-
+        /*
+            Got the below error once, but both sources that canAddTo is called from can't be null? One validates it, so the event must've had a null table somehow???
+            java.lang.NullPointerException: Cannot invoke "org.bukkit.loot.LootTable.getKey()" because "table" is null
+            at WbsEnchants-1.0.0-SNAPSHOT.jar/wbs.enchants.generation.contexts.LootTableContext.canAddTo(LootTableContext.java:76) ~[WbsEnchants-1.0.0-SNAPSHOT.jar:?]
+         */
         String tableKey = table.getKey().toString();
         String nameKey = table.getKey().getKey();
         for (String tableName : tables) {
