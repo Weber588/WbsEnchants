@@ -66,6 +66,15 @@ public class HyperchargedEnchant extends WbsEnchantment {
     }
 
     @EventHandler
+    public void onSelectEnchantments(EnchantmentGenerationCheckEvent event) {
+        EnchantingContext context = event.getContext();
+        ItemStack item = context.item();
+        if (event.getEnchantment().equals(getEnchantment()) && (item.getType() == Material.BOOK || item.getType() == Material.ENCHANTED_BOOK)) {
+            event.setAllowed(false);
+        }
+    }
+
+    @EventHandler
     public void onFinalizeEnchants(FinalizeItemEnchantmentsEvent event) {
         Map<Enchantment, Integer> enchantments = event.getEnchantments();
 
@@ -101,7 +110,7 @@ public class HyperchargedEnchant extends WbsEnchantment {
         enchantments.remove(serverEnchantment);
 
         ItemStack item = context.item();
-        if (serverEnchantment.canEnchantItem(item)) {
+        if (serverEnchantment.canEnchantItem(item) && item.getType() != Material.BOOK && item.getType() != Material.ENCHANTED_BOOK) {
             PotionContents potionContents = item.getData(DataComponentTypes.POTION_CONTENTS);
             if (potionContents != null && !potionContents.allEffects().isEmpty()) {
                 return;
@@ -125,7 +134,7 @@ public class HyperchargedEnchant extends WbsEnchantment {
         EnchantingPreparationContext context = event.getContext();
 
         ItemStack item = context.item();
-        if (getEnchantment().canEnchantItem(item)) {
+        if (getEnchantment().canEnchantItem(item) && item.getType() != Material.BOOK && item.getType() != Material.ENCHANTED_BOOK) {
             PotionContents potionContents = item.getData(DataComponentTypes.POTION_CONTENTS);
             if (potionContents != null && !potionContents.allEffects().isEmpty()) {
                 return;

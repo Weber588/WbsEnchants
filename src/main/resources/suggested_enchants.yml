@@ -136,11 +136,11 @@ wbsenchants:blast_miner:
     every level, for a maximum of 3x%max_level%x3 at level %max_level%.
   supported_items: minecraft:pickaxes
   minimum_cost:
-    base_cost: 45
-    additional_per_level_cost: 15
+    base_cost: 30
+    additional_per_level_cost: 8
   maximum_cost:
-    base_cost: 65
-    additional_per_level_cost: 15
+    base_cost: 40
+    additional_per_level_cost: 8
   exclusive_with: wbsenchants:exclusive_set/multiminer
   anvil_cost: 8
   max_level: 3
@@ -357,7 +357,7 @@ wbsenchants:scorching:
 wbsenchants:frostburn:
   enabled: true
   display_name: Frostburn
-  description: Sometimes apply slowness on hit. Does increased damage against water/cold vulnerable mobs, 
+  description: Sometimes apply slowness on hit. Does increased damage against water/cold vulnerable mobs,
     like endermen and blazes, but less damage against heat-vulnerable mobs, like strays
   supported_items: minecraft:swords
   primary_items: minecraft:enchantable/weapon
