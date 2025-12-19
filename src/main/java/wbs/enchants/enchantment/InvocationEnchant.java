@@ -15,9 +15,11 @@ import wbs.enchants.events.enchanting.EnchantingContext;
 import wbs.enchants.events.enchanting.GetAvailableEnchantsEvent;
 import wbs.enchants.util.EnchantUtils;
 
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Random;
 
+@SuppressWarnings("UnstableApiUsage")
 public class InvocationEnchant extends WbsEnchantment implements EnchantingEnchant, BlockStateEnchant<ChiseledBookshelf> {
     private static final String DEFAULT_DESCRIPTION = "Allows any enchantments contained in the chiseled bookshelf " +
             "to appear on any enchanting table that uses it for power.";
@@ -37,6 +39,36 @@ public class InvocationEnchant extends WbsEnchantment implements EnchantingEncha
         return ChiseledBookshelf.class;
     }
 
+    /*
+    @EventHandler(priority = EventPriority.LOWEST)
+    public void onEnchantingTableAdd(PrepareItemEnchantEvent event) {
+        ItemStack item = event.getItem();
+
+        Enchantable enchantableData = item.getData(DataComponentTypes.ENCHANTABLE);
+        if (enchantableData == null) {
+            boolean addEnchantability = false;
+            blockLoop: for (Block powerProviderBlock : EnchantingEventUtils.getPowerProviderBlocks(event.getEnchantBlock())) {
+                if (isEnchanted(powerProviderBlock)) {
+                    Map<Enchantment, Integer> storedEnchantments = getStoredEnchants(powerProviderBlock);
+                    for (Enchantment enchantment : storedEnchantments.keySet()) {
+                        if (enchantment.canEnchantItem(item)) {
+                            addEnchantability = true;
+                            break blockLoop;
+                        }
+                    }
+                }
+            }
+
+            if (addEnchantability) {
+                enchantableData = Enchantable.enchantable(WbsEnchants.getInstance().getSettings().defaultEnchantability());
+
+                item.setData(DataComponentTypes.ENCHANTABLE, enchantableData);
+            }
+        }
+    }
+
+     */
+
     @EventHandler
     public void onGetAvailableEnchants(GetAvailableEnchantsEvent event) {
         EnchantingContext context = event.getContext();
@@ -46,16 +78,24 @@ public class InvocationEnchant extends WbsEnchantment implements EnchantingEncha
             Integer level = getLevel(powerProviderBlock);
 
             if (level != null && (random.nextDouble() * 100 < CHANCE_PER_LEVEL * level)) {
-                if (powerProviderBlock.getState() instanceof TileStateInventoryHolder inventoryBlock) {
-                    for (ItemStack book : inventoryBlock.getInventory()) {
-                        if (book != null) {
-                            Map<Enchantment, Integer> storedEnchantments = EnchantUtils.getStoredEnchantments(book);
+                Map<Enchantment, Integer> storedEnchantments = getStoredEnchants(powerProviderBlock);
 
-                            event.getAvailableOnTable().addAll(storedEnchantments.keySet());
-                        }
-                    }
+                event.getAvailableOnTable().addAll(storedEnchantments.keySet());
+            }
+        }
+    }
+
+    private static Map<Enchantment, Integer> getStoredEnchants(Block powerProviderBlock) {
+        Map<Enchantment, Integer> storedEnchantments = new HashMap<>();
+
+        if (powerProviderBlock.getState() instanceof TileStateInventoryHolder inventoryBlock) {
+            for (ItemStack book : inventoryBlock.getInventory()) {
+                if (book != null) {
+                    storedEnchantments.putAll(EnchantUtils.getStoredEnchantments(book));
                 }
             }
         }
+
+        return storedEnchantments;
     }
 }

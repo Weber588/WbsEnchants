@@ -39,7 +39,7 @@ public class EnchantingTableEvents implements Listener {
         view.setEnchantmentSeed(new Random(player.getEnchantmentSeed() + hashCode()).nextInt());
     }
 
-    @EventHandler(priority = EventPriority.LOWEST)
+    @EventHandler(priority = EventPriority.LOW)
     public void prepareOverride(PrepareItemEnchantEvent event) {
         int seed = event.getView().getEnchantmentSeed();
 
@@ -110,26 +110,31 @@ public class EnchantingTableEvents implements Listener {
         enchantsToAdd.putAll(enchantments);
     }
 
-    @EventHandler(priority = EventPriority.LOW)
+    @EventHandler(priority = EventPriority.LOWEST)
     public void onEnchantingTableAdd(PrepareItemEnchantEvent event) {
         EnchantsSettings settings = WbsEnchants.getInstance().getSettings();
 
-        if (!settings.addEnchantability()) {
-            return;
-        }
-
         ItemStack item = event.getItem();
 
-        Enchantable enchantableData = item.getData(DataComponentTypes.ENCHANTABLE);
-        if (enchantableData == null) {
-            boolean isPrimaryItem = EnchantsSettings.isPrimaryItem(item);
+        if (settings.addEnchantability()) {
+            Enchantable enchantableData = item.getData(DataComponentTypes.ENCHANTABLE);
+            if (enchantableData == null) {
+                boolean isPrimaryItem = EnchantsSettings.isPrimaryItem(item);
 
-            if (isPrimaryItem) {
-                enchantableData = Enchantable.enchantable(settings.defaultEnchantability());
+                if (isPrimaryItem) {
+                    enchantableData = Enchantable.enchantable(settings.defaultEnchantability());
 
-                item.setData(DataComponentTypes.ENCHANTABLE, enchantableData);
+                    item.setData(DataComponentTypes.ENCHANTABLE, enchantableData);
+                }
             }
         }
+
+        validatePreparation(event);
+    }
+
+    @EventHandler(priority = EventPriority.HIGHEST)
+    public void validatePreparation(PrepareItemEnchantEvent event) {
+        ItemStack item = event.getItem();
 
         boolean hasValidOffer = false;
 

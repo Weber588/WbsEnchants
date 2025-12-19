@@ -9,6 +9,7 @@ import io.papermc.paper.command.brigadier.argument.ArgumentTypes;
 import io.papermc.paper.registry.RegistryKey;
 import io.papermc.paper.registry.TypedKey;
 import net.kyori.adventure.key.Key;
+import org.bukkit.NamespacedKey;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import wbs.enchants.EnchantManager;
@@ -56,14 +57,36 @@ public abstract class EnchantmentSubcommand extends WbsSubcommand {
         return context.getArgument("enchantment", TypedKey.class).key();
     }
 
+    @Nullable
     protected EnchantmentDefinition getEnchantment(CommandContext<CommandSourceStack> context) {
         Key enchantKey = getEnchantmentKey(context);
 
-        WbsEnchantment customEnchantment = EnchantManager.getCustomFromKey(enchantKey);
-        if (customEnchantment != null) {
-            return customEnchantment.getDefinition();
-        } else {
-            return EnchantManager.getExternalDefinition(enchantKey);
+        EnchantmentDefinition definition = tryGetDefinition(enchantKey);
+
+        if (definition == null) {
+            if (enchantKey.namespace().equals(NamespacedKey.MINECRAFT_NAMESPACE)) {
+                for (String namespace : EnchantManager.getNamespaces()) {
+                    NamespacedKey checkKey = new NamespacedKey(namespace, enchantKey.value());
+
+                    definition = tryGetDefinition(checkKey);
+                    if (definition != null) {
+                        break;
+                    }
+                }
+            }
         }
+
+        return definition;
+    }
+
+    private static @Nullable EnchantmentDefinition tryGetDefinition(Key enchantKey) {
+        WbsEnchantment customEnchantment = EnchantManager.getCustomFromKey(enchantKey);
+        EnchantmentDefinition definition;
+        if (customEnchantment != null) {
+            definition = customEnchantment.getDefinition();
+        } else {
+            definition = EnchantManager.getExternalDefinition(enchantKey);
+        }
+        return definition;
     }
 }

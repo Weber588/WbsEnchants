@@ -228,7 +228,7 @@ public class EnchantManager {
 
     }
 
-    public static EnchantmentDefinition getExternalDefinition(Key enchantKey) {
+    public static @Nullable EnchantmentDefinition getExternalDefinition(Key enchantKey) {
         return EXTERNAL_DEFINITIONS.stream()
                 .filter(def -> def.key().equals(enchantKey))
                 .findFirst()

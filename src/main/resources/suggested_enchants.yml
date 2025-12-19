@@ -91,19 +91,18 @@ wbsenchants:vampiric:
   weight: 5
   generation:
     death:
-      description: 1% chance to drop when a player dies
+      description: 10% chance to drop when a player dies
       # The chance to try adding at all.
-      chance: 1
+      chance: 10
       # The chance that, if the above chance was met, this item should be added if no
       # valid items were already in the drops.
       # 100 = Always add if no existing drops were enchantable with this
       # 0 = Only add if one of the drops was enchantable
-      add-chance: 0
+      add-chance: 100
       level:
         mode: WEIGHTED_SMALL
       conditions:
         entity-type: player
-  inject_into: []
 wbsenchants:vein_miner:
   enabled: true
   display_name: Vein Miner
