@@ -564,7 +564,7 @@ public interface BlockEnchant extends EnchantInterface, AutoRegistrableEnchant {
     );
 
     private static @NotNull Transformation getTransformation(@NotNull BlockData renderAs) {
-        float expansion = 0.0001f;
+        float expansion = 0.001f;
         float base = 1f;
         float overlayScale = base + expansion;
         Vector3f scale = new Vector3f(overlayScale, overlayScale, overlayScale);

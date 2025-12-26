@@ -3074,7 +3074,7 @@ wbsenchants:shrinking:
   enabled: true
   display_name: Shrinking
   description: Shrinks the wearer.
-  scale-percent: 25
+  scale-percent: -25
   supported_items: wbsenchants:enchantable/scalable_down
   exclusive_with: wbsenchants:exclusive_set/scalable
   minimum_cost:

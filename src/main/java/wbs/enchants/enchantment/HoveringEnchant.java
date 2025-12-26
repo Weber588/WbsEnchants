@@ -1,11 +1,12 @@
 package wbs.enchants.enchantment;
 
-import com.mojang.brigadier.Command;
 import net.kyori.adventure.util.TriState;
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.EquipmentSlot;
+import org.bukkit.inventory.EquipmentSlotGroup;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
@@ -17,14 +18,17 @@ import wbs.enchants.WbsEnchantsBootstrap;
 import wbs.enchants.enchantment.helper.TickableEnchant;
 import wbs.enchants.type.EnchantmentTypeManager;
 
+import java.util.Map;
+
 public class HoveringEnchant extends WbsEnchantment implements TickableEnchant {
-    public static final int MAX_HEIGHT = 5;
+    public static final int MAX_HEIGHT = 8;
     private static final @NotNull String DEFAULT_DESCRIPTION = "Creative-mode flight while within " + MAX_HEIGHT + " blocks of the ground, but you still take fall damage.";
 
     public HoveringEnchant() {
         super("hovering", EnchantmentTypeManager.ETHEREAL, DEFAULT_DESCRIPTION);
 
         getDefinition()
+                .activeSlots(EquipmentSlotGroup.ARMOR)
                 .supportedItems(WbsEnchantsBootstrap.ENCHANTABLE_ELYTRA);
     }
 
@@ -51,7 +55,7 @@ public class HoveringEnchant extends WbsEnchantment implements TickableEnchant {
     }
 
     @Override
-    public void onTickAny(LivingEntity owner) {
+    public void onTickEquipped(LivingEntity owner, Map<ItemStack, EquipmentSlot> enchantedStacks) {
         if (!(owner instanceof Player player)) {
             return;
         }
@@ -75,6 +79,7 @@ public class HoveringEnchant extends WbsEnchantment implements TickableEnchant {
 
     private void clearFlight(Player player) {
         if (player.getGameMode() == GameMode.SURVIVAL || player.getGameMode() == GameMode.ADVENTURE) {
+            player.setFlying(false);
             player.setAllowFlight(false);
             player.setFlyingFallDamage(TriState.NOT_SET);
         }

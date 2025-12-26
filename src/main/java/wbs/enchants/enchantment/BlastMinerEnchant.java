@@ -5,9 +5,14 @@ import org.bukkit.Material;
 import org.bukkit.Tag;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
+import org.bukkit.entity.Entity;
+import org.bukkit.entity.Item;
 import org.bukkit.entity.Player;
+import org.bukkit.event.EventHandler;
 import org.bukkit.event.block.BlockBreakEvent;
+import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.persistence.PersistentDataType;
 import org.jetbrains.annotations.NotNull;
 import wbs.enchants.WbsEnchants;
 import wbs.enchants.enchantment.helper.AbstractMultiBreakEnchant;
@@ -88,14 +93,32 @@ public class BlastMinerEnchant extends AbstractMultiBreakEnchant {
                 .setMatching(matching)
                 .breakBlocks(player);
 
-        WbsEnchants.getInstance().runSync(() ->
-                broken.getWorld().createExplosion(player,
-                        broken.getLocation().toCenterLocation(),
-                        2f,
-                        false, // Don't set fire
-                        false, // Don't break blocks (we did that already)
-                        false // Don't protect player (source) from taking damage
-                )
-        );
+        WbsEnchants.getInstance().runSync(() -> {
+            player.getPersistentDataContainer().set(getKey(), PersistentDataType.BOOLEAN, true);
+            broken.getWorld().createExplosion(player,
+                    broken.getLocation().toCenterLocation(),
+                    2f,
+                    false, // Don't set fire
+                    false, // Don't break blocks (we did that already)
+                    false // Don't protect player (source) from taking damage
+            );
+            player.getPersistentDataContainer().remove(getKey());
+        });
+    }
+
+    @EventHandler
+    private void onExplodeItem(EntityDamageEvent event) {
+        Entity entity = event.getEntity();
+
+        if (entity instanceof Item) {
+            Entity causingEntity = event.getDamageSource().getCausingEntity();
+            Entity directEntity = event.getDamageSource().getDirectEntity();
+
+            if (causingEntity != null && causingEntity.getPersistentDataContainer().has(getKey())) {
+                event.setCancelled(true);
+            } else if (directEntity != null && directEntity.getPersistentDataContainer().has(getKey())) {
+                event.setCancelled(true);
+            }
+        }
     }
 }

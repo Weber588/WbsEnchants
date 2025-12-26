@@ -62,7 +62,6 @@ public class PlanarBindingEnchant extends WbsEnchantment {
             return;
         }
         ItemStack item = equipment.getItemInMainHand();
-        item.getItemMeta().getDisplayName();
 
         if (isEnchantmentOn(item)) {
             PersistentDataContainer dataContainer = event.getEntity().getPersistentDataContainer();

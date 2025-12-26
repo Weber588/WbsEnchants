@@ -13,11 +13,13 @@ import wbs.enchants.enchantment.helper.BlockStateEnchant;
 import wbs.enchants.enchantment.helper.EnchantingEnchant;
 import wbs.enchants.events.enchanting.EnchantingContext;
 import wbs.enchants.events.enchanting.GetAvailableEnchantsEvent;
+import wbs.enchants.type.EnchantmentTypeManager;
 import wbs.enchants.util.EnchantUtils;
 
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Random;
+import java.util.Set;
 
 @SuppressWarnings("UnstableApiUsage")
 public class InvocationEnchant extends WbsEnchantment implements EnchantingEnchant, BlockStateEnchant<ChiseledBookshelf> {
@@ -80,7 +82,11 @@ public class InvocationEnchant extends WbsEnchantment implements EnchantingEncha
             if (level != null && (random.nextDouble() * 100 < CHANCE_PER_LEVEL * level)) {
                 Map<Enchantment, Integer> storedEnchantments = getStoredEnchants(powerProviderBlock);
 
-                event.getAvailableOnTable().addAll(storedEnchantments.keySet());
+                Set<Enchantment> toAdd = storedEnchantments.keySet();
+
+                toAdd.removeIf(ench -> EnchantmentTypeManager.getType(ench).equals(EnchantmentTypeManager.ETHEREAL));
+
+                event.getAvailableOnTable().addAll(toAdd);
             }
         }
     }

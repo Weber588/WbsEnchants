@@ -24,7 +24,6 @@ public class ItemUtils {
         return item.getItemMeta().getAsComponentString().hashCode();
     }
 
-
     @Nullable
     public static ItemStack smeltItem(ItemStack stack) {
         ItemStack result = null;
