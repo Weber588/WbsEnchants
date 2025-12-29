@@ -1,12 +1,13 @@
 package wbs.enchants.enchantment;
 
-import io.papermc.paper.registry.keys.tags.EnchantmentTagKeys;
+import io.papermc.paper.registry.keys.EnchantmentKeys;
 import io.papermc.paper.registry.keys.tags.ItemTypeTagKeys;
 import org.bukkit.Location;
 import org.bukkit.Particle;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockState;
 import org.bukkit.block.Container;
+import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Item;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -33,8 +34,8 @@ public class ScorchingEnchant extends WbsEnchantment {
             new NormalParticleEffect().setXYZ(0.15).setAmount(10), Particle.SMALL_FLAME
     );
 
-    private static void createScorch(Player player, Block scorchedBlock, Location location) {
-        ScorchedBlock entanglement = new ScorchedBlock(player.getUniqueId(), scorchedBlock, System.currentTimeMillis());
+    private static void createScorch(Player player, Block scorchedBlock, Location location, int fortuneLevel) {
+        ScorchedBlock entanglement = new ScorchedBlock(player.getUniqueId(), scorchedBlock, System.currentTimeMillis(), fortuneLevel);
         SCORCHED.put(location, entanglement);
 
         startDescorchTimer();
@@ -72,7 +73,7 @@ public class ScorchingEnchant extends WbsEnchantment {
 
         getDefinition()
                 .supportedItems(ItemTypeTagKeys.ENCHANTABLE_MINING)
-                .exclusiveInject(EnchantmentTagKeys.EXCLUSIVE_SET_MINING)
+                .exclusiveWith(EnchantmentKeys.SILK_TOUCH)
                 .addInjectInto(WbsEnchantsBootstrap.HEAT_BASED_ENCHANTS);
     }
 
@@ -103,7 +104,7 @@ public class ScorchingEnchant extends WbsEnchantment {
                 return;
             }
 
-            createScorch(player, broken, broken.getLocation());
+            createScorch(player, broken, broken.getLocation(), item.getEnchantmentLevel(Enchantment.FORTUNE));
         }
     }
 
@@ -116,12 +117,17 @@ public class ScorchingEnchant extends WbsEnchantment {
 
         Block entangledBlock = scorched.scorchedBlock;
 
+        Random random = new Random();
         for (Item item : event.getItems()) {
             ItemStack stack = item.getItemStack();
 
             ItemStack result = ItemUtils.smeltItem(stack);
 
             if (result != null) {
+                if (scorched.fortuneLevel > 0 && !result.getType().isBlock() && stack.getType().isBlock()) {
+                    result.setAmount(result.getAmount() * (1 + random.nextInt(scorched.fortuneLevel)));
+                }
+
                 item.setItemStack(result);
 
                 SMELT_EFFECT.play(item.getLocation());
@@ -130,5 +136,5 @@ public class ScorchingEnchant extends WbsEnchantment {
         }
     }
 
-    private record ScorchedBlock(UUID playerUUID, Block scorchedBlock, Long createdTimestamp) {}
+    private record ScorchedBlock(UUID playerUUID, Block scorchedBlock, Long createdTimestamp, int fortuneLevel) {}
 }

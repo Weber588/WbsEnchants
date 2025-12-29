@@ -7,10 +7,10 @@ wbsenchants:entangled:
     chest anywhere in the world, so long as it has enough space for it.
   supported_items: minecraft:enchantable/mining
   minimum_cost:
-    base_cost: 55
+    base_cost: 50
     additional_per_level_cost: 0
   maximum_cost:
-    base_cost: 75
+    base_cost: 60
     additional_per_level_cost: 0
   anvil_cost: 12
   max_level: 1
@@ -30,11 +30,11 @@ wbsenchants:excavator:
   primary_items: minecraft:shovels
   supported_items: minecraft:shovels
   minimum_cost:
-    base_cost: 45
-    additional_per_level_cost: 15
+    base_cost: 35
+    additional_per_level_cost: 10
   maximum_cost:
-    base_cost: 65
-    additional_per_level_cost: 15
+    base_cost: 50
+    additional_per_level_cost: 10
   anvil_cost: 8
   max_level: 2
   weight: 1
@@ -103,6 +103,7 @@ wbsenchants:vampiric:
         mode: WEIGHTED_SMALL
       conditions:
         entity-type: player
+  inject_into: []
 wbsenchants:vein_miner:
   enabled: true
   display_name: Vein Miner
@@ -344,7 +345,10 @@ wbsenchants:scorching:
   maximum_cost:
     base_cost: 75
     additional_per_level_cost: 15
-  exclusive_with: minecraft:exclusive_set/mining
+  exclusive_with:
+    - minecraft:silk_touch
+    - wbsenchants:soul_touch
+    - wbsenchants:crushing
   anvil_cost: 12
   max_level: 1
   weight: 1
@@ -352,7 +356,6 @@ wbsenchants:scorching:
     - wbsenchants:heat_based
     - minecraft:tradeable
     - minecraft:on_random_loot
-    - minecraft:exclusive_set/mining
 wbsenchants:frostburn:
   enabled: true
   display_name: Frostburn
@@ -3165,6 +3168,34 @@ wbsenchants:hypercharged:
   max_level: 3
   weight: 10
   inject_into: []
+wbsenchants:overpower:
+  enabled: true
+  display_name: Overpower
+  description: Grants an additional enchantment power to any enchanting table that uses it.
+  supported_items:
+    - minecraft:bookshelf
+    - minecraft:chiseled_bookshelf
+  minimum_cost:
+    base_cost: 5
+    additional_per_level_cost: 8
+  maximum_cost:
+    base_cost: 25
+    additional_per_level_cost: 8
+  anvil_cost: 1
+  max_level: 1
+  weight: 10
+  inject_into: []
+  generation:
+    trading:
+      result: minecraft:bookshelf
+      emerald-cost:
+        min: 32
+        max: 64
+      item-cost: minecraft:bookshelf
+      chance: 33
+      replace: minecraft:clock
+      villager-profession: librarian
+      level: WEIGHTED_SMALL
 
 
 

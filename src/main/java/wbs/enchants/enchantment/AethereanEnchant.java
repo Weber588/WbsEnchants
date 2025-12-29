@@ -1,5 +1,6 @@
 package wbs.enchants.enchantment;
 
+import io.papermc.paper.datacomponent.DataComponentTypes;
 import io.papermc.paper.registry.keys.tags.ItemTypeTagKeys;
 import org.bukkit.GameMode;
 import org.bukkit.attribute.Attribute;
@@ -19,6 +20,7 @@ import wbs.utils.util.entities.WbsEntityUtil;
 
 import java.util.Objects;
 
+@SuppressWarnings("UnstableApiUsage")
 public class AethereanEnchant extends WbsEnchantment {
     private static final @NotNull String DEFAULT_DESCRIPTION = "You can place blocks in mid-air.";
 
@@ -47,6 +49,10 @@ public class AethereanEnchant extends WbsEnchantment {
 
         // Don't place enchanted blocks -- undefined behaviour
         if (!item.getEnchantments().isEmpty()) {
+            return;
+        }
+
+        if (item.hasData(DataComponentTypes.CONTAINER)) {
             return;
         }
 

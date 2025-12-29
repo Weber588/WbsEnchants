@@ -13,7 +13,7 @@ import org.jetbrains.annotations.NotNull;
 import wbs.enchants.WbsEnchantment;
 import wbs.enchants.WbsEnchantsBootstrap;
 import wbs.enchants.enchantment.helper.BlockStateEnchant;
-import wbs.utils.util.particles.RingParticleEffect;
+import wbs.utils.util.particles.NormalParticleEffect;
 import wbs.utils.util.particles.WbsParticleEffect;
 
 import java.util.Arrays;
@@ -25,10 +25,8 @@ import java.util.stream.Collectors;
 public class HavenEnchant extends WbsEnchantment implements BlockStateEnchant<Beacon> {
     private static final @NotNull String DEFAULT_DESCRIPTION = "Prevents hostile mob spawning in the beacon's radius";
 
-    private static final WbsParticleEffect PARTICLE_EFFECT = new RingParticleEffect()
-            .setRadius(0.9)
+    private static final WbsParticleEffect PARTICLE_EFFECT = new NormalParticleEffect()
             .setSpeed(0.075)
-            .setVariation(0.05)
             .setAmount(7)
             .build();
 
@@ -61,10 +59,8 @@ public class HavenEnchant extends WbsEnchantment implements BlockStateEnchant<Be
         for (Beacon beacon : getBeaconsInRadius(spawnLocation.getBlock())) {
             if (isEnchanted(beacon)) {
                 event.setCancelled(true);
-                Location beaconLocation = beacon.getLocation().toCenterLocation();
 
-                PARTICLE_EFFECT.buildAndPlay(Particle.SOUL, beaconLocation);
-
+                PARTICLE_EFFECT.play(Particle.SOUL, spawnLocation);
                 break;
             }
         }

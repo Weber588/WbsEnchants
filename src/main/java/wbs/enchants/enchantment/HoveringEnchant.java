@@ -47,7 +47,7 @@ public class HoveringEnchant extends WbsEnchantment implements TickableEnchant {
 
             PersistentDataContainer container = player.getPersistentDataContainer();
             if (container.has(getKey())) {
-                if (getSumLevels(player) < 0) {
+                if (getSumLevels(player) <= 0) {
                     clearFlight(player);
                 }
             }

@@ -72,12 +72,16 @@ public class MagneticEnchant extends WbsEnchantment implements TickableEnchant {
                         failedAmount += failedItem.getAmount();
                     }
 
-                    player.playPickupItemAnimation(item, stack.getAmount() - failedAmount);
+                    int pickedUp = stack.getAmount() - failedAmount;
+
+                    if (pickedUp > 0) {
+                        player.playPickupItemAnimation(item, pickedUp);
+                    }
 
                     if (failedAmount == 0) {
                         item.remove();
                     } else {
-                        stack.setAmount(stack.getAmount() - failedAmount);
+                        stack.setAmount(failedAmount);
 
                         item.setItemStack(stack);
                     }
