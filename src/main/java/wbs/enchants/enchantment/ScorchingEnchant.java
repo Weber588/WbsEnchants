@@ -108,7 +108,7 @@ public class ScorchingEnchant extends WbsEnchantment {
         }
     }
 
-    @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
+    @EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
     public void onBlockDrop(BlockDropItemEvent event) {
         ScorchedBlock scorched = SCORCHED.get(event.getBlock().getLocation());
         if (scorched == null) {

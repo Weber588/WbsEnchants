@@ -1,6 +1,6 @@
 package wbs.enchants.enchantment.helper;
 
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.item.enchantment.EnchantmentEffectComponents;
@@ -34,7 +34,7 @@ public abstract class AbstractScaleEnchantment extends WbsEnchantment implements
         scale = (float) (section.getDouble("scale-percent", scale * 100) / 100);
 
         EnchantmentAttributeEffect attributeEffect = new EnchantmentAttributeEffect(
-                ResourceLocation.fromNamespaceAndPath(WbsEnchantsBootstrap.NAMESPACE, key().value()),
+                Identifier.fromNamespaceAndPath(WbsEnchantsBootstrap.NAMESPACE, key().value()),
                 Attributes.SCALE,
                 LevelBasedValue.perLevel(scale, scale),
                 AttributeModifier.Operation.ADD_MULTIPLIED_BASE

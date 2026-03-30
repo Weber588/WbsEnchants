@@ -1,6 +1,7 @@
 package wbs.enchants.enchantment;
 
 import io.papermc.paper.registry.keys.tags.ItemTypeTagKeys;
+import net.kyori.adventure.util.Ticks;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
@@ -24,6 +25,7 @@ import wbs.enchants.WbsEnchantment;
 import wbs.enchants.WbsEnchants;
 import wbs.enchants.WbsEnchantsBootstrap;
 import wbs.enchants.type.EnchantmentTypeManager;
+import wbs.enchants.util.CooldownManager;
 import wbs.utils.util.WbsEnums;
 import wbs.utils.util.particles.NormalParticleEffect;
 import wbs.utils.util.particles.WbsParticleGroup;
@@ -37,6 +39,7 @@ public class EntangledEnchant extends WbsEnchantment {
             "anywhere in the world, so long as it has enough space for it.";
 
     private static final NamespacedKey ENTANGLEMENT_KEY = WbsEnchantsBootstrap.createKey("entangled");
+    private static final NamespacedKey ENTANGLED_LINK_PROMPT_KEY = WbsEnchantsBootstrap.createKey("entangled_prompt");
 
     private static final Map<Location, Entanglement> ENTANGLEMENTS = new HashMap<>();
     private static int timerId = -1;
@@ -164,7 +167,9 @@ public class EntangledEnchant extends WbsEnchantment {
             }
 
             if (entangledLocation == null) {
-                sendActionBar("&wSneak punch a chest to entangle your tool!", player);
+                if (CooldownManager.newCooldown(player, 60 * Ticks.TICKS_PER_SECOND, ENTANGLED_LINK_PROMPT_KEY)) {
+                    sendActionBar("&wSneak punch a chest to entangle your tool!", player);
+                }
                 return;
             }
 

@@ -36,7 +36,7 @@ public class DisarmingEnchant extends WbsEnchantment implements DamageEnchant {
         getDefinition()
                 .maxLevel(3)
                 .weight(10)
-                .supportedItems(ItemTypeTagKeys.ENCHANTABLE_SWORD);
+                .supportedItems(ItemTypeTagKeys.SWORDS);
     }
 
     @Override

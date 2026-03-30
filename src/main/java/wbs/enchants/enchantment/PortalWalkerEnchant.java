@@ -3,6 +3,7 @@ package wbs.enchants.enchantment;
 import io.papermc.paper.registry.keys.tags.ItemTypeTagKeys;
 import net.minecraft.world.entity.PortalProcessor;
 import org.bukkit.GameRule;
+import org.bukkit.GameRules;
 import org.bukkit.World;
 import org.bukkit.craftbukkit.entity.CraftPlayer;
 import org.bukkit.event.EventHandler;
@@ -45,8 +46,8 @@ public class PortalWalkerEnchant extends WbsEnchantment {
                     portalTimeField.setAccessible(true);
 
                     World world = player.getWorld();
-                    Integer defaultPortalDelay = getGameRule(GameRule.PLAYERS_NETHER_PORTAL_DEFAULT_DELAY, world, 300);
-                    Integer creativePortalDelay = getGameRule(GameRule.PLAYERS_NETHER_PORTAL_CREATIVE_DELAY, world, 0);
+                    Integer defaultPortalDelay = getGameRule(GameRules.PLAYERS_NETHER_PORTAL_DEFAULT_DELAY, world, 300);
+                    Integer creativePortalDelay = getGameRule(GameRules.PLAYERS_NETHER_PORTAL_CREATIVE_DELAY, world, 0);
 
                     portalTimeField.set(portalProcess, Math.max(
                             defaultPortalDelay,

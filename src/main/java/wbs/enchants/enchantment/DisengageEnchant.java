@@ -22,7 +22,7 @@ public class DisengageEnchant extends WbsEnchantment {
 
         getDefinition()
                 .maxLevel(3)
-                .supportedItems(ItemTypeTagKeys.ENCHANTABLE_SWORD);
+                .supportedItems(ItemTypeTagKeys.SWORDS);
     }
 
     @EventHandler

@@ -173,6 +173,7 @@ public class EnchantmentDefinition extends EnchantmentWrapper implements Compara
         if (getEnchantment().description() instanceof TranslatableComponent translatable) {
             tryKeys.add(translatable.key() + ".desc");
             tryKeys.add(translatable.key() + ".description");
+            tryKeys.add(translatable.key().replaceAll("/", ".") + ".description");
         }
 
         Component translatable = getTranslatable(fallback, tryKeys);

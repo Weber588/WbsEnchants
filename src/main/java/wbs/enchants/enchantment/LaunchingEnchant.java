@@ -4,9 +4,11 @@ import io.papermc.paper.event.player.PlayerFailMoveEvent;
 import io.papermc.paper.registry.keys.ItemTypeKeys;
 import net.kyori.adventure.util.Ticks;
 import net.minecraft.core.Holder;
+import net.minecraft.core.particles.ExplosionParticleInfo;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.network.protocol.game.ClientboundExplodePacket;
 import net.minecraft.sounds.SoundEvents;
+import net.minecraft.util.random.WeightedList;
 import net.minecraft.world.phys.Vec3;
 import org.bukkit.Location;
 import org.bukkit.NamespacedKey;
@@ -90,13 +92,18 @@ public class LaunchingEnchant extends WbsEnchantment {
                 player.getPersistentDataContainer().set(IS_LAUNCHING, PersistentDataType.BOOLEAN, true);
 
                 // Use explosion packet to get delta movement sent to player, not just setting velocity
+                ClientboundExplodePacket packet = new ClientboundExplodePacket(
+                        CraftLocation.toVec3(location),
+                        0,
+                        0,
+                        Optional.of(new Vec3(0, level * speedPerLevel, 0)),
+                        ParticleTypes.GUST_EMITTER_SMALL,
+                        Holder.direct(SoundEvents.WIND_CHARGE_BURST.value()),
+                        WeightedList.<ExplosionParticleInfo>builder().build()
+                );
+
                 ((CraftPlayer) player).getHandle().connection.send(
-                        new ClientboundExplodePacket(
-                                CraftLocation.toVec3(location),
-                                Optional.of(new Vec3(0, level * speedPerLevel, 0)),
-                                ParticleTypes.GUST_EMITTER_SMALL,
-                                Holder.direct(SoundEvents.WIND_CHARGE_BURST.value())
-                        )
+                        packet
                 );
 
                 WbsEnchants.getInstance().runLater(() -> {

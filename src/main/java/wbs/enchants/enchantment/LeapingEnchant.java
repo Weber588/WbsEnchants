@@ -1,7 +1,7 @@
 package wbs.enchants.enchantment;
 
 import io.papermc.paper.registry.keys.ItemTypeKeys;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.item.enchantment.EnchantmentEffectComponents;
@@ -21,7 +21,7 @@ public class LeapingEnchant extends WbsEnchantment {
         super("leaping", DEFAULT_DESCRIPTION);
 
         EnchantmentAttributeEffect attributeEffect = new EnchantmentAttributeEffect(
-                ResourceLocation.fromNamespaceAndPath(WbsEnchantsBootstrap.NAMESPACE, key().value()),
+                Identifier.fromNamespaceAndPath(WbsEnchantsBootstrap.NAMESPACE, key().value()),
                 Attributes.JUMP_STRENGTH,
                 LevelBasedValue.perLevel(0.05f, 0.05f),
                 AttributeModifier.Operation.ADD_MULTIPLIED_BASE

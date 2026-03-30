@@ -40,7 +40,7 @@ public class DualWieldEnchant extends WbsEnchantment implements DamageEnchant {
 
         getDefinition()
                 .weight(10)
-                .supportedItems(ItemTypeTagKeys.ENCHANTABLE_SWORD);
+                .supportedItems(ItemTypeTagKeys.SWORDS);
     }
 
     @Override

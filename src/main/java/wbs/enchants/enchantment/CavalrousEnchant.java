@@ -1,6 +1,6 @@
 package wbs.enchants.enchantment;
 
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.item.enchantment.EnchantmentEffectComponents;
@@ -24,7 +24,7 @@ public class CavalrousEnchant extends WbsEnchantment implements TickableEnchant 
         super("cavalrous", DEFAULT_DESCRIPTION);
 
         EnchantmentAttributeEffect attributeEffect = new EnchantmentAttributeEffect(
-                ResourceLocation.fromNamespaceAndPath(WbsEnchantsBootstrap.NAMESPACE, key().value()),
+                Identifier.fromNamespaceAndPath(WbsEnchantsBootstrap.NAMESPACE, key().value()),
                 Attributes.MAX_HEALTH,
                 LevelBasedValue.perLevel(0.2f, 0.2f),
                 AttributeModifier.Operation.ADD_MULTIPLIED_BASE

@@ -31,7 +31,6 @@ import wbs.enchants.definition.EnchantmentDefinition;
 import wbs.enchants.type.EnchantmentType;
 import wbs.enchants.type.EnchantmentTypeManager;
 
-import java.io.File;
 import java.io.IOException;
 import java.util.*;
 import java.util.function.Supplier;
@@ -389,7 +388,7 @@ public final class WbsEnchantsBootstrap implements PluginBootstrap {
         boolean newExternalEnchants = false;
         if (settings.newExternalEnchants) {
             try {
-                settings.getExternalEnchantsConfig().save(externalEnchantsFile);
+                settings.getExternalEnchantsConfig().save(settings.getExternalEnchantsFile());
             } catch (IOException ex) {
                 context.getLogger().error(ex.getMessage());
             }
@@ -511,9 +510,6 @@ public final class WbsEnchantsBootstrap implements PluginBootstrap {
         }
         return enchantmentTypeTags;
     }
-
-    private File externalEnchantsFile;
-
 
     private static <T extends Keyed> void registerCustomTags(@NotNull BootstrapContext context,
                                                              RegistryKey<T> key,

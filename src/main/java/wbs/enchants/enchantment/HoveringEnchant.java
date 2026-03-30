@@ -1,8 +1,10 @@
 package wbs.enchants.enchantment;
 
+import io.papermc.paper.datacomponent.DataComponentTypes;
 import net.kyori.adventure.util.TriState;
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
+import org.bukkit.block.Block;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.EquipmentSlot;
@@ -10,15 +12,16 @@ import org.bukkit.inventory.EquipmentSlotGroup;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
-import org.bukkit.util.RayTraceResult;
-import org.bukkit.util.Vector;
 import org.jetbrains.annotations.NotNull;
 import wbs.enchants.WbsEnchantment;
 import wbs.enchants.WbsEnchantsBootstrap;
 import wbs.enchants.enchantment.helper.TickableEnchant;
 import wbs.enchants.type.EnchantmentTypeManager;
+import wbs.utils.util.WbsLocationUtil;
+import wbs.utils.util.entities.WbsEntityUtil;
 
 import java.util.Map;
+import java.util.Set;
 
 public class HoveringEnchant extends WbsEnchantment implements TickableEnchant {
     public static final int MAX_HEIGHT = 8;
@@ -63,11 +66,14 @@ public class HoveringEnchant extends WbsEnchantment implements TickableEnchant {
             return;
         }
 
-        RayTraceResult rayTraceResult = player.getLocation().getWorld().rayTraceBlocks(player.getLocation(), new Vector(0, -1, 0), MAX_HEIGHT);
-        if (rayTraceResult == null) {
-            clearFlight(player);
-        } else {
+        Set<Block> intersectingBlocks = WbsLocationUtil.getIntersectingBlocks(player.getBoundingBox().expand(MAX_HEIGHT), WbsEntityUtil.getMiddleLocation(player));
+
+        boolean canHover = intersectingBlocks.stream().anyMatch(Block::isSolid);
+
+        if (canHover) {
             allowFlight(player);
+        } else {
+            clearFlight(player);
         }
     }
 
@@ -82,6 +88,14 @@ public class HoveringEnchant extends WbsEnchantment implements TickableEnchant {
             player.setFlying(false);
             player.setAllowFlight(false);
             player.setFlyingFallDamage(TriState.NOT_SET);
+
+            for (ItemStack armorItem : player.getEquipment().getArmorContents()) {
+                //noinspection UnstableApiUsage
+                if (armorItem != null && armorItem.hasData(DataComponentTypes.GLIDER)) {
+                    player.setGliding(true);
+                    break;
+                }
+            }
         }
         player.getPersistentDataContainer().remove(getKey());
     }

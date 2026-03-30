@@ -3,6 +3,7 @@ package wbs.enchants.events;
 import io.papermc.paper.datacomponent.DataComponentTypes;
 import io.papermc.paper.datacomponent.item.Repairable;
 import io.papermc.paper.registry.TypedKey;
+import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -32,7 +33,8 @@ public class AnvilEvents implements Listener {
         }
 
         // Doing a combination
-        if ((EnchantUtils.hasEnchants(firstItem) || EnchantUtils.hasEnchants(secondItem))) {
+        boolean canCombineTypes = firstItem.getType().equals(secondItem.getType()) || secondItem.getType().equals(Material.ENCHANTED_BOOK);
+        if ((EnchantUtils.hasEnchants(firstItem) || EnchantUtils.hasEnchants(secondItem)) && canCombineTypes) {
             boolean createdResult = false;
             ItemStack newResult = result;
             if (result == null || result.isEmpty()) {

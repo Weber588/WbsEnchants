@@ -21,6 +21,8 @@ import java.util.List;
 @SuppressWarnings("UnstableApiUsage")
 @NullMarked
 public class EnchantsBootstrapSettings extends WbsBootstrapSettings<WbsEnchants> {
+    public static final String EXTERNAL_ENCHANTS_FILE_NAME = "external_enchantments.yml";
+
     @SuppressWarnings("NotNullFieldNotInitialized")
     private static EnchantsBootstrapSettings INSTANCE;
     public static EnchantsBootstrapSettings getInstance() {
@@ -31,6 +33,12 @@ public class EnchantsBootstrapSettings extends WbsBootstrapSettings<WbsEnchants>
         super(context, WbsEnchants.class);
 
         INSTANCE = this;
+
+        externalEnchantsFile = new File(context.getDataDirectory().toFile(), EXTERNAL_ENCHANTS_FILE_NAME);
+        if (!externalEnchantsFile.exists()) {
+            WbsFileUtil.saveResource(context, WbsEnchants.class, EXTERNAL_ENCHANTS_FILE_NAME, false);
+        }
+        externalEnchantsConfig = loadConfigSafely(externalEnchantsFile);
     }
 
     @Override
@@ -54,24 +62,20 @@ public class EnchantsBootstrapSettings extends WbsBootstrapSettings<WbsEnchants>
     private File enchantsFile;
     private YamlConfiguration enchantsConfig;
 
-    private File externalEnchantsFile;
+    private final File externalEnchantsFile;
+    public File getExternalEnchantsFile() {
+        return externalEnchantsFile;
+    }
+
     public YamlConfiguration getExternalEnchantsConfig() {
         return externalEnchantsConfig;
     }
 
-    private YamlConfiguration externalEnchantsConfig;
+    private final YamlConfiguration externalEnchantsConfig;
     public boolean newExternalEnchants = false;
 
     private void configureExternalEnchantments() {
         BootstrapContext context = getContext();
-
-        String fileName = "external_enchantments.yml";
-
-        externalEnchantsFile = new File(context.getDataDirectory().toFile(), fileName);
-        if (!externalEnchantsFile.exists()) {
-            WbsFileUtil.saveResource(context, WbsEnchants.class, fileName, false);
-        }
-        externalEnchantsConfig = loadConfigSafely(externalEnchantsFile);
 
         context.getLifecycleManager().registerEventHandler(RegistryEvents.ENCHANTMENT.entryAdd().newHandler(event -> {
             EnchantmentRegistryEntry.Builder builder = event.builder();
@@ -90,7 +94,7 @@ public class EnchantsBootstrapSettings extends WbsBootstrapSettings<WbsEnchants>
                         definition.buildConfigurationSection(externalEnchantsConfig, builder);
                         newExternalEnchants = true;
                     } else {
-                        definition.configureBoostrap(definitionSection, builder, fileName + "/" + stringKey);
+                        definition.configureBoostrap(definitionSection, builder, EXTERNAL_ENCHANTS_FILE_NAME + "/" + stringKey);
 
                         definition.buildTo(event::getOrCreateTag, builder);
                     }

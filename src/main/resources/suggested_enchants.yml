@@ -428,7 +428,7 @@ wbsenchants:dual_wield:
   display_name: Dual Wield
   description: When an item with this enchantment is in your offhand, it swings automatically
     after attacking!
-  supported_items: minecraft:enchantable/sword
+  supported_items: minecraft:swords
   minimum_cost:
     base_cost: 15
     additional_per_level_cost: 10

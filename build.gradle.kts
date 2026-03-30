@@ -35,7 +35,7 @@ repositories {
 }
 
 dependencies {
-    paperweight.paperDevBundle("1.21.8-R0.1-SNAPSHOT")
+    paperweight.paperDevBundle("1.21.11-R0.1-SNAPSHOT")
     // paperweight.foliaDevBundle("1.21.8-R0.1-SNAPSHOT")
     // paperweight.devBundle("com.example.paperfork", "1.21.8-R0.1-SNAPSHOT")
     implementation("io.github.Weber588:WbsUtils:1.0-SNAPSHOT")
@@ -69,7 +69,7 @@ paperPluginYaml {
     main = "wbs.enchants.WbsEnchants"
     bootstrapper = "wbs.enchants.WbsEnchantsBootstrap"
     authors.add("Weber588")
-    apiVersion = "1.21.8"
+    apiVersion = "1.21.11"
     dependencies {
         bootstrap.create("WbsUtils", {
             load = PaperPluginYaml.Load.BEFORE
