@@ -1,0 +1,230 @@
+minecraft:aqua_affinity:
+  description: Increases mining speed while underwater.
+minecraft:bane_of_arthropods:
+  description: Increases damage against arthropods such as Spiders and Silverfish.
+minecraft:binding_curse:
+  description: Prevents the cursed item from being removed from an armor slot.
+minecraft:blast_protection:
+  description: Reduces damage from explosions and explosion knockback.
+  supported_items: wbsenchants:enchantable/all_armor
+  primary_items: wbsenchants:enchantable/all_armor
+minecraft:breach:
+  description: Reduces the effectiveness of armor of the mob being attacked.
+minecraft:channeling:
+  description: Allows the trident to summon lightning bolts during thunderstorms.
+minecraft:density:
+  description: Increases the amount of damage dealt per block fallen.
+minecraft:depth_strider:
+  description: Increases movement speed while underwater.
+minecraft:efficiency:
+  description: Increases mining speed of the tool.
+minecraft:feather_falling:
+  description: Reduces fall damage and ender pearl teleportation damage.
+minecraft:fire_aspect:
+  description: Causes additional fire damage when used to attack a mob.
+minecraft:fire_protection:
+  description: Reduces the effects of fire damage. Also reduces the burn time when
+    set on fire.
+  supported_items: wbsenchants:enchantable/all_armor
+  primary_items: wbsenchants:enchantable/all_armor
+minecraft:flame:
+  description: Arrows fired from the bow will deal additional fire damage.
+minecraft:fortune:
+  description: Some blocks like coal and diamond ore may drop additional items.
+minecraft:frost_walker:
+  description: Water under the user will freeze into frosted ice.
+minecraft:impaling:
+  description: Increases damage to aquatic mobs.
+minecraft:infinity:
+  description: Allows the bow to fire normal arrows for free. You must have at least
+    one arrow for this to work.
+  exclusive_with: wbsenchants:exclusive_set/self_repairing
+minecraft:knockback:
+  description: Increases the knockback strength of the weapon.
+minecraft:looting:
+  description: Mobs will drop more loot when killed.
+minecraft:loyalty:
+  description: Allows the trident to automatically return after being thrown.
+minecraft:luck_of_the_sea:
+  description: Increases the chance of getting good loot while fishing.
+minecraft:lure:
+  description: Decreases the amount of time it takes for a fish to bite the hook.
+minecraft:mending:
+  description: Repairs the durability of armor and tools with XP.
+minecraft:multishot:
+  description: Fires additional arrows in similar directions.
+minecraft:piercing:
+  description: Allows projectiles to pierce through mobs.
+minecraft:power:
+  description: Increases the damage of arrows fired from the bow.
+minecraft:projectile_protection:
+  description: Reduces damage from projectiles such as arrows and fire balls.
+  supported_items: wbsenchants:enchantable/all_armor
+  primary_items: wbsenchants:enchantable/all_armor
+minecraft:protection:
+  description: Reduces damage from most sources.
+  supported_items: wbsenchants:enchantable/all_armor
+  primary_items: wbsenchants:enchantable/all_armor
+minecraft:punch:
+  description: Increases the knockback strength of arrows fired by the bow.
+minecraft:quick_charge:
+  description: Increases the reload speed of crossbows.
+minecraft:respiration:
+  description: Allows the user to breathe longer underwater.
+minecraft:riptide:
+  description: Using the trident while in rain or water will launch the user forward.
+minecraft:sharpness:
+  description: Increases the damage of the item.
+minecraft:silk_touch:
+  description: Allows fragile blocks such as glass to be collected.
+minecraft:smite:
+  description: Increases damage against undead mobs such as Zombies and Skeletons.
+minecraft:soul_speed:
+  description: Increases movement speed on soul blocks.
+minecraft:sweeping_edge:
+  description: Increases the damage of sweeping attacks.
+minecraft:swift_sneak:
+  description: Increases movement speed while sneaking.
+minecraft:thorns:
+  description: Causes damage to enemies when they attack you.
+  supported_items: wbsenchants:enchantable/all_armor
+  primary_items: wbsenchants:enchantable/all_body_armor
+minecraft:unbreaking:
+  description: Causes the tool to lose durability at a slower rate.
+minecraft:vanishing_curse:
+  description: Destroys the cursed item if you die with it in your inventory.
+minecraft:wind_burst:
+  description: Creates a powerful upward knockback effect upon executing a smash attack.
+minecraft:lunge:
+  description: Allows jab attacks to propel the wielder forward horizontally.
+kattersstructures:alchemy_curse:
+  description: Grants random effects.
+stellarity:ambush:
+  display_name: Ambush
+  description: Deals extra damage to mobs that aren't actively targetting you.
+kattersstructures:blunt:
+  description: Increases damage against armor.
+stellarity:critical_strike:
+  display_name: Critical Strike
+  description: Chance to deal double damage.
+kattersstructures:crystal_curse:
+  description: Greatly increases damage at the cost of robustness of the weapon.
+  type: paradoxical
+mostlyunwind:curse_uwufying:
+  description: Causes your chat to be uwu-ified!
+stellarity:dune_speed:
+  display_name: Dune Speed
+  description: Increses movement speed on sand.
+kattersstructures:enlightning:
+  description: Summons lightning on lightning rods.
+kattersstructures:heavy:
+  description: Increases damage but lowers attack speed and agility.
+stellarity:infernal_infusion:
+  display_name: Infernal Infusion
+  description: Blessed by the Prismatic Inferno.
+stellarity:levitation_shot:
+  display_name: Levitation Shot
+  description: Chance to shoot Levitation Arrows.
+kattersstructures:light:
+  description: Increases agility but lowers defense.
+stellarity:mighty_wind:
+  display_name: Mighty Wind
+  description: Blessed by the Winds of The Dunes.
+kattersstructures:ocean_heart:
+  description: Grants <lang:effect.minecraft.conduit_power> when in water.
+mostlyunwind:paradoxical_knowledge_of_the_ages:
+  description: Transforms all mob drops into experience.
+  type: paradoxical
+stellarity:plated:
+  display_name: Plated
+  description: Increases defense, but slows down flight speed.
+kattersstructures:raj_ambient:
+  description: N/A # No description on site -- need to check the datapack. Used mostly on boss things I'm guessing
+kattersstructures:raj_lightning:
+  description: N/A # No description on site -- need to check the datapack
+kattersstructures:raj_minion:
+  description: N/A # No description on site -- need to check the datapack
+stellarity:soaring:
+  display_name: Soaring
+  description: Increases defense, but slows down flight speed.
+stellarity:void_shot:
+  display_name: Void Shot
+  type: paradoxical
+  description: Shots temporarily reduce enemy max HP
+stellarity:void_strike:
+  display_name: Void Strike
+  type: paradoxical
+  description: Attacks temporarily reduce enemy max HP
+enchantencore:weaving_aspect:
+  description: Applies <lang:effect.minecraft.weaving> to hit entities.
+kattersstructures:web_walker:
+  description: Allows you to walk faster in cobwebs, and grants <lang:effect.minecraft.weaving>.
+nova_structures:antidote:
+  description: Negates all damage from Poison and Wither effects and deals it to the chestplate.
+nova_structures:boss_behaviour:
+  enabled: true
+nova_structures:conductivity_curse:
+  description: Gives a chance to get struck by lightning during a thunderstorm when held or equipped
+nova_structures:ghasted:
+  description: Arrows transform into Ghast fireballs, while slowing crossbow charge time. Higher levels increase fireballs' explosions.
+nova_structures:gravity:
+  description: Shoot an arrow which pulls all mobs around it upon landing, destroying the arrow in the process
+nova_structures:illagers_bane:
+  description: Increased damage against illagers, ravgers, vexes, and witches.
+nova_structures:multishot:
+  description: Fires additional arrows in similar directions (but works on bows).
+nova_structures:outreach:
+  display_name: Reaching
+  description: Increases block interaction range per level, allowing you to place or break blocks from farther.
+nova_structures:photosynthesis:
+  description: Restores the item's durability while the user is under sunlight from the sky or in block light that can grow crops.
+nova_structures:piercing:
+  description: Allows projectiles to pierce through mobs (but works on bows).
+nova_structures:power:
+  description: Increases the damage of arrows fired from the crossbow.
+nova_structures:shulker_boss:
+  enabled: true
+nova_structures:shulker_miniboss:
+  enabled: true
+nova_structures:spiteful:
+  description: Users with 2.5 hearts or less are given a attack damage boost per enchant level. If hit by a mob at any health there's a small chance to receive Strength.
+nova_structures:traveler:
+  description: Boosts movement speed and step height while sprinting. Slowly drains durability while doing so.
+nova_structures:wax_wings:
+  description: Negates elytra damage from slow gliding, but raises durability drain from firework boosting.
+nova_structures:wither_coated:
+  description: Inflicts Wither effect to direct hit foes. Higher levels boost potency but lowers duration. In practice, this causes the same amount of Wither damage but faster with higher levels.
+nova_structures:aerials_bane:
+  description: Increased damage to targets that are up in the air; be that from knockback, jumping, or falling. Also works against Breezes, Vexes, and Withers.
+wbswandcraft:magic_protection:
+  description: Increases protection against magic damage, such as from potions or spells.
+stellarity:_technical/daybroken:
+  enabled: true
+stellarity:_technical/draconic:
+  enabled: true
+stellarity:_technical/infernal_infusion:
+  enabled: true
+stellarity:_technical/mighty_wind:
+  enabled: true
+stellarity:_technical/prismatic_pearl_return:
+  enabled: true
+stellarity:_technical/soul_harvest:
+  enabled: true
+stellarity:_technical/void_locket/amethyst:
+  enabled: true
+stellarity:_technical/void_locket/copper:
+  enabled: true
+stellarity:_technical/void_locket/diamond:
+  enabled: true
+stellarity:_technical/void_locket/emerald:
+  enabled: true
+stellarity:_technical/void_locket/gold:
+  enabled: true
+stellarity:_technical/void_locket/iron:
+  enabled: true
+stellarity:_technical/void_locket/lapis:
+  enabled: true
+stellarity:_technical/void_locket/netherite:
+  enabled: true
+stellarity:_technical/void_locket/quartz:
+  enabled: true

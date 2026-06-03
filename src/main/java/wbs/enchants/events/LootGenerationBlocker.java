@@ -19,6 +19,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.EnchantmentStorageMeta;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import wbs.enchants.EnchantManager;
 import wbs.enchants.EnchantsSettings;
 import wbs.enchants.WbsEnchants;
 import wbs.utils.util.WbsCollectionUtil;
@@ -94,6 +95,10 @@ public class LootGenerationBlocker implements Listener {
 
         for (Map.Entry<Enchantment, Integer> entry : enchantments.entrySet()) {
             Enchantment enchantment = entry.getKey();
+            if (!EnchantManager.isManaged(enchantment)) {
+                continue;
+            }
+
             Integer level = entry.getValue();
             // Enchantment is not in tag to be added to random loot -- a datapack has added this using "minecraft:enchant_randomly" function
             // which does not respect that tag. Forcing it to below.

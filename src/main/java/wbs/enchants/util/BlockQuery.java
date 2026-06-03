@@ -65,7 +65,7 @@ public class BlockQuery {
         return found.stream().filter(blockPredicate).toList();
     }
 
-    public List<Block> getSquare(@NotNull Block central, BlockFace face) {
+    public List<Block> getSquare(@NotNull Block central, @NotNull BlockFace face) {
         if (maxDistance <= 0) {
             throw new IllegalArgumentException("This operation requires a maximum distance.");
         }

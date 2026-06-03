@@ -1804,8 +1804,12 @@ wbsenchants:blooming:
     potted_torchflower: 0.25
     spore_blossom: 0.3
     chorus_flower: 0.2
+    golden_dandelion: 0.2
+    potted_golden_dandelion: 0.1
+    open_eyeblossom: 0.2
+    potted_open_eyeblossom: 0.1
     closed_eyeblossom: 0.15
-    open_eyeblossom: 0.15
+    potted_closed_eyeblossom: 0.075
     cactus_flower: 0.15
     flowering_azalea: 0.1
     pink_petals: 0.1
@@ -2509,7 +2513,6 @@ wbsenchants:ambitiousness:
   prevent-exceeding-max-level:
     - wbsenchants:lightweight
     - wbsenchants:carrying
-    - wbsenchants:ambitiousness
   minimum_cost:
     base_cost: 5
     additional_per_level_cost: 8
@@ -3077,7 +3080,7 @@ wbsenchants:shrinking:
   enabled: true
   display_name: Shrinking
   description: Shrinks the wearer.
-  scale-percent: -25
+  scale-percent: 25
   supported_items: wbsenchants:enchantable/scalable_down
   exclusive_with: wbsenchants:exclusive_set/scalable
   minimum_cost:
@@ -3196,6 +3199,3 @@ wbsenchants:overpower:
       replace: minecraft:clock
       villager-profession: librarian
       level: WEIGHTED_SMALL
-
-
-

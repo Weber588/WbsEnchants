@@ -14,6 +14,7 @@ import wbs.enchants.WbsEnchantsBootstrap;
 
 import java.util.*;
 import java.util.function.Predicate;
+import java.util.stream.Collectors;
 
 public class EnchantmentTypeManager {
     private static final Map<Key, EnchantmentType> REGISTERED_TYPES = new HashMap<>();
@@ -76,6 +77,12 @@ public class EnchantmentTypeManager {
 
     public static Collection<EnchantmentType> getRegistered() {
         return Collections.unmodifiableCollection(REGISTERED_TYPES.values());
+    }
+    public static Set<String> getNamespaces() {
+        return getRegistered().stream()
+                .map(EnchantmentType::getKey)
+                .map(NamespacedKey::getNamespace)
+                .collect(Collectors.toSet());
     }
 
     @Nullable

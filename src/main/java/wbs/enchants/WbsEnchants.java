@@ -1,13 +1,15 @@
 package wbs.enchants;
 
-import com.google.gson.Gson;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer;
 import org.bukkit.Bukkit;
 import org.bukkit.event.HandlerList;
 import wbs.enchants.command.*;
-import wbs.enchants.events.*;
+import wbs.enchants.events.AnvilEvents;
+import wbs.enchants.events.LeashEvents;
+import wbs.enchants.events.LootGenerationBlocker;
+import wbs.enchants.events.MapEvents;
 import wbs.enchants.events.enchanting.EnchantingTableEvents;
 import wbs.utils.util.WbsFileUtil;
 import wbs.utils.util.commands.brigadier.WbsCommand;
@@ -17,7 +19,6 @@ import wbs.utils.util.plugin.WbsPlugin;
 import wbs.utils.util.string.RomanNumerals;
 
 import java.io.File;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -83,8 +84,6 @@ public final class WbsEnchants extends WbsPlugin {
     }
 
     private void buildResourcePack() {
-        Gson gson = new Gson();
-
         Map<String, String> lang = new HashMap<>();
 
         for (WbsEnchantment enchantment : EnchantManager.getCustomRegistered()) {
@@ -101,36 +100,21 @@ public final class WbsEnchants extends WbsPlugin {
             lang.put("enchantment.level." + level, RomanNumerals.toRoman(level));
         }
 
-        writeToJSONFile(gson, lang, "resourcepack/assets/" + getName().toLowerCase() + "/lang/en_us");
+        File langFile = getDataPath().resolve("resourcepack/assets/" + getName().toLowerCase() + "/lang/en_us").toFile();
+        boolean updatedFile = WbsFileUtil.writeJSONToFile(langFile, lang);
         saveResource("resourcepack/pack.mcmeta", getSettings().isDeveloperMode());
 
-        try {
-            WbsFileUtil.zipFolder(
-                    getDataPath().resolve("resourcepack").toFile(),
-                    getDataPath().resolve(getName().toLowerCase() + "_resource_pack.zip").toString()
-            );
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
+        if (updatedFile) {
+            try {
+                WbsFileUtil.zipFolder(
+                        getDataPath().resolve("resourcepack").toFile(),
+                        getDataPath().resolve(getName().toLowerCase() + "_resource_pack.zip").toString()
+                );
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
 
-        writeToExternalPlugins();
-    }
-
-    private void writeToJSONFile(Gson gson, Object object, String path) {
-        try {
-            // TODO: Make the written language file configurable
-            File file = getDataPath().resolve(path + ".json").toFile();
-            if (!file.getParentFile().exists()) {
-                file.getParentFile().mkdirs();
-            }
-            if (!file.exists()) {
-                file.createNewFile();
-            }
-            try (FileWriter writer = new FileWriter(file)) {
-                gson.toJson(object, writer);
-            }
-        } catch (IOException e) {
-            throw new RuntimeException(e);
+            writeToExternalPlugins();
         }
     }
 

@@ -1,10 +1,13 @@
 package wbs.enchants.generation.contexts;
 
+import io.papermc.paper.registry.RegistryAccess;
+import io.papermc.paper.registry.RegistryKey;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TextComponent;
 import net.kyori.adventure.text.format.Style;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
+import org.bukkit.NamespacedKey;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.AbstractVillager;
 import org.bukkit.entity.Villager;
@@ -14,10 +17,10 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.MerchantRecipe;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import wbs.enchants.WbsEnchants;
 import wbs.enchants.definition.EnchantmentDefinition;
 import wbs.enchants.generation.GenerationContext;
 import wbs.enchants.util.EnchantUtils;
-import wbs.utils.util.WbsKeyed;
 import wbs.utils.util.string.WbsStrings;
 
 import java.util.Map;
@@ -150,9 +153,17 @@ public class VillagerTradeContext extends GenerationContext {
         }
 
         if (villagerProfession != null) {
-            Villager.Profession profession = WbsKeyed.getKeyedFromString(Villager.Profession.class, villagerProfession);
-            if (profession != null && villager.getProfession() != profession) {
-                return;
+            NamespacedKey professionKey = NamespacedKey.fromString(villagerProfession);
+            if (professionKey != null) {
+                Villager.Profession profession = RegistryAccess.registryAccess()
+                        .getRegistry(RegistryKey.VILLAGER_PROFESSION)
+                        .get(professionKey);
+
+                if (profession != null && villager.getProfession() != profession) {
+                    return;
+                }
+            } else {
+                WbsEnchants.getInstance().getLogger().warning("Profession key was not parseable! " + villagerProfession);
             }
         }
 

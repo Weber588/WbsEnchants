@@ -163,15 +163,26 @@ public final class WbsEnchantsBootstrap implements PluginBootstrap {
                                 ItemTypeKeys.IRON_CHESTPLATE,
                                 ItemTypeKeys.IRON_LEGGINGS,
                                 ItemTypeKeys.IRON_BOOTS,
+                                ItemTypeKeys.COPPER_HELMET,
+                                ItemTypeKeys.COPPER_CHESTPLATE,
+                                ItemTypeKeys.COPPER_LEGGINGS,
+                                ItemTypeKeys.COPPER_BOOTS,
                                 ItemTypeKeys.CHAINMAIL_HELMET,
                                 ItemTypeKeys.CHAINMAIL_CHESTPLATE,
                                 ItemTypeKeys.CHAINMAIL_LEGGINGS,
                                 ItemTypeKeys.CHAINMAIL_BOOTS,
+                                ItemTypeKeys.COPPER_PICKAXE,
+                                ItemTypeKeys.COPPER_SHOVEL,
+                                ItemTypeKeys.COPPER_AXE,
+                                ItemTypeKeys.COPPER_SWORD,
+                                ItemTypeKeys.COPPER_HOE,
+                                ItemTypeKeys.COPPER_SPEAR,
                                 ItemTypeKeys.IRON_PICKAXE,
                                 ItemTypeKeys.IRON_SHOVEL,
                                 ItemTypeKeys.IRON_AXE,
                                 ItemTypeKeys.IRON_SWORD,
-                                ItemTypeKeys.IRON_HOE
+                                ItemTypeKeys.IRON_HOE,
+                                ItemTypeKeys.IRON_SPEAR
                         ),
                         Set.of(
                                 /*
@@ -183,6 +194,10 @@ public final class WbsEnchantsBootstrap implements PluginBootstrap {
                 ).priority(1),
                 new CustomTag<>(ENCHANTABLE_MAGNETIC,
                         Set.of(
+                                ItemTypeKeys.COPPER_HELMET,
+                                ItemTypeKeys.COPPER_CHESTPLATE,
+                                ItemTypeKeys.COPPER_LEGGINGS,
+                                ItemTypeKeys.COPPER_BOOTS,
                                 ItemTypeKeys.IRON_HELMET,
                                 ItemTypeKeys.IRON_CHESTPLATE,
                                 ItemTypeKeys.IRON_LEGGINGS,
@@ -195,6 +210,11 @@ public final class WbsEnchantsBootstrap implements PluginBootstrap {
                                 ItemTypeKeys.NETHERITE_CHESTPLATE,
                                 ItemTypeKeys.NETHERITE_LEGGINGS,
                                 ItemTypeKeys.NETHERITE_BOOTS,
+                                ItemTypeKeys.COPPER_PICKAXE,
+                                ItemTypeKeys.COPPER_SHOVEL,
+                                ItemTypeKeys.COPPER_AXE,
+                                ItemTypeKeys.COPPER_SWORD,
+                                ItemTypeKeys.COPPER_HOE,
                                 ItemTypeKeys.IRON_PICKAXE,
                                 ItemTypeKeys.IRON_SHOVEL,
                                 ItemTypeKeys.IRON_AXE,
@@ -252,9 +272,11 @@ public final class WbsEnchantsBootstrap implements PluginBootstrap {
                 new CustomTag<>(ENCHANTABLE_HORSE_ARMOR,
                         Set.of(
                                 ItemTypeKeys.LEATHER_HORSE_ARMOR,
+                                ItemTypeKeys.COPPER_HORSE_ARMOR,
                                 ItemTypeKeys.IRON_HORSE_ARMOR,
                                 ItemTypeKeys.GOLDEN_HORSE_ARMOR,
-                                ItemTypeKeys.DIAMOND_HORSE_ARMOR
+                                ItemTypeKeys.DIAMOND_HORSE_ARMOR,
+                                ItemTypeKeys.NETHERITE_HORSE_ARMOR
                         ),
                         Set.of()
                 ),
@@ -267,9 +289,16 @@ public final class WbsEnchantsBootstrap implements PluginBootstrap {
                 new CustomTag<>(ENCHANTABLE_ALL_ARMOR,
                         Set.of(
                                 ItemTypeKeys.LEATHER_HORSE_ARMOR,
+                                ItemTypeKeys.COPPER_HORSE_ARMOR,
                                 ItemTypeKeys.IRON_HORSE_ARMOR,
                                 ItemTypeKeys.GOLDEN_HORSE_ARMOR,
                                 ItemTypeKeys.DIAMOND_HORSE_ARMOR,
+                                ItemTypeKeys.NETHERITE_HORSE_ARMOR,
+                                ItemTypeKeys.COPPER_NAUTILUS_ARMOR,
+                                ItemTypeKeys.IRON_NAUTILUS_ARMOR,
+                                ItemTypeKeys.GOLDEN_NAUTILUS_ARMOR,
+                                ItemTypeKeys.DIAMOND_NAUTILUS_ARMOR,
+                                ItemTypeKeys.NETHERITE_NAUTILUS_ARMOR,
                                 ItemTypeKeys.WOLF_ARMOR
                         ),
                         Set.of(
@@ -280,9 +309,16 @@ public final class WbsEnchantsBootstrap implements PluginBootstrap {
                 new CustomTag<>(ENCHANTABLE_BODY_ARMOR,
                         Set.of(
                                 ItemTypeKeys.LEATHER_HORSE_ARMOR,
+                                ItemTypeKeys.COPPER_HORSE_ARMOR,
                                 ItemTypeKeys.IRON_HORSE_ARMOR,
                                 ItemTypeKeys.GOLDEN_HORSE_ARMOR,
                                 ItemTypeKeys.DIAMOND_HORSE_ARMOR,
+                                ItemTypeKeys.NETHERITE_HORSE_ARMOR,
+                                ItemTypeKeys.COPPER_NAUTILUS_ARMOR,
+                                ItemTypeKeys.IRON_NAUTILUS_ARMOR,
+                                ItemTypeKeys.GOLDEN_NAUTILUS_ARMOR,
+                                ItemTypeKeys.DIAMOND_NAUTILUS_ARMOR,
+                                ItemTypeKeys.NETHERITE_NAUTILUS_ARMOR,
                                 ItemTypeKeys.WOLF_ARMOR
                         ),
                         Set.of(
@@ -429,6 +465,10 @@ public final class WbsEnchantsBootstrap implements PluginBootstrap {
             // Tag events (currently) run after registry events for the same type, so at when this runs, all definitions should
             // be loaded.
             for (EnchantmentDefinition definition : EnchantManager.getAllKnownDefinitions()) {
+                if (!definition.isEnabled()) {
+                    continue;
+                }
+
                 for (TagKey<Enchantment> tag : definition.injectInto()) {
                     toAdd.put(tag, definition.getTypedKey());
                 }

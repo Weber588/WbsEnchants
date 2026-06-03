@@ -45,6 +45,7 @@ public class RecallEnchant extends WbsEnchantment {
             NormalParticleEffect areaEffect = new NormalParticleEffect();
             WbsParticleEffect puffEffect = new NormalParticleEffect()
                     .setSpeed(0.15)
+                    .setData(1f)
                     .setAmount(25);
 
             player.getWorld().getLivingEntities().stream()

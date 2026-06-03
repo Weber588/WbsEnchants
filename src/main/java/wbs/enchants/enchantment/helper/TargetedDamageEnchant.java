@@ -13,9 +13,8 @@ import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import wbs.enchants.definition.EnchantmentDefinition;
 import wbs.enchants.WbsEnchantment;
-import wbs.enchants.WbsEnchants;
+import wbs.enchants.definition.EnchantmentDefinition;
 import wbs.enchants.type.EnchantmentType;
 import wbs.enchants.util.EntityUtils;
 import wbs.utils.util.WbsEnums;
@@ -99,7 +98,7 @@ public abstract class TargetedDamageEnchant extends WbsEnchantment implements Da
             EntityType type = WbsEnums.getEnumFromString(EntityType.class, typeString);
 
             if (type == null) {
-                WbsEnchants.getInstance().settings.logError("Invalid entity type: \"" + typeString + "\".", mobsDir);
+                System.out.println("Invalid entity type: \"" + typeString + "\"." + mobsDir);
                 continue;
             }
 

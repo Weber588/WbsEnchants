@@ -9,12 +9,13 @@ import org.bukkit.util.Vector;
 import org.jetbrains.annotations.NotNull;
 import wbs.enchants.WbsEnchantment;
 import wbs.enchants.WbsEnchantsBootstrap;
+import wbs.enchants.type.EnchantmentTypeManager;
 
 public class SnaringEnchant extends WbsEnchantment {
     private static final @NotNull String DEFAULT_DESCRIPTION = "Pulls hit entities towards you; the opposite of Knockback.";
 
     public SnaringEnchant() {
-        super("snaring", DEFAULT_DESCRIPTION);
+        super("snaring", EnchantmentTypeManager.PARADOXICAL, DEFAULT_DESCRIPTION);
 
         getDefinition()
                 .supportedItems(ItemTypeTagKeys.ENCHANTABLE_WEAPON)

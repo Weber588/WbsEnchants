@@ -187,6 +187,7 @@ public class TransferenceEnchant extends WbsEnchantment {
             RingParticleEffect liftingEffect = new RingParticleEffect();
             liftingEffect.setRadius(1)
                     .setRotation(new NumProvider(new CycleGenerator(0, 360, 100, 0)))
+                    .setData(1f)
                     .setAmount(3);
 
             int taskId = new BukkitRunnable() {

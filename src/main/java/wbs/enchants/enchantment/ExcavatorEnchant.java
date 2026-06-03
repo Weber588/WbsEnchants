@@ -41,6 +41,14 @@ public class ExcavatorEnchant extends AbstractMultiBreakEnchant {
 
         BlockFace hitFace = getTargetBlockFace(player);
 
+        if (hitFace == null) {
+            hitFace = player.getTargetBlockFace(100);
+
+            if (hitFace == null) {
+                hitFace = player.getFacing().getOppositeFace();
+            }
+        }
+
         final List<Block> excavateBlocks = new BlockQuery()
                 .setPredicate(matching)
                 .setMaxDistance(level)

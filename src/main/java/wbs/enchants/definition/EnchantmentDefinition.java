@@ -167,13 +167,20 @@ public class EnchantmentDefinition extends EnchantmentWrapper implements Compara
 
         tryKeys.add(enchantKey + ".desc");
         tryKeys.add(enchantKey + ".description");
+        tryKeys.add("lore." + enchantKey);
 
         // Some enchantments may have their language file name registered under a different namespace to their registration --
         // check if the .description (i.e. the display name) is a different namespace, and include those too.
         if (getEnchantment().description() instanceof TranslatableComponent translatable) {
-            tryKeys.add(translatable.key() + ".desc");
-            tryKeys.add(translatable.key() + ".description");
-            tryKeys.add(translatable.key().replaceAll("/", ".") + ".description");
+            String translatedKey = translatable.key();
+            tryKeys.add(translatedKey + ".desc");
+            tryKeys.add(translatedKey + ".description");
+            tryKeys.add("lore." + translatedKey);
+
+            String slashRemovedKey = translatedKey.replaceAll("/", ".");
+            tryKeys.add(slashRemovedKey + ".description");
+            tryKeys.add(slashRemovedKey + ".desc");
+            tryKeys.add("lore." + slashRemovedKey);
         }
 
         Component translatable = getTranslatable(fallback, tryKeys);
