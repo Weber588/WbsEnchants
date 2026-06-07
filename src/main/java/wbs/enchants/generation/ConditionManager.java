@@ -2,7 +2,7 @@ package wbs.enchants.generation;
 
 import org.bukkit.configuration.ConfigurationSection;
 import org.jetbrains.annotations.Nullable;
-import wbs.enchants.WbsEnchants;
+import wbs.enchants.EnchantsBootstrapSettings;
 import wbs.enchants.generation.conditions.*;
 import wbs.utils.exceptions.InvalidConfigurationException;
 
@@ -36,14 +36,14 @@ public final class ConditionManager {
     public static GenerationCondition getCondition(String key, ConfigurationSection parentSection, String directory) {
         RegisteredContext registeredContext = registeredContexts.get(key);
         if (registeredContext == null) {
-            WbsEnchants.getInstance().settings.logError("Condition not recognised: " + key, directory);
+            EnchantsBootstrapSettings.getInstance().logError("Condition not recognised: " + key, directory);
             return null;
         }
 
         try {
             return registeredContext.producer.from(key, parentSection, directory);
         } catch (InvalidConfigurationException e) {
-            WbsEnchants.getInstance().settings.logError("Invalid condition: " + e.getMessage(), directory);
+            EnchantsBootstrapSettings.getInstance().logError("Invalid condition: " + e.getMessage(), directory);
             return null;
         }
     }

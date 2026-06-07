@@ -22,6 +22,7 @@ public final class ContextManager {
         registerContext("bartering", BarterContext::new);
         registerContext("fishing", FishingContext::new);
         registerContext("loot-replace", LootTableReplacementContext::new);
+        registerContext("enchanting-table", EnchantingTableContext::new);
     }
     
     public static void registerContext(String key, ContextConstructor producer) {

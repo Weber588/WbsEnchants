@@ -122,7 +122,10 @@ public class EnchantingEventUtils {
     public static Map<Enchantment, Integer> getEnchantments(EnchantingContext context, long seed, ItemStack stack, int slot, int cost) {
         Registry<@NotNull Enchantment> registry = RegistryAccess.registryAccess().getRegistry(RegistryKey.ENCHANTMENT);
         Tag<@NotNull Enchantment> availableOnTableTag = registry.getTag(EnchantmentTagKeys.IN_ENCHANTING_TABLE);
-        Collection<@NotNull Enchantment> availableOnTable = availableOnTableTag.resolve(registry);
+        Collection<@NotNull Enchantment> availableOnTable = new LinkedList<>(availableOnTableTag.resolve(registry));
+
+        GenerateTableEnchantsEvent event = new GenerateTableEnchantsEvent(availableOnTable, context);
+        event.callEvent();
 
         if (availableOnTable.isEmpty()) {
             return Map.of();

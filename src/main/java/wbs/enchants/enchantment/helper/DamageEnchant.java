@@ -4,6 +4,7 @@ import org.bukkit.entity.Damageable;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Projectile;
+import org.bukkit.event.EventPriority;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.projectiles.ProjectileSource;
 import org.jetbrains.annotations.NotNull;
@@ -12,7 +13,7 @@ import wbs.enchants.util.EventUtils;
 
 public interface DamageEnchant extends EnchantInterface, AutoRegistrableEnchant {
     default void registerDamageEvent() {
-        EventUtils.register(EntityDamageByEntityEvent.class, this::onDamage);
+        EventUtils.register(EntityDamageByEntityEvent.class, this::onDamage, getEventPriority(), ignoreCancelled());
     }
 
     default void onDamage(EntityDamageByEntityEvent event) {
@@ -45,4 +46,12 @@ public interface DamageEnchant extends EnchantInterface, AutoRegistrableEnchant 
                                          @NotNull LivingEntity attacker,
                                          @NotNull Entity victim,
                                          @Nullable Projectile projectile);
+
+    default boolean ignoreCancelled() {
+        return true;
+    }
+
+    default @NotNull EventPriority getEventPriority() {
+        return EventPriority.NORMAL;
+    }
 }

@@ -5,6 +5,7 @@ import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer;
 import org.bukkit.Bukkit;
 import org.bukkit.event.HandlerList;
+import org.jetbrains.annotations.NotNull;
 import wbs.enchants.command.*;
 import wbs.enchants.events.AnvilEvents;
 import wbs.enchants.events.LeashEvents;
@@ -16,6 +17,7 @@ import wbs.utils.util.commands.brigadier.WbsCommand;
 import wbs.utils.util.commands.brigadier.WbsErrorsSubcommand;
 import wbs.utils.util.commands.brigadier.WbsReloadSubcommand;
 import wbs.utils.util.plugin.WbsPlugin;
+import wbs.utils.util.plugin.bootstrap.WbsBootstrapSettings;
 import wbs.utils.util.string.RomanNumerals;
 
 import java.io.File;
@@ -36,6 +38,11 @@ public final class WbsEnchants extends WbsPlugin {
     @Override
     public EnchantsSettings getSettings() {
         return settings;
+    }
+
+    @Override
+    public WbsBootstrapSettings<@NotNull WbsEnchants> getBoostrapSettings() {
+        return EnchantsBootstrapSettings.getInstance();
     }
 
     @Override

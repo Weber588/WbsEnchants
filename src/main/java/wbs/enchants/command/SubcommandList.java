@@ -10,6 +10,7 @@ import net.kyori.adventure.text.TextComponent;
 import org.bukkit.Keyed;
 import org.bukkit.NamespacedKey;
 import org.bukkit.command.CommandSender;
+import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import wbs.enchants.EnchantManager;
@@ -18,16 +19,16 @@ import wbs.enchants.type.EnchantmentType;
 import wbs.enchants.type.EnchantmentTypeManager;
 import wbs.utils.util.commands.brigadier.WbsSubcommand;
 import wbs.utils.util.commands.brigadier.argument.WbsSimpleArgument;
+import wbs.utils.util.plugin.WbsMessage;
 import wbs.utils.util.plugin.WbsMessageBuilder;
 import wbs.utils.util.plugin.WbsPlugin;
 
-import java.util.LinkedList;
-import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
 
 public class SubcommandList extends WbsSubcommand {
     private static final WbsSimpleArgument<String> NAMESPACE_FILTER = new WbsSimpleArgument<>("namespace",
-            StringArgumentType.word(),
+            StringArgumentType.string(),
             "",
             String.class
     ).setSuggestions(EnchantManager.getNamespaces());
@@ -36,6 +37,11 @@ public class SubcommandList extends WbsSubcommand {
                     ArgumentTypes.namespacedKey(),
                     null
             ).setSuggestions(EnchantmentTypeManager.getRegistered().stream().map(Keyed::getKey).toList());
+
+    // There are so many enchants it can be super laggy -- do it async and stop people getting confused and repeating the command
+    private static final Set<CommandSender> LOADING_FOR = new HashSet<>();
+    // Namespace, Enchantment Type, Message
+    private static final Map<@NotNull String, Map<@Nullable EnchantmentType, @NotNull WbsMessage>> CACHE = new HashMap<>();
 
     public SubcommandList(@NotNull WbsPlugin plugin) {
         super(plugin, "list");
@@ -55,10 +61,19 @@ public class SubcommandList extends WbsSubcommand {
     protected int onSimpleArgumentCallback(CommandContext<CommandSourceStack> context, WbsSimpleArgument.ConfiguredArgumentMap configuredArgumentMap) {
         CommandSender sender = context.getSource().getSender();
 
-        String filter = configuredArgumentMap.get(NAMESPACE_FILTER);
+        if (LOADING_FOR.contains(sender)) {
+            if (sender instanceof Player player) {
+                plugin.sendActionBar("List is loading...", player);
+            } else {
+                plugin.sendMessage("List is loading asynchronously.", sender);
+            }
+            return 0;
+        }
+
+        String filterNamespace = configuredArgumentMap.get(NAMESPACE_FILTER);
         NamespacedKey enchantmentTypeKey = configuredArgumentMap.get(ENCHANTMENT_TYPE);
 
-        boolean enchantsExistInNamespace = EnchantManager.getDefinitionsByNamespace().containsKey(filter);
+        boolean enchantsExistInNamespace = EnchantManager.getDefinitionsByNamespace().containsKey(filterNamespace);
 
         EnchantmentType type = null;
         if (enchantmentTypeKey != null) {
@@ -68,9 +83,10 @@ public class SubcommandList extends WbsSubcommand {
                 return Command.SINGLE_SUCCESS;
             }
         }
+
         if (type == null && !enchantsExistInNamespace) {
             // No type given, and no enchants in given namespace -- try parsing filter as a key & using instead.
-            enchantmentTypeKey = NamespacedKey.fromString(filter, plugin);
+            enchantmentTypeKey = NamespacedKey.fromString(filterNamespace, plugin);
 
             if (enchantmentTypeKey != null) {
                 type = EnchantmentTypeManager.getType(enchantmentTypeKey, null);
@@ -80,21 +96,39 @@ public class SubcommandList extends WbsSubcommand {
                 }
             } // If no type, just continue and show all
 
-            filter = null;
+            filterNamespace = null;
         }
 
-        if (filter != null) {
-            sendEnchantmentList(sender, filter, type);
-        } else {
-            for (String namespace : EnchantManager.getNamespaces()) {
-                sendEnchantmentList(sender, namespace, type);
+        String finalFilter = filterNamespace;
+        EnchantmentType finalType = type;
+
+        // Run on an async thread to avoid locking the server
+        LOADING_FOR.add(sender);
+        plugin.runAsync(() -> {
+            if (finalFilter != null) {
+                sendEnchantmentList(sender, finalFilter, finalType);
+            } else {
+                for (String namespace : EnchantManager.getNamespaces()) {
+                    sendEnchantmentList(sender, namespace, finalType);
+                }
             }
-        }
+
+            LOADING_FOR.remove(sender);
+        });
 
         return Command.SINGLE_SUCCESS;
     }
 
     private void sendEnchantmentList(CommandSender sender, @NotNull String namespace, @Nullable EnchantmentType type) {
+        Map<@Nullable EnchantmentType, @NotNull WbsMessage> namespaceCache = CACHE.get(namespace);
+        if (namespaceCache != null) {
+            WbsMessage cachedMessage = namespaceCache.get(type);
+            if (cachedMessage != null) {
+                cachedMessage.send(sender);
+                return;
+            }
+        }
+
         List<EnchantmentDefinition> enchants = EnchantManager.getAllKnownDefinitions()
                 .stream()
                 // TODO: Add a "show-in-commands" field on enchantment def, so admins can manually hide util/backend enchants like "Illegal enchantment" or "I AM ERROR"
@@ -134,6 +168,15 @@ public class SubcommandList extends WbsSubcommand {
             builder.append(enchant.interactiveDisplay());
         });
 
-        builder.build().send(sender);
+        WbsMessage message = builder.build();
+
+        if (namespaceCache == null) {
+            namespaceCache = new HashMap<>();
+            CACHE.put(namespace, namespaceCache);
+        }
+
+        namespaceCache.put(type, message);
+
+        message.send(sender);
     }
 }

@@ -7,7 +7,7 @@ import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.configuration.ConfigurationSection;
 import org.jetbrains.annotations.NotNull;
-import wbs.enchants.WbsEnchants;
+import wbs.enchants.EnchantsBootstrapSettings;
 import wbs.utils.exceptions.InvalidConfigurationException;
 import wbs.utils.util.WbsEnums;
 
@@ -27,7 +27,6 @@ public class DimensionTypeCondition extends GenerationCondition {
         ConfigurationSection section = parentSection.getConfigurationSection(key);
         if (section != null) {
             typeStrings = section.getStringList("type");
-            directory = directory + "/" + KEY;
         } else {
             if (parentSection.isList(KEY)) {
                 typeStrings = parentSection.getStringList(KEY);
@@ -40,7 +39,6 @@ public class DimensionTypeCondition extends GenerationCondition {
             String single;
             if (section != null) {
                 single = section.getString("type");
-                directory = directory + "/" + KEY;
             } else {
                 single = parentSection.getString(KEY);
             }
@@ -58,7 +56,7 @@ public class DimensionTypeCondition extends GenerationCondition {
             World.Environment dimensionType = WbsEnums.getEnumFromString(World.Environment.class, typeString);
 
             if (dimensionType == null) {
-                WbsEnchants.getInstance().settings.logError("Invalid dimension type: \"" + typeString + "\".",
+                EnchantsBootstrapSettings.getInstance().logError("Invalid dimension type: \"" + typeString + "\".",
                         directory);
             } else {
                 dimensionTypes.add(dimensionType);
@@ -66,7 +64,7 @@ public class DimensionTypeCondition extends GenerationCondition {
         }
 
         if (dimensionTypes.isEmpty()) {
-            throw new InvalidConfigurationException("Specify a dimension type: " +
+            throw new InvalidConfigurationException("At least one dimension type must be specified: " +
                     WbsEnums.joiningPrettyStrings(World.Environment.class),
                     directory);
         }

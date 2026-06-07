@@ -11,16 +11,19 @@ import org.bukkit.NamespacedKey;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.AbstractVillager;
 import org.bukkit.entity.Villager;
+import org.bukkit.entity.WanderingTrader;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.entity.VillagerAcquireTradeEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.MerchantRecipe;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import wbs.enchants.EnchantsBootstrapSettings;
 import wbs.enchants.WbsEnchants;
 import wbs.enchants.definition.EnchantmentDefinition;
 import wbs.enchants.generation.GenerationContext;
 import wbs.enchants.util.EnchantUtils;
+import wbs.utils.exceptions.InvalidConfigurationException;
 import wbs.utils.util.string.WbsStrings;
 
 import java.util.Map;
@@ -40,6 +43,8 @@ public class VillagerTradeContext extends GenerationContext {
     private String itemCostString = "minecraft:book";
     @Nullable
     private String replaceItemKey = null;
+    private final boolean requireWanderingTrader;
+    private final boolean includeWanderingTrader;
 
     public VillagerTradeContext(String key, EnchantmentDefinition definition, ConfigurationSection section, String directory) {
         super(key, definition, section, directory);
@@ -48,12 +53,21 @@ public class VillagerTradeContext extends GenerationContext {
             villagerLevel = section.getInt("villager-level");
             if (villagerLevel < 1 || villagerLevel > 5) {
                 villagerLevel = null;
+                EnchantsBootstrapSettings.getInstance().logError("Villager level must be between 1 and 5 (inclusive)", directory + "/villager-level");
             }
         }
+        villagerProfession = section.getString("villager-profession");
 
         replaceItemKey = section.getString("replace", replaceItemKey);
 
-        villagerProfession = section.getString("villager-profession");
+
+        requireWanderingTrader = section.getBoolean("require-wandering-trader", false);
+
+        if (requireWanderingTrader && (villagerLevel != null || villagerProfession != null)) {
+            throw new InvalidConfigurationException("require-wandering-trader and villager-level/villager-profession cannot both be set.", directory);
+        }
+
+        includeWanderingTrader = section.getBoolean("include-wandering-trader", false);
 
         resultString = section.getString("result", resultString);
 
@@ -126,7 +140,15 @@ public class VillagerTradeContext extends GenerationContext {
             description = description.append(Component.text(" " + WbsStrings.capitalizeAll(villagerProfession)));
         }
 
-        description = description.append(Component.text(" villager trades: " + chanceToRun() + "%"));
+        if (requireWanderingTrader) {
+            description = description.append(Component.text(" wandering trader"));
+        } else if (includeWanderingTrader) {
+            description = description.append(Component.text(" villager/wandering trader"));
+        } else {
+            description = description.append(Component.text(" villager"));
+        }
+
+        description = description.append(Component.text(" trades: " + chanceToRun() + "%"));
 
         return description;
     }
@@ -139,31 +161,39 @@ public class VillagerTradeContext extends GenerationContext {
 
         AbstractVillager abstractVillager = event.getEntity();
 
-        if (!(abstractVillager instanceof Villager villager)) {
+        if (!meetsAllConditions(abstractVillager, abstractVillager.getLocation().getBlock(), abstractVillager.getLocation(), null)) {
             return;
         }
 
-        if (!meetsAllConditions(villager, villager.getLocation().getBlock(), villager.getLocation(), null)) {
-            return;
+        if (abstractVillager instanceof WanderingTrader) {
+            if (!includeWanderingTrader && !requireWanderingTrader) {
+                return;
+            }
+        } else {
+            if (requireWanderingTrader) {
+                return;
+            }
         }
 
-        // nms Villager#increaseMerchantCareer increases level BEFORE acquiring trades -- reliable
-        if (villagerLevel != null && villager.getVillagerLevel() != villagerLevel) {
-            return;
-        }
+        if (abstractVillager instanceof Villager villager && (villagerLevel != null || villagerProfession != null)) {
+            // nms Villager#increaseMerchantCareer increases level BEFORE acquiring trades -- reliable
+            if (villagerLevel != null && villager.getVillagerLevel() != villagerLevel) {
+                return;
+            }
 
-        if (villagerProfession != null) {
-            NamespacedKey professionKey = NamespacedKey.fromString(villagerProfession);
-            if (professionKey != null) {
-                Villager.Profession profession = RegistryAccess.registryAccess()
-                        .getRegistry(RegistryKey.VILLAGER_PROFESSION)
-                        .get(professionKey);
+            if (villagerProfession != null) {
+                NamespacedKey professionKey = NamespacedKey.fromString(villagerProfession);
+                if (professionKey != null) {
+                    Villager.Profession profession = RegistryAccess.registryAccess()
+                            .getRegistry(RegistryKey.VILLAGER_PROFESSION)
+                            .get(professionKey);
 
-                if (profession != null && villager.getProfession() != profession) {
-                    return;
+                    if (profession != null && villager.getProfession() != profession) {
+                        return;
+                    }
+                } else {
+                    WbsEnchants.getInstance().getLogger().warning("Profession key was not parseable! " + villagerProfession);
                 }
-            } else {
-                WbsEnchants.getInstance().getLogger().warning("Profession key was not parseable! " + villagerProfession);
             }
         }
 
@@ -180,6 +210,19 @@ public class VillagerTradeContext extends GenerationContext {
         ItemStack result = Bukkit.getItemFactory().createItemStack(resultString);
         EnchantUtils.addEnchantment(definition, result, generateLevel());
 
+        MerchantRecipe recipe = buildMerchantRecipe(event, result);
+
+        if (emeraldCostMin > 0) {
+            recipe.addIngredient(ItemStack.of(Material.EMERALD, new Random().nextInt(emeraldCostMin, emeraldCostMax)));
+        }
+        if (itemCostString != null) {
+            recipe.addIngredient(Bukkit.getItemFactory().createItemStack(itemCostString));
+        }
+
+        return recipe;
+    }
+
+    private static @NotNull MerchantRecipe buildMerchantRecipe(VillagerAcquireTradeEvent event, ItemStack result) {
         MerchantRecipe recipe = new MerchantRecipe(result, 1);
 
         MerchantRecipe replace = event.getRecipe();
@@ -191,13 +234,6 @@ public class VillagerTradeContext extends GenerationContext {
         recipe.setVillagerExperience(replace.getVillagerExperience());
         recipe.setSpecialPrice(replace.getSpecialPrice());
         recipe.setPriceMultiplier(replace.getPriceMultiplier());
-
-        if (emeraldCostMin > 0) {
-            recipe.addIngredient(ItemStack.of(Material.EMERALD, new Random().nextInt(emeraldCostMin, emeraldCostMax)));
-        }
-        if (itemCostString != null) {
-            recipe.addIngredient(Bukkit.getItemFactory().createItemStack(itemCostString));
-        }
 
         return recipe;
     }

@@ -274,7 +274,7 @@ wbsenchants:lightweight:
         height:
           min: 64
   inject_into:
-    - minecraft:tradeable
+    #    - minecraft:tradeable
     - minecraft:on_traded_equipment
 wbsenchants:hellborne:
   enabled: true
@@ -332,7 +332,7 @@ wbsenchants:decay:
       tables:
         - .*village.*
   inject_into:
-    - minecraft:tradeable
+    #    - minecraft:tradeable
     - minecraft:exclusive_set/damage
 wbsenchants:scorching:
   enabled: true
@@ -347,14 +347,14 @@ wbsenchants:scorching:
     additional_per_level_cost: 15
   exclusive_with:
     - minecraft:silk_touch
-    - wbsenchants:soul_touch
+    #    - wbsenchants:soul_touch
     - wbsenchants:crushing
   anvil_cost: 12
   max_level: 1
   weight: 1
   inject_into:
     - wbsenchants:heat_based
-    - minecraft:tradeable
+    #   - minecraft:tradeable
     - minecraft:on_random_loot
 wbsenchants:frostburn:
   enabled: true
@@ -381,7 +381,7 @@ wbsenchants:frostburn:
     - ENDERMAN
   inject_into:
     - wbsenchants:cold_based
-    - minecraft:tradeable
+    #    - minecraft:tradeable
     - minecraft:on_random_loot
     - minecraft:exclusive_set/damage
 wbsenchants:ender_shot:
@@ -510,8 +510,15 @@ wbsenchants:transference:
   anvil_cost: 8
   max_level: 1
   weight: 5
-  inject_into:
-    - minecraft:tradeable
+  inject_into: []
+  generation:
+    enchanting-table:
+      # This chance is the chance to add to the pool of *available* enchants -- it does not determine the chance to be added to the item.
+      # Use weight (above) to increase chances of being selected once added to the pool.
+      chance: 100
+      description: On enchanting tables in the end
+      conditions:
+        dimension-type: The_End
 wbsenchants:unsinkable:
   enabled: true
   display_name: Unsinkable
@@ -534,7 +541,7 @@ wbsenchants:unsinkable:
       tables:
         - .*shipwreck.*
   inject_into:
-    - minecraft:tradeable
+#    - minecraft:tradeable
 wbsenchants:defusal:
   enabled: true
   display_name: Defusal
@@ -555,7 +562,7 @@ wbsenchants:defusal:
   max_level: 3
   weight: 1
   inject_into:
-    - minecraft:tradeable
+    #    - minecraft:tradeable
     - minecraft:on_random_loot
     - wbsenchants:exclusive_set/defusal
 wbsenchants:pilfering:
@@ -615,9 +622,9 @@ wbsenchants:resilience:
   max_level: 2
   weight: 1
   inject_into:
-    - minecraft:tradeable
+    #   - minecraft:tradeable
     - minecraft:on_random_loot
-    - minecraft:double_trade_price
+    #  - minecraft:double_trade_price
     - minecraft:exclusive_set/armor
 wbsenchants:manathirst:
   enabled: true
@@ -639,7 +646,7 @@ wbsenchants:manathirst:
   weight: 1
   xp-per-durability: 3
   inject_into:
-    - minecraft:tradeable
+    #    - minecraft:tradeable
     - minecraft:double_trade_price
     - wbsenchants:exclusive_set/self_repairing
   generation:
@@ -698,7 +705,7 @@ wbsenchants:divine_resonance:
       tables:
         - .*village.*
   inject_into:
-    - minecraft:tradeable
+    #    - minecraft:tradeable
     - minecraft:on_traded_equipment
 wbsenchants:aridity:
   enabled: true
@@ -960,7 +967,7 @@ wbsenchants:handheld:
         - .*village.*
   inject_into:
     - minecraft:on_random_loot
-    - minecraft:tradeable
+#    - minecraft:tradeable
 wbsenchants:hogsbane:
   enabled: true
   display_name: Hogsbane
@@ -1053,12 +1060,12 @@ wbsenchants:butchering:
       tables:
         - .*village.*
   inject_into:
-    - minecraft:tradeable
+    #    - minecraft:tradeable
     - minecraft:on_traded_equipment
     - minecraft:on_random_loot
     - minecraft:exclusive_set/damage
 wbsenchants:soul_touch:
-  enabled: true
+  enabled: false
   display_name: Soul Touch
   description: Allows your tool to pick up spawners!
   supported_items: minecraft:pickaxes
@@ -1112,6 +1119,8 @@ wbsenchants:stuttershot:
   description: A ranged weapon enchantment that gives a 10% chance to shoot again
     immediately after firing!
   supported_items: wbsenchants:enchantable/projectile_weapon
+  primary_items:
+    - minecraft:crossbow
   minimum_cost:
     base_cost: 5
     additional_per_level_cost: 10
@@ -1123,7 +1132,7 @@ wbsenchants:stuttershot:
   weight: 1
   inject_into:
     - minecraft:on_random_loot
-    - minecraft:tradeable
+  #  - minecraft:tradeable
 wbsenchants:echoing:
   enabled: true
   display_name: Echoing
@@ -1163,7 +1172,16 @@ wbsenchants:dimensional_stability:
   weight: 1
   inject_into:
     - minecraft:on_random_loot
-    - minecraft:tradeable
+  generation:
+    enchanting-table:
+      # This chance is the chance to add to the pool of *available* enchants -- it does not determine the chance to be added to the item.
+      # Use weight (above) to increase chances of being selected once added to the pool.
+      chance: 100
+      description: On enchanting tables in the Nether or End
+      conditions:
+        dimension-type:
+          type: Normal
+          is-negated: true
 wbsenchants:anima_conduit:
   enabled: true
   display_name: Anima Conduit
@@ -1446,9 +1464,16 @@ wbsenchants:spiritheart:
   anvil_cost: 2
   max_level: 3
   weight: 1
-  inject_into:
-    - minecraft:tradeable
-    - minecraft:double_trade_price
+  inject_into: []
+  generation:
+    enchanting-table:
+      # This chance is the chance to add to the pool of *available* enchants -- it does not determine the chance to be added to the item.
+      # Use weight (above) to increase chances of being selected once added to the pool.
+      chance: 100
+      description: On enchanting tables in pale gardens
+      conditions:
+        biome:
+          - '.*pale_.*'
 wbsenchants:afterlife:
   enabled: true
   display_name: Afterlife
@@ -1608,7 +1633,6 @@ wbsenchants:frostcreep:
   exclusive_with: wbsenchants:heat_based
   inject_into:
     - wbsenchants:cold_based
-    - minecraft:tradeable
     - minecraft:on_random_loot
 wbsenchants:outreach:
   enabled: true
@@ -1618,7 +1642,7 @@ wbsenchants:outreach:
   primary_items:
     - book
   minimum_cost:
-    base_cost: 50
+    base_cost: 45
     additional_per_level_cost: 5
   maximum_cost:
     base_cost: 60
@@ -1642,7 +1666,21 @@ wbsenchants:hydrophobic:
   weight: 1
   inject_into:
     - minecraft:on_random_loot
-    - minecraft:tradeable
+  generation:
+    loot-table:
+      description: Chance to appear in Suspicious Sand in warm, non-humid biomes
+      # With brushable blocks, this guarantees that it's available IN THE POOL,
+      # not that it'll always result in the item.
+      chance: 35
+      add-chance: 100
+      level:
+        mode: RANDOM
+      conditions:
+        biome:
+          min-temp: 1.7
+          max-humidity: 0.7
+        block-type:
+          - suspicious_sand
 wbsenchants:pyroclastic:
   enabled: true
   description: The sponge absorbs lava instead of water.
@@ -1659,6 +1697,14 @@ wbsenchants:pyroclastic:
   max_level: 1
   weight: 1
   inject_into: []
+  generation:
+    enchanting-table:
+      # This chance is the chance to add to the pool of *available* enchants -- it does not determine the chance to be added to the item.
+      # Use weight (above) to increase chances of being selected once added to the pool.
+      chance: 100
+      description: On enchanting tables in the nether
+      conditions:
+        dimension-type: Nether
 wbsenchants:surface_miner:
   enabled: true
   description: You have Haste while you can see the sky.
@@ -1783,8 +1829,15 @@ wbsenchants:discarding:
   anvil_cost: 8
   max_level: 1
   weight: 1
-  inject_into:
-    - minecraft:tradeable
+  inject_into: []
+  generation:
+    enchanting-table:
+      # This chance is the chance to add to the pool of *available* enchants -- it does not determine the chance to be added to the item.
+      # Use weight (above) to increase chances of being selected once added to the pool.
+      chance: 100
+      description: On enchanting tables in the end
+      conditions:
+        dimension-type: The_End
 wbsenchants:blooming:
   enabled: true
   description: The item passively regains durability when near flowers, with speed
@@ -1968,7 +2021,7 @@ wbsenchants:multicast:
   weight: 1
   inject_into:
     - minecraft:on_random_loot
-    - minecraft:tradeable
+#    - minecraft:tradeable
 wbsenchants:auto_reel:
   enabled: true
   description: Automatically reels in the fishing rod for you!
@@ -1987,7 +2040,7 @@ wbsenchants:auto_reel:
   weight: 1
   inject_into:
     - minecraft:on_random_loot
-    - minecraft:tradeable
+#    - minecraft:tradeable
 wbsenchants:hell_hook:
   enabled: true
   description: Sets your fishing rod hook on fire, burning entities and cooking anything
@@ -2039,6 +2092,8 @@ wbsenchants:tempered:
   enabled: true
   description: Makes the anvil break more slowly.
   supported_items: minecraft:anvil
+  primary_items:
+  - minecraft:book
   minimum_cost:
     base_cost: 5
     additional_per_level_cost: 8
@@ -2050,7 +2105,7 @@ wbsenchants:tempered:
   weight: 1
   inject_into:
     - minecraft:on_random_loot
-    - minecraft:tradeable
+  #  - minecraft:tradeable
 wbsenchants:nihil:
   enabled: true
   description: Prevents all block and mob drops.
@@ -2066,7 +2121,7 @@ wbsenchants:nihil:
   weight: 1
   inject_into:
     - minecraft:on_random_loot
-    - minecraft:tradeable
+  #  - minecraft:tradeable
 wbsenchants:quick_ride:
   enabled: true
   description: Automatically get into the enchanted vehicle when placed, and automatically
@@ -2104,7 +2159,7 @@ wbsenchants:fleecing:
   weight: 2
   inject_into:
     - minecraft:on_random_loot
-    - minecraft:tradeable
+#    - minecraft:tradeable
 wbsenchants:cautiousness:
   enabled: true
   description: Prevents damaging your pets and baby passive mobs, and prevents sweeping
@@ -2122,6 +2177,17 @@ wbsenchants:cautiousness:
   inject_into:
     - minecraft:on_random_loot
     - minecraft:tradeable
+  generation:
+    trading:
+      result: minecraft:enchanted_book
+      emerald-cost:
+        min: 4
+        max: 16
+      item-cost: minecraft:book
+      villager-level: 1
+      chance: 25
+      replace: minecraft:emerald
+      villager-profession: farmer
 wbsenchants:reinforced:
   enabled: true
   description: Gives a 25% chance to prevent the shield from being disabled.
@@ -2158,7 +2224,7 @@ wbsenchants:reflexive:
   weight: 1
   inject_into:
     - minecraft:on_random_loot
-    - minecraft:tradeable
+#    - minecraft:tradeable
 wbsenchants:throwing:
   enabled: true
   description: Items thrown (potions, eggs, ender pearls) have increased speed.
@@ -2174,7 +2240,7 @@ wbsenchants:throwing:
   weight: 1
   inject_into:
     - minecraft:on_random_loot
-    - minecraft:tradeable
+#    - minecraft:tradeable
 wbsenchants:demetrien:
   enabled: true
   description: Farmland tilled by items with this enchantment will never turn back
@@ -2190,7 +2256,17 @@ wbsenchants:demetrien:
   weight: 1
   inject_into:
     - minecraft:on_random_loot
-    - minecraft:tradeable
+  generation:
+    trading:
+      result: minecraft:enchanted_book
+      emerald-cost:
+        min: 4
+        max: 16
+      item-cost: minecraft:book
+      villager-level: 1
+      chance: 10
+      replace: minecraft:emerald
+      villager-profession: farmer
 wbsenchants:galloping:
   enabled: true
   description: Speeds up mobs wearing the saddle.
@@ -2214,7 +2290,7 @@ wbsenchants:galloping:
         - .*village.*
   inject_into:
     - minecraft:on_random_loot
-    - minecraft:tradeable
+#    - minecraft:tradeable
 wbsenchants:leaping:
   enabled: true
   description: Increases jump height of mobs wearing the saddle.
@@ -2238,7 +2314,7 @@ wbsenchants:leaping:
         - .*village.*
   inject_into:
     - minecraft:on_random_loot
-    - minecraft:tradeable
+#    - minecraft:tradeable
 wbsenchants:cavalrous:
   enabled: true
   description: Greatly increases the health of horses, and applies regeneration.
@@ -2261,7 +2337,7 @@ wbsenchants:cavalrous:
         - .*village.*
   inject_into:
     - minecraft:on_random_loot
-    - minecraft:tradeable
+#    - minecraft:tradeable
 wbsenchants:fungal_heart:
   enabled: true
   description: Grants Resistance while standing on Mycelium.
@@ -2277,7 +2353,15 @@ wbsenchants:fungal_heart:
   weight: 1
   inject_into:
     - minecraft:on_random_loot
-    - minecraft:tradeable
+  generation:
+    enchanting-table:
+      # This chance is the chance to add to the pool of *available* enchants -- it does not determine the chance to be added to the item.
+      # Use weight (above) to increase chances of being selected once added to the pool.
+      chance: 100
+      description: On enchanting tables in mushroom biomes
+      conditions:
+        biome:
+          - .*mushroom.*
 wbsenchants:abyss_miner:
   enabled: true
   description: Grants increasing levels of Haste the further away from the surface
@@ -2302,7 +2386,7 @@ wbsenchants:abyss_miner:
           max: 60
   inject_into:
     - minecraft:on_random_loot
-    - minecraft:tradeable
+#    - minecraft:tradeable
 wbsenchants:aetherean:
   enabled: true
   description: You can place blocks in mid-air.
@@ -2348,7 +2432,7 @@ wbsenchants:buoyancy:
         - .*village.*
   inject_into:
     - minecraft:on_random_loot
-    - minecraft:tradeable
+#    - minecraft:tradeable
 wbsenchants:annotated:
   enabled: true
   description: Maps with this enchantment will show many structures on the map.
@@ -2372,7 +2456,7 @@ wbsenchants:annotated:
         - .*village.*
   inject_into:
     - minecraft:on_random_loot
-    - minecraft:tradeable
+    #    - minecraft:tradeable
     - wbsenchants:exclusive_set/maps
 wbsenchants:haven:
   enabled: true
@@ -2406,7 +2490,7 @@ wbsenchants:snaring:
   weight: 5
   inject_into:
     - minecraft:on_random_loot
-    - minecraft:tradeable
+    #  - minecraft:tradeable
     - wbsenchants:exclusive_set/knockback
 wbsenchants:heaving:
   enabled: true
@@ -2424,7 +2508,7 @@ wbsenchants:heaving:
   weight: 5
   inject_into:
     - minecraft:on_random_loot
-    - minecraft:tradeable
+    #  - minecraft:tradeable
     - wbsenchants:exclusive_set/knockback
 wbsenchants:whirling:
   enabled: true
@@ -2442,7 +2526,7 @@ wbsenchants:whirling:
   weight: 5
   inject_into:
     - minecraft:on_random_loot
-    - minecraft:tradeable
+    # - minecraft:tradeable
     - wbsenchants:exclusive_set/knockback
 wbsenchants:hovering:
   enabled: true
@@ -2552,8 +2636,17 @@ wbsenchants:recall:
   weight: 1
   inject_into:
     - minecraft:on_random_loot
-    - minecraft:tradeable
     - wbsenchants:exclusive_set/horns
+  generation:
+    trading:
+      result: minecraft:goat_horn[instrument="call_goat_horn"]
+      emerald-cost:
+        min: 8
+        max: 32
+      chance: 25
+      require-wandering-trader: true
+      # include-wandering-trader: true # This includes wandering traders, but does not require them
+      level: WEIGHTED_SMALL
 wbsenchants:ancient_cry:
   enabled: true
   description: Makes nearby hostile mobs randomly start targeting another hostile
@@ -2572,8 +2665,17 @@ wbsenchants:ancient_cry:
   weight: 1
   inject_into:
     - minecraft:on_random_loot
-    - minecraft:tradeable
     - wbsenchants:exclusive_set/horns
+  generation:
+    trading:
+      result: minecraft:goat_horn[instrument="feel_goat_horn"]
+      emerald-cost:
+        min: 8
+        max: 32
+      chance: 25
+      require-wandering-trader: true
+      # include-wandering-trader: true # This includes wandering traders, but does not require them
+      level: WEIGHTED_SMALL
 wbsenchants:breathtaking:
   enabled: true
   description: Takes away oxygen when you hit an entity
@@ -2590,7 +2692,15 @@ wbsenchants:breathtaking:
   weight: 1
   inject_into:
     - minecraft:on_random_loot
-    - minecraft:tradeable
+  generation:
+    enchanting-table:
+      # This chance is the chance to add to the pool of *available* enchants -- it does not determine the chance to be added to the item.
+      # Use weight (above) to increase chances of being selected once added to the pool.
+      chance: 100
+      description: On enchanting tables above y=200
+      conditions:
+        height:
+          min: 200
 wbsenchants:platformer:
   enabled: false
   description: 'Adds the ability to jump mid-air, once per level of the enchantment.<br><red>Warning:
@@ -2628,7 +2738,7 @@ wbsenchants:venturing:
         - .*village.*
   inject_into:
     - minecraft:on_random_loot
-    - minecraft:tradeable
+#    - minecraft:tradeable
 wbsenchants:hauling:
   enabled: true
   description: Greatly increases the pull strength of fishing rods.
@@ -2651,7 +2761,7 @@ wbsenchants:hauling:
         - .*village.*
   inject_into:
     - minecraft:on_random_loot
-    - minecraft:tradeable
+#    - minecraft:tradeable
 wbsenchants:tracking:
   enabled: true
   description: Allows you to right click an entity to track it with the compass.
@@ -2675,7 +2785,7 @@ wbsenchants:tracking:
         - .*village.*
   inject_into:
     - minecraft:on_random_loot
-    - minecraft:tradeable
+#    - minecraft:tradeable
 wbsenchants:curse/hypoxia:
   enabled: true
   description: You start losing oxygen above y 100.
@@ -2741,7 +2851,7 @@ wbsenchants:industrious:
   weight: 1
   inject_into:
     - minecraft:on_random_loot
-    - minecraft:tradeable
+#    - minecraft:tradeable
 wbsenchants:striding:
   enabled: true
   display_name: Striding
@@ -2759,7 +2869,7 @@ wbsenchants:striding:
   weight: 1
   inject_into:
     - minecraft:on_random_loot
-    - minecraft:tradeable
+#    - minecraft:tradeable
 wbsenchants:curse/limping:
   enabled: true
   display_name: Curse of Limping
@@ -2776,7 +2886,7 @@ wbsenchants:curse/limping:
   weight: 1
   inject_into:
     - minecraft:on_random_loot
-    - minecraft:tradeable
+#    - minecraft:tradeable
 wbsenchants:fly_fishing:
   enabled: true
   display_name: Fly Fishing
@@ -2869,6 +2979,8 @@ wbsenchants:wisdom:
   display_name: Wisdom
   description: Removes XP pickup cooldown.
   supported_items: minecraft:enchantable/head_armor
+  primary_items:
+    - minecraft:book
   minimum_cost:
     base_cost: 15
     additional_per_level_cost: 8
@@ -2880,7 +2992,6 @@ wbsenchants:wisdom:
   weight: 1
   inject_into:
     - minecraft:on_random_loot
-    - minecraft:tradeable
 wbsenchants:necromancy:
   enabled: true
   display_name: Necromancy
@@ -2897,7 +3008,7 @@ wbsenchants:necromancy:
   weight: 1
   inject_into:
     - minecraft:on_random_loot
-    - minecraft:tradeable
+    # - minecraft:tradeable
 wbsenchants:portal_walker:
   enabled: true
   display_name: Portal Walker
@@ -3027,7 +3138,7 @@ wbsenchants:tailwind:
   weight: 4
   inject_into:
     - minecraft:on_random_loot
-    - minecraft:tradeable
+#    - minecraft:tradeable
 wbsenchants:curse/permanence:
   enabled: true
   display_name: Curse of Permanence
@@ -3045,7 +3156,7 @@ wbsenchants:curse/permanence:
   weight: 1
   inject_into:
     - minecraft:on_random_loot
-    - minecraft:tradeable
+#    - minecraft:tradeable
 wbsenchants:autothermic:
   enabled: true
   display_name: Autothermic
@@ -3075,7 +3186,7 @@ wbsenchants:autothermic:
   inject_into:
     - wbsenchants:heat_based
     - minecraft:on_random_loot
-    - minecraft:tradeable
+#    - minecraft:tradeable
 wbsenchants:shrinking:
   enabled: true
   display_name: Shrinking
@@ -3094,7 +3205,7 @@ wbsenchants:shrinking:
   weight: 1
   inject_into:
     - wbsenchants:exclusive_set/scalable
-    - minecraft:tradeable
+    - minecraft:on_random_loot
 wbsenchants:embiggening:
   enabled: true
   display_name: Embiggening
@@ -3113,7 +3224,7 @@ wbsenchants:embiggening:
   weight: 1
   inject_into:
     - wbsenchants:exclusive_set/scalable
-    - minecraft:tradeable
+    - minecraft:on_random_loot
 wbsenchants:recovery:
   enabled: true
   display_name: Recovery
@@ -3154,7 +3265,7 @@ wbsenchants:recovery:
       villager-profession: weaponsmith
       level: WEIGHTED_SMALL
   inject_into:
-    - minecraft:tradeable
+#    - minecraft:tradeable
 wbsenchants:hypercharged:
   enabled: true
   display_name: Hypercharged
@@ -3199,3 +3310,39 @@ wbsenchants:overpower:
       replace: minecraft:clock
       villager-profession: librarian
       level: WEIGHTED_SMALL
+wbsenchants:clandestine:
+  enabled: true
+  display_name: Clandestine
+  description: Your items are invisible to other players until they're used.
+  supported_items: wbsenchants:enchantable/clandestine
+  minimum_cost:
+    base_cost: 30
+    additional_per_level_cost: 0
+  maximum_cost:
+    base_cost: 45
+    additional_per_level_cost: 0
+  anvil_cost: 1
+  max_level: 1
+  weight: 1
+  inject_into: []
+  generation:
+    death:
+      description: 5% chance to drop when an Illusioner dies
+      # The chance to try adding at all.
+      chance: 5
+      # The chance that, if the above chance was met, this item should be added if no
+      # valid items were already in the drops.
+      # 100 = Always add if no existing drops were enchantable with this
+      # 0 = Only add if one of the drops was enchantable
+      add-chance: 100
+      level:
+        mode: WEIGHTED_SMALL
+      conditions:
+        entity-type: illusioner
+    enchanting-table:
+      # This chance is the chance to add to the pool of *available* enchants -- it does not determine the chance to be added to the item.
+      # Use weight (above) to increase chances of being selected once added to the pool.
+      chance: 100
+      description: On enchanting tables in strongholds
+      conditions:
+        in-structure: minecraft:stronghold

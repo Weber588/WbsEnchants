@@ -1,22 +1,24 @@
 package wbs.enchants.events.enchanting;
 
+import org.bukkit.enchantments.Enchantment;
 import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
-import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
+
+import java.util.Collection;
 
 public class GenerateTableEnchantsEvent extends Event {
     private static final HandlerList HANDLER_LIST = new HandlerList();
-    private final long seed;
-    private final ItemStack stack;
-    private final int salt;
-    private final int cost;
+    private final Collection<@NotNull Enchantment> availableOnTable;
+    private final EnchantingContext context;
 
-    public GenerateTableEnchantsEvent(long seed, ItemStack stack, int salt, int cost) {
-        this.seed = seed;
-        this.stack = stack;
-        this.salt = salt;
-        this.cost = cost;
+    public GenerateTableEnchantsEvent(Collection<@NotNull Enchantment> availableOnTable, EnchantingContext context) {
+        this.availableOnTable = availableOnTable;
+        this.context = context;
+    }
+
+    public Collection<@NotNull Enchantment> getAvailableOnTable() {
+        return availableOnTable;
     }
 
     public @NotNull HandlerList getHandlers() {
@@ -24,5 +26,9 @@ public class GenerateTableEnchantsEvent extends Event {
     }
     public static @NotNull HandlerList getHandlerList() {
         return HANDLER_LIST;
+    }
+
+    public EnchantingContext getContext() {
+        return context;
     }
 }

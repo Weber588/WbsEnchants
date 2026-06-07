@@ -81,6 +81,7 @@ public final class WbsEnchantsBootstrap implements PluginBootstrap {
     public static final TagKey<ItemType> ENCHANTABLE_SCALABLE_UP = ItemTypeTagKeys.create(createKey("enchantable/scalable_up"));
     public static final TagKey<ItemType> ENCHANTABLE_SCALABLE_DOWN = ItemTypeTagKeys.create(createKey("enchantable/scalable_down"));
     public static final TagKey<ItemType> ENCHANTABLE_HYPERCHARGED = ItemTypeTagKeys.create(createKey("enchantable/hypercharged"));
+    public static final TagKey<ItemType> ENCHANTABLE_CLANDESTINE = ItemTypeTagKeys.create(createKey("enchantable/clandestine"));
 
     // TODO: Put this somewhere proper (config?)
     private static List<CustomTag<ItemType>> getItemTags() {
@@ -357,6 +358,13 @@ public final class WbsEnchantsBootstrap implements PluginBootstrap {
                                 ItemTypeKeys.EXPERIENCE_BOTTLE
                         ),
                         Set.of()
+                ),
+                new CustomTag<>(ENCHANTABLE_CLANDESTINE,
+                        Set.of(),
+                        Set.of(
+                                TagEntry.tagEntry(ItemTypeTagKeys.ENCHANTABLE_ARMOR, true),
+                                TagEntry.tagEntry(ItemTypeTagKeys.ENCHANTABLE_WEAPON, true)
+                        )
                 )
         );
     }
