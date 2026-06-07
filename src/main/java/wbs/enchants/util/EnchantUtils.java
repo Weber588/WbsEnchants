@@ -1,5 +1,7 @@
 package wbs.enchants.util;
 
+import io.papermc.paper.datacomponent.DataComponentTypes;
+import io.papermc.paper.datacomponent.item.ItemEnchantments;
 import io.papermc.paper.registry.RegistryAccess;
 import io.papermc.paper.registry.RegistryKey;
 import io.papermc.paper.registry.TypedKey;
@@ -23,7 +25,10 @@ import wbs.enchants.definition.EnchantmentExtension;
 import wbs.enchants.definition.EnchantmentWrapper;
 import wbs.enchants.type.EnchantmentTypeManager;
 
-import java.util.*;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 @SuppressWarnings("UnstableApiUsage")
@@ -55,9 +60,12 @@ public class EnchantUtils {
     }
 
     public static void addEnchantment(Enchantment enchantment, @NotNull ItemStack item, int level) {
-        if (item.getItemMeta() instanceof EnchantmentStorageMeta meta) {
-            meta.addStoredEnchant(enchantment, level, true);
-            item.setItemMeta(meta);
+        ItemEnchantments storedEnchants = item.getData(DataComponentTypes.STORED_ENCHANTMENTS);
+        if (storedEnchants != null) {
+            item.setData(DataComponentTypes.STORED_ENCHANTMENTS, ItemEnchantments.itemEnchantments()
+                    .addAll(storedEnchants.enchantments())
+                    .add(enchantment, level)
+                    .build());
         } else {
             item.addUnsafeEnchantment(enchantment, level);
         }

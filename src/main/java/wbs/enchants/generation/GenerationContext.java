@@ -9,6 +9,7 @@ import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Listener;
+import org.checkerframework.common.value.qual.IntRange;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -212,6 +213,7 @@ public abstract class GenerationContext implements Listener {
             this(definition, staticLevel, 2, LevelMode.STATIC);
         }
 
+        @IntRange(from = 1)
         public int getLevel() {
             int maxLevel = definition.maxLevel();
             if (maxLevel == 0) {
@@ -231,7 +233,8 @@ public abstract class GenerationContext implements Listener {
                     } else {
                         toReturn += 1;
                     }
-                    yield toReturn;
+
+                    yield Math.clamp(toReturn, 1, maxLevel);
                 }
             };
         }
