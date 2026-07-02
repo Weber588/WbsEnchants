@@ -1,5 +1,4 @@
 import xyz.jpenilla.resourcefactory.bukkit.BukkitPluginYaml
-import xyz.jpenilla.resourcefactory.bukkit.bukkitPluginYaml
 import xyz.jpenilla.resourcefactory.paper.PaperPluginYaml
 
 plugins {
@@ -11,7 +10,7 @@ plugins {
 
 group = "io.papermc.paperweight"
 version = "1.0.0-SNAPSHOT"
-description = "Test plugin for paperweight-userdev"
+description = "Enchantments plugin for Paper"
 
 java {
     // Configure the java toolchain. This allows gradle to auto-provision JDK 21 on systems that only have JDK 11 installed for example.
@@ -35,11 +34,10 @@ repositories {
 }
 
 dependencies {
-    paperweight.paperDevBundle("26.1.2.build.+")
-    // paperweight.foliaDevBundle("1.21.8-R0.1-SNAPSHOT")
-    // paperweight.devBundle("com.example.paperfork", "1.21.8-R0.1-SNAPSHOT")
-    implementation("io.github.Weber588:WbsUtils:1.0-SNAPSHOT")
-    implementation("net.kyori:adventure-text-serializer-ansi:4.24.0")
+    paperweight.paperDevBundle(libs.versions.io.papermc.paper.paper.api)
+
+    api(libs.net.kyori.adventure.text.serializer.ansi)
+    compileOnly(libs.io.github.weber588.wbsutils)
 }
 
 tasks {
@@ -69,7 +67,7 @@ paperPluginYaml {
     main = "wbs.enchants.WbsEnchants"
     bootstrapper = "wbs.enchants.WbsEnchantsBootstrap"
     authors.add("Weber588")
-    apiVersion = "26.2.1"
+    apiVersion = "26.2"
     dependencies {
         bootstrap.create("WbsUtils", {
             load = PaperPluginYaml.Load.BEFORE

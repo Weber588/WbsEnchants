@@ -1,9 +1,8 @@
 package wbs.enchants.events;
 
+import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
-import org.bukkit.entity.Entity;
-import org.bukkit.entity.LivingEntity;
-import org.bukkit.entity.Player;
+import org.bukkit.entity.*;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
@@ -12,6 +11,7 @@ import org.bukkit.event.entity.PlayerLeashEntityEvent;
 import org.bukkit.inventory.EntityEquipment;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.persistence.PersistentDataContainer;
+import wbs.enchants.WbsEnchants;
 import wbs.enchants.WbsEnchantsBootstrap;
 import wbs.utils.util.persistent.WbsPersistentDataType;
 
@@ -24,6 +24,16 @@ public class LeashEvents implements Listener {
         EntityEquipment equipment = player.getEquipment();
 
         ItemStack item = equipment.getItem(event.getHand());
+
+        if (item.getType() != Material.LEAD) {
+            return;
+        }
+
+        if (!item.getEnchantments().isEmpty() &&  event.getEntity().getType() == EntityType.LEASH_KNOT) {
+            WbsEnchants.getInstance().sendMessage("Attaching enchanted leads to fences is currently disabled :(", player);
+            event.setCancelled(true);
+            return;
+        }
 
         Entity entity = event.getEntity();
 

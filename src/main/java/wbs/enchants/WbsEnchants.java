@@ -64,7 +64,6 @@ public final class WbsEnchants extends WbsPlugin {
                 new SubcommandAdd(this),
                 new SubcommandClear(this),
                 new SubcommandTagInfo(this),
-                new SubcommandGuidebook(this),
                 new SubcommandSupported(this),
                 new SubcommandBlock(this),
                 new SubcommandEnchant(this),

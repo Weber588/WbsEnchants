@@ -23,12 +23,12 @@ public class Guidebook {
         WbsEnchants plugin = WbsEnchants.getInstance();
 
         Component title = Component.text("Enchanting Guide")
-                .color(plugin.getTextHighlightColour())
-                .style(Style.style(TextDecoration.UNDERLINED, TextDecoration.BOLD));
+                .style(plugin.getHighlightStyle())
+                .applyFallbackStyle(Style.style(TextDecoration.UNDERLINED, TextDecoration.BOLD));
 
         Component author = Component.text(plugin.getName())
-                .color(plugin.getTextColour())
-                .style(Style.style(TextDecoration.ITALIC));
+                .style(plugin.getDefaultStyle())
+                .applyFallbackStyle(Style.style(TextDecoration.ITALIC));
 
         Guidebook guidebook = new Guidebook(title, author);
 
