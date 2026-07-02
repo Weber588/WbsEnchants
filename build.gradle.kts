@@ -37,7 +37,7 @@ dependencies {
     paperweight.paperDevBundle(libs.versions.io.papermc.paper.paper.api)
 
     api(libs.net.kyori.adventure.text.serializer.ansi)
-    compileOnly(libs.io.github.weber588.wbsutils)
+    implementation(libs.io.github.weber588.wbsutils)
 }
 
 tasks {

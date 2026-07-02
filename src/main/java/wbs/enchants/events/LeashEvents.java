@@ -60,6 +60,7 @@ public class LeashEvents implements Listener {
         if (container.has(LEASH_ITEM_KEY, WbsPersistentDataType.ITEM)) {
             ItemStack item = container.get(LEASH_ITEM_KEY, WbsPersistentDataType.ITEM);
             if (item != null) {
+                event.setDropLeash(false);
                 entity.getWorld().dropItemNaturally(entity.getEyeLocation(), item);
                 entity.setLeashHolder(null);
             }
