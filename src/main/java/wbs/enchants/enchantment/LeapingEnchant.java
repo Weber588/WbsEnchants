@@ -20,11 +20,18 @@ public class LeapingEnchant extends WbsEnchantment {
     public LeapingEnchant() {
         super("leaping", DEFAULT_DESCRIPTION);
 
-        EnchantmentAttributeEffect attributeEffect = new EnchantmentAttributeEffect(
+        EnchantmentAttributeEffect jumpHeightEffect = new EnchantmentAttributeEffect(
                 Identifier.fromNamespaceAndPath(WbsEnchantsBootstrap.NAMESPACE, key().value()),
                 Attributes.JUMP_STRENGTH,
-                LevelBasedValue.perLevel(0.05f, 0.05f),
+                LevelBasedValue.perLevel(0.1f, 0.1f),
                 AttributeModifier.Operation.ADD_MULTIPLIED_BASE
+        );
+
+        EnchantmentAttributeEffect fallDamageEffect = new EnchantmentAttributeEffect(
+                Identifier.fromNamespaceAndPath(WbsEnchantsBootstrap.NAMESPACE, key().value()),
+                Attributes.SAFE_FALL_DISTANCE,
+                LevelBasedValue.perLevel(1.5f, 1.5f),
+                AttributeModifier.Operation.ADD_VALUE
         );
 
         getDefinition()
@@ -32,6 +39,9 @@ public class LeapingEnchant extends WbsEnchantment {
                 .activeSlots(EquipmentSlotGroup.SADDLE)
                 .maxLevel(3)
                 .effects()
-                    .set(EnchantmentEffectComponents.ATTRIBUTES, List.of(attributeEffect));
+                    .set(EnchantmentEffectComponents.ATTRIBUTES, List.of(
+                            jumpHeightEffect,
+                            fallDamageEffect
+                    ));
     }
 }

@@ -510,7 +510,7 @@ public interface BlockEnchant extends EnchantInterface, AutoRegistrableEnchant {
     private @Nullable Integer removeEnchant(Block block) {
         return removeEnchant(block, getThisEnchantment());
     }
-    private static @Nullable Integer removeEnchant(Block block, WbsEnchantment enchant) {
+    static @Nullable Integer removeEnchant(Block block, WbsEnchantment enchant) {
         return removeEnchant(block, enchant.getKey());
     }
     private static @Nullable Integer removeEnchant(Block block, NamespacedKey key) {

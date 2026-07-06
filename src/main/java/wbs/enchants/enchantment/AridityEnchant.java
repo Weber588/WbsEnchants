@@ -8,9 +8,12 @@ import org.bukkit.inventory.ItemStack;
 import wbs.enchants.WbsEnchantment;
 import wbs.enchants.WbsEnchants;
 import wbs.enchants.WbsEnchantsBootstrap;
+import wbs.enchants.enchantment.helper.BlockEnchant;
 import wbs.enchants.enchantment.helper.NonPersistentBlockEnchant;
 import wbs.enchants.enchantment.helper.SpongeEnchant;
 import wbs.enchants.util.EntityUtils;
+
+import java.util.Map;
 
 public class AridityEnchant extends WbsEnchantment implements NonPersistentBlockEnchant, SpongeEnchant {
     private static final String DEFAULT_DESCRIPTION = "The sponge automatically returns to your " +
@@ -50,6 +53,14 @@ public class AridityEnchant extends WbsEnchantment implements NonPersistentBlock
 
             EntityUtils.giveSafely(player, cloned);
             block.setType(Material.AIR);
+
+            Map<BlockEnchant, Integer> enchantments = BlockEnchant.getEnchantments(block);
+            if (!enchantments.isEmpty()) {
+                enchantments.keySet().forEach(ench -> {
+                    BlockEnchant.removeEnchant(block, ench.getThisEnchantment());
+                });
+                BlockEnchant.removeEnchantmentGlints(block);
+            }
         });
     }
 }

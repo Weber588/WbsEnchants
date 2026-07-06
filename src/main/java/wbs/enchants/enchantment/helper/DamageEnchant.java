@@ -11,7 +11,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import wbs.enchants.util.EventUtils;
 
-public interface DamageEnchant extends EnchantInterface, AutoRegistrableEnchant {
+public interface DamageEnchant extends DamageEventEnchant, EnchantInterface, AutoRegistrableEnchant {
     default void registerDamageEvent() {
         EventUtils.register(EntityDamageByEntityEvent.class, this::onDamage, getEventPriority(), ignoreCancelled());
     }
@@ -22,24 +22,9 @@ public interface DamageEnchant extends EnchantInterface, AutoRegistrableEnchant 
 
         if (!(entity instanceof Damageable victim)) return;
 
-        LivingEntity attacker = null;
-        Projectile projectile = null;
-
-        if (damager instanceof LivingEntity) {
-            attacker = (LivingEntity) damager;
-        } else if (damager instanceof Projectile) {
-            projectile = (Projectile) damager;
-            ProjectileSource source = projectile.getShooter();
-            if (source instanceof LivingEntity) {
-                attacker = (LivingEntity) source;
-            }
-        }
-
-        if (attacker == null) {
-            return;
-        }
-
-        handleAttack(event, attacker, victim, projectile);
+        handleDamageEvent(damager, (attacker, projectile) -> {
+            handleAttack(event, attacker, victim, projectile);
+        });
     }
 
     void handleAttack(@NotNull EntityDamageByEntityEvent event,

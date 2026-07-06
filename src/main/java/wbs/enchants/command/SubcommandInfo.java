@@ -58,14 +58,15 @@ public class SubcommandInfo extends EnchantmentSubcommand {
 
             JoinConfiguration joinConfig = JoinConfiguration.builder()
                     .separator(Component.text("\n"))
-                    .parentStyle(Style.style(plugin.getTextColour()))
+                    .parentStyle(plugin.getDefaultStyle())
                     .build();
 
             Component mergedDescription = Component.join(joinConfig, description)
-                    .color(plugin.getTextColour());
+                    .style(plugin.getDefaultStyle());
 
             builder.append(mergedDescription)
-                    .append("\n" + plugin.prefix + " " + plugin.getColour() + line)
+                    .append("\n")
+                    .append(plugin.getFormattedMessage(line))
                     .send(sender);
         });
 

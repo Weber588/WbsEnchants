@@ -2,10 +2,7 @@ package wbs.enchants.events;
 
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
-import org.bukkit.entity.Entity;
-import org.bukkit.entity.EntityType;
-import org.bukkit.entity.LivingEntity;
-import org.bukkit.entity.Player;
+import org.bukkit.entity.*;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
@@ -63,9 +60,9 @@ public class LeashEvents implements Listener {
         if (container.has(LEASH_ITEM_KEY, WbsPersistentDataType.ITEM)) {
             ItemStack item = container.get(LEASH_ITEM_KEY, WbsPersistentDataType.ITEM);
             if (item != null) {
+                event.setDropLeash(false);
                 entity.getWorld().dropItemNaturally(entity.getEyeLocation(), item);
                 entity.setLeashHolder(null);
-                event.setDropLeash(false);
             }
         }
     }
