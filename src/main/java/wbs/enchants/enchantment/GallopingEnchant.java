@@ -23,7 +23,7 @@ public class GallopingEnchant extends WbsEnchantment {
         EnchantmentAttributeEffect movementSpeed = new EnchantmentAttributeEffect(
                 Identifier.fromNamespaceAndPath(WbsEnchantsBootstrap.NAMESPACE, key().value()),
                 Attributes.MOVEMENT_SPEED,
-                LevelBasedValue.perLevel(0.1f, 0.1f),
+                LevelBasedValue.perLevel(0.15f, 0.15f),
                 AttributeModifier.Operation.ADD_MULTIPLIED_BASE
         );
 
