@@ -4,6 +4,7 @@ import io.papermc.paper.registry.keys.tags.ItemTypeTagKeys;
 import org.bukkit.Particle;
 import org.bukkit.Sound;
 import org.bukkit.entity.*;
+import org.bukkit.event.EventPriority;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.inventory.EntityEquipment;
 import org.bukkit.inventory.ItemStack;
@@ -37,6 +38,11 @@ public class DefusalEnchant extends WbsEnchantment implements DamageEnchant {
                 .weight(5)
                 .supportedItems(ItemTypeTagKeys.ENCHANTABLE_WEAPON)
                 .exclusiveInject(WbsEnchantsBootstrap.EXCLUSIVE_SET_DEFUSAL);
+    }
+
+    @Override
+    public @NotNull EventPriority getEventPriority() {
+        return EventPriority.MONITOR;
     }
 
     @Override

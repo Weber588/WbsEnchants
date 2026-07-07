@@ -6,6 +6,7 @@ import org.bukkit.entity.Entity;
 import org.bukkit.entity.EvokerFangs;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Projectile;
+import org.bukkit.event.EventPriority;
 import org.bukkit.event.entity.CreatureSpawnEvent;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.inventory.EquipmentSlot;
@@ -29,6 +30,11 @@ public class FangedEnchant extends WbsEnchantment implements DamageEnchant {
         getDefinition()
                 .maxLevel(3)
                 .supportedItems(ItemTypeTagKeys.ENCHANTABLE_HEAD_ARMOR);
+    }
+
+    @Override
+    public @NotNull EventPriority getEventPriority() {
+        return EventPriority.MONITOR;
     }
 
     @Override

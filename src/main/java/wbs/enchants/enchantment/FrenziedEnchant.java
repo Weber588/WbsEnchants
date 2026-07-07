@@ -5,6 +5,7 @@ import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Projectile;
+import org.bukkit.event.EventPriority;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.inventory.EntityEquipment;
 import org.bukkit.inventory.ItemStack;
@@ -33,6 +34,10 @@ public class FrenziedEnchant extends WbsEnchantment implements DamageEnchant {
                 .targetDescription("Shovel");
     }
 
+    @Override
+    public @NotNull EventPriority getEventPriority() {
+        return EventPriority.MONITOR;
+    }
 
     @Override
     public void handleAttack(@NotNull EntityDamageByEntityEvent event, @NotNull LivingEntity attacker, @NotNull Entity victim, @Nullable Projectile projectile) {

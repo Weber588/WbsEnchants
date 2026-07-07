@@ -7,6 +7,7 @@ import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Projectile;
+import org.bukkit.event.EventPriority;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
@@ -43,6 +44,11 @@ public class LightweightEnchant extends WbsEnchantment implements DamageEnchant 
         super.configure(section, directory);
 
         blockChance = section.getDouble("max-block-chance", blockChance);
+    }
+
+    @Override
+    public @NotNull EventPriority getEventPriority() {
+        return EventPriority.HIGHEST;
     }
 
     @Override

@@ -4,6 +4,7 @@ import io.papermc.paper.registry.keys.tags.EnchantmentTagKeys;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Projectile;
+import org.bukkit.event.EventPriority;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.inventory.EntityEquipment;
 import org.bukkit.inventory.ItemStack;
@@ -30,6 +31,11 @@ public class ResilienceEnchant extends WbsEnchantment implements DamageEnchant {
                 .supportedItems(WbsEnchantsBootstrap.ENCHANTABLE_ALL_ARMOR)
                 .exclusiveInject(EnchantmentTagKeys.EXCLUSIVE_SET_ARMOR)
                 .weight(5);
+    }
+
+    @Override
+    public @NotNull EventPriority getEventPriority() {
+        return EventPriority.MONITOR;
     }
 
     @Override

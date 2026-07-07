@@ -2,6 +2,7 @@ package wbs.enchants.enchantment;
 
 import io.papermc.paper.registry.keys.tags.ItemTypeTagKeys;
 import org.bukkit.entity.*;
+import org.bukkit.event.EventPriority;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.inventory.ItemStack;
@@ -19,6 +20,11 @@ public class CautiousnessEnchant extends WbsEnchantment implements DamageEnchant
 
         getDefinition()
                 .supportedItems(ItemTypeTagKeys.ENCHANTABLE_WEAPON);
+    }
+
+    @Override
+    public @NotNull EventPriority getEventPriority() {
+        return EventPriority.LOWEST;
     }
 
     @Override

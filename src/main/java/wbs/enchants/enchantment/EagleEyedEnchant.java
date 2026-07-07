@@ -6,6 +6,7 @@ import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Projectile;
+import org.bukkit.event.EventPriority;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
@@ -22,6 +23,11 @@ public class EagleEyedEnchant extends WbsEnchantment implements DamageEnchant {
 
         getDefinition()
                 .supportedItems(ItemTypeTagKeys.ENCHANTABLE_HEAD_ARMOR);
+    }
+
+    @Override
+    public @NotNull EventPriority getEventPriority() {
+        return EventPriority.MONITOR;
     }
 
     @Override

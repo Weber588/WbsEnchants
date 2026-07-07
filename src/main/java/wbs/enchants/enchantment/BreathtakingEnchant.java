@@ -4,6 +4,7 @@ import io.papermc.paper.registry.keys.ItemTypeKeys;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Projectile;
+import org.bukkit.event.EventPriority;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
@@ -19,6 +20,11 @@ public class BreathtakingEnchant extends WbsEnchantment implements DamageEnchant
 
         getDefinition()
                 .supportedItems(ItemTypeKeys.TRIDENT);
+    }
+
+    @Override
+    public @NotNull EventPriority getEventPriority() {
+        return EventPriority.MONITOR;
     }
 
     @Override

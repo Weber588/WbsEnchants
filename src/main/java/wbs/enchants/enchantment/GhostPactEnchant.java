@@ -9,6 +9,7 @@ import org.bukkit.attribute.AttributeInstance;
 import org.bukkit.attribute.AttributeModifier;
 import org.bukkit.entity.*;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
 import org.bukkit.event.entity.CreatureSpawnEvent;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
@@ -45,6 +46,11 @@ public class GhostPactEnchant extends WbsEnchantment implements DamageEnchant {
                 .maxLevel(4)
                 .exclusiveInject(WbsEnchantsBootstrap.EXCLUSIVE_SET_ARMOR_RETALIATION)
                 .supportedItems(WbsEnchantsBootstrap.ENCHANTABLE_ALL_ARMOR);
+    }
+
+    @Override
+    public @NotNull EventPriority getEventPriority() {
+        return EventPriority.MONITOR;
     }
 
     @Override

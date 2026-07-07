@@ -5,6 +5,7 @@ import org.bukkit.Particle;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Projectile;
+import org.bukkit.event.EventPriority;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
@@ -30,6 +31,11 @@ public class ArcticStrikeEnchant extends WbsEnchantment implements DamageEnchant
                 .addInjectInto(WbsEnchantsBootstrap.COLD_BASED_ENCHANTS)
                 .minimumCost(5, 6)
                 .maximumCost(25, 6);
+    }
+
+    @Override
+    public @NotNull EventPriority getEventPriority() {
+        return EventPriority.MONITOR;
     }
 
     @Override

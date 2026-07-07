@@ -3,6 +3,7 @@ package wbs.enchants.enchantment;
 import io.papermc.paper.registry.keys.tags.ItemTypeTagKeys;
 import org.bukkit.NamespacedKey;
 import org.bukkit.entity.*;
+import org.bukkit.event.EventPriority;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.inventory.EntityEquipment;
 import org.bukkit.inventory.ItemStack;
@@ -34,6 +35,11 @@ public class PilferingEnchant extends WbsEnchantment implements DamageEnchant {
                 .maxLevel(3)
                 .weight(10);
         // TODO: exclusiveWith = Create set for Looting
+    }
+
+    @Override
+    public @NotNull EventPriority getEventPriority() {
+        return EventPriority.MONITOR;
     }
 
     @Override

@@ -44,6 +44,12 @@ public class DualWieldEnchant extends WbsEnchantment implements DamageEnchant {
     }
 
     @Override
+    public boolean ignoreCancelled() {
+        // Always try the 2nd swing; ideally this would be a (mostly) client side enchant
+        return false;
+    }
+
+    @Override
     public void handleAttack(@NotNull EntityDamageByEntityEvent event, @NotNull LivingEntity attacker, @NotNull Entity victim, @Nullable Projectile projectile) {
         if (event.getCause() == EntityDamageEvent.DamageCause.THORNS) {
             return;
@@ -127,7 +133,7 @@ public class DualWieldEnchant extends WbsEnchantment implements DamageEnchant {
                     attacker.swingOffHand();
                     DUAL_SWING_TASKS.remove(attacker.getUniqueId());
                 }
-            }.runTaskLater(WbsEnchants.getInstance(), (long) delayTicks).getTaskId();
+            }.runTaskLater(WbsEnchants.getInstance(), delayTicks).getTaskId();
 
             DUAL_SWING_TASKS.put(attacker.getUniqueId(), taskId);
         }

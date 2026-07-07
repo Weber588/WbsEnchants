@@ -7,6 +7,7 @@ import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Projectile;
+import org.bukkit.event.EventPriority;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.potion.PotionEffect;
@@ -50,6 +51,12 @@ public class FrostburnEnchant extends TargetedDamageEnchant {
         return Arrays.stream(EntityType.values())
                 .filter(EntityUtils::isColdVulnerable)
                 .collect(Collectors.toSet());
+    }
+
+    @Override
+    public @NotNull EventPriority getEventPriority() {
+        // Can't use monitor, parent class modifies damage
+        return EventPriority.HIGHEST;
     }
 
     @Override
