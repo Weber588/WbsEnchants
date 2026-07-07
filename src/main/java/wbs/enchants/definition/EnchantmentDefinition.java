@@ -556,7 +556,7 @@ public class EnchantmentDefinition extends EnchantmentWrapper implements Compara
         return lineStart.append(Component.join(
                 JoinConfiguration.builder()
                         .separator(lineStart)
-                        .parentStyle(WbsEnchants.getInstance().getHighlightStyle())
+                        .parentStyle(Style.style(WbsEnchants.getInstance().getTextHighlightColour()))
                         .build(),
                 methodComponents));
     }
@@ -570,7 +570,7 @@ public class EnchantmentDefinition extends EnchantmentWrapper implements Compara
 
         if (isTagged(EnchantmentTagKeys.IN_ENCHANTING_TABLE)) {
             TextComponent lineStart = Component.text("   > ")
-                    .style(WbsEnchants.getInstance().getHighlightStyle());
+                    .color(WbsEnchants.getInstance().getTextHighlightColour());
 
             Component tableTargetDescription = null;
 
@@ -661,7 +661,7 @@ public class EnchantmentDefinition extends EnchantmentWrapper implements Compara
 
         JoinConfiguration joinConfig = JoinConfiguration.builder()
                 .separator(Component.text("\n"))
-                .parentStyle(WbsEnchants.getInstance().getDefaultStyle())
+                .parentStyle(Style.style(WbsEnchants.getInstance().getTextColour()))
                 .build();
 
         return Component.join(joinConfig, descriptionComponents);
@@ -784,7 +784,7 @@ public class EnchantmentDefinition extends EnchantmentWrapper implements Compara
                 .hoverEvent(
                         getHoverText(options).append(
                         Component.text("\n\nClick to view full info!")
-                                .style(WbsEnchants.getInstance().getDefaultStyle())
+                                .color(WbsEnchants.getInstance().getTextColour())
                         )
                 ).clickEvent(ClickEvent.runCommand("/" +
                                 WbsEnchants.getInstance().getName().toLowerCase()
@@ -812,7 +812,7 @@ public class EnchantmentDefinition extends EnchantmentWrapper implements Compara
 
     public @NotNull Component targetDescription() {
         return getTargetDescription(
-                Component.text("\n - ").style(WbsEnchants.getInstance().getHighlightStyle())
+                Component.text("\n - ").color(WbsEnchants.getInstance().getTextHighlightColour())
         );
     }
     public @NotNull Component getTargetDescription(Component lineBreak) {

@@ -71,7 +71,7 @@ public class GhostPactEnchant extends WbsEnchantment implements DamageEnchant {
                                 summoned.setLimitedLifetimeTicks(200);
                                 summoned.setTarget(attacker);
                                 if (livingVictim instanceof Mob mob) {
-                                    summoned.setOwner(mob);
+                                    summoned.setSummoner(mob);
                                 }
 
                                 AttributeInstance movementAttribute = summoned.getAttribute(Attribute.MOVEMENT_SPEED);

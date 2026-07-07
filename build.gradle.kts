@@ -1,4 +1,5 @@
 import xyz.jpenilla.resourcefactory.bukkit.BukkitPluginYaml
+import xyz.jpenilla.resourcefactory.bukkit.bukkitPluginYaml
 import xyz.jpenilla.resourcefactory.paper.PaperPluginYaml
 
 plugins {
@@ -10,7 +11,7 @@ plugins {
 
 group = "io.papermc.paperweight"
 version = "1.0.0-SNAPSHOT"
-description = "Enchantments plugin for Paper"
+description = "Test plugin for paperweight-userdev"
 
 java {
     // Configure the java toolchain. This allows gradle to auto-provision JDK 21 on systems that only have JDK 11 installed for example.
@@ -67,7 +68,7 @@ paperPluginYaml {
     main = "wbs.enchants.WbsEnchants"
     bootstrapper = "wbs.enchants.WbsEnchantsBootstrap"
     authors.add("Weber588")
-    apiVersion = "26.2"
+    apiVersion = "26.2.1"
     dependencies {
         bootstrap.create("WbsUtils", {
             load = PaperPluginYaml.Load.BEFORE

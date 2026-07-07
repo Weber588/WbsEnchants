@@ -66,13 +66,14 @@ public class SubcommandHeld extends WbsSubcommand {
                 enchantComponents.add(def.interactiveDisplay().append(Component.text(" " + RomanNumerals.toRoman(level))));
             }
         }
-        Component lineBreak = Component.text("\n - ").style(plugin.getHighlightStyle());
+        Component lineBreak = Component.text("\n - ").color(plugin.getTextHighlightColour());
 
         Component enchantsMessage = Component.join(
                 JoinConfiguration.builder().separator(
                         lineBreak
-                ).parentStyle(plugin.getDefaultStyle())
-                .build(),
+                ).parentStyle(
+                        Style.style(plugin.getTextColour())
+                ).build(),
                 enchantComponents
         );
 

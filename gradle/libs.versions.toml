@@ -1,8 +1,0 @@
-[versions]
-io-papermc-paper-paper-api = "26.2.build.+"
-io-github-weber588-wbsutils = "2.0-SNAPSHOT"
-net-kyori-adventure-text-serializer-ansi = "5.2.0"
-
-[libraries]
-net-kyori-adventure-text-serializer-ansi = { module = "net.kyori:adventure-text-serializer-ansi", version.ref = "net-kyori-adventure-text-serializer-ansi" }
-io-github-weber588-wbsutils = { module = "io.github.Weber588:WbsUtils", version.ref = "io-github-weber588-wbsutils" }
