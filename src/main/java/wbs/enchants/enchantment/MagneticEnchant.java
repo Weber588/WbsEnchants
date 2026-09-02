@@ -1,6 +1,10 @@
 package wbs.enchants.enchantment;
 
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.entity.item.ItemEntity;
 import org.bukkit.configuration.ConfigurationSection;
+import org.bukkit.craftbukkit.entity.CraftItem;
+import org.bukkit.craftbukkit.entity.CraftPlayer;
 import org.bukkit.entity.Item;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
@@ -63,28 +67,44 @@ public class MagneticEnchant extends WbsEnchantment implements TickableEnchant {
                         return;
                     }
 
-                    PlayerInventory inventory = player.getInventory();
-                    ItemStack stack = item.getItemStack();
-                    HashMap<Integer, ItemStack> failed = inventory.addItem(stack);
+                    try {
+                        tryNMSPickup((CraftPlayer) player, (CraftItem) item);
+                        return;
+                    } catch (Exception ignored) {}
 
-                    int failedAmount = 0;
-                    for (ItemStack failedItem : failed.values()) {
-                        failedAmount += failedItem.getAmount();
-                    }
-
-                    int pickedUp = stack.getAmount() - failedAmount;
-
-                    if (pickedUp > 0) {
-                        player.playPickupItemAnimation(item, pickedUp);
-                    }
-
-                    if (failedAmount == 0) {
-                        item.remove();
-                    } else {
-                        stack.setAmount(failedAmount);
-
-                        item.setItemStack(stack);
-                    }
+                    bukkitPickup(player, item);
                 });
+    }
+
+    private static void bukkitPickup(Player player, Item item) {
+        PlayerInventory inventory = player.getInventory();
+        ItemStack stack = item.getItemStack();
+        HashMap<Integer, ItemStack> failed = inventory.addItem(stack);
+
+        int failedAmount = 0;
+        for (ItemStack failedItem : failed.values()) {
+            failedAmount += failedItem.getAmount();
+        }
+
+        int pickedUp = stack.getAmount() - failedAmount;
+
+        if (pickedUp > 0) {
+            player.playPickupItemAnimation(item, pickedUp);
+        }
+
+        if (failedAmount == 0) {
+            item.remove();
+        } else {
+            stack.setAmount(failedAmount);
+
+            item.setItemStack(stack);
+        }
+    }
+
+    private static void tryNMSPickup(CraftPlayer player, CraftItem item) {
+        ItemEntity nmsItem = item.getHandle();
+
+        ServerPlayer serverPlayer = player.getHandle();
+        nmsItem.playerTouch(serverPlayer);
     }
 }
