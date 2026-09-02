@@ -27,8 +27,7 @@ public class LeashEvents implements Listener {
 
         Entity entity = event.getEntity();
 
-        ItemStack clone = item.clone();
-        clone.setAmount(1);
+        ItemStack clone = item.asOne();
 
         PersistentDataContainer container = entity.getPersistentDataContainer();
 

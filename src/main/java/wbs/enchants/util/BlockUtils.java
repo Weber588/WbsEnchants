@@ -1,9 +1,18 @@
 package wbs.enchants.util;
 
+import net.minecraft.world.item.Item;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.Blocks;
 import org.bukkit.Axis;
+import org.bukkit.Material;
 import org.bukkit.block.BlockFace;
+import org.bukkit.craftbukkit.block.CraftBlockType;
+import org.bukkit.craftbukkit.entity.CraftItem;
+import org.bukkit.craftbukkit.inventory.CraftItemType;
+import org.bukkit.inventory.ItemStack;
 import org.bukkit.util.Vector;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.Set;
 
@@ -53,5 +62,20 @@ public class BlockUtils {
             case DOWN -> Axis.Y;
             default -> throw new IllegalArgumentException("BlockFace %s is not axis aligned.".formatted(face.toString()));
         };
+    }
+
+    @Nullable
+    public static Material getPlacementMaterial(@Nullable ItemStack item) {
+        if (item == null) {
+            return null;
+        }
+        Item nmsItemType = CraftItemType.bukkitToMinecraft(item.getType());
+        Block nmsBlockType = Block.byItem(nmsItemType);
+
+        if (nmsBlockType == Blocks.AIR) {
+            return null;
+        }
+
+        return CraftBlockType.minecraftToBukkit(nmsBlockType);
     }
 }

@@ -30,8 +30,7 @@ public class FrenziedEnchant extends WbsEnchantment implements DamageEnchant {
 
         getDefinition()
                 .supportedItems(ItemTypeTagKeys.ENCHANTABLE_WEAPON)
-                .weight(5)
-                .targetDescription("Shovel");
+                .weight(5);
     }
 
     @Override

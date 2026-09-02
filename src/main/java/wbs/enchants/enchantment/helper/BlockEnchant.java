@@ -227,7 +227,7 @@ public interface BlockEnchant extends EnchantInterface, AutoRegistrableEnchant {
         EventUtils.register(BlockPistonRetractEvent.class, this::onPistonRetract, EventPriority.LOWEST, true);
 
         EventUtils.register(BlockPlaceEvent.class, this::onPlace, EventPriority.NORMAL, true);
-        EventUtils.register(BlockDropItemEvent.class, this::onDrop, EventPriority.NORMAL, true);
+        EventUtils.register(BlockDropItemEvent.class, this::onDrop, EventPriority.HIGHEST, true);
 
         EventUtils.register(BlockBreakBlockEvent.class, this::onBlockBreakBlock, EventPriority.HIGHEST, true);
         EventUtils.register(BlockExplodeEvent.class, this::onExplode, EventPriority.HIGHEST, true);
@@ -531,8 +531,9 @@ public interface BlockEnchant extends EnchantInterface, AutoRegistrableEnchant {
     //region Enchantment Glints
 
     static void createEnchantmentGlint(Block block, @Nullable Material renderAs) {
-        BlockData realData = block.getBlockData();
-        BlockData data = renderAs == null ? realData : renderAs.createBlockData().merge(realData);
+        // Merge requires data to have been created from string method; convert back and forth
+        BlockData realData = Bukkit.createBlockData(block.getBlockData().getAsString());
+        BlockData data = renderAs == null ? realData : Bukkit.createBlockData(renderAs.createBlockData().getAsString()).merge(realData);
         createEnchantmentGlint(block, data);
     }
     static void createEnchantmentGlint(Block block, @NotNull BlockData renderAs) {

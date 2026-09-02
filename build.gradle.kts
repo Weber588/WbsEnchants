@@ -1,5 +1,4 @@
 import xyz.jpenilla.resourcefactory.bukkit.BukkitPluginYaml
-import xyz.jpenilla.resourcefactory.bukkit.bukkitPluginYaml
 import xyz.jpenilla.resourcefactory.paper.PaperPluginYaml
 
 plugins {
@@ -50,6 +49,11 @@ tasks {
     javadoc {
         options.encoding = Charsets.UTF_8.name() // We want UTF-8 for everything
     }
+    runServer {
+        pluginJars(
+            "..\\WbsUtils\\build\\libs\\WbsUtils-" + libs.versions.io.github.weber588.wbsutils.get() + ".jar"
+        )
+    }
 
     // Only relevant for 1.20.4 or below, or when you care about supporting Spigot on >=1.20.5:
     /*
@@ -68,7 +72,7 @@ paperPluginYaml {
     main = "wbs.enchants.WbsEnchants"
     bootstrapper = "wbs.enchants.WbsEnchantsBootstrap"
     authors.add("Weber588")
-    apiVersion = "26.2.1"
+    apiVersion = "26.2"
     dependencies {
         bootstrap.create("WbsUtils", {
             load = PaperPluginYaml.Load.BEFORE
