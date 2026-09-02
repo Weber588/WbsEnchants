@@ -173,6 +173,12 @@ public class AethereanEnchant extends WbsEnchantment {
     }
 
     private void tryNMSPlace(Player player, Vector facingVector, ItemStack item, Location targetLocation, Block targetBlock) {
+        net.minecraft.world.item.ItemStack nmsItem = net.minecraft.world.item.ItemStack.fromBukkitCopy(item);
+        Item itemDef = nmsItem.getItem();
+        if (!(itemDef instanceof BlockItem blockItem)) {
+            return;
+        }
+
         ServerPlayer serverPlayer = ((CraftPlayer) player).getHandle();
         Direction direction = CraftBlock.blockFaceToNotch(BlockUtils.getClosestFace(facingVector, Set.of(
                 BlockFace.UP,
@@ -186,8 +192,6 @@ public class AethereanEnchant extends WbsEnchantment {
             direction = Direction.UP;
         }
 
-        net.minecraft.world.item.ItemStack nmsItem = net.minecraft.world.item.ItemStack.fromBukkitCopy(item);
-
         UseOnContext useOnContext = new UseOnContext(serverPlayer,
                 InteractionHand.MAIN_HAND,
                 new BlockHitResult(
@@ -198,11 +202,9 @@ public class AethereanEnchant extends WbsEnchantment {
                 )
         );
 
-
-        Item itemDef = nmsItem.getItem();
-        if (itemDef instanceof BlockItem blockItem) {
-            InteractionResult result = blockItem.place(new BlockPlaceContext(useOnContext));
-            sendMessage("Result: " + result, player);
+        InteractionResult result = blockItem.place(new BlockPlaceContext(useOnContext));
+        if (result == InteractionResult.SUCCESS) {
+            player.swingMainHand();
         }
     }
 }
