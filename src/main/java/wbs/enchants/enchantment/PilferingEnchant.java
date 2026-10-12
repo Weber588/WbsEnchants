@@ -74,15 +74,12 @@ public class PilferingEnchant extends WbsEnchantment implements DamageEnchant {
             }
 
             PersistentDataContainer container = villager.getPersistentDataContainer();
-            Integer timesHit = null;
-            if (villager.getHealth() - event.getDamage() > 0 && container.has(TIMES_HIT)) {
-                timesHit = container.get(TIMES_HIT, PersistentDataType.INTEGER);
-                if (timesHit != null && timesHit >= level) {
-                    if (attacker instanceof Player player) {
-                        sendMessage("&wThis villager seems to be out of things to steal...", player);
-                    }
-                    return;
+            Integer timesHit = container.get(TIMES_HIT, PersistentDataType.INTEGER);
+            if (timesHit != null && timesHit >= level) {
+                if (attacker instanceof Player player) {
+                    sendMessage("&wThis villager seems to be out of things to steal...", player);
                 }
+                return;
             }
 
             int updatedTimesHit = timesHit == null ? 0 : timesHit;

@@ -2,6 +2,8 @@ package wbs.enchants.enchantment;
 
 import io.papermc.paper.registry.keys.tags.ItemTypeTagKeys;
 import org.bukkit.Particle;
+import org.bukkit.configuration.ConfigurationSection;
+import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
@@ -20,6 +22,7 @@ import wbs.utils.util.entities.WbsEntityUtil;
 import wbs.utils.util.particles.NormalParticleEffect;
 import wbs.utils.util.particles.WbsParticleGroup;
 
+import java.util.List;
 import java.util.Map;
 
 public class WickedEnchant extends WbsEnchantment implements DamageEnchant {
@@ -33,12 +36,34 @@ public class WickedEnchant extends WbsEnchantment implements DamageEnchant {
                     .setAmount(25),
                     Particle.MYCELIUM
             );
+    public static final String IGNORE_ENCHANTMENTS_KEY = "ignore-enchantments";
+
+    private List<String> ignoreRegex = List.of(
+            "stellarity:.*"
+    );
 
     public WickedEnchant() {
         super("wicked", EnchantmentTypeManager.PARADOXICAL, DEFAULT_DESCRIPTION);
 
         getDefinition()
                 .supportedItems(ItemTypeTagKeys.ENCHANTABLE_WEAPON);
+    }
+
+    @Override
+    public void configure(@NotNull ConfigurationSection section, String directory) {
+        super.configure(section, directory);
+
+        ignoreRegex = section.getStringList(IGNORE_ENCHANTMENTS_KEY);
+    }
+
+    @Override
+    public @NotNull ConfigurationSection buildConfigurationSection(YamlConfiguration baseFile) {
+        ConfigurationSection built = super.buildConfigurationSection(baseFile);
+
+        built.set(IGNORE_ENCHANTMENTS_KEY, ignoreRegex);
+        built.setComments(IGNORE_ENCHANTMENTS_KEY, List.of("Enchantment keys added here won't be considered curses.", "Supports regex!"));
+
+        return built;
     }
 
     @Override
@@ -51,6 +76,10 @@ public class WickedEnchant extends WbsEnchantment implements DamageEnchant {
 
             for (Enchantment enchant : enchantments.keySet()) {
                 if (EnchantUtils.isCurse(enchant)) {
+                    if (ignoreRegex.stream().anyMatch(regex -> enchant.getKey().asString().matches(regex))) {
+                        continue;
+                    }
+
                     double levelMultiplier = 0.5 + (0.5 * enchantments.get(enchant));
 
                     double rarityMultiplier = 1.0 / enchant.getWeight();

@@ -20,8 +20,10 @@ import org.bukkit.block.BlockFace;
 import org.bukkit.block.data.BlockData;
 import org.bukkit.block.data.Directional;
 import org.bukkit.block.data.Orientable;
+import org.bukkit.block.data.type.Bed;
 import org.bukkit.block.data.type.FlowerBed;
 import org.bukkit.block.data.type.Slab;
+import org.bukkit.craftbukkit.CraftEquipmentSlot;
 import org.bukkit.craftbukkit.block.CraftBlock;
 import org.bukkit.craftbukkit.entity.CraftPlayer;
 import org.bukkit.entity.Player;
@@ -94,15 +96,18 @@ public class AethereanEnchant extends WbsEnchantment {
         Location targetLocation = player.getEyeLocation().add(facingVector);
         Block targetBlock = targetLocation.getBlock();
 
-        try {
-            tryNMSPlace(player, facingVector, item, targetLocation, targetBlock);
-            return;
-        } catch (Exception ignored) {}
+
+        if (!(placementMaterial.createBlockData() instanceof Bed)) {
+            try {
+                tryNMSPlace(player, facingVector, item, targetLocation, targetBlock, event.getHand());
+                return;
+            } catch (Exception ignored) {}
+        }
 
         PacketEventsWrapper pe = PacketEventsWrapper.get().orElse(null);
         if (pe != null) {
             RayTraceResult rayTraceResult = player.rayTraceBlocks(blockReach);
-            pe.simulatePlayerInteract(EquipmentSlot.HAND, rayTraceResult, blockReach, player);
+            pe.simulatePlayerInteract(event.getHand(), rayTraceResult, blockReach, player);
         } else {
             tryBukkitPlace(placementMaterial, targetBlock, facingVector, player, item);
         }
@@ -172,7 +177,7 @@ public class AethereanEnchant extends WbsEnchantment {
         }
     }
 
-    private void tryNMSPlace(Player player, Vector facingVector, ItemStack item, Location targetLocation, Block targetBlock) {
+    private void tryNMSPlace(Player player, Vector facingVector, ItemStack item, Location targetLocation, Block targetBlock, EquipmentSlot hand) {
         net.minecraft.world.item.ItemStack nmsItem = net.minecraft.world.item.ItemStack.fromBukkitCopy(item);
         Item itemDef = nmsItem.getItem();
         if (!(itemDef instanceof BlockItem blockItem)) {
@@ -192,8 +197,10 @@ public class AethereanEnchant extends WbsEnchantment {
             direction = Direction.UP;
         }
 
+        InteractionHand nmsHand = CraftEquipmentSlot.getHand(hand);
+
         UseOnContext useOnContext = new UseOnContext(serverPlayer,
-                InteractionHand.MAIN_HAND,
+                nmsHand,
                 new BlockHitResult(
                         new Vec3(targetLocation.x(), targetLocation.y(), targetLocation.z()),
                         direction,

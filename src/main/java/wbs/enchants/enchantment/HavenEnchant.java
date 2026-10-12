@@ -1,5 +1,7 @@
 package wbs.enchants.enchantment;
 
+import com.google.common.collect.HashMultimap;
+import com.google.common.collect.Multimap;
 import org.bukkit.*;
 import org.bukkit.block.Beacon;
 import org.bukkit.block.Block;
@@ -11,15 +13,14 @@ import org.bukkit.event.entity.CreatureSpawnEvent;
 import org.bukkit.event.entity.EntitySpawnEvent;
 import org.jetbrains.annotations.NotNull;
 import wbs.enchants.WbsEnchantment;
+import wbs.enchants.WbsEnchants;
 import wbs.enchants.WbsEnchantsBootstrap;
 import wbs.enchants.enchantment.helper.BlockStateEnchant;
+import wbs.utils.util.listeners.ActiveBeaconsListener;
 import wbs.utils.util.particles.NormalParticleEffect;
 import wbs.utils.util.particles.WbsParticleEffect;
 
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.LinkedList;
-import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
 
 public class HavenEnchant extends WbsEnchantment implements BlockStateEnchant<Beacon> {
@@ -80,26 +81,11 @@ public class HavenEnchant extends WbsEnchantment implements BlockStateEnchant<Be
     private List<Beacon> getBeaconsInRadius(Block from) {
         List<Beacon> beacons = new LinkedList<>();
 
-        int simulationDistance = Bukkit.getServer().getViewDistance() * 16;
-
-        World world = from.getWorld();
-        Collection<Chunk> chunksInRadius = Arrays.stream(world.getLoadedChunks())
-                .filter(chunk -> {
-                    Location location = chunk.getBlock(7, Math.min(from.getY(), world.getMaxHeight() - 1), 7).getLocation();
-                    double distanceSquared = location.distanceSquared(from.getLocation());
-                    return distanceSquared < simulationDistance * simulationDistance;
-                })
-                .collect(Collectors.toSet());
-
-        for (Chunk chunk : chunksInRadius) {
-            chunk.getTileEntities(
-                    block -> block.getType() == Material.BEACON && block.getState() instanceof Beacon, true
-                    )
-                    .stream()
-                    .map(Beacon.class::cast)
-                    .filter(beacon -> isInRange(beacon, from.getLocation()))
-                    .forEach(beacons::add);
-        }
+        Map<Block, Beacon> activeBeacons = ActiveBeaconsListener.getActiveBeacons();
+        WbsEnchants.getInstance().getLogger().info("activeBeacons: " + activeBeacons);
+        activeBeacons.values().stream()
+                .filter(beacon -> isInRange(beacon, from.getLocation()))
+                .forEach(beacons::add);
 
         return beacons;
     }

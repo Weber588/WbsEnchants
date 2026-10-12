@@ -1,6 +1,7 @@
 package wbs.enchants.enchantment.curse;
 
 import io.papermc.paper.registry.keys.tags.ItemTypeTagKeys;
+import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -20,7 +21,7 @@ public class CurseMercy extends WbsCurse {
 
     @EventHandler(priority = EventPriority.LOWEST)
     public void onDamage(EntityDeathEvent event) {
-        if (!(event.getDamageSource().getCausingEntity() instanceof Player killer)) {
+        if (!(event.getDamageSource().getCausingEntity() instanceof LivingEntity killer)) {
             return;
         }
 
@@ -28,7 +29,9 @@ public class CurseMercy extends WbsCurse {
         if (enchantedItem != null) {
             event.setCancelled(true);
             event.setReviveHealth(2);
-            sendActionBar("Your weapon refuses to deal the killing blow...", killer);
+            if (killer instanceof Player player) {
+                sendActionBar("Your weapon refuses to deal the killing blow...", player);
+            }
         }
     }
 }

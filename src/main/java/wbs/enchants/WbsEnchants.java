@@ -16,6 +16,7 @@ import wbs.utils.util.WbsFileUtil;
 import wbs.utils.util.commands.brigadier.WbsCommand;
 import wbs.utils.util.commands.brigadier.WbsErrorsSubcommand;
 import wbs.utils.util.commands.brigadier.WbsReloadSubcommand;
+import wbs.utils.util.listeners.ActiveBeaconsListener;
 import wbs.utils.util.plugin.WbsPlugin;
 import wbs.utils.util.plugin.bootstrap.WbsBootstrapSettings;
 import wbs.utils.util.string.RomanNumerals;
@@ -76,6 +77,7 @@ public final class WbsEnchants extends WbsPlugin {
         registerListener(new AnvilEvents());
         registerListener(new LootGenerationBlocker());
         registerListener(new EnchantingTableEvents());
+        ActiveBeaconsListener.startListening();
 
         settings.reload();
 
