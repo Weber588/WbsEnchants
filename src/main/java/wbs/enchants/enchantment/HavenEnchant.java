@@ -82,7 +82,6 @@ public class HavenEnchant extends WbsEnchantment implements BlockStateEnchant<Be
         List<Beacon> beacons = new LinkedList<>();
 
         Map<Block, Beacon> activeBeacons = ActiveBeaconsListener.getActiveBeacons();
-        WbsEnchants.getInstance().getLogger().info("activeBeacons: " + activeBeacons);
         activeBeacons.values().stream()
                 .filter(beacon -> isInRange(beacon, from.getLocation()))
                 .forEach(beacons::add);

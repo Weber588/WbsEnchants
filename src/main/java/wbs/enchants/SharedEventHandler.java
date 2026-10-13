@@ -135,7 +135,6 @@ public class SharedEventHandler implements Listener {
                     cancel();
                 }
 
-                // TODO: Make this a config
                 boolean tickNonPlayers = plugin.getSettings().tickNonPlayers();
 
                 Set<LivingEntity> allLivingEntities = new HashSet<>();
