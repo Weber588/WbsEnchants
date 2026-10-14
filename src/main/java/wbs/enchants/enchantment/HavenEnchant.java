@@ -68,6 +68,10 @@ public class HavenEnchant extends WbsEnchantment implements BlockStateEnchant<Be
     }
 
     private boolean isInRange(Beacon beacon, Location location) {
+        if (!beacon.getWorld().equals(location.getWorld())) {
+            return false;
+        }
+
         int tier = beacon.getTier();
         double range = 10 * tier + 10;
 
@@ -83,6 +87,7 @@ public class HavenEnchant extends WbsEnchantment implements BlockStateEnchant<Be
 
         Map<Block, Beacon> activeBeacons = ActiveBeaconsListener.getActiveBeacons();
         activeBeacons.values().stream()
+                .filter(beacon -> beacon.getWorld().equals(from.getWorld()))
                 .filter(beacon -> isInRange(beacon, from.getLocation()))
                 .forEach(beacons::add);
 

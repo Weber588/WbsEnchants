@@ -41,6 +41,8 @@ minecraft:loyalty:
   description: Allows the trident to automatically return after being thrown.
 minecraft:luck_of_the_sea:
   description: Increases the chance of getting good loot while fishing.
+minecraft:lunge:
+  description: Allows jab attacks to propel the wielder forward horizontally.
 minecraft:lure:
   description: Decreases the amount of time it takes for a fish to bite the hook.
 minecraft:mending:
